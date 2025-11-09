@@ -1,0 +1,39 @@
+2025-11-09 11:57:07.179 | INFO     | __main__:scrape_player_season_stats:543 - ================================================================================
+2025-11-09 11:57:07.182 | INFO     | __main__:scrape_player_season_stats:544 - SCRAPING DE ESTADISTICAS DE JUGADORES
+2025-11-09 11:57:07.182 | INFO     | __main__:scrape_player_season_stats:545 -    Temporada: 2023-24
+2025-11-09 11:57:07.183 | INFO     | __main__:scrape_player_season_stats:546 -    Tipo: REGULAR
+2025-11-09 11:57:07.183 | INFO     | __main__:scrape_player_season_stats:547 - ================================================================================
+
+2025-11-09 11:57:07.187 | INFO     | __main__:scrape_player_season_stats:557 - [WEB] Scrapeando estadisticas de jugadores
+2025-11-09 11:57:07.188 | INFO     | __main__:scrape_player_season_stats:558 -    URL: https://www.espn.com/nba/stats/player/_/season/2024/seasontype/2
+2025-11-09 11:57:07.188 | INFO     | __main__:scrape_player_season_stats:574 - [BROWSER] Iniciando navegador...
+2025-11-09 11:57:13.151 | INFO     | __main__:scrape_player_season_stats:579 - [BROWSER] Navegando a la pagina...
+2025-11-09 11:57:18.076 | INFO     | __main__:scrape_player_season_stats:585 - [BROWSER] Tabla encontrada
+2025-11-09 11:57:19.354 | INFO     | __main__:scrape_player_season_stats:601 - [BROWSER] Haciendo clic en 'Show More' (1)...
+2025-11-09 11:57:23.454 | INFO     | __main__:scrape_player_season_stats:601 - [BROWSER] Haciendo clic en 'Show More' (2)...
+2025-11-09 11:57:27.105 | INFO     | __main__:scrape_player_season_stats:601 - [BROWSER] Haciendo clic en 'Show More' (3)...
+2025-11-09 11:57:30.777 | INFO     | __main__:scrape_player_season_stats:601 - [BROWSER] Haciendo clic en 'Show More' (4)...
+2025-11-09 11:57:34.471 | INFO     | __main__:scrape_player_season_stats:601 - [BROWSER] Haciendo clic en 'Show More' (5)...
+2025-11-09 11:57:38.152 | INFO     | __main__:scrape_player_season_stats:601 - [BROWSER] Haciendo clic en 'Show More' (6)...
+2025-11-09 11:57:41.844 | INFO     | __main__:scrape_player_season_stats:601 - [BROWSER] Haciendo clic en 'Show More' (7)...
+2025-11-09 11:57:45.571 | INFO     | __main__:scrape_player_season_stats:601 - [BROWSER] Haciendo clic en 'Show More' (8)...
+2025-11-09 11:57:49.303 | INFO     | __main__:scrape_player_season_stats:601 - [BROWSER] Haciendo clic en 'Show More' (9)...
+2025-11-09 11:57:53.037 | INFO     | __main__:scrape_player_season_stats:601 - [BROWSER] Haciendo clic en 'Show More' (10)...
+2025-11-09 11:57:55.709 | INFO     | __main__:scrape_player_season_stats:618 - [BROWSER] Clicks en 'Show More': 10
+2025-11-09 11:57:58.693 | INFO     | __main__:parse_all_player_stats:229 -    [DATA] Columnas detectadas: 22
+2025-11-09 11:57:58.786 | INFO     | __main__:parse_all_player_stats:294 -    [DATA] 550 jugadores parseados con 22 estadisticas
+2025-11-09 11:57:58.803 | INFO     | __main__:scrape_player_season_stats:636 - [OK] 550 jugadores extraidos con todas sus estadisticas
+2025-11-09 11:57:58.806 | INFO     | __main__:save_season_data_unified:491 - 
+[SAVE] Guardando datos en data\raw\player_stats\2023-24_regular/
+2025-11-09 11:57:58.832 | INFO     | __main__:save_season_data_unified:496 -    [OK] all_stats.csv - 550 jugadores, 28 columnas
+2025-11-09 11:57:58.832 | INFO     | __main__:save_season_data_unified:500 - [OK] Datos guardados exitosamente
+
+2025-11-09 11:57:58.832 | INFO     | __main__:scrape_player_season_stats:642 - ================================================================================
+2025-11-09 11:57:58.833 | INFO     | __main__:scrape_player_season_stats:643 - RESUMEN DE SCRAPING
+2025-11-09 11:57:58.834 | INFO     | __main__:scrape_player_season_stats:644 - ================================================================================
+2025-11-09 11:57:58.836 | INFO     | __main__:scrape_player_season_stats:645 - 
+[RESULT] Jugadores extraidos: 550
+2025-11-09 11:57:58.836 | INFO     | __main__:scrape_player_season_stats:646 - [RESULT] Columnas de datos: 28
+2025-11-09 11:57:58.836 | INFO     | __main__:scrape_player_season_stats:647 - [SAVE] Datos guardados en: data/raw/player_stats/2023-24_regular/all_stats.csv
+
+2025-11-09 11:58:01.113 | INFO     | __main__:scrape_player_season_stats:661 - [BROWSER] Navegador cerrado

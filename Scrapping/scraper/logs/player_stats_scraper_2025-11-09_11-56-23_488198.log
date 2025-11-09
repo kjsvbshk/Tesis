@@ -1,0 +1,91 @@
+2025-11-09 11:56:23.492 | INFO     | __main__:scrape_player_season_stats:543 - ================================================================================
+2025-11-09 11:56:23.493 | INFO     | __main__:scrape_player_season_stats:544 - SCRAPING DE ESTADISTICAS DE JUGADORES
+2025-11-09 11:56:23.493 | INFO     | __main__:scrape_player_season_stats:545 -    Temporada: 2023-24
+2025-11-09 11:56:23.494 | INFO     | __main__:scrape_player_season_stats:546 -    Tipo: REGULAR
+2025-11-09 11:56:23.494 | INFO     | __main__:scrape_player_season_stats:547 - ================================================================================
+
+2025-11-09 11:56:23.497 | INFO     | __main__:scrape_player_season_stats:557 - [WEB] Scrapeando estadisticas de jugadores
+2025-11-09 11:56:23.497 | INFO     | __main__:scrape_player_season_stats:558 -    URL: https://www.espn.com/nba/stats/player/_/season/2024/seasontype/2
+2025-11-09 11:56:23.497 | INFO     | __main__:scrape_player_season_stats:574 - [BROWSER] Iniciando navegador...
+2025-11-09 11:56:27.980 | INFO     | __main__:scrape_player_season_stats:579 - [BROWSER] Navegando a la pagina...
+2025-11-09 11:56:32.287 | INFO     | __main__:scrape_player_season_stats:585 - [BROWSER] Tabla encontrada
+2025-11-09 11:56:33.424 | INFO     | __main__:scrape_player_season_stats:601 - [BROWSER] Haciendo clic en 'Show More' (1)...
+2025-11-09 11:56:34.508 | ERROR    | __main__:scrape_player_season_stats:646 - [ERROR] Error durante scraping: Message: element click intercepted: Element <a class="AnchorLink loadMore__link" tabindex="0" href="#">...</a> is not clickable at point (374, 8). Other element would receive the click: <nav class="Nav__Primary center flex justify-between items-center" aria-label="Global Navigation">...</nav>
+  (Session info: chrome=142.0.7444.135); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#elementclickinterceptedexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	0x4858d3
+	0x485914
+	0x29e76d
+	0x2f05e0
+	0x2ee943
+	0x2ec3e7
+	0x2eb65d
+	0x2dfdf5
+	0x30c96c
+	0x2df854
+	0x30cb24
+	0x32eea6
+	0x30c766
+	0x2ddac0
+	0x2dede4
+	0x707974
+	0x702bea
+	0x4ae5c4
+	0x49dd38
+	0x4a4d9d
+	0x48dee8
+	0x48e0ac
+	0x477d2a
+	0x77275d49
+	0x77b9d6db
+	0x77b9d661
+
+2025-11-09 11:56:34.513 | ERROR    | __main__:scrape_player_season_stats:648 - Traceback (most recent call last):
+  File "C:\Users\Kjsvb\OneDrive\Documentos\Tesis\Tesis\Scrapping\scraper\espn\player_stats_scraper.py", line 602, in scrape_player_season_stats
+    show_more_button.click()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Kjsvb\AppData\Local\Programs\Python\Python313\Lib\site-packages\selenium\webdriver\remote\webelement.py", line 119, in click
+    self._execute(Command.CLICK_ELEMENT)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kjsvb\AppData\Local\Programs\Python\Python313\Lib\site-packages\selenium\webdriver\remote\webelement.py", line 572, in _execute
+    return self._parent.execute(command, params)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kjsvb\AppData\Local\Programs\Python\Python313\Lib\site-packages\selenium\webdriver\remote\webdriver.py", line 458, in execute
+    self.error_handler.check_response(response)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Kjsvb\AppData\Local\Programs\Python\Python313\Lib\site-packages\selenium\webdriver\remote\errorhandler.py", line 233, in check_response
+    raise exception_class(message, screen, stacktrace)
+selenium.common.exceptions.ElementClickInterceptedException: Message: element click intercepted: Element <a class="AnchorLink loadMore__link" tabindex="0" href="#">...</a> is not clickable at point (374, 8). Other element would receive the click: <nav class="Nav__Primary center flex justify-between items-center" aria-label="Global Navigation">...</nav>
+  (Session info: chrome=142.0.7444.135); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#elementclickinterceptedexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	0x4858d3
+	0x485914
+	0x29e76d
+	0x2f05e0
+	0x2ee943
+	0x2ec3e7
+	0x2eb65d
+	0x2dfdf5
+	0x30c96c
+	0x2df854
+	0x30cb24
+	0x32eea6
+	0x30c766
+	0x2ddac0
+	0x2dede4
+	0x707974
+	0x702bea
+	0x4ae5c4
+	0x49dd38
+	0x4a4d9d
+	0x48dee8
+	0x48e0ac
+	0x477d2a
+	0x77275d49
+	0x77b9d6db
+	0x77b9d661
+
+
+2025-11-09 11:56:36.710 | INFO     | __main__:scrape_player_season_stats:655 - [BROWSER] Navegador cerrado

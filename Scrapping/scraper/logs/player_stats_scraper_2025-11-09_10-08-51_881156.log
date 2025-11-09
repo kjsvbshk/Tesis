@@ -1,0 +1,60 @@
+2025-11-09 10:08:51.888 | INFO     | __main__:scrape_player_season_stats:363 - ================================================================================
+2025-11-09 10:08:51.891 | INFO     | __main__:scrape_player_season_stats:364 - SCRAPING DE ESTADISTICAS DE JUGADORES
+2025-11-09 10:08:51.892 | INFO     | __main__:scrape_player_season_stats:365 -    Temporada: 2023-24
+2025-11-09 10:08:51.893 | INFO     | __main__:scrape_player_season_stats:366 -    Tipo: REGULAR
+2025-11-09 10:08:51.893 | INFO     | __main__:scrape_player_season_stats:367 - ================================================================================
+
+2025-11-09 10:08:51.895 | INFO     | __main__:scrape_player_season_stats:372 - [CATEGORY] Points
+2025-11-09 10:08:51.895 | INFO     | __main__:scrape_category_leaders:124 - [WEB] Scrapeando: Points - 2023-24 regular
+2025-11-09 10:08:51.896 | INFO     | __main__:scrape_category_leaders:125 -    URL: https://www.espn.com/nba/stats/player/_/season/2024/seasontype/2
+2025-11-09 10:08:53.644 | INFO     | __main__:parse_espn_dual_table:291 -    [DATA] 50 jugadores parseados
+2025-11-09 10:08:53.663 | INFO     | __main__:scrape_category_leaders:140 -    [OK] 50 jugadores extraidos
+2025-11-09 10:08:53.668 | INFO     | __main__:scrape_player_season_stats:385 -    [WAIT] Esperando 3 segundos...
+2025-11-09 10:08:56.669 | INFO     | __main__:scrape_player_season_stats:372 - [CATEGORY] Assists
+2025-11-09 10:08:56.669 | INFO     | __main__:scrape_category_leaders:124 - [WEB] Scrapeando: Assists - 2023-24 regular
+2025-11-09 10:08:56.670 | INFO     | __main__:scrape_category_leaders:125 -    URL: https://www.espn.com/nba/stats/player/_/season/2024/seasontype/2
+2025-11-09 10:08:58.591 | INFO     | __main__:parse_espn_dual_table:291 -    [DATA] 50 jugadores parseados
+2025-11-09 10:08:58.596 | INFO     | __main__:scrape_category_leaders:140 -    [OK] 50 jugadores extraidos
+2025-11-09 10:08:58.600 | INFO     | __main__:scrape_player_season_stats:385 -    [WAIT] Esperando 3 segundos...
+2025-11-09 10:09:01.601 | INFO     | __main__:scrape_player_season_stats:372 - [CATEGORY] 3-Pointers Made
+2025-11-09 10:09:01.601 | INFO     | __main__:scrape_category_leaders:124 - [WEB] Scrapeando: 3-Pointers Made - 2023-24 regular
+2025-11-09 10:09:01.601 | INFO     | __main__:scrape_category_leaders:125 -    URL: https://www.espn.com/nba/stats/player/_/season/2024/seasontype/2
+2025-11-09 10:09:03.238 | INFO     | __main__:parse_espn_dual_table:291 -    [DATA] 50 jugadores parseados
+2025-11-09 10:09:03.245 | INFO     | __main__:scrape_category_leaders:140 -    [OK] 50 jugadores extraidos
+2025-11-09 10:09:03.248 | INFO     | __main__:scrape_player_season_stats:385 -    [WAIT] Esperando 3 segundos...
+2025-11-09 10:09:06.249 | INFO     | __main__:scrape_player_season_stats:372 - [CATEGORY] Rebounds
+2025-11-09 10:09:06.250 | INFO     | __main__:scrape_category_leaders:124 - [WEB] Scrapeando: Rebounds - 2023-24 regular
+2025-11-09 10:09:06.250 | INFO     | __main__:scrape_category_leaders:125 -    URL: https://www.espn.com/nba/stats/player/_/season/2024/seasontype/2
+2025-11-09 10:09:07.831 | INFO     | __main__:parse_espn_dual_table:291 -    [DATA] 50 jugadores parseados
+2025-11-09 10:09:07.834 | INFO     | __main__:scrape_category_leaders:140 -    [OK] 50 jugadores extraidos
+2025-11-09 10:09:07.837 | INFO     | __main__:scrape_player_season_stats:385 -    [WAIT] Esperando 3 segundos...
+2025-11-09 10:09:10.838 | INFO     | __main__:scrape_player_season_stats:372 - [CATEGORY] Blocks
+2025-11-09 10:09:10.838 | INFO     | __main__:scrape_category_leaders:124 - [WEB] Scrapeando: Blocks - 2023-24 regular
+2025-11-09 10:09:10.839 | INFO     | __main__:scrape_category_leaders:125 -    URL: https://www.espn.com/nba/stats/player/_/season/2024/seasontype/2
+2025-11-09 10:09:12.542 | INFO     | __main__:parse_espn_dual_table:291 -    [DATA] 50 jugadores parseados
+2025-11-09 10:09:12.546 | INFO     | __main__:scrape_category_leaders:140 -    [OK] 50 jugadores extraidos
+2025-11-09 10:09:12.549 | INFO     | __main__:scrape_player_season_stats:385 -    [WAIT] Esperando 3 segundos...
+2025-11-09 10:09:15.550 | INFO     | __main__:scrape_player_season_stats:372 - [CATEGORY] Steals
+2025-11-09 10:09:15.551 | INFO     | __main__:scrape_category_leaders:124 - [WEB] Scrapeando: Steals - 2023-24 regular
+2025-11-09 10:09:15.552 | INFO     | __main__:scrape_category_leaders:125 -    URL: https://www.espn.com/nba/stats/player/_/season/2024/seasontype/2
+2025-11-09 10:09:16.915 | INFO     | __main__:parse_espn_dual_table:291 -    [DATA] 50 jugadores parseados
+2025-11-09 10:09:16.918 | INFO     | __main__:scrape_category_leaders:140 -    [OK] 50 jugadores extraidos
+2025-11-09 10:09:16.921 | INFO     | __main__:scrape_player_season_stats:385 -    [WAIT] Esperando 3 segundos...
+2025-11-09 10:09:19.923 | INFO     | __main__:save_season_data:338 - 
+[SAVE] Guardando datos en data\raw\player_stats\2023-24_regular/
+2025-11-09 10:09:19.949 | INFO     | __main__:save_season_data:344 -    [OK] points.csv - 50 registros
+2025-11-09 10:09:19.955 | INFO     | __main__:save_season_data:344 -    [OK] assists.csv - 50 registros
+2025-11-09 10:09:19.966 | INFO     | __main__:save_season_data:344 -    [OK] three_pointers.csv - 50 registros
+2025-11-09 10:09:19.972 | INFO     | __main__:save_season_data:344 -    [OK] rebounds.csv - 50 registros
+2025-11-09 10:09:19.980 | INFO     | __main__:save_season_data:344 -    [OK] blocks.csv - 50 registros
+2025-11-09 10:09:19.985 | INFO     | __main__:save_season_data:344 -    [OK] steals.csv - 50 registros
+2025-11-09 10:09:19.986 | INFO     | __main__:save_season_data:348 - [OK] Datos guardados exitosamente
+
+2025-11-09 10:09:19.987 | INFO     | __main__:scrape_player_season_stats:392 - ================================================================================
+2025-11-09 10:09:19.987 | INFO     | __main__:scrape_player_season_stats:393 - RESUMEN DE SCRAPING
+2025-11-09 10:09:19.987 | INFO     | __main__:scrape_player_season_stats:394 - ================================================================================
+2025-11-09 10:09:19.987 | INFO     | __main__:scrape_player_season_stats:399 - 
+[RESULT] Categorias exitosas: 6/6
+2025-11-09 10:09:19.988 | INFO     | __main__:scrape_player_season_stats:400 - [RESULT] Total de jugadores extraidos: 300
+2025-11-09 10:09:19.988 | INFO     | __main__:scrape_player_season_stats:401 - [SAVE] Datos guardados en: data/raw/player_stats/2023-24_regular/
+

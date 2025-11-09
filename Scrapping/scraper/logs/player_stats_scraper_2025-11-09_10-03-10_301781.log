@@ -1,0 +1,60 @@
+2025-11-09 10:03:10.304 | INFO     | __main__:scrape_player_season_stats:358 - ================================================================================
+2025-11-09 10:03:10.304 | INFO     | __main__:scrape_player_season_stats:359 - SCRAPING DE ESTADISTICAS DE JUGADORES
+2025-11-09 10:03:10.305 | INFO     | __main__:scrape_player_season_stats:360 -    Temporada: 2023-24
+2025-11-09 10:03:10.305 | INFO     | __main__:scrape_player_season_stats:361 -    Tipo: REGULAR
+2025-11-09 10:03:10.305 | INFO     | __main__:scrape_player_season_stats:362 - ================================================================================
+
+2025-11-09 10:03:10.305 | INFO     | __main__:scrape_player_season_stats:367 - [CATEGORY] Points
+2025-11-09 10:03:10.306 | INFO     | __main__:scrape_category_leaders:124 - [WEB] Scrapeando: Points - 2023-24 regular
+2025-11-09 10:03:10.306 | INFO     | __main__:scrape_category_leaders:125 -    URL: https://www.espn.com/nba/stats/player/_/season/2024/seasontype/2
+2025-11-09 10:03:11.158 | WARNING  | __main__:parse_espn_dual_table:182 -    [WARN] No se encontro tabla fija (.Table--fixed-left)
+2025-11-09 10:03:11.158 | WARNING  | __main__:scrape_category_leaders:143 -    [WARN] No se pudieron extraer datos
+2025-11-09 10:03:11.159 | INFO     | __main__:scrape_player_season_stats:380 -    [WAIT] Esperando 3 segundos...
+2025-11-09 10:03:14.160 | INFO     | __main__:scrape_player_season_stats:367 - [CATEGORY] Assists
+2025-11-09 10:03:14.160 | INFO     | __main__:scrape_category_leaders:124 - [WEB] Scrapeando: Assists - 2023-24 regular
+2025-11-09 10:03:14.160 | INFO     | __main__:scrape_category_leaders:125 -    URL: https://www.espn.com/nba/stats/player/_/season/2024/seasontype/2
+2025-11-09 10:03:15.219 | WARNING  | __main__:parse_espn_dual_table:182 -    [WARN] No se encontro tabla fija (.Table--fixed-left)
+2025-11-09 10:03:15.219 | WARNING  | __main__:scrape_category_leaders:143 -    [WARN] No se pudieron extraer datos
+2025-11-09 10:03:15.220 | INFO     | __main__:scrape_player_season_stats:380 -    [WAIT] Esperando 3 segundos...
+2025-11-09 10:03:18.221 | INFO     | __main__:scrape_player_season_stats:367 - [CATEGORY] 3-Pointers Made
+2025-11-09 10:03:18.221 | INFO     | __main__:scrape_category_leaders:124 - [WEB] Scrapeando: 3-Pointers Made - 2023-24 regular
+2025-11-09 10:03:18.222 | INFO     | __main__:scrape_category_leaders:125 -    URL: https://www.espn.com/nba/stats/player/_/season/2024/seasontype/2
+2025-11-09 10:03:19.218 | WARNING  | __main__:parse_espn_dual_table:182 -    [WARN] No se encontro tabla fija (.Table--fixed-left)
+2025-11-09 10:03:19.218 | WARNING  | __main__:scrape_category_leaders:143 -    [WARN] No se pudieron extraer datos
+2025-11-09 10:03:19.220 | INFO     | __main__:scrape_player_season_stats:380 -    [WAIT] Esperando 3 segundos...
+2025-11-09 10:03:22.221 | INFO     | __main__:scrape_player_season_stats:367 - [CATEGORY] Rebounds
+2025-11-09 10:03:22.221 | INFO     | __main__:scrape_category_leaders:124 - [WEB] Scrapeando: Rebounds - 2023-24 regular
+2025-11-09 10:03:22.221 | INFO     | __main__:scrape_category_leaders:125 -    URL: https://www.espn.com/nba/stats/player/_/season/2024/seasontype/2
+2025-11-09 10:03:22.987 | WARNING  | __main__:parse_espn_dual_table:182 -    [WARN] No se encontro tabla fija (.Table--fixed-left)
+2025-11-09 10:03:22.987 | WARNING  | __main__:scrape_category_leaders:143 -    [WARN] No se pudieron extraer datos
+2025-11-09 10:03:22.988 | INFO     | __main__:scrape_player_season_stats:380 -    [WAIT] Esperando 3 segundos...
+2025-11-09 10:03:25.988 | INFO     | __main__:scrape_player_season_stats:367 - [CATEGORY] Blocks
+2025-11-09 10:03:25.989 | INFO     | __main__:scrape_category_leaders:124 - [WEB] Scrapeando: Blocks - 2023-24 regular
+2025-11-09 10:03:25.989 | INFO     | __main__:scrape_category_leaders:125 -    URL: https://www.espn.com/nba/stats/player/_/season/2024/seasontype/2
+2025-11-09 10:03:26.673 | WARNING  | __main__:parse_espn_dual_table:182 -    [WARN] No se encontro tabla fija (.Table--fixed-left)
+2025-11-09 10:03:26.673 | WARNING  | __main__:scrape_category_leaders:143 -    [WARN] No se pudieron extraer datos
+2025-11-09 10:03:26.675 | INFO     | __main__:scrape_player_season_stats:380 -    [WAIT] Esperando 3 segundos...
+2025-11-09 10:03:29.676 | INFO     | __main__:scrape_player_season_stats:367 - [CATEGORY] Steals
+2025-11-09 10:03:29.676 | INFO     | __main__:scrape_category_leaders:124 - [WEB] Scrapeando: Steals - 2023-24 regular
+2025-11-09 10:03:29.677 | INFO     | __main__:scrape_category_leaders:125 -    URL: https://www.espn.com/nba/stats/player/_/season/2024/seasontype/2
+2025-11-09 10:03:30.581 | WARNING  | __main__:parse_espn_dual_table:182 -    [WARN] No se encontro tabla fija (.Table--fixed-left)
+2025-11-09 10:03:30.581 | WARNING  | __main__:scrape_category_leaders:143 -    [WARN] No se pudieron extraer datos
+2025-11-09 10:03:30.583 | INFO     | __main__:scrape_player_season_stats:380 -    [WAIT] Esperando 3 segundos...
+2025-11-09 10:03:33.584 | INFO     | __main__:save_season_data:333 - 
+[SAVE] Guardando datos en data\raw\player_stats\2023-24_regular/
+2025-11-09 10:03:33.585 | WARNING  | __main__:save_season_data:341 -    [WARN] points - Sin datos
+2025-11-09 10:03:33.585 | WARNING  | __main__:save_season_data:341 -    [WARN] assists - Sin datos
+2025-11-09 10:03:33.586 | WARNING  | __main__:save_season_data:341 -    [WARN] three_pointers - Sin datos
+2025-11-09 10:03:33.586 | WARNING  | __main__:save_season_data:341 -    [WARN] rebounds - Sin datos
+2025-11-09 10:03:33.586 | WARNING  | __main__:save_season_data:341 -    [WARN] blocks - Sin datos
+2025-11-09 10:03:33.586 | WARNING  | __main__:save_season_data:341 -    [WARN] steals - Sin datos
+2025-11-09 10:03:33.586 | INFO     | __main__:save_season_data:343 - [OK] Datos guardados exitosamente
+
+2025-11-09 10:03:33.586 | INFO     | __main__:scrape_player_season_stats:387 - ================================================================================
+2025-11-09 10:03:33.587 | INFO     | __main__:scrape_player_season_stats:388 - RESUMEN DE SCRAPING
+2025-11-09 10:03:33.587 | INFO     | __main__:scrape_player_season_stats:389 - ================================================================================
+2025-11-09 10:03:33.587 | INFO     | __main__:scrape_player_season_stats:394 - 
+[RESULT] Categorias exitosas: 0/6
+2025-11-09 10:03:33.587 | INFO     | __main__:scrape_player_season_stats:395 - [RESULT] Total de jugadores extraidos: 0
+2025-11-09 10:03:33.587 | INFO     | __main__:scrape_player_season_stats:396 - [SAVE] Datos guardados en: data/raw/player_stats/2023-24_regular/
+

@@ -1,0 +1,87 @@
+2025-11-09 11:47:28.175 | INFO     | __main__:scrape_player_season_stats:543 - ================================================================================
+2025-11-09 11:47:28.176 | INFO     | __main__:scrape_player_season_stats:544 - SCRAPING DE ESTADISTICAS DE JUGADORES
+2025-11-09 11:47:28.177 | INFO     | __main__:scrape_player_season_stats:545 -    Temporada: 2023-24
+2025-11-09 11:47:28.177 | INFO     | __main__:scrape_player_season_stats:546 -    Tipo: REGULAR
+2025-11-09 11:47:28.177 | INFO     | __main__:scrape_player_season_stats:547 - ================================================================================
+
+2025-11-09 11:47:28.178 | INFO     | __main__:scrape_player_season_stats:557 - [WEB] Scrapeando estadisticas de jugadores
+2025-11-09 11:47:28.178 | INFO     | __main__:scrape_player_season_stats:558 -    URL: https://www.espn.com/nba/stats/player/_/season/2024/seasontype/2
+2025-11-09 11:47:28.178 | INFO     | __main__:scrape_player_season_stats:572 - [BROWSER] Iniciando navegador Chrome...
+2025-11-09 11:47:38.041 | ERROR    | __main__:scrape_player_season_stats:644 - [ERROR] Error durante scraping: Message: unknown error: cannot find Chrome binary
+Stacktrace:
+Backtrace:
+	GetHandleVerifier [0x0098A813+48355]
+	(No symbol) [0x0091C4B1]
+	(No symbol) [0x00825358]
+	(No symbol) [0x00841A9E]
+	(No symbol) [0x00840579]
+	(No symbol) [0x00870C55]
+	(No symbol) [0x0087093C]
+	(No symbol) [0x0086A536]
+	(No symbol) [0x008482DC]
+	(No symbol) [0x008493DD]
+	GetHandleVerifier [0x00BEAABD+2539405]
+	GetHandleVerifier [0x00C2A78F+2800735]
+	GetHandleVerifier [0x00C2456C+2775612]
+	GetHandleVerifier [0x00A151E0+616112]
+	(No symbol) [0x00925F8C]
+	(No symbol) [0x00922328]
+	(No symbol) [0x0092240B]
+	(No symbol) [0x00914FF7]
+	BaseThreadInitThunk [0x77275D49+25]
+	RtlInitializeExceptionChain [0x77B9D6DB+107]
+	RtlGetAppContainerNamedObjectPath [0x77B9D661+561]
+
+2025-11-09 11:47:38.047 | ERROR    | __main__:scrape_player_season_stats:646 - Traceback (most recent call last):
+  File "C:\Users\Kjsvb\OneDrive\Documentos\Tesis\Tesis\Scrapping\scraper\espn\player_stats_scraper.py", line 574, in scrape_player_season_stats
+    driver = webdriver.Chrome(service=service, options=chrome_options)
+  File "C:\Users\Kjsvb\AppData\Local\Programs\Python\Python313\Lib\site-packages\selenium\webdriver\chrome\webdriver.py", line 47, in __init__
+    super().__init__(
+    ~~~~~~~~~~~~~~~~^
+        browser_name=DesiredCapabilities.CHROME["browserName"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        keep_alive=keep_alive,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Kjsvb\AppData\Local\Programs\Python\Python313\Lib\site-packages\selenium\webdriver\chromium\webdriver.py", line 71, in __init__
+    super().__init__(command_executor=executor, options=options)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kjsvb\AppData\Local\Programs\Python\Python313\Lib\site-packages\selenium\webdriver\remote\webdriver.py", line 263, in __init__
+    self.start_session(capabilities)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\Kjsvb\AppData\Local\Programs\Python\Python313\Lib\site-packages\selenium\webdriver\remote\webdriver.py", line 366, in start_session
+    response = self.execute(Command.NEW_SESSION, caps)["value"]
+               ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kjsvb\AppData\Local\Programs\Python\Python313\Lib\site-packages\selenium\webdriver\remote\webdriver.py", line 458, in execute
+    self.error_handler.check_response(response)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Kjsvb\AppData\Local\Programs\Python\Python313\Lib\site-packages\selenium\webdriver\remote\errorhandler.py", line 233, in check_response
+    raise exception_class(message, screen, stacktrace)
+selenium.common.exceptions.WebDriverException: Message: unknown error: cannot find Chrome binary
+Stacktrace:
+Backtrace:
+	GetHandleVerifier [0x0098A813+48355]
+	(No symbol) [0x0091C4B1]
+	(No symbol) [0x00825358]
+	(No symbol) [0x00841A9E]
+	(No symbol) [0x00840579]
+	(No symbol) [0x00870C55]
+	(No symbol) [0x0087093C]
+	(No symbol) [0x0086A536]
+	(No symbol) [0x008482DC]
+	(No symbol) [0x008493DD]
+	GetHandleVerifier [0x00BEAABD+2539405]
+	GetHandleVerifier [0x00C2A78F+2800735]
+	GetHandleVerifier [0x00C2456C+2775612]
+	GetHandleVerifier [0x00A151E0+616112]
+	(No symbol) [0x00925F8C]
+	(No symbol) [0x00922328]
+	(No symbol) [0x0092240B]
+	(No symbol) [0x00914FF7]
+	BaseThreadInitThunk [0x77275D49+25]
+	RtlInitializeExceptionChain [0x77B9D6DB+107]
+	RtlGetAppContainerNamedObjectPath [0x77B9D661+561]
+
+

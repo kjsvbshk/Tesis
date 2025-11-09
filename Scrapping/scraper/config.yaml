@@ -1,0 +1,6 @@
+DATABASE_URL: postgresql://postgres:admin@localhost:5432/nba_data
+ESPN_BASE_URL: https://www.espn.com/nba/
+SCRAPE_INTERVAL_DAYS: 1
+SAVE_PATH_RAW: data/raw/
+SAVE_PATH_PROCESSED: data/processed/
+DB_SCHEMA: espn

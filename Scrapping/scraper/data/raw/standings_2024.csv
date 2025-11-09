@@ -1,0 +1,31 @@
+team_name,team_abbrev,conference,season,wins,losses,win_pct,games_behind,home_record,away_record,div_record,conf_record,ppg,opp_ppg,diff,streak,last10
+Chicago Bulls,CHI,Eastern Conference,2024,111.0,115.0,4.0,1.0,-,1.000,0,1,4.0,0.5,111.0,115,W1
+Orlando Magic,ORL,Eastern Conference,2024,121.0,125.0,4.0,1.0,-,1.000,0,1,4.0,0.5,121.0,125,W1
+Charlotte Hornets,CHA,Eastern Conference,2024,117.0,136.0,19.0,0.0,-,1.000,0,2,19.0,0.5,117.0,136,W1
+Milwaukee Bucks,MIL,Eastern Conference,2024,120.0,133.0,13.0,0.0,-,1.000,0,3,13.0,0.5,120.0,133,W1
+Toronto Raptors,TOR,Eastern Conference,2024,118.0,138.0,20.0,0.0,-,1.000,0,3,20.0,0.5,118.0,138,W1
+New York Knicks,NY,Eastern Conference,2024,111.0,119.0,8.0,0.0,-,1.000,0,4,8.0,0.5,111.0,119,W1
+Philadelphia 76ers,PHI,Eastern Conference,2024,116.0,117.0,1.0,1.0,-,1.000,0,7,1.0,0.5,116.0,117,W1
+Boston Celtics,BOS,Eastern Conference,2024,117.0,116.0,1.0,0.0,1,0.000,1,8,1.0,0.5,117.0,116,L1
+Detroit Pistons,DET,Eastern Conference,2024,115.0,111.0,4.0,0.0,1,0.000,1,8,4.0,0.5,115.0,111,L1
+Miami Heat,MIA,Eastern Conference,2024,125.0,121.0,4.0,0.0,1,0.000,1,8,4.0,0.5,125.0,121,L1
+Indiana Pacers,IND,Eastern Conference,2024,141.0,135.0,6.0,0.0,1,0.000,1,11,6.0,0.5,141.0,135,L1
+Cleveland Cavaliers,CLE,Eastern Conference,2024,119.0,111.0,8.0,0.0,1,0.000,1,12,8.0,0.5,119.0,111,L1
+Washington Wizards,WSH,Eastern Conference,2024,133.0,120.0,13.0,0.0,1,0.000,1,13,13.0,0.5,133.0,120,L1
+Brooklyn Nets,BKN,Eastern Conference,2024,136.0,117.0,19.0,0.0,1,0.000,1,14,19.0,0.5,136.0,117,L1
+Atlanta Hawks,ATL,Eastern Conference,2024,138.0,118.0,20.0,0.0,1,0.000,1,15,20.0,0.5,138.0,118,L1
+Golden State Warriors,GS,Western Conference,2024,120.0,128.0,8.0,1.0,-,1.000,0,1,16.0,1.0,240.0,256,W2
+Oklahoma City Thunder,OKC,Western Conference,2024,129.5,133.0,3.5,0.0,-,1.000,0,2,7.0,1.0,259.0,266,W2
+San Antonio Spurs,SA,Western Conference,2024,92.0,125.0,33.0,1.0,0.5,1.000,0,3,33.0,0.5,92.0,125,W1
+Utah Jazz,UTAH,Western Conference,2024,108.0,129.0,21.0,0.0,0.5,1.000,0,4,21.0,0.5,108.0,129,W1
+Memphis Grizzlies,MEM,Western Conference,2024,122.0,128.0,6.0,1.0,0.5,1.000,0,5,6.0,0.5,122.0,128,W1
+Minnesota Timberwolves,MIN,Western Conference,2024,114.0,118.0,4.0,1.0,0.5,1.000,0,6,4.0,0.5,114.0,118,W1
+Phoenix Suns,PHX,Western Conference,2024,116.0,120.0,4.0,1.0,0.5,1.000,0,7,4.0,0.5,116.0,120,W1
+New Orleans Pelicans,NO,Western Conference,2024,128.0,122.0,6.0,0.0,1.5,0.000,1,8,6.0,0.5,128.0,122,L1
+Denver Nuggets,DEN,Western Conference,2024,137.0,131.0,6.0,0.0,1.5,0.000,1,8,6.0,0.5,137.0,131,L1
+Houston Rockets,HOU,Western Conference,2024,125.0,124.0,1.0,0.0,1.5,0.000,1,8,1.0,0.5,125.0,124,L1
+Portland Trail Blazers,POR,Western Conference,2024,118.0,114.0,4.0,0.0,1.5,0.000,1,8,4.0,0.5,118.0,114,L1
+Sacramento Kings,SAC,Western Conference,2024,120.0,116.0,4.0,0.0,1.5,0.000,1,8,4.0,0.5,120.0,116,L1
+Los Angeles Lakers,LAL,Western Conference,2024,119.0,109.0,10.0,0.0,1.5,0.000,1,13,10.0,0.5,119.0,109,L1
+LA Clippers,LAC,Western Conference,2024,129.0,108.0,21.0,0.0,1.5,0.000,1,14,21.0,0.5,129.0,108,L1
+Dallas Mavericks,DAL,Western Conference,2024,125.0,92.0,33.0,0.0,1.5,0.000,1,15,33.0,0.5,125.0,92,L1

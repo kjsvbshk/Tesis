@@ -1,0 +1,24 @@
+2025-11-09 11:30:36.843 | INFO     | __main__:scrape_player_season_stats:531 - ================================================================================
+2025-11-09 11:30:36.844 | INFO     | __main__:scrape_player_season_stats:532 - SCRAPING DE ESTADISTICAS DE JUGADORES
+2025-11-09 11:30:36.844 | INFO     | __main__:scrape_player_season_stats:533 -    Temporada: 2023-24
+2025-11-09 11:30:36.844 | INFO     | __main__:scrape_player_season_stats:534 -    Tipo: REGULAR
+2025-11-09 11:30:36.844 | INFO     | __main__:scrape_player_season_stats:535 - ================================================================================
+
+2025-11-09 11:30:36.845 | INFO     | __main__:scrape_player_season_stats:546 - [WEB] Scrapeando estadisticas de jugadores
+2025-11-09 11:30:36.845 | INFO     | __main__:scrape_player_season_stats:547 -    URL: https://www.espn.com/nba/stats/player/_/season/2024/seasontype/2
+2025-11-09 11:30:37.708 | INFO     | __main__:parse_all_player_stats:219 -    [DATA] Columnas detectadas: 22
+2025-11-09 11:30:37.712 | INFO     | __main__:parse_all_player_stats:284 -    [DATA] 50 jugadores parseados con 22 estadisticas
+2025-11-09 11:30:37.717 | INFO     | __main__:scrape_player_season_stats:566 - [OK] 50 jugadores extraidos con todas sus estadisticas
+2025-11-09 11:30:37.718 | INFO     | __main__:save_season_data_unified:481 - 
+[SAVE] Guardando datos en data\raw\player_stats\2023-24_regular/
+2025-11-09 11:30:37.723 | INFO     | __main__:save_season_data_unified:486 -    [OK] all_stats.csv - 50 jugadores, 28 columnas
+2025-11-09 11:30:37.723 | INFO     | __main__:save_season_data_unified:490 - [OK] Datos guardados exitosamente
+
+2025-11-09 11:30:37.723 | INFO     | __main__:scrape_player_season_stats:572 - ================================================================================
+2025-11-09 11:30:37.723 | INFO     | __main__:scrape_player_season_stats:573 - RESUMEN DE SCRAPING
+2025-11-09 11:30:37.723 | INFO     | __main__:scrape_player_season_stats:574 - ================================================================================
+2025-11-09 11:30:37.723 | INFO     | __main__:scrape_player_season_stats:575 - 
+[RESULT] Jugadores extraidos: 50
+2025-11-09 11:30:37.723 | INFO     | __main__:scrape_player_season_stats:576 - [RESULT] Columnas de datos: 28
+2025-11-09 11:30:37.723 | INFO     | __main__:scrape_player_season_stats:577 - [SAVE] Datos guardados en: data/raw/player_stats/2023-24_regular/all_stats.csv
+

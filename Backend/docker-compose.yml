@@ -1,0 +1,56 @@
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15
+    container_name: nba_bets_db
+    environment:
+      POSTGRES_DB: tesis
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - nba_bets_network
+
+  # pgAdmin (Database Management)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: nba_bets_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@nbabets.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - nba_bets_network
+
+  # FastAPI Backend
+  backend:
+    build: .
+    container_name: nba_bets_backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:admin@postgres:5432/tesis
+      - DEBUG=True
+    depends_on:
+      - postgres
+    volumes:
+      - .:/app
+      - ./ml:/app/ml
+      - ./data:/app/data
+    networks:
+      - nba_bets_network
+    command: uvicorn app.main_fixed:app --host 0.0.0.0 --port 8000 --reload
+
+volumes:
+  postgres_data:
+
+networks:
+  nba_bets_network:
+    driver: bridge

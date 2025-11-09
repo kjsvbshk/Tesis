@@ -23,4 +23,4 @@ RUN mkdir -p data/raw data/processed logs
 ENV PYTHONPATH=/app
 
 # Default command
-CMD ["python", "scraper/main.py"]
+CMD ["python", "main.py"]

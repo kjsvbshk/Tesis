@@ -1,50 +1,132 @@
-# NBA Bets Backend
+# API de Predicciones y Apuestas Virtuales NBA
 
-Backend API para predicción de resultados NBA y simulación de apuestas virtuales.
+## ¿Qué hace este sistema?
 
-## 🚀 Características
+Este es el "cerebro" del proyecto. Es una API (interfaz de programación) que proporciona servicios para:
 
-- **FastAPI** - Framework web moderno y rápido
-- **PostgreSQL** - Base de datos relacional robusta
-- **SQLAlchemy** - ORM para Python
-- **JWT Authentication** - Autenticación segura
-- **Machine Learning** - Modelos predictivos (RandomForest, XGBoost)
-- **Docker** - Contenerización completa
+1. **Hacer predicciones** sobre quién ganará los partidos de la NBA usando inteligencia artificial
+2. **Gestionar apuestas virtuales** donde los usuarios pueden apostar créditos virtuales (no dinero real) sobre los resultados
+3. **Administrar usuarios** y sus cuentas con créditos virtuales
+4. **Proporcionar información** sobre partidos, equipos y estadísticas
 
-## 📋 Requisitos
+Piensa en esto como un servidor que recibe peticiones del frontend (la aplicación web que ven los usuarios) y responde con predicciones, información de partidos, resultados de apuestas, etc.
 
-- Python 3.11+
-- Docker & Docker Compose
-- PostgreSQL 15+
+## ¿Cómo funciona el sistema de predicciones?
 
-## 🛠️ Instalación
+El sistema usa modelos de machine learning (aprendizaje automático) que han sido entrenados con datos históricos de la NBA. Cuando quieres saber quién ganará un partido, el sistema:
 
-### Opción 1: Con Docker (Recomendado)
+1. **Recopila información** sobre los equipos que van a jugar:
+   - Rendimiento reciente de cada equipo
+   - Estadísticas ofensivas y defensivas
+   - Si juegan en casa o fuera
+   - Días de descanso
+   - Lesiones de jugadores importantes
+   - Cuotas de apuestas (probabilidades)
+
+2. **Analiza los datos** usando los modelos de inteligencia artificial:
+   - **RandomForest**: Predice quién ganará (clasificación)
+   - **XGBoost**: Predice cuántos puntos anotará cada equipo (regresión)
+   - **Stacking Ensemble**: Combina múltiples modelos para mayor precisión
+
+3. **Genera una predicción** con:
+   - Probabilidad de victoria de cada equipo
+   - Puntuación esperada
+   - Nivel de confianza de la predicción
+
+## ¿Qué es el sistema de apuestas virtuales?
+
+Los usuarios pueden hacer apuestas virtuales usando créditos (no dinero real). El sistema:
+
+- **Registra las apuestas** que hace cada usuario
+- **Calcula las ganancias** cuando un usuario acierta
+- **Mantiene un historial** de todas las apuestas
+- **Gestiona los créditos** de cada usuario
+
+Es importante entender que esto es **100% virtual** - no se usa dinero real, solo créditos dentro del sistema para fines educativos y de entretenimiento.
+
+## Estructura del Proyecto
+
+```
+Backend/
+├── app/
+│   ├── api/v1/endpoints/    # Puntos de entrada de la API
+│   │   ├── matches.py       # Información de partidos
+│   │   ├── bets.py          # Sistema de apuestas
+│   │   ├── predictions.py   # Predicciones de IA
+│   │   └── users.py         # Gestión de usuarios
+│   │
+│   ├── core/                # Configuración central
+│   │   ├── config.py        # Configuración del sistema
+│   │   └── database.py      # Conexión a base de datos
+│   │
+│   ├── models/              # Estructura de datos en la base de datos
+│   │   ├── user.py          # Modelo de usuarios
+│   │   ├── game.py          # Modelo de partidos
+│   │   ├── bet.py           # Modelo de apuestas
+│   │   └── team.py          # Modelo de equipos
+│   │
+│   ├── schemas/             # Validación de datos
+│   │   └── ...              # Esquemas para validar datos entrantes
+│   │
+│   ├── services/            # Lógica de negocio
+│   │   ├── auth_service.py  # Autenticación de usuarios
+│   │   ├── bet_service.py   # Lógica de apuestas
+│   │   ├── prediction_service.py  # Lógica de predicciones
+│   │   └── match_service.py # Lógica de partidos
+│   │
+│   └── main.py              # Aplicación principal
+│
+├── ml/                      # Modelos de machine learning
+│   └── (modelos entrenados)
+│
+└── requirements.txt         # Librerías necesarias
+```
+
+## Instalación y Configuración
+
+### Requisitos Previos
+
+- Python 3.11 o superior
+- PostgreSQL 15 o superior
+- Docker y Docker Compose (opcional, pero recomendado)
+
+### Opción 1: Instalación con Docker (Recomendado)
+
+Esta es la forma más fácil de instalar y ejecutar el sistema:
 
 ```bash
-# Clonar el repositorio
+# Ir a la carpeta del backend
 cd Backend
 
-# Levantar los servicios
+# Levantar todos los servicios (API + Base de datos)
 docker-compose up -d
 
-# Ver logs
+# Ver los logs para verificar que todo funciona
 docker-compose logs -f backend
 ```
 
+El sistema estará disponible en: http://localhost:8000
+
 ### Opción 2: Instalación Local
+
+Si prefieres instalar todo manualmente:
 
 ```bash
 # Crear entorno virtual
 python -m venv venv
-source venv/bin/activate  # En Windows: venv\Scripts\activate
+
+# Activar entorno virtual
+# En Windows:
+venv\Scripts\activate
+# En Linux/Mac:
+source venv/bin/activate
 
 # Instalar dependencias
 pip install -r requirements.txt
 
 # Configurar variables de entorno
 cp env.example .env
-# Editar .env con tus configuraciones
+# Editar .env con tus configuraciones de base de datos
 
 # Levantar PostgreSQL (con Docker)
 docker-compose up -d postgres
@@ -53,144 +135,257 @@ docker-compose up -d postgres
 uvicorn app.main:app --reload
 ```
 
-## 🌐 Endpoints de la API
+## Cómo Usar la API
 
-### Autenticación
-- `POST /api/v1/users/register` - Registrar usuario
-- `POST /api/v1/users/login` - Iniciar sesión
+### Documentación Interactiva
 
-### Partidos
-- `GET /api/v1/matches/` - Listar partidos
-- `GET /api/v1/matches/today` - Partidos de hoy
-- `GET /api/v1/matches/upcoming` - Próximos partidos
-- `GET /api/v1/matches/{id}` - Detalle de partido
-
-### Apuestas
-- `GET /api/v1/bets/` - Mis apuestas
-- `POST /api/v1/bets/` - Realizar apuesta
-- `GET /api/v1/bets/{id}` - Detalle de apuesta
-- `DELETE /api/v1/bets/{id}` - Cancelar apuesta
-
-### Predicciones
-- `POST /api/v1/predict/` - Obtener predicción
-- `GET /api/v1/predict/upcoming` - Predicciones próximas
-- `GET /api/v1/predict/model/status` - Estado del modelo
-
-### Usuarios
-- `GET /api/v1/users/me` - Mi perfil
-- `PUT /api/v1/users/me` - Actualizar perfil
-- `GET /api/v1/users/credits` - Mis créditos
-
-## 📊 Documentación
-
-Una vez que el servidor esté ejecutándose, puedes acceder a:
+Una vez que el servidor esté corriendo, puedes acceder a:
 
 - **Swagger UI**: http://localhost:8000/docs
+  - Interfaz visual donde puedes probar todos los endpoints
+  - Muestra qué datos necesitas enviar y qué respuestas recibirás
+
 - **ReDoc**: http://localhost:8000/redoc
-- **pgAdmin**: http://localhost:5050 (admin@nbabets.com / admin123)
+  - Documentación alternativa más legible
 
-## 🗄️ Base de Datos
+### Endpoints Principales
 
-### Modelos Principales
+#### Autenticación
 
-- **Users** - Usuarios del sistema
-- **Teams** - Equipos NBA
-- **Games** - Partidos NBA
-- **Bets** - Apuestas virtuales
-- **Transactions** - Historial de transacciones
-- **TeamStatsGame** - Estadísticas por partido
-
-### Conexión
-
-```python
-# URL de conexión
-DATABASE_URL = "postgresql://nba_user:nba_password@localhost:5432/nba_bets_db"
+**Registrar un nuevo usuario:**
+```
+POST /api/v1/users/register
+Body: {
+  "username": "usuario123",
+  "email": "usuario@ejemplo.com",
+  "password": "contraseña_segura"
+}
 ```
 
-## 🤖 Machine Learning
-
-### Modelos Implementados
-
-- **RandomForest** - Clasificación de resultados
-- **XGBoost** - Regresión de puntuaciones
-- **Stacking Ensemble** - Combinación de modelos
-
-### Características (Features)
-
-- Promedios móviles de rendimiento
-- Eficiencia ofensiva/defensiva
-- Indicadores de localía y descanso
-- Probabilidades implícitas de cuotas
-
-## 🔧 Desarrollo
-
-### Estructura del Proyecto
-
+**Iniciar sesión:**
 ```
-Backend/
-├── app/
-│   ├── api/v1/endpoints/     # Endpoints de la API
-│   ├── core/                 # Configuración y base de datos
-│   ├── models/               # Modelos SQLAlchemy
-│   ├── schemas/              # Esquemas Pydantic
-│   ├── services/             # Lógica de negocio
-│   └── main.py              # Aplicación principal
-├── ml/                      # Modelos de ML
-├── data/                    # Datos (raw/processed)
-├── docker-compose.yml       # Configuración Docker
-└── requirements.txt         # Dependencias Python
+POST /api/v1/users/login
+Body: {
+  "username": "usuario123",
+  "password": "contraseña_segura"
+}
+```
+Devuelve un token que necesitas usar para las demás peticiones.
+
+#### Partidos
+
+**Ver todos los partidos:**
+```
+GET /api/v1/matches/
 ```
 
-### Comandos Útiles
+**Ver partidos de hoy:**
+```
+GET /api/v1/matches/today
+```
+
+**Ver próximos partidos:**
+```
+GET /api/v1/matches/upcoming
+```
+
+**Ver detalles de un partido específico:**
+```
+GET /api/v1/matches/{id}
+```
+
+#### Predicciones
+
+**Obtener predicción para un partido:**
+```
+POST /api/v1/predict/
+Body: {
+  "game_id": 12345,
+  "home_team_id": 1,
+  "away_team_id": 2
+}
+```
+
+**Ver predicciones de próximos partidos:**
+```
+GET /api/v1/predict/upcoming
+```
+
+**Ver estado de los modelos de IA:**
+```
+GET /api/v1/predict/model/status
+```
+
+#### Apuestas
+
+**Ver mis apuestas:**
+```
+GET /api/v1/bets/
+Headers: Authorization: Bearer {tu_token}
+```
+
+**Hacer una apuesta:**
+```
+POST /api/v1/bets/
+Headers: Authorization: Bearer {tu_token}
+Body: {
+  "game_id": 12345,
+  "bet_type": "home_win",
+  "amount": 100
+}
+```
+
+**Ver detalles de una apuesta:**
+```
+GET /api/v1/bets/{id}
+Headers: Authorization: Bearer {tu_token}
+```
+
+**Cancelar una apuesta:**
+```
+DELETE /api/v1/bets/{id}
+Headers: Authorization: Bearer {tu_token}
+```
+
+#### Usuarios
+
+**Ver mi perfil:**
+```
+GET /api/v1/users/me
+Headers: Authorization: Bearer {tu_token}
+```
+
+**Actualizar mi perfil:**
+```
+PUT /api/v1/users/me
+Headers: Authorization: Bearer {tu_token}
+Body: {
+  "email": "nuevo_email@ejemplo.com"
+}
+```
+
+**Ver mis créditos:**
+```
+GET /api/v1/users/credits
+Headers: Authorization: Bearer {tu_token}
+```
+
+## Base de Datos
+
+El sistema usa PostgreSQL para almacenar toda la información. Las tablas principales son:
+
+- **users**: Información de los usuarios registrados
+- **teams**: Equipos de la NBA
+- **games**: Partidos y resultados
+- **bets**: Apuestas realizadas por los usuarios
+- **transactions**: Historial de transacciones de créditos
+- **team_stats_game**: Estadísticas de equipos por partido
+
+### Conexión a la Base de Datos
+
+La conexión se configura en el archivo `.env`:
+```
+DATABASE_URL=postgresql://usuario:contraseña@localhost:5432/nba_data
+```
+
+## Modelos de Machine Learning
+
+El sistema usa varios modelos de inteligencia artificial para hacer predicciones:
+
+### RandomForest
+- **Qué hace**: Predice quién ganará el partido (clasificación)
+- **Cómo funciona**: Analiza múltiples características de los equipos y vota por el resultado más probable
+
+### XGBoost
+- **Qué hace**: Predice cuántos puntos anotará cada equipo (regresión)
+- **Cómo funciona**: Usa un algoritmo avanzado que aprende de los datos históricos
+
+### Stacking Ensemble
+- **Qué hace**: Combina las predicciones de múltiples modelos
+- **Por qué es mejor**: Al combinar varios modelos, las predicciones son más precisas y confiables
+
+### Características que Analizan los Modelos
+
+Los modelos consideran:
+- **Rendimiento reciente**: Cómo han jugado los equipos en los últimos partidos
+- **Eficiencia ofensiva/defensiva**: Qué tan bien atacan y defienden
+- **Ventaja de localía**: Si juegan en casa o fuera
+- **Días de descanso**: Si los equipos están descansados o cansados
+- **Probabilidades de cuotas**: Lo que dicen las casas de apuestas
+
+## Desarrollo
+
+### Estructura del Código
+
+El código está organizado de forma que cada parte tiene una responsabilidad clara:
+
+- **endpoints/**: Define las rutas de la API y qué hace cada una
+- **services/**: Contiene la lógica de negocio (cómo se hacen las predicciones, cómo se procesan las apuestas, etc.)
+- **models/**: Define cómo se almacenan los datos en la base de datos
+- **schemas/**: Valida que los datos que llegan sean correctos
+
+### Comandos Útiles para Desarrollo
 
 ```bash
 # Ejecutar tests
 pytest
 
-# Formatear código
+# Formatear el código automáticamente
 black .
 
-# Linting
+# Verificar calidad del código
 flake8 .
 
-# Ver logs en tiempo real
+# Ver logs en tiempo real (con Docker)
 docker-compose logs -f
 
-# Reiniciar servicios
+# Reiniciar los servicios
 docker-compose restart
 
-# Detener servicios
+# Detener los servicios
 docker-compose down
 ```
 
-## 🚀 Despliegue
+## Flujo de Trabajo Típico
 
-### Producción
+1. **Usuario se registra** → Se crea una cuenta con créditos iniciales
+2. **Usuario ve partidos disponibles** → La API consulta la base de datos
+3. **Usuario solicita una predicción** → El sistema usa los modelos de IA para predecir
+4. **Usuario hace una apuesta** → Se registra la apuesta y se deducen créditos
+5. **Termina el partido** → El sistema verifica si la apuesta fue correcta
+6. **Si acertó** → Se le agregan créditos según las probabilidades
 
-```bash
-# Construir imagen
-docker build -t nba-bets-backend .
+## Notas Importantes
 
-# Ejecutar en producción
-docker run -d -p 8000:8000 --env-file .env nba-bets-backend
-```
+- **Créditos virtuales**: Todo el sistema usa créditos virtuales, no dinero real. Es solo para fines educativos y de entretenimiento.
 
-## 📝 Notas
+- **Predicciones educativas**: Las predicciones son generadas por modelos de IA entrenados con datos históricos. No son garantía de resultados reales.
 
-- El sistema usa créditos virtuales (no dinero real)
-- Las predicciones son para fines educativos
-- Los modelos ML se entrenan con datos históricos
-- La API incluye autenticación JWT
-- Soporte completo para CORS
+- **Autenticación**: El sistema usa JWT (tokens) para autenticar usuarios. Cada petición que requiere autenticación necesita incluir el token en los headers.
 
-## 🤝 Contribución
+- **CORS**: El sistema está configurado para aceptar peticiones desde el frontend en desarrollo (localhost:3000 y localhost:5173).
 
-1. Fork el proyecto
-2. Crea una rama para tu feature
-3. Commit tus cambios
-4. Push a la rama
-5. Abre un Pull Request
+## Solución de Problemas
 
-## 📄 Licencia
+### La API no inicia
+- Verifica que PostgreSQL esté corriendo
+- Revisa las credenciales en el archivo `.env`
+- Asegúrate de que el puerto 8000 no esté en uso
 
-Este proyecto es parte de una tesis académica.
+### No puedo conectarme a la base de datos
+- Verifica que PostgreSQL esté corriendo: `docker-compose ps`
+- Revisa los logs: `docker-compose logs postgres`
+- Verifica las credenciales en `.env`
+
+### Las predicciones no funcionan
+- Verifica que los modelos de ML estén entrenados y disponibles
+- Revisa que haya datos en la base de datos
+- Consulta los logs para ver errores específicos
+
+## Próximos Pasos
+
+Este backend se conecta con:
+- **Frontend**: La aplicación web que usan los usuarios
+- **Sistema de Scraping**: Que proporciona los datos históricos para entrenar los modelos
+
+Juntos forman un sistema completo de predicciones y apuestas virtuales NBA.

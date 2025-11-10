@@ -1,0 +1,7 @@
+DATABASE_URL: postgresql://postgres:admin@localhost:5432/premier_league_data
+ESPN_BASE_URL: https://www.espn.com/soccer/
+SCRAPE_INTERVAL_DAYS: 1
+SAVE_PATH_RAW: data/raw/
+SAVE_PATH_PROCESSED: data/processed/
+DB_SCHEMA: espn
+

@@ -1,0 +1,899 @@
+2025-11-09 22:38:22 | INFO | etl.transform_consolidate:run_etl_pipeline:269 | === INICIANDO PIPELINE ETL PREMIER LEAGUE ===
+2025-11-09 22:38:22 | INFO | etl.transform_consolidate:consolidate_premier_league_data:238 | === INICIANDO CONSOLIDACION DE DATOS PREMIER LEAGUE ===
+2025-11-09 22:38:22 | INFO | etl.transform_consolidate:read_matches_data:151 | Leyendo 1 archivos CSV...
+2025-11-09 22:38:22 | INFO | etl.transform_consolidate:read_matches_data:158 |   → premier_league_matches_2021-2022.csv: 608 registros
+2025-11-09 22:38:22 | INFO | etl.transform_consolidate:read_matches_data:168 | Total de registros combinados: 608
+2025-11-09 22:38:22 | INFO | etl.transform_consolidate:consolidate_matches_by_game:35 | Consolidando partidos duplicados...
+2025-11-09 22:38:22 | INFO | etl.transform_consolidate:calculate_derived_variables:116 | Calculando variables derivadas...
+2025-11-09 22:38:22 | INFO | etl.transform_consolidate:calculate_derived_variables:127 | Variables derivadas calculadas
+2025-11-09 22:38:22 | INFO | etl.transform_consolidate:consolidate_matches_by_game:101 | Partidos consolidados: 608 registros → 368 partidos únicos
+2025-11-09 22:38:22 | INFO | etl.transform_consolidate:clean_dataset:183 | Limpiando dataset...
+2025-11-09 22:38:22 | INFO | etl.transform_consolidate:clean_dataset:203 | Dataset limpio: 0 filas eliminadas, 368 filas restantes
+2025-11-09 22:38:22 | INFO | etl.transform_consolidate:save_consolidated_dataset:223 | Dataset consolidado guardado en data/processed/premier_league_full_dataset.csv
+2025-11-09 22:38:22 | INFO | etl.transform_consolidate:save_consolidated_dataset:224 | Dimensiones del dataset: (368, 12)
+2025-11-09 22:38:22 | INFO | etl.transform_consolidate:save_consolidated_dataset:225 | Columnas: ['match_id', 'season', 'date', 'home_team', 'away_team', 'home_score', 'away_score', 'status', 'competition', 'home_win', 'goal_diff', 'total_goals']
+2025-11-09 22:38:22 | INFO | etl.transform_consolidate:consolidate_premier_league_data:257 | === CONSOLIDACION COMPLETADA EXITOSAMENTE ===
+2025-11-09 22:38:22 | INFO | etl.transform_consolidate:run_etl_pipeline:274 | === PIPELINE ETL COMPLETADO EXITOSAMENTE ===
+2025-11-09 22:38:39 | INFO | etl.transform_consolidate:run_etl_pipeline:269 | === INICIANDO PIPELINE ETL PREMIER LEAGUE ===
+2025-11-09 22:38:39 | INFO | etl.transform_consolidate:consolidate_premier_league_data:238 | === INICIANDO CONSOLIDACION DE DATOS PREMIER LEAGUE ===
+2025-11-09 22:38:39 | INFO | etl.transform_consolidate:read_matches_data:151 | Leyendo 1 archivos CSV...
+2025-11-09 22:38:39 | INFO | etl.transform_consolidate:read_matches_data:158 |   → premier_league_matches_2021-2022.csv: 608 registros
+2025-11-09 22:38:39 | INFO | etl.transform_consolidate:read_matches_data:168 | Total de registros combinados: 608
+2025-11-09 22:38:39 | INFO | etl.transform_consolidate:consolidate_matches_by_game:35 | Consolidando partidos duplicados...
+2025-11-09 22:38:39 | INFO | etl.transform_consolidate:calculate_derived_variables:116 | Calculando variables derivadas...
+2025-11-09 22:38:39 | INFO | etl.transform_consolidate:calculate_derived_variables:127 | Variables derivadas calculadas
+2025-11-09 22:38:39 | INFO | etl.transform_consolidate:consolidate_matches_by_game:101 | Partidos consolidados: 608 registros → 368 partidos únicos
+2025-11-09 22:38:39 | INFO | etl.transform_consolidate:clean_dataset:183 | Limpiando dataset...
+2025-11-09 22:38:39 | INFO | etl.transform_consolidate:clean_dataset:203 | Dataset limpio: 0 filas eliminadas, 368 filas restantes
+2025-11-09 22:38:39 | INFO | etl.transform_consolidate:save_consolidated_dataset:223 | Dataset consolidado guardado en data/processed/premier_league_full_dataset.csv
+2025-11-09 22:38:39 | INFO | etl.transform_consolidate:save_consolidated_dataset:224 | Dimensiones del dataset: (368, 12)
+2025-11-09 22:38:39 | INFO | etl.transform_consolidate:save_consolidated_dataset:225 | Columnas: ['match_id', 'season', 'date', 'home_team', 'away_team', 'home_score', 'away_score', 'status', 'competition', 'home_win', 'goal_diff', 'total_goals']
+2025-11-09 22:38:39 | INFO | etl.transform_consolidate:consolidate_premier_league_data:257 | === CONSOLIDACION COMPLETADA EXITOSAMENTE ===
+2025-11-09 22:38:39 | INFO | etl.transform_consolidate:run_etl_pipeline:274 | === PIPELINE ETL COMPLETADO EXITOSAMENTE ===
+2025-11-09 22:38:53 | INFO | etl.transform_consolidate:run_etl_pipeline:270 | === INICIANDO PIPELINE ETL PREMIER LEAGUE ===
+2025-11-09 22:38:53 | INFO | etl.transform_consolidate:consolidate_premier_league_data:239 | === INICIANDO CONSOLIDACION DE DATOS PREMIER LEAGUE ===
+2025-11-09 22:38:53 | INFO | etl.transform_consolidate:read_matches_data:152 | Leyendo 3 archivos CSV...
+2025-11-09 22:38:53 | INFO | etl.transform_consolidate:read_matches_data:159 |   → premier_league_2022-2023.csv: 570 registros
+2025-11-09 22:38:53 | INFO | etl.transform_consolidate:read_matches_data:159 |   → premier_league_2024_2025.csv: 570 registros
+2025-11-09 22:38:53 | INFO | etl.transform_consolidate:read_matches_data:159 |   → premier_league_matches_2021-2022.csv: 608 registros
+2025-11-09 22:38:53 | INFO | etl.transform_consolidate:read_matches_data:169 | Total de registros combinados: 1748
+2025-11-09 22:38:53 | INFO | etl.transform_consolidate:consolidate_matches_by_game:35 | Consolidando partidos duplicados...
+2025-11-09 22:38:53 | INFO | etl.transform_consolidate:calculate_derived_variables:116 | Calculando variables derivadas...
+2025-11-09 22:38:53 | INFO | etl.transform_consolidate:calculate_derived_variables:127 | Variables derivadas calculadas
+2025-11-09 22:38:53 | INFO | etl.transform_consolidate:consolidate_matches_by_game:101 | Partidos consolidados: 1748 registros → 374 partidos únicos
+2025-11-09 22:38:53 | INFO | etl.transform_consolidate:clean_dataset:184 | Limpiando dataset...
+2025-11-09 22:38:53 | INFO | etl.transform_consolidate:clean_dataset:204 | Dataset limpio: 0 filas eliminadas, 374 filas restantes
+2025-11-09 22:38:53 | INFO | etl.transform_consolidate:save_consolidated_dataset:224 | Dataset consolidado guardado en data/processed/premier_league_full_dataset.csv
+2025-11-09 22:38:53 | INFO | etl.transform_consolidate:save_consolidated_dataset:225 | Dimensiones del dataset: (374, 12)
+2025-11-09 22:38:53 | INFO | etl.transform_consolidate:save_consolidated_dataset:226 | Columnas: ['match_id', 'season', 'date', 'home_team', 'away_team', 'home_score', 'away_score', 'status', 'competition', 'home_win', 'goal_diff', 'total_goals']
+2025-11-09 22:38:53 | INFO | etl.transform_consolidate:consolidate_premier_league_data:258 | === CONSOLIDACION COMPLETADA EXITOSAMENTE ===
+2025-11-09 22:38:53 | INFO | etl.transform_consolidate:run_etl_pipeline:275 | === PIPELINE ETL COMPLETADO EXITOSAMENTE ===
+2025-11-09 22:40:22 | INFO | etl.transform_consolidate:run_etl_pipeline:294 | === INICIANDO PIPELINE ETL PREMIER LEAGUE ===
+2025-11-09 22:40:22 | INFO | etl.transform_consolidate:consolidate_premier_league_data:263 | === INICIANDO CONSOLIDACION DE DATOS PREMIER LEAGUE ===
+2025-11-09 22:40:22 | INFO | etl.transform_consolidate:read_matches_data:176 | Leyendo 3 archivos CSV...
+2025-11-09 22:40:22 | INFO | etl.transform_consolidate:read_matches_data:183 |   → premier_league_2022-2023.csv: 570 registros
+2025-11-09 22:40:22 | INFO | etl.transform_consolidate:read_matches_data:183 |   → premier_league_2024_2025.csv: 570 registros
+2025-11-09 22:40:22 | INFO | etl.transform_consolidate:read_matches_data:183 |   → premier_league_matches_2021-2022.csv: 608 registros
+2025-11-09 22:40:22 | INFO | etl.transform_consolidate:read_matches_data:193 | Total de registros combinados: 1748
+2025-11-09 22:40:22 | INFO | etl.transform_consolidate:consolidate_matches_by_game:35 | Consolidando partidos duplicados...
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-01-04_('AFC Bournemouth', 'Everton'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-01-04_('AFC Bournemouth', 'Everton'): Everton vs Everton
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-01-04_('AFC Bournemouth', 'Everton')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-01-04_('Aston Villa', 'Leicester City'): Aston Villa vs Aston Villa
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-01-04_('Aston Villa', 'Leicester City')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-01-04_('Brentford', 'Southampton'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-01-04_('Brentford', 'Southampton'): Brentford vs Brentford
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-01-04_('Brentford', 'Southampton')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-01-05_('Fulham', 'Ipswich Town'): Fulham vs Fulham
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-01-06_('Nottingham Forest', 'Wolverhampton Wanderers'): Wolverhampton Wanderers vs Wolverhampton Wanderers
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-01-06_('Nottingham Forest', 'Wolverhampton Wanderers')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-01-14_('AFC Bournemouth', 'Chelsea'): Chelsea vs Chelsea
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-01-14_('Liverpool', 'Nottingham Forest'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-01-14_('Liverpool', 'Nottingham Forest'): Liverpool vs Liverpool
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-01-15_('Crystal Palace', 'Leicester City'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-01-15_('Crystal Palace', 'Leicester City'): Crystal Palace vs Crystal Palace
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-01-15_('Crystal Palace', 'Leicester City')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-01-16_('Brighton & Hove Albion', 'Ipswich Town'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-01-16_('Brighton & Hove Albion', 'Ipswich Town'): Brighton & Hove Albion vs Brighton & Hove Albion
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-01-16_('Brighton & Hove Albion', 'Ipswich Town')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-01-16_('Manchester United', 'Southampton'): Manchester United vs Manchester United
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-01-16_('Manchester United', 'Southampton')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-01-18_('AFC Bournemouth', 'Newcastle United'): Newcastle United vs Newcastle United
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-01-18_('AFC Bournemouth', 'Newcastle United')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-01-18_('Fulham', 'Leicester City'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-01-18_('Fulham', 'Leicester City'): Fulham vs Fulham
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-01-18_('Fulham', 'Leicester City')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-01-19_('Ipswich Town', 'Manchester City'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-01-19_('Ipswich Town', 'Manchester City'): Manchester City vs Manchester City
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-01-19_('Ipswich Town', 'Manchester City')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-01-25_('Ipswich Town', 'Liverpool'): Liverpool vs Liverpool
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-01-25_('Ipswich Town', 'Liverpool')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-01-25_('Newcastle United', 'Southampton'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-01-25_('Newcastle United', 'Southampton'): Newcastle United vs Newcastle United
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-01-25_('Newcastle United', 'Southampton')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-01-26_('Leicester City', 'Tottenham Hotspur'): Tottenham Hotspur vs Tottenham Hotspur
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-01-26_('Leicester City', 'Tottenham Hotspur')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-02-01_('AFC Bournemouth', 'Liverpool'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-02-01_('AFC Bournemouth', 'Liverpool'): Liverpool vs Liverpool
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-02-01_('AFC Bournemouth', 'Liverpool')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-02-01_('Brighton & Hove Albion', 'Nottingham Forest'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-02-01_('Brighton & Hove Albion', 'Nottingham Forest'): Brighton & Hove Albion vs Brighton & Hove Albion
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-02-01_('Brighton & Hove Albion', 'Nottingham Forest')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-02-01_('Everton', 'Leicester City'): Everton vs Everton
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-02-01_('Everton', 'Leicester City')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-02-15_('Arsenal', 'Leicester City'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-02-15_('Arsenal', 'Leicester City'): Arsenal vs Arsenal
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-02-15_('Arsenal', 'Leicester City')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-02-15_('Aston Villa', 'Ipswich Town'): Aston Villa vs Aston Villa
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-02-15_('Fulham', 'Nottingham Forest'): Fulham vs Fulham
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-02-15_('Fulham', 'Nottingham Forest')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-02-21_('Brentford', 'Leicester City'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-02-21_('Brentford', 'Leicester City'): Brentford vs Brentford
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-02-21_('Brentford', 'Leicester City')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-02-22_('AFC Bournemouth', 'Wolverhampton Wanderers'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-02-22_('AFC Bournemouth', 'Wolverhampton Wanderers'): Wolverhampton Wanderers vs Wolverhampton Wanderers
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-02-22_('AFC Bournemouth', 'Wolverhampton Wanderers')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-02-22_('Brighton & Hove Albion', 'Southampton'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-02-22_('Brighton & Hove Albion', 'Southampton'): Brighton & Hove Albion vs Brighton & Hove Albion
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-02-22_('Brighton & Hove Albion', 'Southampton')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-02-22_('Ipswich Town', 'Tottenham Hotspur'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-02-22_('Ipswich Town', 'Tottenham Hotspur'): Tottenham Hotspur vs Tottenham Hotspur
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-02-22_('Ipswich Town', 'Tottenham Hotspur')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-02-23_('Newcastle United', 'Nottingham Forest'): Newcastle United vs Newcastle United
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-02-23_('Newcastle United', 'Nottingham Forest')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-02-25_('AFC Bournemouth', 'Brighton & Hove Albion'): Brighton & Hove Albion vs Brighton & Hove Albion
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-02-25_('AFC Bournemouth', 'Brighton & Hove Albion')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-02-25_('Chelsea', 'Southampton'): Chelsea vs Chelsea
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-02-25_('Chelsea', 'Southampton')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-02-26_('Arsenal', 'Nottingham Forest'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-02-26_('Arsenal', 'Nottingham Forest'): Arsenal vs Arsenal
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-02-26_('Ipswich Town', 'Manchester United'): Manchester United vs Manchester United
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-02-26_('Ipswich Town', 'Manchester United')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-02-27_('Leicester City', 'West Ham United'): West Ham United vs West Ham United
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-02-27_('Leicester City', 'West Ham United')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-03-08_('Crystal Palace', 'Ipswich Town'): Crystal Palace vs Crystal Palace
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-03-08_('Crystal Palace', 'Ipswich Town')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-03-08_('Liverpool', 'Southampton'): Liverpool vs Liverpool
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-03-08_('Liverpool', 'Southampton')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-03-08_('Manchester City', 'Nottingham Forest'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-03-08_('Manchester City', 'Nottingham Forest'): Manchester City vs Manchester City
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-03-08_('Manchester City', 'Nottingham Forest')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-03-09_('AFC Bournemouth', 'Tottenham Hotspur'): Tottenham Hotspur vs Tottenham Hotspur
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-03-09_('Chelsea', 'Leicester City'): Chelsea vs Chelsea
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-03-09_('Chelsea', 'Leicester City')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-03-15_('AFC Bournemouth', 'Brentford'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-03-15_('AFC Bournemouth', 'Brentford'): Brentford vs Brentford
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-03-15_('AFC Bournemouth', 'Brentford')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-03-15_('Southampton', 'Wolverhampton Wanderers'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-03-15_('Southampton', 'Wolverhampton Wanderers'): Wolverhampton Wanderers vs Wolverhampton Wanderers
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-03-15_('Southampton', 'Wolverhampton Wanderers')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-03-16_('Leicester City', 'Manchester United'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-03-16_('Leicester City', 'Manchester United'): Manchester United vs Manchester United
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-03-16_('Leicester City', 'Manchester United')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-04-01_('Manchester United', 'Nottingham Forest'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-01_('Manchester United', 'Nottingham Forest'): Manchester United vs Manchester United
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-04-01_('Manchester United', 'Nottingham Forest')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-04-02_('Crystal Palace', 'Southampton'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-02_('Crystal Palace', 'Southampton'): Crystal Palace vs Crystal Palace
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-02_('Leicester City', 'Manchester City'): Manchester City vs Manchester City
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-04-02_('Leicester City', 'Manchester City')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-05_('AFC Bournemouth', 'West Ham United'): West Ham United vs West Ham United
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-05_('Aston Villa', 'Nottingham Forest'): Aston Villa vs Aston Villa
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-04-05_('Aston Villa', 'Nottingham Forest')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-04-05_('Ipswich Town', 'Wolverhampton Wanderers'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-05_('Ipswich Town', 'Wolverhampton Wanderers'): Wolverhampton Wanderers vs Wolverhampton Wanderers
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-04-05_('Ipswich Town', 'Wolverhampton Wanderers')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-06_('Southampton', 'Tottenham Hotspur'): Tottenham Hotspur vs Tottenham Hotspur
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-04-06_('Southampton', 'Tottenham Hotspur')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-04-07_('Leicester City', 'Newcastle United'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-07_('Leicester City', 'Newcastle United'): Newcastle United vs Newcastle United
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-04-07_('Leicester City', 'Newcastle United')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-04-12_('Aston Villa', 'Southampton'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-12_('Aston Villa', 'Southampton'): Aston Villa vs Aston Villa
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-04-12_('Aston Villa', 'Southampton')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-12_('Brighton & Hove Albion', 'Leicester City'): Brighton & Hove Albion vs Brighton & Hove Albion
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-04-12_('Everton', 'Nottingham Forest'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-12_('Everton', 'Nottingham Forest'): Everton vs Everton
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-04-12_('Everton', 'Nottingham Forest')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-13_('Chelsea', 'Ipswich Town'): Chelsea vs Chelsea
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-04-14_('AFC Bournemouth', 'Fulham'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-14_('AFC Bournemouth', 'Fulham'): Fulham vs Fulham
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-04-14_('AFC Bournemouth', 'Fulham')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-19_('AFC Bournemouth', 'Crystal Palace'): Crystal Palace vs Crystal Palace
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-19_('Southampton', 'West Ham United'): West Ham United vs West Ham United
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-04-20_('Arsenal', 'Ipswich Town'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-20_('Arsenal', 'Ipswich Town'): Arsenal vs Arsenal
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-04-20_('Arsenal', 'Ipswich Town')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-04-20_('Leicester City', 'Liverpool'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-20_('Leicester City', 'Liverpool'): Liverpool vs Liverpool
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-04-20_('Leicester City', 'Liverpool')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-21_('Nottingham Forest', 'Tottenham Hotspur'): Tottenham Hotspur vs Tottenham Hotspur
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-04-21_('Nottingham Forest', 'Tottenham Hotspur')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-04-26_('Fulham', 'Southampton'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-26_('Fulham', 'Southampton'): Fulham vs Fulham
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-04-26_('Fulham', 'Southampton')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-26_('Ipswich Town', 'Newcastle United'): Newcastle United vs Newcastle United
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-04-26_('Ipswich Town', 'Newcastle United')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-26_('Leicester City', 'Wolverhampton Wanderers'): Wolverhampton Wanderers vs Wolverhampton Wanderers
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-04-26_('Leicester City', 'Wolverhampton Wanderers')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-04-27_('AFC Bournemouth', 'Manchester United'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-27_('AFC Bournemouth', 'Manchester United'): Manchester United vs Manchester United
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-05-01_('Brentford', 'Nottingham Forest'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-05-01_('Brentford', 'Nottingham Forest'): Brentford vs Brentford
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-05-01_('Brentford', 'Nottingham Forest')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-05-03_('AFC Bournemouth', 'Arsenal'): Arsenal vs Arsenal
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-05-03_('AFC Bournemouth', 'Arsenal')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-05-03_('Everton', 'Ipswich Town'): Everton vs Everton
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-05-05_('Crystal Palace', 'Nottingham Forest'): Crystal Palace vs Crystal Palace
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-05-10_('AFC Bournemouth', 'Aston Villa'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-05-10_('AFC Bournemouth', 'Aston Villa'): Aston Villa vs Aston Villa
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-05-10_('AFC Bournemouth', 'Aston Villa')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-05-10_('Brentford', 'Ipswich Town'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-05-10_('Brentford', 'Ipswich Town'): Brentford vs Brentford
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-05-10_('Brentford', 'Ipswich Town')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-05-10_('Manchester City', 'Southampton'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-05-10_('Manchester City', 'Southampton'): Manchester City vs Manchester City
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-05-18_('Everton', 'Southampton'): Everton vs Everton
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-05-18_('Everton', 'Southampton')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-05-18_('Nottingham Forest', 'West Ham United'): West Ham United vs West Ham United
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-05-18_('Nottingham Forest', 'West Ham United')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-05-20_('AFC Bournemouth', 'Manchester City'): Manchester City vs Manchester City
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-05-20_('AFC Bournemouth', 'Manchester City')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-05-25_('Arsenal', 'Southampton'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-05-25_('Arsenal', 'Southampton'): Arsenal vs Arsenal
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-05-25_('Arsenal', 'Southampton')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-05-25_('Chelsea', 'Nottingham Forest'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-05-25_('Chelsea', 'Nottingham Forest'): Chelsea vs Chelsea
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-05-25_('Chelsea', 'Nottingham Forest')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-05-25_('Ipswich Town', 'West Ham United'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-05-25_('Ipswich Town', 'West Ham United'): West Ham United vs West Ham United
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-05-25_('Ipswich Town', 'West Ham United')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-08-17_('Ipswich Town', 'Liverpool'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-08-17_('Ipswich Town', 'Liverpool'): Liverpool vs Liverpool
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-08-17_('Ipswich Town', 'Liverpool')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-08-17_('Newcastle United', 'Southampton'): Newcastle United vs Newcastle United
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-08-17_('Newcastle United', 'Southampton')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-08-19_('Leicester City', 'Tottenham Hotspur'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-08-19_('Leicester City', 'Tottenham Hotspur'): Tottenham Hotspur vs Tottenham Hotspur
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-08-24_('Fulham', 'Leicester City'): Fulham vs Fulham
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-08-24_('Fulham', 'Leicester City')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-08-24_('Ipswich Town', 'Manchester City'): Manchester City vs Manchester City
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-08-24_('Ipswich Town', 'Manchester City')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-08-25_('AFC Bournemouth', 'Newcastle United'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-08-25_('AFC Bournemouth', 'Newcastle United'): Newcastle United vs Newcastle United
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-08-31_('AFC Bournemouth', 'Everton'): Everton vs Everton
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-08-31_('AFC Bournemouth', 'Everton')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-08-31_('Aston Villa', 'Leicester City'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-08-31_('Aston Villa', 'Leicester City'): Aston Villa vs Aston Villa
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-08-31_('Aston Villa', 'Leicester City')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-08-31_('Brentford', 'Southampton'): Brentford vs Brentford
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-08-31_('Brentford', 'Southampton')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-08-31_('Fulham', 'Ipswich Town'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-08-31_('Fulham', 'Ipswich Town'): Fulham vs Fulham
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-08-31_('Nottingham Forest', 'Wolverhampton Wanderers'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-08-31_('Nottingham Forest', 'Wolverhampton Wanderers'): Wolverhampton Wanderers vs Wolverhampton Wanderers
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-09-14_('AFC Bournemouth', 'Chelsea'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-09-14_('AFC Bournemouth', 'Chelsea'): Chelsea vs Chelsea
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-09-14_('AFC Bournemouth', 'Chelsea')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-09-14_('Brighton & Hove Albion', 'Ipswich Town'): Brighton & Hove Albion vs Brighton & Hove Albion
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-09-14_('Crystal Palace', 'Leicester City'): Crystal Palace vs Crystal Palace
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-09-14_('Liverpool', 'Nottingham Forest'): Liverpool vs Liverpool
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-09-14_('Liverpool', 'Nottingham Forest')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-09-14_('Manchester United', 'Southampton'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-09-14_('Manchester United', 'Southampton'): Manchester United vs Manchester United
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-09-14_('Manchester United', 'Southampton')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-09-21_('AFC Bournemouth', 'Liverpool'): Liverpool vs Liverpool
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-09-21_('AFC Bournemouth', 'Liverpool')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-09-21_('Everton', 'Leicester City'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-09-21_('Everton', 'Leicester City'): Everton vs Everton
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-09-22_('Brighton & Hove Albion', 'Nottingham Forest'): Brighton & Hove Albion vs Brighton & Hove Albion
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-09-28_('Arsenal', 'Leicester City'): Arsenal vs Arsenal
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-09-28_('Arsenal', 'Leicester City')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-09-28_('Fulham', 'Nottingham Forest'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-09-28_('Fulham', 'Nottingham Forest'): Fulham vs Fulham
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-09-28_('Fulham', 'Nottingham Forest')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-09-29_('Aston Villa', 'Ipswich Town'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-09-29_('Aston Villa', 'Ipswich Town'): Aston Villa vs Aston Villa
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-10-05_('Arsenal', 'Southampton'): Arsenal vs Arsenal
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-10-05_('Arsenal', 'Southampton')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-10-05_('Ipswich Town', 'West Ham United'): West Ham United vs West Ham United
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-10-05_('Ipswich Town', 'West Ham United')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-10-06_('Chelsea', 'Nottingham Forest'): Chelsea vs Chelsea
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-10-19_('AFC Bournemouth', 'Arsenal'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-10-19_('AFC Bournemouth', 'Arsenal'): Arsenal vs Arsenal
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-10-19_('AFC Bournemouth', 'Arsenal')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-10-19_('Everton', 'Ipswich Town'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-10-19_('Everton', 'Ipswich Town'): Everton vs Everton
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-10-19_('Everton', 'Ipswich Town')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-10-21_('Crystal Palace', 'Nottingham Forest'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-10-21_('Crystal Palace', 'Nottingham Forest'): Crystal Palace vs Crystal Palace
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-10-21_('Crystal Palace', 'Nottingham Forest')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-10-26_('AFC Bournemouth', 'Aston Villa'): Aston Villa vs Aston Villa
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-10-26_('Brentford', 'Ipswich Town'): Brentford vs Brentford
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-10-26_('Brentford', 'Ipswich Town')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-10-26_('Manchester City', 'Southampton'): Manchester City vs Manchester City
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-10-26_('Manchester City', 'Southampton')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-11-02_('AFC Bournemouth', 'Manchester City'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-11-02_('AFC Bournemouth', 'Manchester City'): Manchester City vs Manchester City
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-11-02_('AFC Bournemouth', 'Manchester City')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-11-02_('Everton', 'Southampton'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-11-02_('Everton', 'Southampton'): Everton vs Everton
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-11-02_('Everton', 'Southampton')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-11-02_('Nottingham Forest', 'West Ham United'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-11-02_('Nottingham Forest', 'West Ham United'): West Ham United vs West Ham United
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-11-02_('Nottingham Forest', 'West Ham United')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-11-09_('AFC Bournemouth', 'Brentford'): Brentford vs Brentford
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-11-09_('AFC Bournemouth', 'Brentford')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-11-09_('Southampton', 'Wolverhampton Wanderers'): Wolverhampton Wanderers vs Wolverhampton Wanderers
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-11-09_('Southampton', 'Wolverhampton Wanderers')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-11-10_('Ipswich Town', 'Tottenham Hotspur'): Tottenham Hotspur vs Tottenham Hotspur
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-11-10_('Ipswich Town', 'Tottenham Hotspur')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-11-10_('Leicester City', 'Manchester United'): Manchester United vs Manchester United
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-11-10_('Leicester City', 'Manchester United')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-11-10_('Newcastle United', 'Nottingham Forest'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-11-10_('Newcastle United', 'Nottingham Forest'): Newcastle United vs Newcastle United
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-11-10_('Newcastle United', 'Nottingham Forest')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-11-23_('AFC Bournemouth', 'Brighton & Hove Albion'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-11-23_('AFC Bournemouth', 'Brighton & Hove Albion'): Brighton & Hove Albion vs Brighton & Hove Albion
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-11-23_('AFC Bournemouth', 'Brighton & Hove Albion')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-11-23_('Arsenal', 'Nottingham Forest'): Arsenal vs Arsenal
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-11-23_('Arsenal', 'Nottingham Forest')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-11-23_('Chelsea', 'Leicester City'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-11-23_('Chelsea', 'Leicester City'): Chelsea vs Chelsea
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-11-23_('Chelsea', 'Leicester City')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-11-24_('Ipswich Town', 'Manchester United'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-11-24_('Ipswich Town', 'Manchester United'): Manchester United vs Manchester United
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-11-24_('Liverpool', 'Southampton'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-11-24_('Liverpool', 'Southampton'): Liverpool vs Liverpool
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-11-24_('Liverpool', 'Southampton')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-11-29_('Brighton & Hove Albion', 'Southampton'): Brighton & Hove Albion vs Brighton & Hove Albion
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-11-30_('AFC Bournemouth', 'Wolverhampton Wanderers'): Wolverhampton Wanderers vs Wolverhampton Wanderers
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-11-30_('AFC Bournemouth', 'Wolverhampton Wanderers')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-11-30_('Brentford', 'Leicester City'): Brentford vs Brentford
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-11-30_('Brentford', 'Leicester City')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-12-03_('Crystal Palace', 'Ipswich Town'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-03_('Crystal Palace', 'Ipswich Town'): Crystal Palace vs Crystal Palace
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-03_('Crystal Palace', 'Ipswich Town')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-12-03_('Leicester City', 'West Ham United'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-03_('Leicester City', 'West Ham United'): West Ham United vs West Ham United
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-03_('Leicester City', 'West Ham United')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-12-04_('Chelsea', 'Southampton'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-04_('Chelsea', 'Southampton'): Chelsea vs Chelsea
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-04_('Chelsea', 'Southampton')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-04_('Manchester City', 'Nottingham Forest'): Manchester City vs Manchester City
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-04_('Manchester City', 'Nottingham Forest')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-12-05_('AFC Bournemouth', 'Tottenham Hotspur'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-05_('AFC Bournemouth', 'Tottenham Hotspur'): Tottenham Hotspur vs Tottenham Hotspur
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-05_('AFC Bournemouth', 'Tottenham Hotspur')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-07_('Aston Villa', 'Southampton'): Aston Villa vs Aston Villa
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-07_('Aston Villa', 'Southampton')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-07_('Manchester United', 'Nottingham Forest'): Manchester United vs Manchester United
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-07_('Manchester United', 'Nottingham Forest')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-12-08_('Brighton & Hove Albion', 'Leicester City'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-08_('Brighton & Hove Albion', 'Leicester City'): Brighton & Hove Albion vs Brighton & Hove Albion
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-12-14_('Aston Villa', 'Nottingham Forest'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-14_('Aston Villa', 'Nottingham Forest'): Aston Villa vs Aston Villa
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-14_('Aston Villa', 'Nottingham Forest')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-14_('Ipswich Town', 'Wolverhampton Wanderers'): Wolverhampton Wanderers vs Wolverhampton Wanderers
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-14_('Ipswich Town', 'Wolverhampton Wanderers')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-14_('Leicester City', 'Newcastle United'): Newcastle United vs Newcastle United
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-14_('Leicester City', 'Newcastle United')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-12-15_('Southampton', 'Tottenham Hotspur'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-15_('Southampton', 'Tottenham Hotspur'): Tottenham Hotspur vs Tottenham Hotspur
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-15_('Southampton', 'Tottenham Hotspur')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-12-16_('AFC Bournemouth', 'West Ham United'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-16_('AFC Bournemouth', 'West Ham United'): West Ham United vs West Ham United
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-21_('Brentford', 'Nottingham Forest'): Brentford vs Brentford
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-21_('Brentford', 'Nottingham Forest')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-12-21_('Ipswich Town', 'Newcastle United'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-21_('Ipswich Town', 'Newcastle United'): Newcastle United vs Newcastle United
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-21_('Ipswich Town', 'Newcastle United')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-22_('AFC Bournemouth', 'Manchester United'): Manchester United vs Manchester United
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-22_('AFC Bournemouth', 'Manchester United')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-22_('Fulham', 'Southampton'): Fulham vs Fulham
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-12-22_('Leicester City', 'Wolverhampton Wanderers'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-22_('Leicester City', 'Wolverhampton Wanderers'): Wolverhampton Wanderers vs Wolverhampton Wanderers
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-22_('Leicester City', 'Wolverhampton Wanderers')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-12-26_('AFC Bournemouth', 'Crystal Palace'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-26_('AFC Bournemouth', 'Crystal Palace'): Crystal Palace vs Crystal Palace
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-26_('Leicester City', 'Liverpool'): Liverpool vs Liverpool
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-26_('Leicester City', 'Liverpool')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-12-26_('Nottingham Forest', 'Tottenham Hotspur'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-26_('Nottingham Forest', 'Tottenham Hotspur'): Tottenham Hotspur vs Tottenham Hotspur
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-26_('Nottingham Forest', 'Tottenham Hotspur')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-12-26_('Southampton', 'West Ham United'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-26_('Southampton', 'West Ham United'): West Ham United vs West Ham United
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-26_('Southampton', 'West Ham United')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-27_('Arsenal', 'Ipswich Town'): Arsenal vs Arsenal
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-27_('Arsenal', 'Ipswich Town')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-29_('AFC Bournemouth', 'Fulham'): Fulham vs Fulham
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-29_('Crystal Palace', 'Southampton'): Crystal Palace vs Crystal Palace
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-29_('Crystal Palace', 'Southampton')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-29_('Everton', 'Nottingham Forest'): Everton vs Everton
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-29_('Everton', 'Nottingham Forest')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-12-29_('Leicester City', 'Manchester City'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-29_('Leicester City', 'Manchester City'): Manchester City vs Manchester City
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-29_('Leicester City', 'Manchester City')
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-12-30_('Chelsea', 'Ipswich Town'), usando primero como home
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-30_('Chelsea', 'Ipswich Town'): Chelsea vs Chelsea
+2025-11-09 22:40:22 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-30_('Chelsea', 'Ipswich Town')
+2025-11-09 22:40:22 | INFO | etl.transform_consolidate:calculate_derived_variables:140 | Calculando variables derivadas...
+2025-11-09 22:40:22 | INFO | etl.transform_consolidate:calculate_derived_variables:151 | Variables derivadas calculadas
+2025-11-09 22:40:22 | INFO | etl.transform_consolidate:consolidate_matches_by_game:125 | Partidos consolidados: 1748 registros → 374 partidos únicos
+2025-11-09 22:40:22 | INFO | etl.transform_consolidate:clean_dataset:208 | Limpiando dataset...
+2025-11-09 22:40:22 | INFO | etl.transform_consolidate:clean_dataset:228 | Dataset limpio: 0 filas eliminadas, 374 filas restantes
+2025-11-09 22:40:22 | INFO | etl.transform_consolidate:save_consolidated_dataset:248 | Dataset consolidado guardado en data/processed/premier_league_full_dataset.csv
+2025-11-09 22:40:22 | INFO | etl.transform_consolidate:save_consolidated_dataset:249 | Dimensiones del dataset: (374, 12)
+2025-11-09 22:40:22 | INFO | etl.transform_consolidate:save_consolidated_dataset:250 | Columnas: ['match_id', 'season', 'date', 'home_team', 'away_team', 'home_score', 'away_score', 'status', 'competition', 'home_win', 'goal_diff', 'total_goals']
+2025-11-09 22:40:22 | INFO | etl.transform_consolidate:consolidate_premier_league_data:282 | === CONSOLIDACION COMPLETADA EXITOSAMENTE ===
+2025-11-09 22:40:22 | INFO | etl.transform_consolidate:run_etl_pipeline:299 | === PIPELINE ETL COMPLETADO EXITOSAMENTE ===
+2025-11-09 22:55:44 | INFO | __main__:main:435 | ================================================================================
+2025-11-09 22:55:44 | INFO | __main__:main:436 | SISTEMA DE CARGA DINAMICA DE DATOS PREMIER LEAGUE
+2025-11-09 22:55:44 | INFO | __main__:main:437 | ================================================================================
+2025-11-09 22:55:44 | INFO | __main__:main:438 | 
+2025-11-09 22:55:44 | INFO | __main__:analyze_all_files:78 | Analizando estructura de datos...
+2025-11-09 22:55:44 | INFO | __main__:_analyze_processed_dataset:106 |   matches: 374 registros
+2025-11-09 22:55:44 | INFO | __main__:analyze_all_files:83 | 1 tablas detectadas
+2025-11-09 22:55:44 | INFO | __main__:main:457 | 
+2025-11-09 22:55:44 | INFO | __main__:main:458 | RESUMEN DE DATOS A CARGAR:
+2025-11-09 22:55:44 | INFO | __main__:main:459 | --------------------------------------------------------------------------------
+2025-11-09 22:55:44 | INFO | __main__:main:461 |   matches: 374 registros
+2025-11-09 22:55:44 | INFO | __main__:main:462 | 
+2025-11-09 22:55:46 | INFO | __main__:connect:251 | Conectado a PostgreSQL
+2025-11-09 22:55:46 | INFO | __main__:execute_ddl:265 | Ejecutando DDL...
+2025-11-09 22:55:46 | INFO | __main__:execute_ddl:278 | DDL ejecutado
+2025-11-09 22:55:46 | INFO | __main__:load_all_data:282 | Cargando datos...
+2025-11-09 22:55:46 | INFO | __main__:load_all_data:285 | Cargando matches...
+2025-11-09 22:55:46 | INFO | __main__:_load_from_csv:388 |   374/374 registros insertados (duplicados omitidos)
+2025-11-09 22:55:46 | INFO | __main__:load_all_data:297 |   matches: 374 registros totales (374 nuevos)
+2025-11-09 22:55:46 | INFO | __main__:main:482 | 
+2025-11-09 22:55:46 | INFO | __main__:main:483 | ================================================================================
+2025-11-09 22:55:46 | INFO | __main__:main:484 | CARGA COMPLETADA EXITOSAMENTE
+2025-11-09 22:55:46 | INFO | __main__:main:485 | ================================================================================
+2025-11-09 22:55:46 | INFO | __main__:disconnect:261 | Desconectado de PostgreSQL
+2025-11-09 23:08:43 | INFO | __main__:scrape_standings:48 | Scrapeando clasificaciones de Premier League desde: https://www.espn.com/soccer/standings/_/league/ENG.1
+2025-11-09 23:08:45 | INFO | __main__:extract_standings_data:92 | Encontradas 2 tablas de standings
+2025-11-09 23:08:45 | INFO | __main__:extract_standings_data:149 | Total de equipos procesados: 20
+2025-11-09 23:08:45 | INFO | __main__:scrape_standings:58 | Clasificaciones extraídas exitosamente: 20 equipos
+2025-11-09 23:08:45 | INFO | __main__:save_standings_to_csv:181 | Clasificaciones guardadas en data/raw/standings/2024.csv
+2025-11-09 23:08:45 | INFO | __main__:save_standings_to_csv:182 | Total de equipos: 20
+2025-11-09 23:08:45 | INFO | __main__:main:211 | Scraping de clasificaciones completado exitosamente
+2025-11-09 23:10:10 | INFO | __main__:main:258 | Scrapeando solo: Arsenal
+2025-11-09 23:10:10 | INFO | __main__:scrape_all_teams_stats:186 | Iniciando scraping de estadísticas de equipos - Temporada 2024
+2025-11-09 23:10:10 | INFO | __main__:scrape_all_teams_stats:187 | Total de equipos: 1
+2025-11-09 23:10:10 | INFO | __main__:scrape_team_stats:74 | Scrapeando estadísticas de Arsenal (temporada 2024)
+2025-11-09 23:10:25 | INFO | __main__:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Arsenal
+2025-11-09 23:10:28 | INFO | __main__:scrape_all_teams_stats:206 | Total de equipos scrapeados: 1
+2025-11-09 23:10:28 | INFO | __main__:save_team_stats_to_csv:226 | Archivo guardado: data/raw/team_stats\premier_league_team_stats_2024.csv
+2025-11-09 23:10:28 | INFO | __main__:save_team_stats_to_csv:227 | Total de registros: 1
+2025-11-09 23:10:28 | INFO | __main__:main:270 | Scraping de estadísticas de equipos completado exitosamente
+2025-11-09 23:10:31 | INFO | __main__:scrape_all_player_stats:209 | Iniciando scraping de estadísticas de jugadores - Temporada 2024
+2025-11-09 23:10:31 | INFO | __main__:scrape_all_player_stats:210 | Categorías: goals
+2025-11-09 23:10:31 | INFO | __main__:scrape_player_stats:84 | Scrapeando estadísticas de Goals - Temporada 2024
+2025-11-09 23:10:46 | WARNING | __main__:scrape_player_stats:105 | No se pudieron extraer estadísticas de Goals
+2025-11-09 23:10:48 | WARNING | __main__:scrape_all_player_stats:225 | No se encontraron estadísticas de jugadores
+2025-11-09 23:10:48 | ERROR | __main__:main:295 | No se pudieron obtener estadísticas de jugadores
+2025-11-09 23:10:51 | INFO | __main__:scrape_injuries:51 | Scrapeando reportes de lesiones desde: https://www.espn.com/soccer/injuries
+2025-11-09 23:10:53 | ERROR | __main__:scrape_injuries:68 | Error de conexión al obtener reportes de lesiones: 404 Client Error: Not Found for url: https://www.espn.com/soccer/injuries/
+2025-11-09 23:10:53 | ERROR | __main__:main:356 | No se pudieron obtener los reportes de lesiones
+2025-11-09 23:10:58 | INFO | etl.transform_consolidate:run_etl_pipeline:442 | === INICIANDO PIPELINE ETL PREMIER LEAGUE ===
+2025-11-09 23:10:58 | INFO | etl.transform_consolidate:consolidate_premier_league_data:399 | === INICIANDO CONSOLIDACION DE DATOS PREMIER LEAGUE ===
+2025-11-09 23:10:58 | INFO | etl.transform_consolidate:read_matches_data:176 | Leyendo 3 archivos CSV...
+2025-11-09 23:10:58 | INFO | etl.transform_consolidate:read_matches_data:183 |   → premier_league_2022-2023.csv: 570 registros
+2025-11-09 23:10:58 | INFO | etl.transform_consolidate:read_matches_data:183 |   → premier_league_2024_2025.csv: 570 registros
+2025-11-09 23:10:58 | INFO | etl.transform_consolidate:read_matches_data:183 |   → premier_league_matches_2021-2022.csv: 608 registros
+2025-11-09 23:10:58 | INFO | etl.transform_consolidate:read_matches_data:193 | Total de registros combinados: 1748
+2025-11-09 23:10:58 | INFO | etl.transform_consolidate:consolidate_matches_by_game:35 | Consolidando partidos duplicados...
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-01-04_('AFC Bournemouth', 'Everton'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-01-04_('AFC Bournemouth', 'Everton'): Everton vs Everton
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-01-04_('AFC Bournemouth', 'Everton')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-01-04_('Aston Villa', 'Leicester City'): Aston Villa vs Aston Villa
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-01-04_('Aston Villa', 'Leicester City')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-01-04_('Brentford', 'Southampton'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-01-04_('Brentford', 'Southampton'): Brentford vs Brentford
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-01-04_('Brentford', 'Southampton')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-01-05_('Fulham', 'Ipswich Town'): Fulham vs Fulham
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-01-06_('Nottingham Forest', 'Wolverhampton Wanderers'): Wolverhampton Wanderers vs Wolverhampton Wanderers
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-01-06_('Nottingham Forest', 'Wolverhampton Wanderers')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-01-14_('AFC Bournemouth', 'Chelsea'): Chelsea vs Chelsea
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-01-14_('Liverpool', 'Nottingham Forest'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-01-14_('Liverpool', 'Nottingham Forest'): Liverpool vs Liverpool
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-01-15_('Crystal Palace', 'Leicester City'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-01-15_('Crystal Palace', 'Leicester City'): Crystal Palace vs Crystal Palace
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-01-15_('Crystal Palace', 'Leicester City')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-01-16_('Brighton & Hove Albion', 'Ipswich Town'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-01-16_('Brighton & Hove Albion', 'Ipswich Town'): Brighton & Hove Albion vs Brighton & Hove Albion
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-01-16_('Brighton & Hove Albion', 'Ipswich Town')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-01-16_('Manchester United', 'Southampton'): Manchester United vs Manchester United
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-01-16_('Manchester United', 'Southampton')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-01-18_('AFC Bournemouth', 'Newcastle United'): Newcastle United vs Newcastle United
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-01-18_('AFC Bournemouth', 'Newcastle United')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-01-18_('Fulham', 'Leicester City'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-01-18_('Fulham', 'Leicester City'): Fulham vs Fulham
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-01-18_('Fulham', 'Leicester City')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-01-19_('Ipswich Town', 'Manchester City'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-01-19_('Ipswich Town', 'Manchester City'): Manchester City vs Manchester City
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-01-19_('Ipswich Town', 'Manchester City')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-01-25_('Ipswich Town', 'Liverpool'): Liverpool vs Liverpool
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-01-25_('Ipswich Town', 'Liverpool')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-01-25_('Newcastle United', 'Southampton'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-01-25_('Newcastle United', 'Southampton'): Newcastle United vs Newcastle United
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-01-25_('Newcastle United', 'Southampton')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-01-26_('Leicester City', 'Tottenham Hotspur'): Tottenham Hotspur vs Tottenham Hotspur
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-01-26_('Leicester City', 'Tottenham Hotspur')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-02-01_('AFC Bournemouth', 'Liverpool'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-02-01_('AFC Bournemouth', 'Liverpool'): Liverpool vs Liverpool
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-02-01_('AFC Bournemouth', 'Liverpool')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-02-01_('Brighton & Hove Albion', 'Nottingham Forest'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-02-01_('Brighton & Hove Albion', 'Nottingham Forest'): Brighton & Hove Albion vs Brighton & Hove Albion
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-02-01_('Brighton & Hove Albion', 'Nottingham Forest')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-02-01_('Everton', 'Leicester City'): Everton vs Everton
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-02-01_('Everton', 'Leicester City')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-02-15_('Arsenal', 'Leicester City'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-02-15_('Arsenal', 'Leicester City'): Arsenal vs Arsenal
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-02-15_('Arsenal', 'Leicester City')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-02-15_('Aston Villa', 'Ipswich Town'): Aston Villa vs Aston Villa
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-02-15_('Fulham', 'Nottingham Forest'): Fulham vs Fulham
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-02-15_('Fulham', 'Nottingham Forest')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-02-21_('Brentford', 'Leicester City'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-02-21_('Brentford', 'Leicester City'): Brentford vs Brentford
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-02-21_('Brentford', 'Leicester City')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-02-22_('AFC Bournemouth', 'Wolverhampton Wanderers'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-02-22_('AFC Bournemouth', 'Wolverhampton Wanderers'): Wolverhampton Wanderers vs Wolverhampton Wanderers
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-02-22_('AFC Bournemouth', 'Wolverhampton Wanderers')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-02-22_('Brighton & Hove Albion', 'Southampton'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-02-22_('Brighton & Hove Albion', 'Southampton'): Brighton & Hove Albion vs Brighton & Hove Albion
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-02-22_('Brighton & Hove Albion', 'Southampton')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-02-22_('Ipswich Town', 'Tottenham Hotspur'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-02-22_('Ipswich Town', 'Tottenham Hotspur'): Tottenham Hotspur vs Tottenham Hotspur
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-02-22_('Ipswich Town', 'Tottenham Hotspur')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-02-23_('Newcastle United', 'Nottingham Forest'): Newcastle United vs Newcastle United
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-02-23_('Newcastle United', 'Nottingham Forest')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-02-25_('AFC Bournemouth', 'Brighton & Hove Albion'): Brighton & Hove Albion vs Brighton & Hove Albion
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-02-25_('AFC Bournemouth', 'Brighton & Hove Albion')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-02-25_('Chelsea', 'Southampton'): Chelsea vs Chelsea
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-02-25_('Chelsea', 'Southampton')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-02-26_('Arsenal', 'Nottingham Forest'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-02-26_('Arsenal', 'Nottingham Forest'): Arsenal vs Arsenal
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-02-26_('Ipswich Town', 'Manchester United'): Manchester United vs Manchester United
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-02-26_('Ipswich Town', 'Manchester United')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-02-27_('Leicester City', 'West Ham United'): West Ham United vs West Ham United
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-02-27_('Leicester City', 'West Ham United')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-03-08_('Crystal Palace', 'Ipswich Town'): Crystal Palace vs Crystal Palace
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-03-08_('Crystal Palace', 'Ipswich Town')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-03-08_('Liverpool', 'Southampton'): Liverpool vs Liverpool
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-03-08_('Liverpool', 'Southampton')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-03-08_('Manchester City', 'Nottingham Forest'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-03-08_('Manchester City', 'Nottingham Forest'): Manchester City vs Manchester City
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-03-08_('Manchester City', 'Nottingham Forest')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-03-09_('AFC Bournemouth', 'Tottenham Hotspur'): Tottenham Hotspur vs Tottenham Hotspur
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-03-09_('Chelsea', 'Leicester City'): Chelsea vs Chelsea
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-03-09_('Chelsea', 'Leicester City')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-03-15_('AFC Bournemouth', 'Brentford'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-03-15_('AFC Bournemouth', 'Brentford'): Brentford vs Brentford
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-03-15_('AFC Bournemouth', 'Brentford')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-03-15_('Southampton', 'Wolverhampton Wanderers'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-03-15_('Southampton', 'Wolverhampton Wanderers'): Wolverhampton Wanderers vs Wolverhampton Wanderers
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-03-15_('Southampton', 'Wolverhampton Wanderers')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-03-16_('Leicester City', 'Manchester United'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-03-16_('Leicester City', 'Manchester United'): Manchester United vs Manchester United
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-03-16_('Leicester City', 'Manchester United')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-04-01_('Manchester United', 'Nottingham Forest'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-01_('Manchester United', 'Nottingham Forest'): Manchester United vs Manchester United
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-04-01_('Manchester United', 'Nottingham Forest')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-04-02_('Crystal Palace', 'Southampton'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-02_('Crystal Palace', 'Southampton'): Crystal Palace vs Crystal Palace
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-02_('Leicester City', 'Manchester City'): Manchester City vs Manchester City
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-04-02_('Leicester City', 'Manchester City')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-05_('AFC Bournemouth', 'West Ham United'): West Ham United vs West Ham United
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-05_('Aston Villa', 'Nottingham Forest'): Aston Villa vs Aston Villa
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-04-05_('Aston Villa', 'Nottingham Forest')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-04-05_('Ipswich Town', 'Wolverhampton Wanderers'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-05_('Ipswich Town', 'Wolverhampton Wanderers'): Wolverhampton Wanderers vs Wolverhampton Wanderers
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-04-05_('Ipswich Town', 'Wolverhampton Wanderers')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-06_('Southampton', 'Tottenham Hotspur'): Tottenham Hotspur vs Tottenham Hotspur
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-04-06_('Southampton', 'Tottenham Hotspur')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-04-07_('Leicester City', 'Newcastle United'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-07_('Leicester City', 'Newcastle United'): Newcastle United vs Newcastle United
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-04-07_('Leicester City', 'Newcastle United')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-04-12_('Aston Villa', 'Southampton'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-12_('Aston Villa', 'Southampton'): Aston Villa vs Aston Villa
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-04-12_('Aston Villa', 'Southampton')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-12_('Brighton & Hove Albion', 'Leicester City'): Brighton & Hove Albion vs Brighton & Hove Albion
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-04-12_('Everton', 'Nottingham Forest'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-12_('Everton', 'Nottingham Forest'): Everton vs Everton
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-04-12_('Everton', 'Nottingham Forest')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-13_('Chelsea', 'Ipswich Town'): Chelsea vs Chelsea
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-04-14_('AFC Bournemouth', 'Fulham'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-14_('AFC Bournemouth', 'Fulham'): Fulham vs Fulham
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-04-14_('AFC Bournemouth', 'Fulham')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-19_('AFC Bournemouth', 'Crystal Palace'): Crystal Palace vs Crystal Palace
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-19_('Southampton', 'West Ham United'): West Ham United vs West Ham United
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-04-20_('Arsenal', 'Ipswich Town'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-20_('Arsenal', 'Ipswich Town'): Arsenal vs Arsenal
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-04-20_('Arsenal', 'Ipswich Town')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-04-20_('Leicester City', 'Liverpool'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-20_('Leicester City', 'Liverpool'): Liverpool vs Liverpool
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-04-20_('Leicester City', 'Liverpool')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-21_('Nottingham Forest', 'Tottenham Hotspur'): Tottenham Hotspur vs Tottenham Hotspur
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-04-21_('Nottingham Forest', 'Tottenham Hotspur')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-04-26_('Fulham', 'Southampton'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-26_('Fulham', 'Southampton'): Fulham vs Fulham
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-04-26_('Fulham', 'Southampton')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-26_('Ipswich Town', 'Newcastle United'): Newcastle United vs Newcastle United
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-04-26_('Ipswich Town', 'Newcastle United')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-26_('Leicester City', 'Wolverhampton Wanderers'): Wolverhampton Wanderers vs Wolverhampton Wanderers
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-04-26_('Leicester City', 'Wolverhampton Wanderers')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-04-27_('AFC Bournemouth', 'Manchester United'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-04-27_('AFC Bournemouth', 'Manchester United'): Manchester United vs Manchester United
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-05-01_('Brentford', 'Nottingham Forest'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-05-01_('Brentford', 'Nottingham Forest'): Brentford vs Brentford
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-05-01_('Brentford', 'Nottingham Forest')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-05-03_('AFC Bournemouth', 'Arsenal'): Arsenal vs Arsenal
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-05-03_('AFC Bournemouth', 'Arsenal')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-05-03_('Everton', 'Ipswich Town'): Everton vs Everton
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-05-05_('Crystal Palace', 'Nottingham Forest'): Crystal Palace vs Crystal Palace
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-05-10_('AFC Bournemouth', 'Aston Villa'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-05-10_('AFC Bournemouth', 'Aston Villa'): Aston Villa vs Aston Villa
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-05-10_('AFC Bournemouth', 'Aston Villa')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-05-10_('Brentford', 'Ipswich Town'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-05-10_('Brentford', 'Ipswich Town'): Brentford vs Brentford
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-05-10_('Brentford', 'Ipswich Town')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-05-10_('Manchester City', 'Southampton'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-05-10_('Manchester City', 'Southampton'): Manchester City vs Manchester City
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-05-18_('Everton', 'Southampton'): Everton vs Everton
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-05-18_('Everton', 'Southampton')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-05-18_('Nottingham Forest', 'West Ham United'): West Ham United vs West Ham United
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-05-18_('Nottingham Forest', 'West Ham United')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-05-20_('AFC Bournemouth', 'Manchester City'): Manchester City vs Manchester City
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-05-20_('AFC Bournemouth', 'Manchester City')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-05-25_('Arsenal', 'Southampton'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-05-25_('Arsenal', 'Southampton'): Arsenal vs Arsenal
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-05-25_('Arsenal', 'Southampton')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-05-25_('Chelsea', 'Nottingham Forest'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-05-25_('Chelsea', 'Nottingham Forest'): Chelsea vs Chelsea
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-05-25_('Chelsea', 'Nottingham Forest')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-05-25_('Ipswich Town', 'West Ham United'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-05-25_('Ipswich Town', 'West Ham United'): West Ham United vs West Ham United
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-05-25_('Ipswich Town', 'West Ham United')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-08-17_('Ipswich Town', 'Liverpool'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-08-17_('Ipswich Town', 'Liverpool'): Liverpool vs Liverpool
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-08-17_('Ipswich Town', 'Liverpool')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-08-17_('Newcastle United', 'Southampton'): Newcastle United vs Newcastle United
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-08-17_('Newcastle United', 'Southampton')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-08-19_('Leicester City', 'Tottenham Hotspur'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-08-19_('Leicester City', 'Tottenham Hotspur'): Tottenham Hotspur vs Tottenham Hotspur
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-08-24_('Fulham', 'Leicester City'): Fulham vs Fulham
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-08-24_('Fulham', 'Leicester City')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-08-24_('Ipswich Town', 'Manchester City'): Manchester City vs Manchester City
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-08-24_('Ipswich Town', 'Manchester City')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-08-25_('AFC Bournemouth', 'Newcastle United'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-08-25_('AFC Bournemouth', 'Newcastle United'): Newcastle United vs Newcastle United
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-08-31_('AFC Bournemouth', 'Everton'): Everton vs Everton
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-08-31_('AFC Bournemouth', 'Everton')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-08-31_('Aston Villa', 'Leicester City'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-08-31_('Aston Villa', 'Leicester City'): Aston Villa vs Aston Villa
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-08-31_('Aston Villa', 'Leicester City')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-08-31_('Brentford', 'Southampton'): Brentford vs Brentford
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-08-31_('Brentford', 'Southampton')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-08-31_('Fulham', 'Ipswich Town'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-08-31_('Fulham', 'Ipswich Town'): Fulham vs Fulham
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-08-31_('Nottingham Forest', 'Wolverhampton Wanderers'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-08-31_('Nottingham Forest', 'Wolverhampton Wanderers'): Wolverhampton Wanderers vs Wolverhampton Wanderers
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-09-14_('AFC Bournemouth', 'Chelsea'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-09-14_('AFC Bournemouth', 'Chelsea'): Chelsea vs Chelsea
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-09-14_('AFC Bournemouth', 'Chelsea')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-09-14_('Brighton & Hove Albion', 'Ipswich Town'): Brighton & Hove Albion vs Brighton & Hove Albion
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-09-14_('Crystal Palace', 'Leicester City'): Crystal Palace vs Crystal Palace
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-09-14_('Liverpool', 'Nottingham Forest'): Liverpool vs Liverpool
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-09-14_('Liverpool', 'Nottingham Forest')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-09-14_('Manchester United', 'Southampton'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-09-14_('Manchester United', 'Southampton'): Manchester United vs Manchester United
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-09-14_('Manchester United', 'Southampton')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-09-21_('AFC Bournemouth', 'Liverpool'): Liverpool vs Liverpool
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-09-21_('AFC Bournemouth', 'Liverpool')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-09-21_('Everton', 'Leicester City'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-09-21_('Everton', 'Leicester City'): Everton vs Everton
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-09-22_('Brighton & Hove Albion', 'Nottingham Forest'): Brighton & Hove Albion vs Brighton & Hove Albion
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-09-28_('Arsenal', 'Leicester City'): Arsenal vs Arsenal
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-09-28_('Arsenal', 'Leicester City')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-09-28_('Fulham', 'Nottingham Forest'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-09-28_('Fulham', 'Nottingham Forest'): Fulham vs Fulham
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-09-28_('Fulham', 'Nottingham Forest')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-09-29_('Aston Villa', 'Ipswich Town'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-09-29_('Aston Villa', 'Ipswich Town'): Aston Villa vs Aston Villa
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-10-05_('Arsenal', 'Southampton'): Arsenal vs Arsenal
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-10-05_('Arsenal', 'Southampton')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-10-05_('Ipswich Town', 'West Ham United'): West Ham United vs West Ham United
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-10-05_('Ipswich Town', 'West Ham United')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-10-06_('Chelsea', 'Nottingham Forest'): Chelsea vs Chelsea
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-10-19_('AFC Bournemouth', 'Arsenal'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-10-19_('AFC Bournemouth', 'Arsenal'): Arsenal vs Arsenal
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-10-19_('AFC Bournemouth', 'Arsenal')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-10-19_('Everton', 'Ipswich Town'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-10-19_('Everton', 'Ipswich Town'): Everton vs Everton
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-10-19_('Everton', 'Ipswich Town')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-10-21_('Crystal Palace', 'Nottingham Forest'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-10-21_('Crystal Palace', 'Nottingham Forest'): Crystal Palace vs Crystal Palace
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-10-21_('Crystal Palace', 'Nottingham Forest')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-10-26_('AFC Bournemouth', 'Aston Villa'): Aston Villa vs Aston Villa
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-10-26_('Brentford', 'Ipswich Town'): Brentford vs Brentford
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-10-26_('Brentford', 'Ipswich Town')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-10-26_('Manchester City', 'Southampton'): Manchester City vs Manchester City
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-10-26_('Manchester City', 'Southampton')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-11-02_('AFC Bournemouth', 'Manchester City'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-11-02_('AFC Bournemouth', 'Manchester City'): Manchester City vs Manchester City
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-11-02_('AFC Bournemouth', 'Manchester City')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-11-02_('Everton', 'Southampton'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-11-02_('Everton', 'Southampton'): Everton vs Everton
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-11-02_('Everton', 'Southampton')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-11-02_('Nottingham Forest', 'West Ham United'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-11-02_('Nottingham Forest', 'West Ham United'): West Ham United vs West Ham United
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-11-02_('Nottingham Forest', 'West Ham United')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-11-09_('AFC Bournemouth', 'Brentford'): Brentford vs Brentford
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-11-09_('AFC Bournemouth', 'Brentford')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-11-09_('Southampton', 'Wolverhampton Wanderers'): Wolverhampton Wanderers vs Wolverhampton Wanderers
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-11-09_('Southampton', 'Wolverhampton Wanderers')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-11-10_('Ipswich Town', 'Tottenham Hotspur'): Tottenham Hotspur vs Tottenham Hotspur
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-11-10_('Ipswich Town', 'Tottenham Hotspur')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-11-10_('Leicester City', 'Manchester United'): Manchester United vs Manchester United
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-11-10_('Leicester City', 'Manchester United')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-11-10_('Newcastle United', 'Nottingham Forest'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-11-10_('Newcastle United', 'Nottingham Forest'): Newcastle United vs Newcastle United
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-11-10_('Newcastle United', 'Nottingham Forest')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-11-23_('AFC Bournemouth', 'Brighton & Hove Albion'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-11-23_('AFC Bournemouth', 'Brighton & Hove Albion'): Brighton & Hove Albion vs Brighton & Hove Albion
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-11-23_('AFC Bournemouth', 'Brighton & Hove Albion')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-11-23_('Arsenal', 'Nottingham Forest'): Arsenal vs Arsenal
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-11-23_('Arsenal', 'Nottingham Forest')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-11-23_('Chelsea', 'Leicester City'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-11-23_('Chelsea', 'Leicester City'): Chelsea vs Chelsea
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-11-23_('Chelsea', 'Leicester City')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-11-24_('Ipswich Town', 'Manchester United'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-11-24_('Ipswich Town', 'Manchester United'): Manchester United vs Manchester United
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-11-24_('Liverpool', 'Southampton'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-11-24_('Liverpool', 'Southampton'): Liverpool vs Liverpool
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-11-24_('Liverpool', 'Southampton')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-11-29_('Brighton & Hove Albion', 'Southampton'): Brighton & Hove Albion vs Brighton & Hove Albion
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-11-30_('AFC Bournemouth', 'Wolverhampton Wanderers'): Wolverhampton Wanderers vs Wolverhampton Wanderers
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-11-30_('AFC Bournemouth', 'Wolverhampton Wanderers')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-11-30_('Brentford', 'Leicester City'): Brentford vs Brentford
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-11-30_('Brentford', 'Leicester City')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-12-03_('Crystal Palace', 'Ipswich Town'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-03_('Crystal Palace', 'Ipswich Town'): Crystal Palace vs Crystal Palace
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-03_('Crystal Palace', 'Ipswich Town')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-12-03_('Leicester City', 'West Ham United'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-03_('Leicester City', 'West Ham United'): West Ham United vs West Ham United
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-03_('Leicester City', 'West Ham United')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-12-04_('Chelsea', 'Southampton'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-04_('Chelsea', 'Southampton'): Chelsea vs Chelsea
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-04_('Chelsea', 'Southampton')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-04_('Manchester City', 'Nottingham Forest'): Manchester City vs Manchester City
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-04_('Manchester City', 'Nottingham Forest')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-12-05_('AFC Bournemouth', 'Tottenham Hotspur'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-05_('AFC Bournemouth', 'Tottenham Hotspur'): Tottenham Hotspur vs Tottenham Hotspur
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-05_('AFC Bournemouth', 'Tottenham Hotspur')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-07_('Aston Villa', 'Southampton'): Aston Villa vs Aston Villa
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-07_('Aston Villa', 'Southampton')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-07_('Manchester United', 'Nottingham Forest'): Manchester United vs Manchester United
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-07_('Manchester United', 'Nottingham Forest')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-12-08_('Brighton & Hove Albion', 'Leicester City'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-08_('Brighton & Hove Albion', 'Leicester City'): Brighton & Hove Albion vs Brighton & Hove Albion
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-12-14_('Aston Villa', 'Nottingham Forest'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-14_('Aston Villa', 'Nottingham Forest'): Aston Villa vs Aston Villa
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-14_('Aston Villa', 'Nottingham Forest')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-14_('Ipswich Town', 'Wolverhampton Wanderers'): Wolverhampton Wanderers vs Wolverhampton Wanderers
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-14_('Ipswich Town', 'Wolverhampton Wanderers')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-14_('Leicester City', 'Newcastle United'): Newcastle United vs Newcastle United
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-14_('Leicester City', 'Newcastle United')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-12-15_('Southampton', 'Tottenham Hotspur'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-15_('Southampton', 'Tottenham Hotspur'): Tottenham Hotspur vs Tottenham Hotspur
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-15_('Southampton', 'Tottenham Hotspur')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-12-16_('AFC Bournemouth', 'West Ham United'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-16_('AFC Bournemouth', 'West Ham United'): West Ham United vs West Ham United
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-21_('Brentford', 'Nottingham Forest'): Brentford vs Brentford
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-21_('Brentford', 'Nottingham Forest')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-12-21_('Ipswich Town', 'Newcastle United'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-21_('Ipswich Town', 'Newcastle United'): Newcastle United vs Newcastle United
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-21_('Ipswich Town', 'Newcastle United')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-22_('AFC Bournemouth', 'Manchester United'): Manchester United vs Manchester United
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-22_('AFC Bournemouth', 'Manchester United')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-22_('Fulham', 'Southampton'): Fulham vs Fulham
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-12-22_('Leicester City', 'Wolverhampton Wanderers'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-22_('Leicester City', 'Wolverhampton Wanderers'): Wolverhampton Wanderers vs Wolverhampton Wanderers
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-22_('Leicester City', 'Wolverhampton Wanderers')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-12-26_('AFC Bournemouth', 'Crystal Palace'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-26_('AFC Bournemouth', 'Crystal Palace'): Crystal Palace vs Crystal Palace
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-26_('Leicester City', 'Liverpool'): Liverpool vs Liverpool
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-26_('Leicester City', 'Liverpool')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-12-26_('Nottingham Forest', 'Tottenham Hotspur'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-26_('Nottingham Forest', 'Tottenham Hotspur'): Tottenham Hotspur vs Tottenham Hotspur
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-26_('Nottingham Forest', 'Tottenham Hotspur')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-12-26_('Southampton', 'West Ham United'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-26_('Southampton', 'West Ham United'): West Ham United vs West Ham United
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-26_('Southampton', 'West Ham United')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-27_('Arsenal', 'Ipswich Town'): Arsenal vs Arsenal
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-27_('Arsenal', 'Ipswich Town')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-29_('AFC Bournemouth', 'Fulham'): Fulham vs Fulham
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-29_('Crystal Palace', 'Southampton'): Crystal Palace vs Crystal Palace
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-29_('Crystal Palace', 'Southampton')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-29_('Everton', 'Nottingham Forest'): Everton vs Everton
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-29_('Everton', 'Nottingham Forest')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-12-29_('Leicester City', 'Manchester City'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-29_('Leicester City', 'Manchester City'): Manchester City vs Manchester City
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-29_('Leicester City', 'Manchester City')
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:94 | Ambos registros son Away para match_id 2024-12-30_('Chelsea', 'Ipswich Town'), usando primero como home
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:100 | Equipos no coinciden para match_id 2024-12-30_('Chelsea', 'Ipswich Town'): Chelsea vs Chelsea
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:consolidate_matches_by_game:104 | Marcadores no coinciden para match_id 2024-12-30_('Chelsea', 'Ipswich Town')
+2025-11-09 23:10:59 | INFO | etl.transform_consolidate:calculate_derived_variables:140 | Calculando variables derivadas...
+2025-11-09 23:10:59 | INFO | etl.transform_consolidate:calculate_derived_variables:151 | Variables derivadas calculadas
+2025-11-09 23:10:59 | INFO | etl.transform_consolidate:consolidate_matches_by_game:125 | Partidos consolidados: 1748 registros → 374 partidos únicos
+2025-11-09 23:10:59 | WARNING | etl.transform_consolidate:read_match_stats_data:329 | Directorio data\raw\match_stats no existe
+2025-11-09 23:10:59 | INFO | etl.transform_consolidate:clean_dataset:208 | Limpiando dataset...
+2025-11-09 23:10:59 | INFO | etl.transform_consolidate:clean_dataset:228 | Dataset limpio: 0 filas eliminadas, 374 filas restantes
+2025-11-09 23:10:59 | INFO | etl.transform_consolidate:save_consolidated_dataset:248 | Dataset consolidado guardado en data/processed/premier_league_full_dataset.csv
+2025-11-09 23:10:59 | INFO | etl.transform_consolidate:save_consolidated_dataset:249 | Dimensiones del dataset: (374, 12)
+2025-11-09 23:10:59 | INFO | etl.transform_consolidate:save_consolidated_dataset:250 | Columnas: ['match_id', 'season', 'date', 'home_team', 'away_team', 'home_score', 'away_score', 'status', 'competition', 'home_win', 'goal_diff', 'total_goals']
+2025-11-09 23:10:59 | INFO | etl.transform_consolidate:consolidate_premier_league_data:430 | === CONSOLIDACION COMPLETADA EXITOSAMENTE ===
+2025-11-09 23:10:59 | INFO | etl.transform_consolidate:run_etl_pipeline:447 | === PIPELINE ETL COMPLETADO EXITOSAMENTE ===
+2025-11-09 23:11:06 | INFO | __main__:main:707 | ================================================================================
+2025-11-09 23:11:06 | INFO | __main__:main:708 | SISTEMA DE CARGA DINAMICA DE DATOS PREMIER LEAGUE
+2025-11-09 23:11:06 | INFO | __main__:main:709 | ================================================================================
+2025-11-09 23:11:06 | INFO | __main__:main:710 | 
+2025-11-09 23:11:06 | INFO | __main__:analyze_all_files:78 | Analizando estructura de datos...
+2025-11-09 23:11:06 | INFO | __main__:_analyze_processed_dataset:114 |   matches: 374 registros
+2025-11-09 23:11:06 | INFO | __main__:_analyze_standings:155 |   standings: 20 registros de 1 archivos
+2025-11-09 23:11:06 | INFO | __main__:_analyze_team_stats:187 |   team_stats: 1 registros de 1 archivos
+2025-11-09 23:11:06 | INFO | __main__:analyze_all_files:91 | 3 tablas detectadas
+2025-11-09 23:11:06 | INFO | __main__:main:729 | 
+2025-11-09 23:11:06 | INFO | __main__:main:730 | RESUMEN DE DATOS A CARGAR:
+2025-11-09 23:11:06 | INFO | __main__:main:731 | --------------------------------------------------------------------------------
+2025-11-09 23:11:06 | INFO | __main__:main:733 |   matches: 374 registros
+2025-11-09 23:11:06 | INFO | __main__:main:733 |   standings: 20 registros
+2025-11-09 23:11:06 | INFO | __main__:main:733 |   team_stats: 1 registros
+2025-11-09 23:11:06 | INFO | __main__:main:734 | 
+2025-11-09 23:12:11 | INFO | __main__:connect:475 | Conectado a PostgreSQL
+2025-11-09 23:12:11 | INFO | __main__:execute_ddl:489 | Ejecutando DDL...
+2025-11-09 23:12:11 | INFO | __main__:execute_ddl:502 | DDL ejecutado
+2025-11-09 23:12:11 | INFO | __main__:load_all_data:506 | Cargando datos...
+2025-11-09 23:12:11 | INFO | __main__:load_all_data:509 | Cargando matches...
+2025-11-09 23:12:11 | INFO | __main__:_copy_from_dataframe:678 |   0/374 registros insertados (duplicados omitidos)
+2025-11-09 23:12:11 | INFO | __main__:load_all_data:525 |   matches: 374 registros totales (0 nuevos)
+2025-11-09 23:12:11 | INFO | __main__:load_all_data:509 | Cargando standings...
+2025-11-09 23:12:11 | INFO | __main__:_copy_from_dataframe:678 |   20/20 registros insertados (duplicados omitidos)
+2025-11-09 23:12:11 | INFO | __main__:load_all_data:525 |   standings: 20 registros totales (20 nuevos)
+2025-11-09 23:12:11 | INFO | __main__:load_all_data:509 | Cargando team_stats...
+2025-11-09 23:12:11 | ERROR | __main__:_copy_from_dataframe:682 | Error cargando datos: la sintaxis de entrada no es válida para tipo integer: «0.0»
+CONTEXT:  COPY team_stats_temp_1762729931, línea 1, columna goals_per_game: «0.0»
+
+2025-11-09 23:12:11 | ERROR | __main__:load_all_data:528 | Error cargando team_stats: la sintaxis de entrada no es válida para tipo integer: «0.0»
+CONTEXT:  COPY team_stats_temp_1762729931, línea 1, columna goals_per_game: «0.0»
+
+2025-11-09 23:12:11 | INFO | __main__:main:754 | 
+2025-11-09 23:12:11 | INFO | __main__:main:755 | ================================================================================
+2025-11-09 23:12:11 | INFO | __main__:main:756 | CARGA COMPLETADA EXITOSAMENTE
+2025-11-09 23:12:11 | INFO | __main__:main:757 | ================================================================================
+2025-11-09 23:12:11 | INFO | __main__:disconnect:485 | Desconectado de PostgreSQL
+2025-11-09 23:15:58 | INFO | __main__:main:271 | Scrapeando solo: Arsenal
+2025-11-09 23:15:58 | INFO | __main__:scrape_all_teams_stats:199 | Iniciando scraping de estadísticas de equipos - Temporada 2024
+2025-11-09 23:15:58 | INFO | __main__:scrape_all_teams_stats:200 | Total de equipos: 1
+2025-11-09 23:15:58 | INFO | __main__:scrape_team_stats:74 | Scrapeando estadísticas de Arsenal (temporada 2024)
+2025-11-09 23:16:13 | INFO | __main__:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Arsenal
+2025-11-09 23:16:15 | INFO | __main__:scrape_all_teams_stats:219 | Total de equipos scrapeados: 1
+2025-11-09 23:16:15 | INFO | __main__:save_team_stats_to_csv:239 | Archivo guardado: data/raw/team_stats\premier_league_team_stats_2024.csv
+2025-11-09 23:16:15 | INFO | __main__:save_team_stats_to_csv:240 | Total de registros: 1
+2025-11-09 23:16:15 | INFO | __main__:main:283 | Scraping de estadísticas de equipos completado exitosamente
+2025-11-09 23:17:18 | INFO | __main__:main:755 | ================================================================================
+2025-11-09 23:17:18 | INFO | __main__:main:756 | SISTEMA DE CARGA DINAMICA DE DATOS PREMIER LEAGUE
+2025-11-09 23:17:18 | INFO | __main__:main:757 | ================================================================================
+2025-11-09 23:17:18 | INFO | __main__:main:758 | 
+2025-11-09 23:17:18 | INFO | __main__:analyze_all_files:78 | Analizando estructura de datos...
+2025-11-09 23:17:18 | INFO | __main__:_analyze_processed_dataset:114 |   matches: 374 registros
+2025-11-09 23:17:18 | INFO | __main__:_analyze_standings:152 |   standings: 20 registros de 1 archivos
+2025-11-09 23:17:18 | INFO | __main__:_analyze_team_stats:190 |   team_stats: 1 registros de 1 archivos
+2025-11-09 23:17:18 | INFO | __main__:analyze_all_files:91 | 3 tablas detectadas
+2025-11-09 23:17:18 | INFO | __main__:main:777 | 
+2025-11-09 23:17:18 | INFO | __main__:main:778 | RESUMEN DE DATOS A CARGAR:
+2025-11-09 23:17:18 | INFO | __main__:main:779 | --------------------------------------------------------------------------------
+2025-11-09 23:17:18 | INFO | __main__:main:781 |   matches: 374 registros
+2025-11-09 23:17:18 | INFO | __main__:main:781 |   standings: 20 registros
+2025-11-09 23:17:18 | INFO | __main__:main:781 |   team_stats: 1 registros
+2025-11-09 23:17:18 | INFO | __main__:main:782 | 
+2025-11-09 23:34:20 | INFO | __main__:connect:523 | Conectado a PostgreSQL
+2025-11-09 23:34:20 | INFO | __main__:execute_ddl:537 | Ejecutando DDL...
+2025-11-09 23:34:20 | INFO | __main__:execute_ddl:550 | DDL ejecutado
+2025-11-09 23:34:20 | INFO | __main__:load_all_data:554 | Cargando datos...
+2025-11-09 23:34:20 | INFO | __main__:load_all_data:557 | Cargando matches...
+2025-11-09 23:34:20 | INFO | __main__:_copy_from_dataframe:726 |   0/374 registros insertados (duplicados omitidos)
+2025-11-09 23:34:20 | INFO | __main__:load_all_data:573 |   matches: 374 registros totales (0 nuevos)
+2025-11-09 23:34:20 | INFO | __main__:load_all_data:557 | Cargando standings...
+2025-11-09 23:34:20 | INFO | __main__:_copy_from_dataframe:726 |   20/20 registros insertados (duplicados omitidos)
+2025-11-09 23:34:20 | INFO | __main__:load_all_data:573 |   standings: 40 registros totales (20 nuevos)
+2025-11-09 23:34:20 | INFO | __main__:load_all_data:557 | Cargando team_stats...
+2025-11-09 23:34:20 | INFO | __main__:_copy_from_dataframe:726 |   1/1 registros insertados (duplicados omitidos)
+2025-11-09 23:34:20 | INFO | __main__:load_all_data:573 |   team_stats: 1 registros totales (1 nuevos)
+2025-11-09 23:34:20 | INFO | __main__:main:802 | 
+2025-11-09 23:34:20 | INFO | __main__:main:803 | ================================================================================
+2025-11-09 23:34:20 | INFO | __main__:main:804 | CARGA COMPLETADA EXITOSAMENTE
+2025-11-09 23:34:20 | INFO | __main__:main:805 | ================================================================================
+2025-11-09 23:34:20 | INFO | __main__:disconnect:533 | Desconectado de PostgreSQL

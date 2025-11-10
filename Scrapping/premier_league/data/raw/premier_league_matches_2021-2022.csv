@@ -1,0 +1,609 @@
+﻿season,team_name,team_id,date,venue,opponent,goals_for,goals_against,goal_diff,result,status,competition
+2024,Arsenal,359,2024-05-25,Away,Southampton,2,1,1,W,FT,English Premier League
+2024,Arsenal,359,2024-05-18,Home,Newcastle United,1,0,1,W,FT,English Premier League
+2024,Arsenal,359,2024-05-11,Away,Liverpool,2,2,0,D,FT,English Premier League
+2024,Arsenal,359,2024-05-03,Home,AFC Bournemouth,1,2,-1,L,FT,English Premier League
+2024,Arsenal,359,2024-04-23,Home,Crystal Palace,2,2,0,D,FT,English Premier League
+2024,Arsenal,359,2024-04-20,Away,Ipswich Town,4,0,4,W,FT,English Premier League
+2024,Arsenal,359,2024-04-12,Home,Brentford,1,1,0,D,FT,English Premier League
+2024,Arsenal,359,2024-04-05,Away,Everton,1,1,0,D,FT,English Premier League
+2024,Arsenal,359,2024-04-01,Home,Fulham,2,1,1,W,FT,English Premier League
+2024,Arsenal,359,2024-03-16,Home,Chelsea,1,0,1,W,FT,English Premier League
+2024,Arsenal,359,2024-03-09,Away,Manchester United,1,1,0,D,FT,English Premier League
+2024,Arsenal,359,2024-02-26,Away,Nottingham Forest,0,0,0,D,FT,English Premier League
+2024,Arsenal,359,2024-02-22,Home,West Ham United,0,1,-1,L,FT,English Premier League
+2024,Arsenal,359,2024-02-15,Away,Leicester City,2,0,2,W,FT,English Premier League
+2024,Arsenal,359,2024-02-02,Home,Manchester City,5,1,4,W,FT,English Premier League
+2024,Arsenal,359,2024-01-25,Away,Wolverhampton Wanderers,1,0,1,W,FT,English Premier League
+2024,Arsenal,359,2024-01-18,Home,Aston Villa,2,2,0,D,FT,English Premier League
+2024,Arsenal,359,2024-01-15,Home,Tottenham Hotspur,2,1,1,W,FT,English Premier League
+2024,Arsenal,359,2024-01-04,Away,Brighton & Hove Albion,1,1,0,D,FT,English Premier League
+2024,Arsenal,359,2024-01-01,Away,Brentford,3,1,2,W,FT,English Premier League
+2024,Arsenal,359,2024-12-27,Home,Ipswich Town,1,0,1,W,FT,English Premier League
+2024,Arsenal,359,2024-12-21,Away,Crystal Palace,5,1,4,W,FT,English Premier League
+2024,Arsenal,359,2024-12-14,Home,Everton,0,0,0,D,FT,English Premier League
+2024,Arsenal,359,2024-12-08,Away,Fulham,1,1,0,D,FT,English Premier League
+2024,Arsenal,359,2024-12-04,Home,Manchester United,2,0,2,W,FT,English Premier League
+2024,Arsenal,359,2024-11-30,Away,West Ham United,5,2,3,W,FT,English Premier League
+2024,Arsenal,359,2024-11-23,Home,Nottingham Forest,3,0,3,W,FT,English Premier League
+2024,Arsenal,359,2024-11-10,Away,Chelsea,1,1,0,D,FT,English Premier League
+2024,Arsenal,359,2024-11-02,Away,Newcastle United,0,1,-1,L,FT,English Premier League
+2024,Arsenal,359,2024-10-27,Home,Liverpool,2,2,0,D,FT,English Premier League
+2024,Arsenal,359,2024-10-19,Away,AFC Bournemouth,0,2,-2,L,FT,English Premier League
+2024,Arsenal,359,2024-10-05,Home,Southampton,3,1,2,W,FT,English Premier League
+2024,Arsenal,359,2024-09-28,Home,Leicester City,4,2,2,W,FT,English Premier League
+2024,Arsenal,359,2024-09-22,Away,Manchester City,2,2,0,D,FT,English Premier League
+2024,Arsenal,359,2024-09-15,Away,Tottenham Hotspur,1,0,1,W,FT,English Premier League
+2024,Arsenal,359,2024-08-31,Home,Brighton & Hove Albion,1,1,0,D,FT,English Premier League
+2024,Arsenal,359,2024-08-24,Away,Aston Villa,2,0,2,W,FT,English Premier League
+2024,Arsenal,359,2024-08-17,Home,Wolverhampton Wanderers,2,0,2,W,FT,English Premier League
+2024,Aston Villa,362,2024-05-25,Away,Manchester United,0,2,-2,L,FT,English Premier League
+2024,Aston Villa,362,2024-05-16,Home,Tottenham Hotspur,2,0,2,W,FT,English Premier League
+2024,Aston Villa,362,2024-05-10,Away,AFC Bournemouth,1,0,1,W,FT,English Premier League
+2024,Aston Villa,362,2024-05-03,Home,Fulham,1,0,1,W,FT,English Premier League
+2024,Aston Villa,362,2024-04-22,Away,Manchester City,1,2,-1,L,FT,English Premier League
+2024,Aston Villa,362,2024-04-19,Home,Newcastle United,4,1,3,W,FT,English Premier League
+2024,Aston Villa,362,2024-04-12,Away,Southampton,3,0,3,W,FT,English Premier League
+2024,Aston Villa,362,2024-04-05,Home,Nottingham Forest,2,1,1,W,FT,English Premier League
+2024,Aston Villa,362,2024-04-02,Away,Brighton & Hove Albion,3,0,3,W,FT,English Premier League
+2024,Aston Villa,362,2024-03-08,Away,Brentford,1,0,1,W,FT,English Premier League
+2024,Aston Villa,362,2024-02-25,Away,Crystal Palace,1,4,-3,L,FT,English Premier League
+2024,Aston Villa,362,2024-02-22,Home,Chelsea,2,1,1,W,FT,English Premier League
+2024,Aston Villa,362,2024-02-19,Home,Liverpool,2,2,0,D,FT,English Premier League
+2024,Aston Villa,362,2024-02-15,Home,Ipswich Town,1,1,0,D,FT,English Premier League
+2024,Aston Villa,362,2024-02-01,Away,Wolverhampton Wanderers,0,2,-2,L,FT,English Premier League
+2024,Aston Villa,362,2024-01-26,Home,West Ham United,1,1,0,D,FT,English Premier League
+2024,Aston Villa,362,2024-01-18,Away,Arsenal,2,2,0,D,FT,English Premier League
+2024,Aston Villa,362,2024-01-15,Away,Everton,1,0,1,W,FT,English Premier League
+2024,Aston Villa,362,2024-01-04,Home,Leicester City,2,1,1,W,FT,English Premier League
+2024,Aston Villa,362,2024-12-30,Home,Brighton & Hove Albion,2,2,0,D,FT,English Premier League
+2024,Aston Villa,362,2024-12-26,Away,Newcastle United,0,3,-3,L,FT,English Premier League
+2024,Aston Villa,362,2024-12-21,Home,Manchester City,2,1,1,W,FT,English Premier League
+2024,Aston Villa,362,2024-12-14,Away,Nottingham Forest,1,2,-1,L,FT,English Premier League
+2024,Aston Villa,362,2024-12-07,Home,Southampton,1,0,1,W,FT,English Premier League
+2024,Aston Villa,362,2024-12-04,Home,Brentford,3,1,2,W,FT,English Premier League
+2024,Aston Villa,362,2024-12-01,Away,Chelsea,0,3,-3,L,FT,English Premier League
+2024,Aston Villa,362,2024-11-23,Home,Crystal Palace,2,2,0,D,FT,English Premier League
+2024,Aston Villa,362,2024-11-09,Away,Liverpool,0,2,-2,L,FT,English Premier League
+2024,Aston Villa,362,2024-11-03,Away,Tottenham Hotspur,1,4,-3,L,FT,English Premier League
+2024,Aston Villa,362,2024-10-26,Home,AFC Bournemouth,1,1,0,D,FT,English Premier League
+2024,Aston Villa,362,2024-10-19,Away,Fulham,3,1,2,W,FT,English Premier League
+2024,Aston Villa,362,2024-10-06,Home,Manchester United,0,0,0,D,FT,English Premier League
+2024,Aston Villa,362,2024-09-29,Away,Ipswich Town,2,2,0,D,FT,English Premier League
+2024,Aston Villa,362,2024-09-21,Home,Wolverhampton Wanderers,3,1,2,W,FT,English Premier League
+2024,Aston Villa,362,2024-09-14,Home,Everton,3,2,1,W,FT,English Premier League
+2024,Aston Villa,362,2024-08-31,Away,Leicester City,2,1,1,W,FT,English Premier League
+2024,Aston Villa,362,2024-08-24,Home,Arsenal,0,2,-2,L,FT,English Premier League
+2024,Aston Villa,362,2024-08-17,Away,West Ham United,2,1,1,W,FT,English Premier League
+2024,Brentford,337,2024-05-25,Away,Wolverhampton Wanderers,1,1,0,D,FT,English Premier League
+2024,Brentford,337,2024-05-18,Home,Fulham,2,3,-1,L,FT,English Premier League
+2024,Brentford,337,2024-05-10,Away,Ipswich Town,1,0,1,W,FT,English Premier League
+2024,Brentford,337,2024-05-04,Home,Manchester United,4,3,1,W,FT,English Premier League
+2024,Brentford,337,2024-05-01,Away,Nottingham Forest,2,0,2,W,FT,English Premier League
+2024,Brentford,337,2024-04-19,Home,Brighton & Hove Albion,4,2,2,W,FT,English Premier League
+2024,Brentford,337,2024-04-12,Away,Arsenal,1,1,0,D,FT,English Premier League
+2024,Brentford,337,2024-04-06,Home,Chelsea,0,0,0,D,FT,English Premier League
+2024,Brentford,337,2024-04-02,Away,Newcastle United,1,2,-1,L,FT,English Premier League
+2024,Brentford,337,2024-03-15,Away,AFC Bournemouth,2,1,1,W,FT,English Premier League
+2024,Brentford,337,2024-03-08,Home,Aston Villa,0,1,-1,L,FT,English Premier League
+2024,Brentford,337,2024-02-26,Home,Everton,1,1,0,D,FT,English Premier League
+2024,Brentford,337,2024-02-21,Away,Leicester City,4,0,4,W,FT,English Premier League
+2024,Brentford,337,2024-02-15,Away,West Ham United,1,0,1,W,FT,English Premier League
+2024,Brentford,337,2024-02-02,Home,Tottenham Hotspur,0,2,-2,L,FT,English Premier League
+2024,Brentford,337,2024-01-26,Away,Crystal Palace,2,1,1,W,FT,English Premier League
+2024,Brentford,337,2024-01-18,Home,Liverpool,0,2,-2,L,FT,English Premier League
+2024,Brentford,337,2024-01-14,Home,Manchester City,2,2,0,D,FT,English Premier League
+2024,Brentford,337,2024-01-04,Away,Southampton,5,0,5,W,FT,English Premier League
+2024,Brentford,337,2024-01-01,Home,Arsenal,1,3,-2,L,FT,English Premier League
+2024,Brentford,337,2024-12-27,Away,Brighton & Hove Albion,0,0,0,D,FT,English Premier League
+2024,Brentford,337,2024-12-21,Home,Nottingham Forest,0,2,-2,L,FT,English Premier League
+2024,Brentford,337,2024-12-15,Away,Chelsea,1,2,-1,L,FT,English Premier League
+2024,Brentford,337,2024-12-07,Home,Newcastle United,4,2,2,W,FT,English Premier League
+2024,Brentford,337,2024-12-04,Away,Aston Villa,1,3,-2,L,FT,English Premier League
+2024,Brentford,337,2024-11-30,Home,Leicester City,4,1,3,W,FT,English Premier League
+2024,Brentford,337,2024-11-23,Away,Everton,0,0,0,D,FT,English Premier League
+2024,Brentford,337,2024-11-09,Home,AFC Bournemouth,3,2,1,W,FT,English Premier League
+2024,Brentford,337,2024-11-04,Away,Fulham,1,2,-1,L,FT,English Premier League
+2024,Brentford,337,2024-10-26,Home,Ipswich Town,4,3,1,W,FT,English Premier League
+2024,Brentford,337,2024-10-19,Away,Manchester United,1,2,-1,L,FT,English Premier League
+2024,Brentford,337,2024-10-05,Home,Wolverhampton Wanderers,5,3,2,W,FT,English Premier League
+2024,Brentford,337,2024-09-28,Home,West Ham United,1,1,0,D,FT,English Premier League
+2024,Brentford,337,2024-09-21,Away,Tottenham Hotspur,1,3,-2,L,FT,English Premier League
+2024,Brentford,337,2024-09-14,Away,Manchester City,1,2,-1,L,FT,English Premier League
+2024,Brentford,337,2024-08-31,Home,Southampton,3,1,2,W,FT,English Premier League
+2024,Brentford,337,2024-08-25,Away,Liverpool,0,2,-2,L,FT,English Premier League
+2024,Brentford,337,2024-08-18,Home,Crystal Palace,2,1,1,W,FT,English Premier League
+2024,Brighton & Hove Albion,331,2024-05-25,Away,Tottenham Hotspur,4,1,3,W,FT,English Premier League
+2024,Brighton & Hove Albion,331,2024-05-19,Home,Liverpool,3,2,1,W,FT,English Premier League
+2024,Brighton & Hove Albion,331,2024-05-10,Away,Wolverhampton Wanderers,2,0,2,W,FT,English Premier League
+2024,Brighton & Hove Albion,331,2024-05-04,Home,Newcastle United,1,1,0,D,FT,English Premier League
+2024,Brighton & Hove Albion,331,2024-04-26,Home,West Ham United,3,2,1,W,FT,English Premier League
+2024,Brighton & Hove Albion,331,2024-04-19,Away,Brentford,2,4,-2,L,FT,English Premier League
+2024,Brighton & Hove Albion,331,2024-04-12,Home,Leicester City,2,2,0,D,FT,English Premier League
+2024,Brighton & Hove Albion,331,2024-04-05,Away,Crystal Palace,1,2,-1,L,FT,English Premier League
+2024,Brighton & Hove Albion,331,2024-04-02,Home,Aston Villa,0,3,-3,L,FT,English Premier League
+2024,Brighton & Hove Albion,331,2024-03-15,Away,Manchester City,2,2,0,D,FT,English Premier League
+2024,Brighton & Hove Albion,331,2024-03-08,Home,Fulham,2,1,1,W,FT,English Premier League
+2024,Brighton & Hove Albion,331,2024-02-25,Home,AFC Bournemouth,2,1,1,W,FT,English Premier League
+2024,Brighton & Hove Albion,331,2024-02-22,Away,Southampton,4,0,4,W,FT,English Premier League
+2024,Brighton & Hove Albion,331,2024-02-14,Home,Chelsea,3,0,3,W,FT,English Premier League
+2024,Brighton & Hove Albion,331,2024-02-01,Away,Nottingham Forest,0,7,-7,L,FT,English Premier League
+2024,Brighton & Hove Albion,331,2024-01-25,Home,Everton,0,1,-1,L,FT,English Premier League
+2024,Brighton & Hove Albion,331,2024-01-19,Away,Manchester United,3,1,2,W,FT,English Premier League
+2024,Brighton & Hove Albion,331,2024-01-16,Away,Ipswich Town,2,0,2,W,FT,English Premier League
+2024,Brighton & Hove Albion,331,2024-01-04,Home,Arsenal,1,1,0,D,FT,English Premier League
+2024,Brighton & Hove Albion,331,2024-12-30,Away,Aston Villa,2,2,0,D,FT,English Premier League
+2024,Brighton & Hove Albion,331,2024-12-27,Home,Brentford,0,0,0,D,FT,English Premier League
+2024,Brighton & Hove Albion,331,2024-12-21,Away,West Ham United,1,1,0,D,FT,English Premier League
+2024,Brighton & Hove Albion,331,2024-12-15,Home,Crystal Palace,1,3,-2,L,FT,English Premier League
+2024,Brighton & Hove Albion,331,2024-12-08,Away,Leicester City,2,2,0,D,FT,English Premier League
+2024,Brighton & Hove Albion,331,2024-12-05,Away,Fulham,1,3,-2,L,FT,English Premier League
+2024,Brighton & Hove Albion,331,2024-11-29,Home,Southampton,1,1,0,D,FT,English Premier League
+2024,Brighton & Hove Albion,331,2024-11-23,Away,AFC Bournemouth,2,1,1,W,FT,English Premier League
+2024,Brighton & Hove Albion,331,2024-11-09,Home,Manchester City,2,1,1,W,FT,English Premier League
+2024,Brighton & Hove Albion,331,2024-11-02,Away,Liverpool,1,2,-1,L,FT,English Premier League
+2024,Brighton & Hove Albion,331,2024-10-26,Home,Wolverhampton Wanderers,2,2,0,D,FT,English Premier League
+2024,Brighton & Hove Albion,331,2024-10-19,Away,Newcastle United,1,0,1,W,FT,English Premier League
+2024,Brighton & Hove Albion,331,2024-10-06,Home,Tottenham Hotspur,3,2,1,W,FT,English Premier League
+2024,Brighton & Hove Albion,331,2024-09-28,Away,Chelsea,2,4,-2,L,FT,English Premier League
+2024,Brighton & Hove Albion,331,2024-09-22,Home,Nottingham Forest,2,2,0,D,FT,English Premier League
+2024,Brighton & Hove Albion,331,2024-09-14,Home,Ipswich Town,0,0,0,D,FT,English Premier League
+2024,Brighton & Hove Albion,331,2024-08-31,Away,Arsenal,1,1,0,D,FT,English Premier League
+2024,Brighton & Hove Albion,331,2024-08-24,Home,Manchester United,2,1,1,W,FT,English Premier League
+2024,Brighton & Hove Albion,331,2024-08-17,Away,Everton,3,0,3,W,FT,English Premier League
+2024,Chelsea,363,2024-05-25,Away,Nottingham Forest,1,0,1,W,FT,English Premier League
+2024,Chelsea,363,2024-05-16,Home,Manchester United,1,0,1,W,FT,English Premier League
+2024,Chelsea,363,2024-05-11,Away,Newcastle United,0,2,-2,L,FT,English Premier League
+2024,Chelsea,363,2024-05-04,Home,Liverpool,3,1,2,W,FT,English Premier League
+2024,Chelsea,363,2024-04-26,Home,Everton,1,0,1,W,FT,English Premier League
+2024,Chelsea,363,2024-04-20,Away,Fulham,2,1,1,W,FT,English Premier League
+2024,Chelsea,363,2024-04-13,Home,Ipswich Town,2,2,0,D,FT,English Premier League
+2024,Chelsea,363,2024-04-06,Away,Brentford,0,0,0,D,FT,English Premier League
+2024,Chelsea,363,2024-04-03,Home,Tottenham Hotspur,1,0,1,W,FT,English Premier League
+2024,Chelsea,363,2024-03-16,Away,Arsenal,0,1,-1,L,FT,English Premier League
+2024,Chelsea,363,2024-03-09,Home,Leicester City,1,0,1,W,FT,English Premier League
+2024,Chelsea,363,2024-02-25,Home,Southampton,4,0,4,W,FT,English Premier League
+2024,Chelsea,363,2024-02-22,Away,Aston Villa,1,2,-1,L,FT,English Premier League
+2024,Chelsea,363,2024-02-14,Away,Brighton & Hove Albion,0,3,-3,L,FT,English Premier League
+2024,Chelsea,363,2024-02-03,Home,West Ham United,2,1,1,W,FT,English Premier League
+2024,Chelsea,363,2024-01-25,Away,Manchester City,1,3,-2,L,FT,English Premier League
+2024,Chelsea,363,2024-01-20,Home,Wolverhampton Wanderers,3,1,2,W,FT,English Premier League
+2024,Chelsea,363,2024-01-14,Home,AFC Bournemouth,2,2,0,D,FT,English Premier League
+2024,Chelsea,363,2024-01-04,Away,Crystal Palace,1,1,0,D,FT,English Premier League
+2024,Chelsea,363,2024-12-30,Away,Ipswich Town,0,2,-2,L,FT,English Premier League
+2024,Chelsea,363,2024-12-26,Home,Fulham,1,2,-1,L,FT,English Premier League
+2024,Chelsea,363,2024-12-22,Away,Everton,0,0,0,D,FT,English Premier League
+2024,Chelsea,363,2024-12-15,Home,Brentford,2,1,1,W,FT,English Premier League
+2024,Chelsea,363,2024-12-08,Away,Tottenham Hotspur,4,3,1,W,FT,English Premier League
+2024,Chelsea,363,2024-12-04,Away,Southampton,5,1,4,W,FT,English Premier League
+2024,Chelsea,363,2024-12-01,Home,Aston Villa,3,0,3,W,FT,English Premier League
+2024,Chelsea,363,2024-11-23,Away,Leicester City,2,1,1,W,FT,English Premier League
+2024,Chelsea,363,2024-11-10,Home,Arsenal,1,1,0,D,FT,English Premier League
+2024,Chelsea,363,2024-11-03,Away,Manchester United,1,1,0,D,FT,English Premier League
+2024,Chelsea,363,2024-10-27,Home,Newcastle United,2,1,1,W,FT,English Premier League
+2024,Chelsea,363,2024-10-20,Away,Liverpool,1,2,-1,L,FT,English Premier League
+2024,Chelsea,363,2024-10-06,Home,Nottingham Forest,1,1,0,D,FT,English Premier League
+2024,Chelsea,363,2024-09-28,Home,Brighton & Hove Albion,4,2,2,W,FT,English Premier League
+2024,Chelsea,363,2024-09-21,Away,West Ham United,3,0,3,W,FT,English Premier League
+2024,Chelsea,363,2024-09-14,Away,AFC Bournemouth,1,0,1,W,FT,English Premier League
+2024,Chelsea,363,2024-09-01,Home,Crystal Palace,1,1,0,D,FT,English Premier League
+2024,Chelsea,363,2024-08-25,Away,Wolverhampton Wanderers,6,2,4,W,FT,English Premier League
+2024,Chelsea,363,2024-08-18,Home,Manchester City,0,2,-2,L,FT,English Premier League
+2024,Crystal Palace,384,2024-05-25,Away,Liverpool,1,1,0,D,FT,English Premier League
+2024,Crystal Palace,384,2024-05-20,Home,Wolverhampton Wanderers,4,2,2,W,FT,English Premier League
+2024,Crystal Palace,384,2024-05-11,Away,Tottenham Hotspur,2,0,2,W,FT,English Premier League
+2024,Crystal Palace,384,2024-05-05,Home,Nottingham Forest,1,1,0,D,FT,English Premier League
+2024,Crystal Palace,384,2024-04-23,Away,Arsenal,2,2,0,D,FT,English Premier League
+2024,Crystal Palace,384,2024-04-19,Home,AFC Bournemouth,0,0,0,D,FT,English Premier League
+2024,Crystal Palace,384,2024-04-16,Away,Newcastle United,0,5,-5,L,FT,English Premier League
+2024,Crystal Palace,384,2024-04-12,Away,Manchester City,2,5,-3,L,FT,English Premier League
+2024,Crystal Palace,384,2024-04-05,Home,Brighton & Hove Albion,2,1,1,W,FT,English Premier League
+2024,Crystal Palace,384,2024-04-02,Away,Southampton,1,1,0,D,FT,English Premier League
+2024,Crystal Palace,384,2024-03-08,Home,Ipswich Town,1,0,1,W,FT,English Premier League
+2024,Crystal Palace,384,2024-02-25,Home,Aston Villa,4,1,3,W,FT,English Premier League
+2024,Crystal Palace,384,2024-02-22,Away,Fulham,2,0,2,W,FT,English Premier League
+2024,Crystal Palace,384,2024-02-15,Home,Everton,1,2,-1,L,FT,English Premier League
+2024,Crystal Palace,384,2024-02-02,Away,Manchester United,2,0,2,W,FT,English Premier League
+2024,Crystal Palace,384,2024-01-26,Home,Brentford,1,2,-1,L,FT,English Premier League
+2024,Crystal Palace,384,2024-01-18,Away,West Ham United,2,0,2,W,FT,English Premier League
+2024,Crystal Palace,384,2024-01-15,Away,Leicester City,2,0,2,W,FT,English Premier League
+2024,Crystal Palace,384,2024-01-04,Home,Chelsea,1,1,0,D,FT,English Premier League
+2024,Crystal Palace,384,2024-12-29,Home,Southampton,2,1,1,W,FT,English Premier League
+2024,Crystal Palace,384,2024-12-26,Away,AFC Bournemouth,0,0,0,D,FT,English Premier League
+2024,Crystal Palace,384,2024-12-21,Home,Arsenal,1,5,-4,L,FT,English Premier League
+2024,Crystal Palace,384,2024-12-15,Away,Brighton & Hove Albion,3,1,2,W,FT,English Premier League
+2024,Crystal Palace,384,2024-12-07,Home,Manchester City,2,2,0,D,FT,English Premier League
+2024,Crystal Palace,384,2024-12-03,Away,Ipswich Town,1,0,1,W,FT,English Premier League
+2024,Crystal Palace,384,2024-11-30,Home,Newcastle United,1,1,0,D,FT,English Premier League
+2024,Crystal Palace,384,2024-11-23,Away,Aston Villa,2,2,0,D,FT,English Premier League
+2024,Crystal Palace,384,2024-11-09,Home,Fulham,0,2,-2,L,FT,English Premier League
+2024,Crystal Palace,384,2024-11-02,Away,Wolverhampton Wanderers,2,2,0,D,FT,English Premier League
+2024,Crystal Palace,384,2024-10-27,Home,Tottenham Hotspur,1,0,1,W,FT,English Premier League
+2024,Crystal Palace,384,2024-10-21,Away,Nottingham Forest,0,1,-1,L,FT,English Premier League
+2024,Crystal Palace,384,2024-10-05,Home,Liverpool,0,1,-1,L,FT,English Premier League
+2024,Crystal Palace,384,2024-09-28,Away,Everton,1,2,-1,L,FT,English Premier League
+2024,Crystal Palace,384,2024-09-21,Home,Manchester United,0,0,0,D,FT,English Premier League
+2024,Crystal Palace,384,2024-09-14,Home,Leicester City,2,2,0,D,FT,English Premier League
+2024,Crystal Palace,384,2024-09-01,Away,Chelsea,1,1,0,D,FT,English Premier League
+2024,Crystal Palace,384,2024-08-24,Home,West Ham United,0,2,-2,L,FT,English Premier League
+2024,Crystal Palace,384,2024-08-18,Away,Brentford,1,2,-1,L,FT,English Premier League
+2024,Everton,368,2024-05-25,Away,Newcastle United,1,0,1,W,FT,English Premier League
+2024,Everton,368,2024-05-18,Home,Southampton,2,0,2,W,FT,English Premier League
+2024,Everton,368,2024-05-10,Away,Fulham,3,1,2,W,FT,English Premier League
+2024,Everton,368,2024-05-03,Home,Ipswich Town,2,2,0,D,FT,English Premier League
+2024,Everton,368,2024-04-26,Away,Chelsea,0,1,-1,L,FT,English Premier League
+2024,Everton,368,2024-04-19,Home,Manchester City,0,2,-2,L,FT,English Premier League
+2024,Everton,368,2024-04-12,Away,Nottingham Forest,1,0,1,W,FT,English Premier League
+2024,Everton,368,2024-04-05,Home,Arsenal,1,1,0,D,FT,English Premier League
+2024,Everton,368,2024-04-02,Away,Liverpool,0,1,-1,L,FT,English Premier League
+2024,Everton,368,2024-03-15,Home,West Ham United,1,1,0,D,FT,English Premier League
+2024,Everton,368,2024-03-08,Away,Wolverhampton Wanderers,1,1,0,D,FT,English Premier League
+2024,Everton,368,2024-02-26,Away,Brentford,1,1,0,D,FT,English Premier League
+2024,Everton,368,2024-02-22,Home,Manchester United,2,2,0,D,FT,English Premier League
+2024,Everton,368,2024-02-15,Away,Crystal Palace,2,1,1,W,FT,English Premier League
+2024,Everton,368,2024-02-12,Home,Liverpool,2,2,0,D,FT,English Premier League
+2024,Everton,368,2024-02-01,Home,Leicester City,4,0,4,W,FT,English Premier League
+2024,Everton,368,2024-01-25,Away,Brighton & Hove Albion,1,0,1,W,FT,English Premier League
+2024,Everton,368,2024-01-19,Home,Tottenham Hotspur,3,2,1,W,FT,English Premier League
+2024,Everton,368,2024-01-15,Home,Aston Villa,0,1,-1,L,FT,English Premier League
+2024,Everton,368,2024-01-04,Away,AFC Bournemouth,0,1,-1,L,FT,English Premier League
+2024,Everton,368,2024-12-29,Home,Nottingham Forest,0,2,-2,L,FT,English Premier League
+2024,Everton,368,2024-12-26,Away,Manchester City,1,1,0,D,FT,English Premier League
+2024,Everton,368,2024-12-22,Home,Chelsea,0,0,0,D,FT,English Premier League
+2024,Everton,368,2024-12-14,Away,Arsenal,0,0,0,D,FT,English Premier League
+2024,Everton,368,2024-12-04,Home,Wolverhampton Wanderers,4,0,4,W,FT,English Premier League
+2024,Everton,368,2024-12-01,Away,Manchester United,0,4,-4,L,FT,English Premier League
+2024,Everton,368,2024-11-23,Home,Brentford,0,0,0,D,FT,English Premier League
+2024,Everton,368,2024-11-09,Away,West Ham United,0,0,0,D,FT,English Premier League
+2024,Everton,368,2024-11-02,Away,Southampton,0,1,-1,L,FT,English Premier League
+2024,Everton,368,2024-10-26,Home,Fulham,1,1,0,D,FT,English Premier League
+2024,Everton,368,2024-10-19,Away,Ipswich Town,2,0,2,W,FT,English Premier League
+2024,Everton,368,2024-10-05,Home,Newcastle United,0,0,0,D,FT,English Premier League
+2024,Everton,368,2024-09-28,Home,Crystal Palace,2,1,1,W,FT,English Premier League
+2024,Everton,368,2024-09-21,Away,Leicester City,1,1,0,D,FT,English Premier League
+2024,Everton,368,2024-09-14,Away,Aston Villa,2,3,-1,L,FT,English Premier League
+2024,Everton,368,2024-08-31,Home,AFC Bournemouth,2,3,-1,L,FT,English Premier League
+2024,Everton,368,2024-08-24,Away,Tottenham Hotspur,0,4,-4,L,FT,English Premier League
+2024,Everton,368,2024-08-17,Home,Brighton & Hove Albion,0,3,-3,L,FT,English Premier League
+2024,Leicester City,375,2024-05-25,Away,AFC Bournemouth,0,2,-2,L,FT,English Premier League
+2024,Leicester City,375,2024-05-18,Home,Ipswich Town,2,0,2,W,FT,English Premier League
+2024,Leicester City,375,2024-05-11,Away,Nottingham Forest,2,2,0,D,FT,English Premier League
+2024,Leicester City,375,2024-05-03,Home,Southampton,2,0,2,W,FT,English Premier League
+2024,Leicester City,375,2024-04-26,Away,Wolverhampton Wanderers,0,3,-3,L,FT,English Premier League
+2024,Leicester City,375,2024-04-20,Home,Liverpool,0,1,-1,L,FT,English Premier League
+2024,Leicester City,375,2024-04-12,Away,Brighton & Hove Albion,2,2,0,D,FT,English Premier League
+2024,Leicester City,375,2024-04-07,Home,Newcastle United,0,3,-3,L,FT,English Premier League
+2024,Leicester City,375,2024-04-02,Away,Manchester City,0,2,-2,L,FT,English Premier League
+2024,Leicester City,375,2024-03-16,Home,Manchester United,0,3,-3,L,FT,English Premier League
+2024,Leicester City,375,2024-03-09,Away,Chelsea,0,1,-1,L,FT,English Premier League
+2024,Leicester City,375,2024-02-27,Away,West Ham United,0,2,-2,L,FT,English Premier League
+2024,Leicester City,375,2024-02-21,Home,Brentford,0,4,-4,L,FT,English Premier League
+2024,Leicester City,375,2024-02-15,Home,Arsenal,0,2,-2,L,FT,English Premier League
+2024,Leicester City,375,2024-02-01,Away,Everton,0,4,-4,L,FT,English Premier League
+2024,Leicester City,375,2024-01-26,Away,Tottenham Hotspur,2,1,1,W,FT,English Premier League
+2024,Leicester City,375,2024-01-18,Home,Fulham,0,2,-2,L,FT,English Premier League
+2024,Leicester City,375,2024-01-15,Home,Crystal Palace,0,2,-2,L,FT,English Premier League
+2024,Leicester City,375,2024-01-04,Away,Aston Villa,1,2,-1,L,FT,English Premier League
+2024,Leicester City,375,2024-12-29,Home,Manchester City,0,2,-2,L,FT,English Premier League
+2024,Leicester City,375,2024-12-26,Away,Liverpool,1,3,-2,L,FT,English Premier League
+2024,Leicester City,375,2024-12-22,Home,Wolverhampton Wanderers,0,3,-3,L,FT,English Premier League
+2024,Leicester City,375,2024-12-14,Away,Newcastle United,0,4,-4,L,FT,English Premier League
+2024,Leicester City,375,2024-12-08,Home,Brighton & Hove Albion,2,2,0,D,FT,English Premier League
+2024,Leicester City,375,2024-12-03,Home,West Ham United,3,1,2,W,FT,English Premier League
+2024,Leicester City,375,2024-11-30,Away,Brentford,1,4,-3,L,FT,English Premier League
+2024,Leicester City,375,2024-11-23,Home,Chelsea,1,2,-1,L,FT,English Premier League
+2024,Leicester City,375,2024-11-10,Away,Manchester United,0,3,-3,L,FT,English Premier League
+2024,Leicester City,375,2024-11-02,Away,Ipswich Town,1,1,0,D,FT,English Premier League
+2024,Leicester City,375,2024-10-25,Home,Nottingham Forest,1,3,-2,L,FT,English Premier League
+2024,Leicester City,375,2024-10-19,Away,Southampton,3,2,1,W,FT,English Premier League
+2024,Leicester City,375,2024-10-05,Home,AFC Bournemouth,1,0,1,W,FT,English Premier League
+2024,Leicester City,375,2024-09-28,Away,Arsenal,2,4,-2,L,FT,English Premier League
+2024,Leicester City,375,2024-09-21,Home,Everton,1,1,0,D,FT,English Premier League
+2024,Leicester City,375,2024-09-14,Away,Crystal Palace,2,2,0,D,FT,English Premier League
+2024,Leicester City,375,2024-08-31,Home,Aston Villa,1,2,-1,L,FT,English Premier League
+2024,Leicester City,375,2024-08-24,Away,Fulham,1,2,-1,L,FT,English Premier League
+2024,Leicester City,375,2024-08-19,Home,Tottenham Hotspur,1,1,0,D,FT,English Premier League
+2024,Liverpool,364,2024-05-25,Home,Crystal Palace,1,1,0,D,FT,English Premier League
+2024,Liverpool,364,2024-05-19,Away,Brighton & Hove Albion,2,3,-1,L,FT,English Premier League
+2024,Liverpool,364,2024-05-11,Home,Arsenal,2,2,0,D,FT,English Premier League
+2024,Liverpool,364,2024-05-04,Away,Chelsea,1,3,-2,L,FT,English Premier League
+2024,Liverpool,364,2024-04-27,Home,Tottenham Hotspur,5,1,4,W,FT,English Premier League
+2024,Liverpool,364,2024-04-20,Away,Leicester City,1,0,1,W,FT,English Premier League
+2024,Liverpool,364,2024-04-13,Home,West Ham United,2,1,1,W,FT,English Premier League
+2024,Liverpool,364,2024-04-06,Away,Fulham,2,3,-1,L,FT,English Premier League
+2024,Liverpool,364,2024-04-02,Home,Everton,1,0,1,W,FT,English Premier League
+2024,Liverpool,364,2024-03-08,Home,Southampton,3,1,2,W,FT,English Premier League
+2024,Liverpool,364,2024-02-26,Home,Newcastle United,2,0,2,W,FT,English Premier League
+2024,Liverpool,364,2024-02-23,Away,Manchester City,2,0,2,W,FT,English Premier League
+2024,Liverpool,364,2024-02-19,Away,Aston Villa,2,2,0,D,FT,English Premier League
+2024,Liverpool,364,2024-02-16,Home,Wolverhampton Wanderers,2,1,1,W,FT,English Premier League
+2024,Liverpool,364,2024-02-12,Away,Everton,2,2,0,D,FT,English Premier League
+2024,Liverpool,364,2024-02-01,Away,AFC Bournemouth,2,0,2,W,FT,English Premier League
+2024,Liverpool,364,2024-01-25,Home,Ipswich Town,4,1,3,W,FT,English Premier League
+2024,Liverpool,364,2024-01-18,Away,Brentford,2,0,2,W,FT,English Premier League
+2024,Liverpool,364,2024-01-14,Away,Nottingham Forest,1,1,0,D,FT,English Premier League
+2024,Liverpool,364,2024-01-05,Home,Manchester United,2,2,0,D,FT,English Premier League
+2024,Liverpool,364,2024-12-29,Away,West Ham United,5,0,5,W,FT,English Premier League
+2024,Liverpool,364,2024-12-26,Home,Leicester City,3,1,2,W,FT,English Premier League
+2024,Liverpool,364,2024-12-22,Away,Tottenham Hotspur,6,3,3,W,FT,English Premier League
+2024,Liverpool,364,2024-12-14,Home,Fulham,2,2,0,D,FT,English Premier League
+2024,Liverpool,364,2024-12-04,Away,Newcastle United,3,3,0,D,FT,English Premier League
+2024,Liverpool,364,2024-12-01,Home,Manchester City,2,0,2,W,FT,English Premier League
+2024,Liverpool,364,2024-11-24,Away,Southampton,3,2,1,W,FT,English Premier League
+2024,Liverpool,364,2024-11-09,Home,Aston Villa,2,0,2,W,FT,English Premier League
+2024,Liverpool,364,2024-11-02,Home,Brighton & Hove Albion,2,1,1,W,FT,English Premier League
+2024,Liverpool,364,2024-10-27,Away,Arsenal,2,2,0,D,FT,English Premier League
+2024,Liverpool,364,2024-10-20,Home,Chelsea,2,1,1,W,FT,English Premier League
+2024,Liverpool,364,2024-10-05,Away,Crystal Palace,1,0,1,W,FT,English Premier League
+2024,Liverpool,364,2024-09-28,Away,Wolverhampton Wanderers,2,1,1,W,FT,English Premier League
+2024,Liverpool,364,2024-09-21,Home,AFC Bournemouth,3,0,3,W,FT,English Premier League
+2024,Liverpool,364,2024-09-14,Home,Nottingham Forest,0,1,-1,L,FT,English Premier League
+2024,Liverpool,364,2024-09-01,Away,Manchester United,3,0,3,W,FT,English Premier League
+2024,Liverpool,364,2024-08-25,Home,Brentford,2,0,2,W,FT,English Premier League
+2024,Liverpool,364,2024-08-17,Away,Ipswich Town,2,0,2,W,FT,English Premier League
+2024,Manchester City,382,2024-05-25,Away,Fulham,2,0,2,W,FT,English Premier League
+2024,Manchester City,382,2024-05-20,Home,AFC Bournemouth,3,1,2,W,FT,English Premier League
+2024,Manchester City,382,2024-05-10,Away,Southampton,0,0,0,D,FT,English Premier League
+2024,Manchester City,382,2024-05-02,Home,Wolverhampton Wanderers,1,0,1,W,FT,English Premier League
+2024,Manchester City,382,2024-04-22,Home,Aston Villa,2,1,1,W,FT,English Premier League
+2024,Manchester City,382,2024-04-19,Away,Everton,2,0,2,W,FT,English Premier League
+2024,Manchester City,382,2024-04-12,Home,Crystal Palace,5,2,3,W,FT,English Premier League
+2024,Manchester City,382,2024-04-06,Away,Manchester United,0,0,0,D,FT,English Premier League
+2024,Manchester City,382,2024-04-02,Home,Leicester City,2,0,2,W,FT,English Premier League
+2024,Manchester City,382,2024-03-15,Home,Brighton & Hove Albion,2,2,0,D,FT,English Premier League
+2024,Manchester City,382,2024-03-08,Away,Nottingham Forest,0,1,-1,L,FT,English Premier League
+2024,Manchester City,382,2024-02-26,Away,Tottenham Hotspur,1,0,1,W,FT,English Premier League
+2024,Manchester City,382,2024-02-23,Home,Liverpool,0,2,-2,L,FT,English Premier League
+2024,Manchester City,382,2024-02-15,Home,Newcastle United,4,0,4,W,FT,English Premier League
+2024,Manchester City,382,2024-02-02,Away,Arsenal,1,5,-4,L,FT,English Premier League
+2024,Manchester City,382,2024-01-25,Home,Chelsea,3,1,2,W,FT,English Premier League
+2024,Manchester City,382,2024-01-19,Away,Ipswich Town,6,0,6,W,FT,English Premier League
+2024,Manchester City,382,2024-01-14,Away,Brentford,2,2,0,D,FT,English Premier League
+2024,Manchester City,382,2024-01-04,Home,West Ham United,4,1,3,W,FT,English Premier League
+2024,Manchester City,382,2024-12-29,Away,Leicester City,2,0,2,W,FT,English Premier League
+2024,Manchester City,382,2024-12-26,Home,Everton,1,1,0,D,FT,English Premier League
+2024,Manchester City,382,2024-12-21,Away,Aston Villa,1,2,-1,L,FT,English Premier League
+2024,Manchester City,382,2024-12-15,Home,Manchester United,1,2,-1,L,FT,English Premier League
+2024,Manchester City,382,2024-12-07,Away,Crystal Palace,2,2,0,D,FT,English Premier League
+2024,Manchester City,382,2024-12-04,Home,Nottingham Forest,3,0,3,W,FT,English Premier League
+2024,Manchester City,382,2024-12-01,Away,Liverpool,0,2,-2,L,FT,English Premier League
+2024,Manchester City,382,2024-11-23,Home,Tottenham Hotspur,0,4,-4,L,FT,English Premier League
+2024,Manchester City,382,2024-11-09,Away,Brighton & Hove Albion,1,2,-1,L,FT,English Premier League
+2024,Manchester City,382,2024-11-02,Away,AFC Bournemouth,1,2,-1,L,FT,English Premier League
+2024,Manchester City,382,2024-10-26,Home,Southampton,1,0,1,W,FT,English Premier League
+2024,Manchester City,382,2024-10-20,Away,Wolverhampton Wanderers,2,1,1,W,FT,English Premier League
+2024,Manchester City,382,2024-10-05,Home,Fulham,3,2,1,W,FT,English Premier League
+2024,Manchester City,382,2024-09-28,Away,Newcastle United,1,1,0,D,FT,English Premier League
+2024,Manchester City,382,2024-09-22,Home,Arsenal,2,2,0,D,FT,English Premier League
+2024,Manchester City,382,2024-09-14,Home,Brentford,2,1,1,W,FT,English Premier League
+2024,Manchester City,382,2024-08-31,Away,West Ham United,3,1,2,W,FT,English Premier League
+2024,Manchester City,382,2024-08-24,Home,Ipswich Town,4,1,3,W,FT,English Premier League
+2024,Manchester City,382,2024-08-18,Away,Chelsea,2,0,2,W,FT,English Premier League
+2024,Manchester United,360,2024-05-25,Home,Aston Villa,2,0,2,W,FT,English Premier League
+2024,Manchester United,360,2024-05-16,Away,Chelsea,0,1,-1,L,FT,English Premier League
+2024,Manchester United,360,2024-05-11,Home,West Ham United,0,2,-2,L,FT,English Premier League
+2024,Manchester United,360,2024-05-04,Away,Brentford,3,4,-1,L,FT,English Premier League
+2024,Manchester United,360,2024-04-27,Away,AFC Bournemouth,1,1,0,D,FT,English Premier League
+2024,Manchester United,360,2024-04-20,Home,Wolverhampton Wanderers,0,1,-1,L,FT,English Premier League
+2024,Manchester United,360,2024-04-13,Away,Newcastle United,1,4,-3,L,FT,English Premier League
+2024,Manchester United,360,2024-04-06,Home,Manchester City,0,0,0,D,FT,English Premier League
+2024,Manchester United,360,2024-04-01,Away,Nottingham Forest,0,1,-1,L,FT,English Premier League
+2024,Manchester United,360,2024-03-16,Away,Leicester City,3,0,3,W,FT,English Premier League
+2024,Manchester United,360,2024-03-09,Home,Arsenal,1,1,0,D,FT,English Premier League
+2024,Manchester United,360,2024-02-26,Home,Ipswich Town,3,2,1,W,FT,English Premier League
+2024,Manchester United,360,2024-02-22,Away,Everton,2,2,0,D,FT,English Premier League
+2024,Manchester United,360,2024-02-16,Away,Tottenham Hotspur,0,1,-1,L,FT,English Premier League
+2024,Manchester United,360,2024-02-02,Home,Crystal Palace,0,2,-2,L,FT,English Premier League
+2024,Manchester United,360,2024-01-26,Away,Fulham,1,0,1,W,FT,English Premier League
+2024,Manchester United,360,2024-01-19,Home,Brighton & Hove Albion,1,3,-2,L,FT,English Premier League
+2024,Manchester United,360,2024-01-16,Home,Southampton,3,1,2,W,FT,English Premier League
+2024,Manchester United,360,2024-01-05,Away,Liverpool,2,2,0,D,FT,English Premier League
+2024,Manchester United,360,2024-12-30,Home,Newcastle United,0,2,-2,L,FT,English Premier League
+2024,Manchester United,360,2024-12-26,Away,Wolverhampton Wanderers,0,2,-2,L,FT,English Premier League
+2024,Manchester United,360,2024-12-22,Home,AFC Bournemouth,0,3,-3,L,FT,English Premier League
+2024,Manchester United,360,2024-12-15,Away,Manchester City,2,1,1,W,FT,English Premier League
+2024,Manchester United,360,2024-12-07,Home,Nottingham Forest,2,3,-1,L,FT,English Premier League
+2024,Manchester United,360,2024-12-04,Away,Arsenal,0,2,-2,L,FT,English Premier League
+2024,Manchester United,360,2024-12-01,Home,Everton,4,0,4,W,FT,English Premier League
+2024,Manchester United,360,2024-11-24,Away,Ipswich Town,1,1,0,D,FT,English Premier League
+2024,Manchester United,360,2024-11-10,Home,Leicester City,3,0,3,W,FT,English Premier League
+2024,Manchester United,360,2024-11-03,Home,Chelsea,1,1,0,D,FT,English Premier League
+2024,Manchester United,360,2024-10-27,Away,West Ham United,1,2,-1,L,FT,English Premier League
+2024,Manchester United,360,2024-10-19,Home,Brentford,2,1,1,W,FT,English Premier League
+2024,Manchester United,360,2024-10-06,Away,Aston Villa,0,0,0,D,FT,English Premier League
+2024,Manchester United,360,2024-09-29,Home,Tottenham Hotspur,0,3,-3,L,FT,English Premier League
+2024,Manchester United,360,2024-09-21,Away,Crystal Palace,0,0,0,D,FT,English Premier League
+2024,Manchester United,360,2024-09-14,Away,Southampton,3,0,3,W,FT,English Premier League
+2024,Manchester United,360,2024-09-01,Home,Liverpool,0,3,-3,L,FT,English Premier League
+2024,Manchester United,360,2024-08-24,Away,Brighton & Hove Albion,1,2,-1,L,FT,English Premier League
+2024,Manchester United,360,2024-08-16,Home,Fulham,1,0,1,W,FT,English Premier League
+2024,Newcastle United,361,2024-05-25,Home,Everton,0,1,-1,L,FT,English Premier League
+2024,Newcastle United,361,2024-05-18,Away,Arsenal,0,1,-1,L,FT,English Premier League
+2024,Newcastle United,361,2024-05-11,Home,Chelsea,2,0,2,W,FT,English Premier League
+2024,Newcastle United,361,2024-05-04,Away,Brighton & Hove Albion,1,1,0,D,FT,English Premier League
+2024,Newcastle United,361,2024-04-26,Home,Ipswich Town,3,0,3,W,FT,English Premier League
+2024,Newcastle United,361,2024-04-19,Away,Aston Villa,1,4,-3,L,FT,English Premier League
+2024,Newcastle United,361,2024-04-16,Home,Crystal Palace,5,0,5,W,FT,English Premier League
+2024,Newcastle United,361,2024-04-13,Home,Manchester United,4,1,3,W,FT,English Premier League
+2024,Newcastle United,361,2024-04-07,Away,Leicester City,3,0,3,W,FT,English Premier League
+2024,Newcastle United,361,2024-04-02,Home,Brentford,2,1,1,W,FT,English Premier League
+2024,Newcastle United,361,2024-03-10,Away,West Ham United,1,0,1,W,FT,English Premier League
+2024,Newcastle United,361,2024-02-26,Away,Liverpool,0,2,-2,L,FT,English Premier League
+2024,Newcastle United,361,2024-02-23,Home,Nottingham Forest,4,3,1,W,FT,English Premier League
+2024,Newcastle United,361,2024-02-15,Away,Manchester City,0,4,-4,L,FT,English Premier League
+2024,Newcastle United,361,2024-02-01,Home,Fulham,1,2,-1,L,FT,English Premier League
+2024,Newcastle United,361,2024-01-25,Away,Southampton,3,1,2,W,FT,English Premier League
+2024,Newcastle United,361,2024-01-18,Home,AFC Bournemouth,1,4,-3,L,FT,English Premier League
+2024,Newcastle United,361,2024-01-15,Home,Wolverhampton Wanderers,3,0,3,W,FT,English Premier League
+2024,Newcastle United,361,2024-01-04,Away,Tottenham Hotspur,2,1,1,W,FT,English Premier League
+2024,Newcastle United,361,2024-12-30,Away,Manchester United,2,0,2,W,FT,English Premier League
+2024,Newcastle United,361,2024-12-26,Home,Aston Villa,3,0,3,W,FT,English Premier League
+2024,Newcastle United,361,2024-12-21,Away,Ipswich Town,4,0,4,W,FT,English Premier League
+2024,Newcastle United,361,2024-12-14,Home,Leicester City,4,0,4,W,FT,English Premier League
+2024,Newcastle United,361,2024-12-07,Away,Brentford,2,4,-2,L,FT,English Premier League
+2024,Newcastle United,361,2024-12-04,Home,Liverpool,3,3,0,D,FT,English Premier League
+2024,Newcastle United,361,2024-11-30,Away,Crystal Palace,1,1,0,D,FT,English Premier League
+2024,Newcastle United,361,2024-11-25,Home,West Ham United,0,2,-2,L,FT,English Premier League
+2024,Newcastle United,361,2024-11-10,Away,Nottingham Forest,3,1,2,W,FT,English Premier League
+2024,Newcastle United,361,2024-11-02,Home,Arsenal,1,0,1,W,FT,English Premier League
+2024,Newcastle United,361,2024-10-27,Away,Chelsea,1,2,-1,L,FT,English Premier League
+2024,Newcastle United,361,2024-10-19,Home,Brighton & Hove Albion,0,1,-1,L,FT,English Premier League
+2024,Newcastle United,361,2024-10-05,Away,Everton,0,0,0,D,FT,English Premier League
+2024,Newcastle United,361,2024-09-28,Home,Manchester City,1,1,0,D,FT,English Premier League
+2024,Newcastle United,361,2024-09-21,Away,Fulham,1,3,-2,L,FT,English Premier League
+2024,Newcastle United,361,2024-09-15,Away,Wolverhampton Wanderers,2,1,1,W,FT,English Premier League
+2024,Newcastle United,361,2024-09-01,Home,Tottenham Hotspur,2,1,1,W,FT,English Premier League
+2024,Newcastle United,361,2024-08-25,Away,AFC Bournemouth,1,1,0,D,FT,English Premier League
+2024,Newcastle United,361,2024-08-17,Home,Southampton,1,0,1,W,FT,English Premier League
+2024,Southampton,376,2024-05-25,Home,Arsenal,1,2,-1,L,FT,English Premier League
+2024,Southampton,376,2024-05-18,Away,Everton,0,2,-2,L,FT,English Premier League
+2024,Southampton,376,2024-05-10,Home,Manchester City,0,0,0,D,FT,English Premier League
+2024,Southampton,376,2024-05-03,Away,Leicester City,0,2,-2,L,FT,English Premier League
+2024,Southampton,376,2024-04-26,Home,Fulham,1,2,-1,L,FT,English Premier League
+2024,Southampton,376,2024-04-19,Away,West Ham United,1,1,0,D,FT,English Premier League
+2024,Southampton,376,2024-04-12,Home,Aston Villa,0,3,-3,L,FT,English Premier League
+2024,Southampton,376,2024-04-06,Away,Tottenham Hotspur,1,3,-2,L,FT,English Premier League
+2024,Southampton,376,2024-04-02,Home,Crystal Palace,1,1,0,D,FT,English Premier League
+2024,Southampton,376,2024-03-15,Home,Wolverhampton Wanderers,1,2,-1,L,FT,English Premier League
+2024,Southampton,376,2024-03-08,Away,Liverpool,1,3,-2,L,FT,English Premier League
+2024,Southampton,376,2024-02-25,Away,Chelsea,0,4,-4,L,FT,English Premier League
+2024,Southampton,376,2024-02-22,Home,Brighton & Hove Albion,0,4,-4,L,FT,English Premier League
+2024,Southampton,376,2024-02-15,Home,AFC Bournemouth,1,3,-2,L,FT,English Premier League
+2024,Southampton,376,2024-02-01,Away,Ipswich Town,2,1,1,W,FT,English Premier League
+2024,Southampton,376,2024-01-25,Home,Newcastle United,1,3,-2,L,FT,English Premier League
+2024,Southampton,376,2024-01-19,Away,Nottingham Forest,2,3,-1,L,FT,English Premier League
+2024,Southampton,376,2024-01-16,Away,Manchester United,1,3,-2,L,FT,English Premier League
+2024,Southampton,376,2024-01-04,Home,Brentford,0,5,-5,L,FT,English Premier League
+2024,Southampton,376,2024-12-29,Away,Crystal Palace,1,2,-1,L,FT,English Premier League
+2024,Southampton,376,2024-12-26,Home,West Ham United,0,1,-1,L,FT,English Premier League
+2024,Southampton,376,2024-12-22,Away,Fulham,0,0,0,D,FT,English Premier League
+2024,Southampton,376,2024-12-15,Home,Tottenham Hotspur,0,5,-5,L,FT,English Premier League
+2024,Southampton,376,2024-12-07,Away,Aston Villa,0,1,-1,L,FT,English Premier League
+2024,Southampton,376,2024-12-04,Home,Chelsea,1,5,-4,L,FT,English Premier League
+2024,Southampton,376,2024-11-29,Away,Brighton & Hove Albion,1,1,0,D,FT,English Premier League
+2024,Southampton,376,2024-11-24,Home,Liverpool,2,3,-1,L,FT,English Premier League
+2024,Southampton,376,2024-11-09,Away,Wolverhampton Wanderers,0,2,-2,L,FT,English Premier League
+2024,Southampton,376,2024-11-02,Home,Everton,1,0,1,W,FT,English Premier League
+2024,Southampton,376,2024-10-26,Away,Manchester City,0,1,-1,L,FT,English Premier League
+2024,Southampton,376,2024-10-19,Home,Leicester City,2,3,-1,L,FT,English Premier League
+2024,Southampton,376,2024-10-05,Away,Arsenal,1,3,-2,L,FT,English Premier League
+2024,Southampton,376,2024-09-30,Away,AFC Bournemouth,1,3,-2,L,FT,English Premier League
+2024,Southampton,376,2024-09-21,Home,Ipswich Town,1,1,0,D,FT,English Premier League
+2024,Southampton,376,2024-09-14,Home,Manchester United,0,3,-3,L,FT,English Premier League
+2024,Southampton,376,2024-08-31,Away,Brentford,1,3,-2,L,FT,English Premier League
+2024,Southampton,376,2024-08-24,Home,Nottingham Forest,0,1,-1,L,FT,English Premier League
+2024,Southampton,376,2024-08-17,Away,Newcastle United,0,1,-1,L,FT,English Premier League
+2024,Tottenham Hotspur,367,2024-05-25,Home,Brighton & Hove Albion,1,4,-3,L,FT,English Premier League
+2024,Tottenham Hotspur,367,2024-05-16,Away,Aston Villa,0,2,-2,L,FT,English Premier League
+2024,Tottenham Hotspur,367,2024-05-11,Home,Crystal Palace,0,2,-2,L,FT,English Premier League
+2024,Tottenham Hotspur,367,2024-05-04,Away,West Ham United,1,1,0,D,FT,English Premier League
+2024,Tottenham Hotspur,367,2024-04-27,Away,Liverpool,1,5,-4,L,FT,English Premier League
+2024,Tottenham Hotspur,367,2024-04-21,Home,Nottingham Forest,1,2,-1,L,FT,English Premier League
+2024,Tottenham Hotspur,367,2024-04-13,Away,Wolverhampton Wanderers,2,4,-2,L,FT,English Premier League
+2024,Tottenham Hotspur,367,2024-04-06,Home,Southampton,3,1,2,W,FT,English Premier League
+2024,Tottenham Hotspur,367,2024-04-03,Away,Chelsea,0,1,-1,L,FT,English Premier League
+2024,Tottenham Hotspur,367,2024-03-16,Away,Fulham,0,2,-2,L,FT,English Premier League
+2024,Tottenham Hotspur,367,2024-03-09,Home,AFC Bournemouth,2,2,0,D,FT,English Premier League
+2024,Tottenham Hotspur,367,2024-02-26,Home,Manchester City,0,1,-1,L,FT,English Premier League
+2024,Tottenham Hotspur,367,2024-02-22,Away,Ipswich Town,4,1,3,W,FT,English Premier League
+2024,Tottenham Hotspur,367,2024-02-16,Home,Manchester United,1,0,1,W,FT,English Premier League
+2024,Tottenham Hotspur,367,2024-02-02,Away,Brentford,2,0,2,W,FT,English Premier League
+2024,Tottenham Hotspur,367,2024-01-26,Home,Leicester City,1,2,-1,L,FT,English Premier League
+2024,Tottenham Hotspur,367,2024-01-19,Away,Everton,2,3,-1,L,FT,English Premier League
+2024,Tottenham Hotspur,367,2024-01-15,Away,Arsenal,1,2,-1,L,FT,English Premier League
+2024,Tottenham Hotspur,367,2024-01-04,Home,Newcastle United,1,2,-1,L,FT,English Premier League
+2024,Tottenham Hotspur,367,2024-12-29,Home,Wolverhampton Wanderers,2,2,0,D,FT,English Premier League
+2024,Tottenham Hotspur,367,2024-12-26,Away,Nottingham Forest,0,1,-1,L,FT,English Premier League
+2024,Tottenham Hotspur,367,2024-12-22,Home,Liverpool,3,6,-3,L,FT,English Premier League
+2024,Tottenham Hotspur,367,2024-12-15,Away,Southampton,5,0,5,W,FT,English Premier League
+2024,Tottenham Hotspur,367,2024-12-08,Home,Chelsea,3,4,-1,L,FT,English Premier League
+2024,Tottenham Hotspur,367,2024-12-05,Away,AFC Bournemouth,0,1,-1,L,FT,English Premier League
+2024,Tottenham Hotspur,367,2024-12-01,Home,Fulham,1,1,0,D,FT,English Premier League
+2024,Tottenham Hotspur,367,2024-11-23,Away,Manchester City,4,0,4,W,FT,English Premier League
+2024,Tottenham Hotspur,367,2024-11-10,Home,Ipswich Town,1,2,-1,L,FT,English Premier League
+2024,Tottenham Hotspur,367,2024-11-03,Home,Aston Villa,4,1,3,W,FT,English Premier League
+2024,Tottenham Hotspur,367,2024-10-27,Away,Crystal Palace,0,1,-1,L,FT,English Premier League
+2024,Tottenham Hotspur,367,2024-10-19,Home,West Ham United,4,1,3,W,FT,English Premier League
+2024,Tottenham Hotspur,367,2024-10-06,Away,Brighton & Hove Albion,2,3,-1,L,FT,English Premier League
+2024,Tottenham Hotspur,367,2024-09-29,Away,Manchester United,3,0,3,W,FT,English Premier League
+2024,Tottenham Hotspur,367,2024-09-21,Home,Brentford,3,1,2,W,FT,English Premier League
+2024,Tottenham Hotspur,367,2024-09-15,Home,Arsenal,0,1,-1,L,FT,English Premier League
+2024,Tottenham Hotspur,367,2024-09-01,Away,Newcastle United,1,2,-1,L,FT,English Premier League
+2024,Tottenham Hotspur,367,2024-08-24,Home,Everton,4,0,4,W,FT,English Premier League
+2024,Tottenham Hotspur,367,2024-08-19,Away,Leicester City,1,1,0,D,FT,English Premier League
+2024,West Ham United,371,2024-05-25,Away,Ipswich Town,3,1,2,W,FT,English Premier League
+2024,West Ham United,371,2024-05-18,Home,Nottingham Forest,1,2,-1,L,FT,English Premier League
+2024,West Ham United,371,2024-05-11,Away,Manchester United,2,0,2,W,FT,English Premier League
+2024,West Ham United,371,2024-05-04,Home,Tottenham Hotspur,1,1,0,D,FT,English Premier League
+2024,West Ham United,371,2024-04-26,Away,Brighton & Hove Albion,2,3,-1,L,FT,English Premier League
+2024,West Ham United,371,2024-04-19,Home,Southampton,1,1,0,D,FT,English Premier League
+2024,West Ham United,371,2024-04-13,Away,Liverpool,1,2,-1,L,FT,English Premier League
+2024,West Ham United,371,2024-04-05,Home,AFC Bournemouth,2,2,0,D,FT,English Premier League
+2024,West Ham United,371,2024-04-01,Away,Wolverhampton Wanderers,0,1,-1,L,FT,English Premier League
+2024,West Ham United,371,2024-03-15,Away,Everton,1,1,0,D,FT,English Premier League
+2024,West Ham United,371,2024-03-10,Home,Newcastle United,0,1,-1,L,FT,English Premier League
+2024,West Ham United,371,2024-02-27,Home,Leicester City,2,0,2,W,FT,English Premier League
+2024,West Ham United,371,2024-02-22,Away,Arsenal,1,0,1,W,FT,English Premier League
+2024,West Ham United,371,2024-02-15,Home,Brentford,0,1,-1,L,FT,English Premier League
+2024,West Ham United,371,2024-02-03,Away,Chelsea,1,2,-1,L,FT,English Premier League
+2024,West Ham United,371,2024-01-26,Away,Aston Villa,1,1,0,D,FT,English Premier League
+2024,West Ham United,371,2024-01-18,Home,Crystal Palace,0,2,-2,L,FT,English Premier League
+2024,West Ham United,371,2024-01-14,Home,Fulham,3,2,1,W,FT,English Premier League
+2024,West Ham United,371,2024-01-04,Away,Manchester City,1,4,-3,L,FT,English Premier League
+2024,West Ham United,371,2024-12-29,Home,Liverpool,0,5,-5,L,FT,English Premier League
+2024,West Ham United,371,2024-12-26,Away,Southampton,1,0,1,W,FT,English Premier League
+2024,West Ham United,371,2024-12-21,Home,Brighton & Hove Albion,1,1,0,D,FT,English Premier League
+2024,West Ham United,371,2024-12-16,Away,AFC Bournemouth,1,1,0,D,FT,English Premier League
+2024,West Ham United,371,2024-12-09,Home,Wolverhampton Wanderers,2,1,1,W,FT,English Premier League
+2024,West Ham United,371,2024-12-03,Away,Leicester City,1,3,-2,L,FT,English Premier League
+2024,West Ham United,371,2024-11-30,Home,Arsenal,2,5,-3,L,FT,English Premier League
+2024,West Ham United,371,2024-11-25,Away,Newcastle United,2,0,2,W,FT,English Premier League
+2024,West Ham United,371,2024-11-09,Home,Everton,0,0,0,D,FT,English Premier League
+2024,West Ham United,371,2024-11-02,Away,Nottingham Forest,0,3,-3,L,FT,English Premier League
+2024,West Ham United,371,2024-10-27,Home,Manchester United,2,1,1,W,FT,English Premier League
+2024,West Ham United,371,2024-10-19,Away,Tottenham Hotspur,1,4,-3,L,FT,English Premier League
+2024,West Ham United,371,2024-10-05,Home,Ipswich Town,4,1,3,W,FT,English Premier League
+2024,West Ham United,371,2024-09-28,Away,Brentford,1,1,0,D,FT,English Premier League
+2024,West Ham United,371,2024-09-21,Home,Chelsea,0,3,-3,L,FT,English Premier League
+2024,West Ham United,371,2024-09-14,Away,Fulham,1,1,0,D,FT,English Premier League
+2024,West Ham United,371,2024-08-31,Home,Manchester City,1,3,-2,L,FT,English Premier League
+2024,West Ham United,371,2024-08-24,Away,Crystal Palace,2,0,2,W,FT,English Premier League
+2024,West Ham United,371,2024-08-17,Home,Aston Villa,1,2,-1,L,FT,English Premier League
+2024,Wolverhampton Wanderers,380,2024-05-25,Home,Brentford,1,1,0,D,FT,English Premier League
+2024,Wolverhampton Wanderers,380,2024-05-20,Away,Crystal Palace,2,4,-2,L,FT,English Premier League
+2024,Wolverhampton Wanderers,380,2024-05-10,Home,Brighton & Hove Albion,0,2,-2,L,FT,English Premier League
+2024,Wolverhampton Wanderers,380,2024-05-02,Away,Manchester City,0,1,-1,L,FT,English Premier League
+2024,Wolverhampton Wanderers,380,2024-04-26,Home,Leicester City,3,0,3,W,FT,English Premier League
+2024,Wolverhampton Wanderers,380,2024-04-20,Away,Manchester United,1,0,1,W,FT,English Premier League
+2024,Wolverhampton Wanderers,380,2024-04-13,Home,Tottenham Hotspur,4,2,2,W,FT,English Premier League
+2024,Wolverhampton Wanderers,380,2024-04-05,Away,Ipswich Town,2,1,1,W,FT,English Premier League
+2024,Wolverhampton Wanderers,380,2024-04-01,Home,West Ham United,1,0,1,W,FT,English Premier League
+2024,Wolverhampton Wanderers,380,2024-03-15,Away,Southampton,2,1,1,W,FT,English Premier League
+2024,Wolverhampton Wanderers,380,2024-03-08,Home,Everton,1,1,0,D,FT,English Premier League
+2024,Wolverhampton Wanderers,380,2024-02-25,Home,Fulham,1,2,-1,L,FT,English Premier League
+2024,Wolverhampton Wanderers,380,2024-02-22,Away,AFC Bournemouth,1,0,1,W,FT,English Premier League
+2024,Wolverhampton Wanderers,380,2024-02-16,Away,Liverpool,1,2,-1,L,FT,English Premier League
+2024,Wolverhampton Wanderers,380,2024-02-01,Home,Aston Villa,2,0,2,W,FT,English Premier League
+2024,Wolverhampton Wanderers,380,2024-01-25,Home,Arsenal,0,1,-1,L,FT,English Premier League
+2024,Wolverhampton Wanderers,380,2024-01-20,Away,Chelsea,1,3,-2,L,FT,English Premier League
+2024,Wolverhampton Wanderers,380,2024-01-15,Away,Newcastle United,0,3,-3,L,FT,English Premier League
+2024,Wolverhampton Wanderers,380,2024-01-06,Home,Nottingham Forest,0,3,-3,L,FT,English Premier League
+2024,Wolverhampton Wanderers,380,2024-12-29,Away,Tottenham Hotspur,2,2,0,D,FT,English Premier League
+2024,Wolverhampton Wanderers,380,2024-12-26,Home,Manchester United,2,0,2,W,FT,English Premier League
+2024,Wolverhampton Wanderers,380,2024-12-22,Away,Leicester City,3,0,3,W,FT,English Premier League
+2024,Wolverhampton Wanderers,380,2024-12-14,Home,Ipswich Town,1,2,-1,L,FT,English Premier League
+2024,Wolverhampton Wanderers,380,2024-12-09,Away,West Ham United,1,2,-1,L,FT,English Premier League
+2024,Wolverhampton Wanderers,380,2024-12-04,Away,Everton,0,4,-4,L,FT,English Premier League
+2024,Wolverhampton Wanderers,380,2024-11-30,Home,AFC Bournemouth,2,4,-2,L,FT,English Premier League
+2024,Wolverhampton Wanderers,380,2024-11-23,Away,Fulham,4,1,3,W,FT,English Premier League
+2024,Wolverhampton Wanderers,380,2024-11-09,Home,Southampton,2,0,2,W,FT,English Premier League
+2024,Wolverhampton Wanderers,380,2024-11-02,Home,Crystal Palace,2,2,0,D,FT,English Premier League
+2024,Wolverhampton Wanderers,380,2024-10-26,Away,Brighton & Hove Albion,2,2,0,D,FT,English Premier League
+2024,Wolverhampton Wanderers,380,2024-10-20,Home,Manchester City,1,2,-1,L,FT,English Premier League
+2024,Wolverhampton Wanderers,380,2024-10-05,Away,Brentford,3,5,-2,L,FT,English Premier League
+2024,Wolverhampton Wanderers,380,2024-09-28,Home,Liverpool,1,2,-1,L,FT,English Premier League
+2024,Wolverhampton Wanderers,380,2024-09-21,Away,Aston Villa,1,3,-2,L,FT,English Premier League
+2024,Wolverhampton Wanderers,380,2024-09-15,Home,Newcastle United,1,2,-1,L,FT,English Premier League
+2024,Wolverhampton Wanderers,380,2024-08-31,Away,Nottingham Forest,1,1,0,D,FT,English Premier League
+2024,Wolverhampton Wanderers,380,2024-08-25,Home,Chelsea,2,6,-4,L,FT,English Premier League
+2024,Wolverhampton Wanderers,380,2024-08-17,Away,Arsenal,0,2,-2,L,FT,English Premier League

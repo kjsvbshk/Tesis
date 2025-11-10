@@ -1,8 +1,32 @@
 {
-  "game_id": 401585415,
-  "fecha": "2025-10-24",
+  "game_id": "401585415",
+  "fecha": "2025-11-09",
   "home_team": "Pistons",
   "away_team": "Suns",
   "home_score": 106,
-  "away_score": 120
+  "away_score": 120,
+  "home_stats": {
+    "PTS": 116,
+    "REB": 54,
+    "AST": 28,
+    "STL": 15,
+    "BLK": 11,
+    "TO": 23,
+    "FG%": 45.5,
+    "3P%": 32.3,
+    "FT%": 81.8,
+    "PF": 20
+  },
+  "away_stats": {
+    "PTS": 100,
+    "REB": 48,
+    "AST": 26,
+    "STL": 14,
+    "BLK": 5,
+    "TO": 19,
+    "FG%": 38.4,
+    "3P%": 27.0,
+    "FT%": 63.6,
+    "PF": 32
+  }
 }

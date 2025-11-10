@@ -1,8 +1,32 @@
 {
-  "game_id": 401585738,
-  "fecha": "2025-10-24",
+  "game_id": "401585738",
+  "fecha": "2025-11-09",
   "home_team": "Cavaliers",
   "away_team": "Suns",
   "home_score": 111,
-  "away_score": 117
+  "away_score": 117,
+  "home_stats": {
+    "PTS": 122,
+    "REB": 43,
+    "AST": 32,
+    "STL": 11,
+    "BLK": 2,
+    "TO": 15,
+    "FG%": 50.6,
+    "3P%": 54.5,
+    "FT%": 94.1,
+    "PF": 17
+  },
+  "away_stats": {
+    "PTS": 101,
+    "REB": 37,
+    "AST": 28,
+    "STL": 9,
+    "BLK": 4,
+    "TO": 15,
+    "FG%": 47.0,
+    "3P%": 26.9,
+    "FT%": 84.2,
+    "PF": 14
+  }
 }

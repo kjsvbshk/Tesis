@@ -1,8 +1,32 @@
 {
-  "game_id": 401584813,
-  "fecha": "2025-10-24",
+  "game_id": "401584813",
+  "fecha": "2025-11-09",
   "home_team": "Suns",
   "away_team": "Thunder",
   "home_score": 99,
-  "away_score": 111
+  "away_score": 111,
+  "home_stats": {
+    "PTS": 99,
+    "REB": 51,
+    "AST": 20,
+    "STL": 4,
+    "BLK": 7,
+    "TO": 17,
+    "FG%": 38.6,
+    "3P%": 31.0,
+    "FT%": 83.9,
+    "PF": 19
+  },
+  "away_stats": {
+    "PTS": 111,
+    "REB": 33,
+    "AST": 23,
+    "STL": 9,
+    "BLK": 8,
+    "TO": 7,
+    "FG%": 48.8,
+    "3P%": 37.0,
+    "FT%": 84.0,
+    "PF": 21
+  }
 }

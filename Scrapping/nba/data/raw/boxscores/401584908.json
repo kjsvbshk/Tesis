@@ -1,8 +1,32 @@
 {
-  "game_id": 401584908,
-  "fecha": "2025-10-24",
+  "game_id": "401584908",
+  "fecha": "2025-11-09",
   "home_team": "Warriors",
   "away_team": "Clippers",
   "home_score": 120,
-  "away_score": 114
+  "away_score": 114,
+  "home_stats": {
+    "PTS": 113,
+    "REB": 40,
+    "AST": 31,
+    "STL": 5,
+    "BLK": 6,
+    "TO": 11,
+    "FG%": 48.9,
+    "3P%": 33.3,
+    "FT%": 85.7,
+    "PF": 21
+  },
+  "away_stats": {
+    "PTS": 112,
+    "REB": 42,
+    "AST": 31,
+    "STL": 5,
+    "BLK": 4,
+    "TO": 13,
+    "FG%": 44.2,
+    "3P%": 39.5,
+    "FT%": 79.2,
+    "PF": 15
+  }
 }

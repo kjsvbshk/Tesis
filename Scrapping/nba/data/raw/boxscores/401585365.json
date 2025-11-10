@@ -1,8 +1,32 @@
 {
-  "game_id": 401585365,
-  "fecha": "2025-10-24",
+  "game_id": "401585365",
+  "fecha": "2025-11-09",
   "home_team": "Bulls",
   "away_team": "Grizzlies",
   "home_score": 125,
-  "away_score": 96
+  "away_score": 96,
+  "home_stats": {
+    "PTS": 110,
+    "REB": 34,
+    "AST": 26,
+    "STL": 8,
+    "BLK": 4,
+    "TO": 9,
+    "FG%": 46.2,
+    "3P%": 39.1,
+    "FT%": 61.5,
+    "PF": 24
+  },
+  "away_stats": {
+    "PTS": 118,
+    "REB": 46,
+    "AST": 24,
+    "STL": 3,
+    "BLK": 4,
+    "TO": 14,
+    "FG%": 54.4,
+    "3P%": 46.2,
+    "FT%": 90.9,
+    "PF": 16
+  }
 }

@@ -1,8 +1,32 @@
 {
-  "game_id": 401585190,
-  "fecha": "2025-10-24",
+  "game_id": "401585190",
+  "fecha": "2025-11-09",
   "home_team": "Heat",
   "away_team": "Nets",
   "home_score": 105,
-  "away_score": 109
+  "away_score": 109,
+  "home_stats": {
+    "PTS": 95,
+    "REB": 50,
+    "AST": 26,
+    "STL": 9,
+    "BLK": 9,
+    "TO": 8,
+    "FG%": 34.3,
+    "3P%": 21.8,
+    "FT%": 93.8,
+    "PF": 17
+  },
+  "away_stats": {
+    "PTS": 96,
+    "REB": 54,
+    "AST": 22,
+    "STL": 6,
+    "BLK": 4,
+    "TO": 12,
+    "FG%": 37.9,
+    "3P%": 25.8,
+    "FT%": 88.0,
+    "PF": 16
+  }
 }

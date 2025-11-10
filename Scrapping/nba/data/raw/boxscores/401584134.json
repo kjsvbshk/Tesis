@@ -1,8 +1,32 @@
 {
-  "game_id": 401584134,
-  "fecha": "2025-10-24",
+  "game_id": "401584134",
+  "fecha": "2025-11-09",
   "home_team": "Bulls",
   "away_team": "Raptors",
   "home_score": 104,
-  "away_score": 103
+  "away_score": 103,
+  "home_stats": {
+    "PTS": 121,
+    "REB": 40,
+    "AST": 32,
+    "STL": 8,
+    "BLK": 6,
+    "TO": 14,
+    "FG%": 53.0,
+    "3P%": 33.3,
+    "FT%": 74.1,
+    "PF": 14
+  },
+  "away_stats": {
+    "PTS": 108,
+    "REB": 37,
+    "AST": 20,
+    "STL": 5,
+    "BLK": 2,
+    "TO": 12,
+    "FG%": 51.2,
+    "3P%": 44.4,
+    "FT%": 63.2,
+    "PF": 20
+  }
 }

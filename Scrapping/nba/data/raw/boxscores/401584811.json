@@ -1,8 +1,32 @@
 {
-  "game_id": 401584811,
-  "fecha": "2025-10-24",
+  "game_id": "401584811",
+  "fecha": "2025-11-09",
   "home_team": "Pelicans",
   "away_team": "Mavericks",
   "home_score": 124,
-  "away_score": 136
+  "away_score": 136,
+  "home_stats": {
+    "PTS": 124,
+    "REB": 54,
+    "AST": 31,
+    "STL": 2,
+    "BLK": 3,
+    "TO": 18,
+    "FG%": 51.1,
+    "3P%": 47.2,
+    "FT%": 59.1,
+    "PF": 20
+  },
+  "away_stats": {
+    "PTS": 136,
+    "REB": 42,
+    "AST": 29,
+    "STL": 7,
+    "BLK": 6,
+    "TO": 6,
+    "FG%": 49.0,
+    "3P%": 37.7,
+    "FT%": 76.2,
+    "PF": 19
+  }
 }

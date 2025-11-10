@@ -1,8 +1,32 @@
 {
-  "game_id": 401585749,
-  "fecha": "2025-10-24",
+  "game_id": "401585749",
+  "fecha": "2025-11-09",
   "home_team": "Pistons",
   "away_team": "Grizzlies",
   "home_score": 102,
-  "away_score": 116
+  "away_score": 116,
+  "home_stats": {
+    "PTS": 108,
+    "REB": 49,
+    "AST": 24,
+    "STL": 13,
+    "BLK": 7,
+    "TO": 20,
+    "FG%": 46.7,
+    "3P%": 32.3,
+    "FT%": 87.5,
+    "PF": 14
+  },
+  "away_stats": {
+    "PTS": 90,
+    "REB": 38,
+    "AST": 22,
+    "STL": 13,
+    "BLK": 4,
+    "TO": 17,
+    "FG%": 40.5,
+    "3P%": 26.7,
+    "FT%": 75.0,
+    "PF": 14
+  }
 }

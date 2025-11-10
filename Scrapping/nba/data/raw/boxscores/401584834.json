@@ -1,8 +1,32 @@
 {
-  "game_id": 401584834,
-  "fecha": "2025-10-24",
+  "game_id": "401584834",
+  "fecha": "2025-11-09",
   "home_team": "Spurs",
   "away_team": "Grizzlies",
   "home_score": 108,
-  "away_score": 120
+  "away_score": 120,
+  "home_stats": {
+    "PTS": 108,
+    "REB": 40,
+    "AST": 26,
+    "STL": 5,
+    "BLK": 9,
+    "TO": 15,
+    "FG%": 43.4,
+    "3P%": 37.5,
+    "FT%": 80.8,
+    "PF": 28
+  },
+  "away_stats": {
+    "PTS": 120,
+    "REB": 45,
+    "AST": 23,
+    "STL": 7,
+    "BLK": 3,
+    "TO": 12,
+    "FG%": 46.5,
+    "3P%": 33.3,
+    "FT%": 80.6,
+    "PF": 25
+  }
 }

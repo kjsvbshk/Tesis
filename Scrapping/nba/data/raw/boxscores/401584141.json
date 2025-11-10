@@ -1,8 +1,32 @@
 {
-  "game_id": 401584141,
-  "fecha": "2025-10-24",
+  "game_id": "401584141",
+  "fecha": "2025-11-09",
   "home_team": "Celtics",
   "away_team": "Bulls",
   "home_score": 124,
-  "away_score": 97
+  "away_score": 97,
+  "home_stats": {
+    "PTS": 124,
+    "REB": 52,
+    "AST": 36,
+    "STL": 6,
+    "BLK": 9,
+    "TO": 16,
+    "FG%": 52.2,
+    "3P%": 42.9,
+    "FT%": 75.0,
+    "PF": 18
+  },
+  "away_stats": {
+    "PTS": 97,
+    "REB": 37,
+    "AST": 25,
+    "STL": 11,
+    "BLK": 7,
+    "TO": 8,
+    "FG%": 43.3,
+    "3P%": 32.1,
+    "FT%": 55.6,
+    "PF": 13
+  }
 }

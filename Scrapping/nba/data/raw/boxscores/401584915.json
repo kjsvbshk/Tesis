@@ -1,8 +1,32 @@
 {
-  "game_id": 401584915,
-  "fecha": "2025-10-24",
+  "game_id": "401584915",
+  "fecha": "2025-11-09",
   "home_team": "Mavericks",
   "away_team": "Thunder",
   "home_score": 120,
-  "away_score": 126
+  "away_score": 126,
+  "home_stats": {
+    "PTS": 120,
+    "REB": 47,
+    "AST": 26,
+    "STL": 5,
+    "BLK": 12,
+    "TO": 15,
+    "FG%": 44.8,
+    "3P%": 36.5,
+    "FT%": 65.7,
+    "PF": 21
+  },
+  "away_stats": {
+    "PTS": 126,
+    "REB": 50,
+    "AST": 24,
+    "STL": 8,
+    "BLK": 5,
+    "TO": 12,
+    "FG%": 44.0,
+    "3P%": 45.5,
+    "FT%": 81.8,
+    "PF": 24
+  }
 }

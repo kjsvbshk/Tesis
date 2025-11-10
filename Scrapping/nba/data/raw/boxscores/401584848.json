@@ -1,8 +1,32 @@
 {
-  "game_id": 401584848,
-  "fecha": "2025-10-24",
+  "game_id": "401584848",
+  "fecha": "2025-11-09",
   "home_team": "Bulls",
   "away_team": "Heat",
   "home_score": 102,
-  "away_score": 97
+  "away_score": 97,
+  "home_stats": {
+    "PTS": 100,
+    "REB": 36,
+    "AST": 21,
+    "STL": 2,
+    "BLK": 7,
+    "TO": 11,
+    "FG%": 45.7,
+    "3P%": 29.7,
+    "FT%": 93.8,
+    "PF": 16
+  },
+  "away_stats": {
+    "PTS": 118,
+    "REB": 43,
+    "AST": 31,
+    "STL": 7,
+    "BLK": 1,
+    "TO": 8,
+    "FG%": 50.0,
+    "3P%": 48.6,
+    "FT%": 85.0,
+    "PF": 19
+  }
 }

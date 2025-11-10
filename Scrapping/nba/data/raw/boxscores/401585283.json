@@ -1,8 +1,32 @@
 {
-  "game_id": 401585283,
-  "fecha": "2025-10-24",
+  "game_id": "401585283",
+  "fecha": "2025-11-09",
   "home_team": "Suns",
   "away_team": "Magic",
   "home_score": 112,
-  "away_score": 107
+  "away_score": 107,
+  "home_stats": {
+    "PTS": 113,
+    "REB": 40,
+    "AST": 30,
+    "STL": 12,
+    "BLK": 7,
+    "TO": 7,
+    "FG%": 44.6,
+    "3P%": 33.3,
+    "FT%": 73.1,
+    "PF": 21
+  },
+  "away_stats": {
+    "PTS": 98,
+    "REB": 39,
+    "AST": 19,
+    "STL": 4,
+    "BLK": 5,
+    "TO": 22,
+    "FG%": 56.2,
+    "3P%": 28.6,
+    "FT%": 57.1,
+    "PF": 19
+  }
 }

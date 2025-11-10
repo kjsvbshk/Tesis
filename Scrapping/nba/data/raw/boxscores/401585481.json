@@ -1,8 +1,32 @@
 {
-  "game_id": 401585481,
-  "fecha": "2025-10-24",
+  "game_id": "401585481",
+  "fecha": "2025-11-09",
   "home_team": "Thunder",
   "away_team": "Spurs",
   "home_score": 123,
-  "away_score": 87
+  "away_score": 87,
+  "home_stats": {
+    "PTS": 132,
+    "REB": 45,
+    "AST": 39,
+    "STL": 6,
+    "BLK": 8,
+    "TO": 11,
+    "FG%": 52.7,
+    "3P%": 48.7,
+    "FT%": 85.0,
+    "PF": 20
+  },
+  "away_stats": {
+    "PTS": 118,
+    "REB": 37,
+    "AST": 20,
+    "STL": 6,
+    "BLK": 2,
+    "TO": 10,
+    "FG%": 49.4,
+    "3P%": 29.0,
+    "FT%": 95.5,
+    "PF": 15
+  }
 }

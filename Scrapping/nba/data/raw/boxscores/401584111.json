@@ -1,8 +1,32 @@
 {
-  "game_id": 401584111,
-  "fecha": "2025-10-24",
+  "game_id": "401584111",
+  "fecha": "2025-11-09",
   "home_team": "Jazz",
   "away_team": "Trail Blazers",
   "home_score": 115,
-  "away_score": 99
+  "away_score": 99,
+  "home_stats": {
+    "PTS": 115,
+    "REB": 52,
+    "AST": 26,
+    "STL": 11,
+    "BLK": 6,
+    "TO": 12,
+    "FG%": 46.3,
+    "3P%": 30.2,
+    "FT%": 93.3,
+    "PF": 18
+  },
+  "away_stats": {
+    "PTS": 99,
+    "REB": 43,
+    "AST": 23,
+    "STL": 5,
+    "BLK": 6,
+    "TO": 17,
+    "FG%": 42.0,
+    "3P%": 31.4,
+    "FT%": 70.0,
+    "PF": 15
+  }
 }

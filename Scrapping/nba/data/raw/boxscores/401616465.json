@@ -1,8 +1,32 @@
 {
-  "game_id": 401616465,
-  "fecha": "2025-10-24",
+  "game_id": "401616465",
+  "fecha": "2025-11-09",
   "home_team": "Bulls",
   "away_team": "Hornets",
   "home_score": 111,
-  "away_score": 100
+  "away_score": 100,
+  "home_stats": {
+    "PTS": 111,
+    "REB": 57,
+    "AST": 23,
+    "STL": 6,
+    "BLK": 6,
+    "TO": 16,
+    "FG%": 42.2,
+    "3P%": 48.0,
+    "FT%": 79.3,
+    "PF": 16
+  },
+  "away_stats": {
+    "PTS": 100,
+    "REB": 42,
+    "AST": 25,
+    "STL": 9,
+    "BLK": 9,
+    "TO": 16,
+    "FG%": 43.3,
+    "3P%": 27.0,
+    "FT%": 100.0,
+    "PF": 24
+  }
 }

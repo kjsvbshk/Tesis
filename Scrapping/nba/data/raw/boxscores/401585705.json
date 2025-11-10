@@ -1,8 +1,32 @@
 {
-  "game_id": 401585705,
-  "fecha": "2025-10-24",
+  "game_id": "401585705",
+  "fecha": "2025-11-09",
   "home_team": "Cavaliers",
   "away_team": "Nuggets",
   "home_score": 121,
-  "away_score": 109
+  "away_score": 109,
+  "home_stats": {
+    "PTS": 130,
+    "REB": 51,
+    "AST": 36,
+    "STL": 7,
+    "BLK": 4,
+    "TO": 16,
+    "FG%": 57.5,
+    "3P%": 63.6,
+    "FT%": 69.2,
+    "PF": 19
+  },
+  "away_stats": {
+    "PTS": 101,
+    "REB": 28,
+    "AST": 26,
+    "STL": 10,
+    "BLK": 4,
+    "TO": 15,
+    "FG%": 46.3,
+    "3P%": 32.0,
+    "FT%": 81.0,
+    "PF": 12
+  }
 }

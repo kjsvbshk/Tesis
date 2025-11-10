@@ -1,8 +1,32 @@
 {
-  "game_id": 401585123,
-  "fecha": "2025-10-24",
+  "game_id": "401585123",
+  "fecha": "2025-11-09",
   "home_team": "76ers",
   "away_team": "Jazz",
   "home_score": 109,
-  "away_score": 120
+  "away_score": 120,
+  "home_stats": {
+    "PTS": 109,
+    "REB": 34,
+    "AST": 30,
+    "STL": 12,
+    "BLK": 6,
+    "TO": 6,
+    "FG%": 40.4,
+    "3P%": 18.4,
+    "FT%": 78.3,
+    "PF": 20
+  },
+  "away_stats": {
+    "PTS": 120,
+    "REB": 48,
+    "AST": 30,
+    "STL": 4,
+    "BLK": 4,
+    "TO": 23,
+    "FG%": 57.5,
+    "3P%": 26.7,
+    "FT%": 83.3,
+    "PF": 18
+  }
 }

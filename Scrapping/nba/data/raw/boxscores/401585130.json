@@ -1,8 +1,32 @@
 {
-  "game_id": 401585130,
-  "fecha": "2025-10-24",
+  "game_id": "401585130",
+  "fecha": "2025-11-09",
   "home_team": "Pistons",
   "away_team": "Nuggets",
   "home_score": 103,
-  "away_score": 107
+  "away_score": 107,
+  "home_stats": {
+    "PTS": 131,
+    "REB": 38,
+    "AST": 35,
+    "STL": 6,
+    "BLK": 10,
+    "TO": 12,
+    "FG%": 58.8,
+    "3P%": 37.0,
+    "FT%": 87.1,
+    "PF": 23
+  },
+  "away_stats": {
+    "PTS": 114,
+    "REB": 37,
+    "AST": 28,
+    "STL": 6,
+    "BLK": 0,
+    "TO": 11,
+    "FG%": 47.2,
+    "3P%": 37.5,
+    "FT%": 70.0,
+    "PF": 20
+  }
 }

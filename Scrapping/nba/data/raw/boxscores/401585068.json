@@ -1,8 +1,32 @@
 {
-  "game_id": 401585068,
-  "fecha": "2025-10-24",
+  "game_id": "401585068",
+  "fecha": "2025-11-09",
   "home_team": "Raptors",
   "away_team": "Pistons",
   "home_score": 142,
-  "away_score": 113
+  "away_score": 113,
+  "home_stats": {
+    "PTS": 129,
+    "REB": 41,
+    "AST": 29,
+    "STL": 4,
+    "BLK": 4,
+    "TO": 11,
+    "FG%": 50.0,
+    "3P%": 42.9,
+    "FT%": 87.5,
+    "PF": 22
+  },
+  "away_stats": {
+    "PTS": 127,
+    "REB": 33,
+    "AST": 26,
+    "STL": 9,
+    "BLK": 5,
+    "TO": 7,
+    "FG%": 50.5,
+    "3P%": 50.0,
+    "FT%": 82.1,
+    "PF": 27
+  }
 }

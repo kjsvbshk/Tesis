@@ -1,8 +1,32 @@
 {
-  "game_id": 401585474,
-  "fecha": "2025-10-24",
+  "game_id": "401585474",
+  "fecha": "2025-11-09",
   "home_team": "Bulls",
   "away_team": "Cavaliers",
   "home_score": 95,
-  "away_score": 109
+  "away_score": 109,
+  "home_stats": {
+    "PTS": 132,
+    "REB": 74,
+    "AST": 29,
+    "STL": 6,
+    "BLK": 8,
+    "TO": 16,
+    "FG%": 40.0,
+    "3P%": 35.1,
+    "FT%": 81.6,
+    "PF": 18
+  },
+  "away_stats": {
+    "PTS": 123,
+    "REB": 39,
+    "AST": 37,
+    "STL": 7,
+    "BLK": 11,
+    "TO": 12,
+    "FG%": 43.3,
+    "3P%": 40.7,
+    "FT%": 57.9,
+    "PF": 25
+  }
 }

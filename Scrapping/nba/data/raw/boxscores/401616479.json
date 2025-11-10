@@ -1,8 +1,32 @@
 {
-  "game_id": 401616479,
-  "fecha": "2025-10-24",
+  "game_id": "401616479",
+  "fecha": "2025-11-09",
   "home_team": "Jazz",
   "away_team": "Clippers",
   "home_score": 120,
-  "away_score": 118
+  "away_score": 118,
+  "home_stats": {
+    "PTS": 103,
+    "REB": 40,
+    "AST": 23,
+    "STL": 10,
+    "BLK": 10,
+    "TO": 13,
+    "FG%": 45.2,
+    "3P%": 29.0,
+    "FT%": 75.0,
+    "PF": 17
+  },
+  "away_stats": {
+    "PTS": 117,
+    "REB": 40,
+    "AST": 23,
+    "STL": 8,
+    "BLK": 9,
+    "TO": 12,
+    "FG%": 48.9,
+    "3P%": 44.1,
+    "FT%": 76.2,
+    "PF": 18
+  }
 }

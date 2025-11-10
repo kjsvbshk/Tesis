@@ -1,8 +1,32 @@
 {
-  "game_id": 401585788,
-  "fecha": "2025-10-24",
+  "game_id": "401585788",
+  "fecha": "2025-11-09",
   "home_team": "Nets",
   "away_team": "Raptors",
   "home_score": 115,
-  "away_score": 103
+  "away_score": 103,
+  "home_stats": {
+    "PTS": 106,
+    "REB": 56,
+    "AST": 25,
+    "STL": 4,
+    "BLK": 15,
+    "TO": 13,
+    "FG%": 44.2,
+    "3P%": 30.6,
+    "FT%": 79.2,
+    "PF": 16
+  },
+  "away_stats": {
+    "PTS": 102,
+    "REB": 45,
+    "AST": 19,
+    "STL": 8,
+    "BLK": 5,
+    "TO": 9,
+    "FG%": 37.2,
+    "3P%": 40.0,
+    "FT%": 88.9,
+    "PF": 22
+  }
 }

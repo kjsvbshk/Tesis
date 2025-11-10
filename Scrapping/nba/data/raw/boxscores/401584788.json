@@ -1,8 +1,32 @@
 {
-  "game_id": 401584788,
-  "fecha": "2025-10-24",
+  "game_id": "401584788",
+  "fecha": "2025-11-09",
   "home_team": "Nets",
   "away_team": "Clippers",
   "home_score": 100,
-  "away_score": 93
+  "away_score": 93,
+  "home_stats": {
+    "PTS": 100,
+    "REB": 49,
+    "AST": 22,
+    "STL": 10,
+    "BLK": 10,
+    "TO": 14,
+    "FG%": 40.2,
+    "3P%": 36.6,
+    "FT%": 84.6,
+    "PF": 14
+  },
+  "away_stats": {
+    "PTS": 93,
+    "REB": 51,
+    "AST": 22,
+    "STL": 10,
+    "BLK": 8,
+    "TO": 15,
+    "FG%": 39.6,
+    "3P%": 22.2,
+    "FT%": 100.0,
+    "PF": 15
+  }
 }

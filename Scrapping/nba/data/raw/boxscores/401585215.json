@@ -1,8 +1,32 @@
 {
-  "game_id": 401585215,
-  "fecha": "2025-10-24",
+  "game_id": "401585215",
+  "fecha": "2025-11-09",
   "home_team": "Hawks",
   "away_team": "Heat",
   "home_score": 109,
-  "away_score": 117
+  "away_score": 117,
+  "home_stats": {
+    "PTS": 108,
+    "REB": 44,
+    "AST": 21,
+    "STL": 7,
+    "BLK": 2,
+    "TO": 16,
+    "FG%": 46.3,
+    "3P%": 38.7,
+    "FT%": 90.9,
+    "PF": 17
+  },
+  "away_stats": {
+    "PTS": 109,
+    "REB": 38,
+    "AST": 23,
+    "STL": 6,
+    "BLK": 2,
+    "TO": 13,
+    "FG%": 46.0,
+    "3P%": 42.9,
+    "FT%": 82.4,
+    "PF": 20
+  }
 }

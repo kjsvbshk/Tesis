@@ -1,8 +1,32 @@
 {
-  "game_id": 401584794,
-  "fecha": "2025-10-24",
+  "game_id": "401584794",
+  "fecha": "2025-11-09",
   "home_team": "Timberwolves",
   "away_team": "Pelicans",
   "home_score": 122,
-  "away_score": 101
+  "away_score": 101,
+  "home_stats": {
+    "PTS": 122,
+    "REB": 48,
+    "AST": 30,
+    "STL": 9,
+    "BLK": 7,
+    "TO": 16,
+    "FG%": 54.9,
+    "3P%": 40.5,
+    "FT%": 70.8,
+    "PF": 23
+  },
+  "away_stats": {
+    "PTS": 101,
+    "REB": 40,
+    "AST": 23,
+    "STL": 6,
+    "BLK": 1,
+    "TO": 17,
+    "FG%": 38.7,
+    "3P%": 28.6,
+    "FT%": 95.5,
+    "PF": 23
+  }
 }

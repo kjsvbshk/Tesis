@@ -1,8 +1,32 @@
 {
-  "game_id": 401585268,
-  "fecha": "2025-10-24",
+  "game_id": "401585268",
+  "fecha": "2025-11-09",
   "home_team": "Thunder",
   "away_team": "Pelicans",
   "home_score": 106,
-  "away_score": 110
+  "away_score": 110,
+  "home_stats": {
+    "PTS": 83,
+    "REB": 41,
+    "AST": 24,
+    "STL": 9,
+    "BLK": 5,
+    "TO": 20,
+    "FG%": 39.0,
+    "3P%": 25.0,
+    "FT%": 71.4,
+    "PF": 16
+  },
+  "away_stats": {
+    "PTS": 107,
+    "REB": 45,
+    "AST": 22,
+    "STL": 11,
+    "BLK": 5,
+    "TO": 11,
+    "FG%": 47.7,
+    "3P%": 30.3,
+    "FT%": 92.9,
+    "PF": 11
+  }
 }

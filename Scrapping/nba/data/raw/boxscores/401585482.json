@@ -1,8 +1,32 @@
 {
-  "game_id": 401585482,
-  "fecha": "2025-10-24",
+  "game_id": "401585482",
+  "fecha": "2025-11-09",
   "home_team": "Rockets",
   "away_team": "Suns",
   "home_score": 113,
-  "away_score": 129
+  "away_score": 129,
+  "home_stats": {
+    "PTS": 110,
+    "REB": 51,
+    "AST": 20,
+    "STL": 6,
+    "BLK": 6,
+    "TO": 14,
+    "FG%": 40.4,
+    "3P%": 35.1,
+    "FT%": 67.6,
+    "PF": 21
+  },
+  "away_stats": {
+    "PTS": 105,
+    "REB": 58,
+    "AST": 14,
+    "STL": 8,
+    "BLK": 5,
+    "TO": 12,
+    "FG%": 33.3,
+    "3P%": 24.4,
+    "FT%": 90.3,
+    "PF": 29
+  }
 }

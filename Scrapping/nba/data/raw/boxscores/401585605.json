@@ -1,8 +1,32 @@
 {
-  "game_id": 401585605,
-  "fecha": "2025-10-24",
+  "game_id": "401585605",
+  "fecha": "2025-11-09",
   "home_team": "Heat",
   "away_team": "Pistons",
   "home_score": 103,
-  "away_score": 102
+  "away_score": 102,
+  "home_stats": {
+    "PTS": 101,
+    "REB": 44,
+    "AST": 24,
+    "STL": 4,
+    "BLK": 7,
+    "TO": 12,
+    "FG%": 45.8,
+    "3P%": 38.9,
+    "FT%": 78.6,
+    "PF": 19
+  },
+  "away_stats": {
+    "PTS": 104,
+    "REB": 47,
+    "AST": 24,
+    "STL": 7,
+    "BLK": 2,
+    "TO": 9,
+    "FG%": 44.9,
+    "3P%": 34.3,
+    "FT%": 75.0,
+    "PF": 11
+  }
 }

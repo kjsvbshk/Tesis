@@ -1,8 +1,32 @@
 {
-  "game_id": 401585631,
-  "fecha": "2025-10-24",
+  "game_id": "401585631",
+  "fecha": "2025-11-09",
   "home_team": "Clippers",
   "away_team": "Trail Blazers",
   "home_score": 123,
-  "away_score": 111
+  "away_score": 111,
+  "home_stats": {
+    "PTS": 103,
+    "REB": 38,
+    "AST": 21,
+    "STL": 6,
+    "BLK": 4,
+    "TO": 17,
+    "FG%": 48.1,
+    "3P%": 44.1,
+    "FT%": 66.7,
+    "PF": 16
+  },
+  "away_stats": {
+    "PTS": 116,
+    "REB": 42,
+    "AST": 29,
+    "STL": 15,
+    "BLK": 7,
+    "TO": 11,
+    "FG%": 52.3,
+    "3P%": 41.9,
+    "FT%": 86.7,
+    "PF": 13
+  }
 }

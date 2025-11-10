@@ -1,8 +1,32 @@
 {
-  "game_id": 401585052,
-  "fecha": "2025-10-24",
+  "game_id": "401585052",
+  "fecha": "2025-11-09",
   "home_team": "Jazz",
   "away_team": "Pelicans",
   "home_score": 105,
-  "away_score": 100
+  "away_score": 100,
+  "home_stats": {
+    "PTS": 112,
+    "REB": 35,
+    "AST": 27,
+    "STL": 10,
+    "BLK": 7,
+    "TO": 14,
+    "FG%": 54.9,
+    "3P%": 37.0,
+    "FT%": 80.0,
+    "PF": 19
+  },
+  "away_stats": {
+    "PTS": 105,
+    "REB": 42,
+    "AST": 27,
+    "STL": 5,
+    "BLK": 3,
+    "TO": 18,
+    "FG%": 42.4,
+    "3P%": 30.8,
+    "FT%": 84.0,
+    "PF": 15
+  }
 }

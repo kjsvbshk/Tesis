@@ -1,8 +1,32 @@
 {
-  "game_id": 401584923,
-  "fecha": "2025-10-24",
+  "game_id": "401584923",
+  "fecha": "2025-11-09",
   "home_team": "76ers",
   "away_team": "Wizards",
   "home_score": 146,
-  "away_score": 128
+  "away_score": 128,
+  "home_stats": {
+    "PTS": 146,
+    "REB": 47,
+    "AST": 37,
+    "STL": 14,
+    "BLK": 6,
+    "TO": 13,
+    "FG%": 54.7,
+    "3P%": 43.5,
+    "FT%": 88.0,
+    "PF": 27
+  },
+  "away_stats": {
+    "PTS": 101,
+    "REB": 44,
+    "AST": 21,
+    "STL": 5,
+    "BLK": 2,
+    "TO": 22,
+    "FG%": 42.4,
+    "3P%": 29.0,
+    "FT%": 64.5,
+    "PF": 19
+  }
 }

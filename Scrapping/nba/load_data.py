@@ -115,6 +115,7 @@ class DataAnalyzer:
         # Analizar archivos raw
         self._analyze_standings()
         self._analyze_team_stats()
+        self._analyze_player_stats()
         self._analyze_injuries()
         self._analyze_odds()
         
@@ -206,28 +207,91 @@ class DataAnalyzer:
         if not team_stats_dir.exists():
             return
         
-        csv_files = list(team_stats_dir.glob('*.csv'))
+        # Buscar archivos en la nueva estructura: {season}_{season_type}/offensive/all_teams.csv y defensive/all_teams.csv
+        csv_files = []
+        
+        # Buscar en subdirectorios por temporada (formato: 2023-24_regular, 2024-25_playoffs, etc.)
+        season_dirs = [d for d in team_stats_dir.iterdir() if d.is_dir() and '_' in d.name]
+        if season_dirs:
+            # Archivos organizados por temporada y categoría (offensive/defensive)
+            for season_dir in season_dirs:
+                # Buscar en subdirectorios offensive y defensive
+                for category_dir in ['offensive', 'defensive']:
+                    category_path = season_dir / category_dir
+                    if category_path.exists():
+                        all_teams_file = category_path / 'all_teams.csv'
+                        if all_teams_file.exists():
+                            csv_files.append(all_teams_file)
+        
         if not csv_files:
             return
         
-        # Leer primer archivo como muestra
-        df = pd.read_csv(csv_files[0], nrows=100)
+        # Leer todos los archivos para obtener todas las columnas posibles
+        # (ofensivas y defensivas pueden tener diferentes columnas)
+        all_columns = set()
+        sample_dfs = []
         
-        # Agregar columna team_abbrev del nombre del archivo
-        sample_columns = self._infer_columns(df)
-        sample_columns['team_abbrev'] = {
-            'type': 'VARCHAR(10)',
-            'nullable': False,
-            'sample_values': [f.stem for f in csv_files[:5]]
-        }
+        for csv_file in csv_files:
+            df_temp = pd.read_csv(csv_file, nrows=100)
+            all_columns.update(df_temp.columns)
+            sample_dfs.append(df_temp)
+        
+        # Combinar todos los DataFrames para inferir columnas completas
+        df_combined = pd.concat(sample_dfs, ignore_index=True)
+        
+        # Inferir columnas desde el DataFrame combinado
+        sample_columns = self._infer_columns(df_combined)
+        
+        # Asegurar que team_abbrev esté presente
+        if 'team_abbrev' not in sample_columns:
+            sample_columns['team_abbrev'] = {
+                'type': 'VARCHAR(10)',
+                'nullable': False,
+                'sample_values': ['bos', 'atl', 'mil']
+            }
+        
+        # Asegurar que season y season_type sean VARCHAR
+        if 'season' not in sample_columns:
+            sample_columns['season'] = {
+                'type': 'VARCHAR(10)',
+                'nullable': True,
+                'sample_values': ['2023-24', '2024-25']
+            }
+        else:
+            sample_columns['season']['type'] = 'VARCHAR(10)'
+        
+        if 'season_type' not in sample_columns:
+            sample_columns['season_type'] = {
+                'type': 'VARCHAR(20)',
+                'nullable': True,
+                'sample_values': ['regular', 'playoffs']
+            }
+        else:
+            sample_columns['season_type']['type'] = 'VARCHAR(20)'
+        
+        # Agregar columna category (offensive/defensive)
+        if 'category' not in sample_columns:
+            sample_columns['category'] = {
+                'type': 'VARCHAR(20)',
+                'nullable': False,
+                'sample_values': ['offensive', 'defensive']
+            }
+        
+        # Asegurar que todas las columnas numéricas sean nullable (excepto las esenciales)
+        # Esto evita problemas con columnas que pueden no tener datos
+        essential_columns = ['team_name', 'team_abbrev', 'season', 'season_type', 'category']
+        for col_name, col_info in sample_columns.items():
+            if col_name not in essential_columns:
+                col_info['nullable'] = True
         
         # Contar total de registros válidos
         total_rows = 0
         for f in csv_files:
             df_temp = pd.read_csv(f)
             # Filtrar filas inválidas
-            df_temp = df_temp[df_temp['team_name'].notna()]
-            df_temp = df_temp[df_temp['team_name'] != 'Unknown']
+            if 'team_name' in df_temp.columns:
+                df_temp = df_temp[df_temp['team_name'].notna()]
+                df_temp = df_temp[df_temp['team_name'] != 'Unknown']
             total_rows += len(df_temp)
         
         self.metadata['team_stats'] = {
@@ -235,12 +299,57 @@ class DataAnalyzer:
             'source_type': 'csv_multiple',
             'table_name': 'team_stats',
             'columns': sample_columns,
-            'primary_key': None,  # Composite key: team_abbrev + season
-            'indexes': ['team_name', 'team_abbrev', 'season'],
+            'primary_key': None,  # Composite key: team_abbrev + season + season_type + category
+            'indexes': ['team_name', 'team_abbrev', 'season', 'season_type', 'category'],
             'row_count': total_rows
         }
         
-        print(f"  ✓ team_stats: {total_rows} registros de {len(csv_files)} equipos")
+        print(f"  ✓ team_stats: {total_rows} registros de {len(csv_files)} archivos")
+    
+    def _analyze_player_stats(self):
+        """Analizar player_stats CSV files"""
+        player_stats_dir = self.config.data_dir / 'raw' / 'player_stats'
+        
+        if not player_stats_dir.exists():
+            return
+        
+        # Buscar todos los archivos all_stats.csv en subdirectorios
+        csv_files = list(player_stats_dir.glob('*/all_stats.csv'))
+        if not csv_files:
+            return
+        
+        # Leer primer archivo como muestra
+        df = pd.read_csv(csv_files[0], nrows=100)
+        
+        # Contar total de registros de todos los archivos
+        total_rows = sum(len(pd.read_csv(f)) for f in csv_files)
+        
+        # Inferir columnas
+        columns_info = self._infer_columns(df)
+        
+        # Asegurar que player_id sea BIGINT (puede venir como string)
+        if 'player_id' in columns_info:
+            columns_info['player_id']['type'] = 'BIGINT'
+        
+        # Asegurar que season_type sea VARCHAR
+        if 'season_type' in columns_info:
+            columns_info['season_type']['type'] = 'VARCHAR(20)'
+        
+        # Asegurar que season sea VARCHAR (formato "2023-24")
+        if 'season' in columns_info:
+            columns_info['season']['type'] = 'VARCHAR(10)'
+        
+        self.metadata['player_stats'] = {
+            'source_files': [str(f) for f in csv_files],
+            'source_type': 'csv_multiple',
+            'table_name': 'player_stats',
+            'columns': columns_info,
+            'primary_key': None,  # No hay PK única (mismo jugador en múltiples temporadas)
+            'indexes': ['player_id', 'player_name', 'season', 'season_type'],
+            'row_count': total_rows
+        }
+        
+        print(f"  ✓ player_stats: {total_rows} registros de {len(csv_files)} archivos")
     
     def _analyze_injuries(self):
         """Analizar injuries CSV files"""
@@ -532,6 +641,8 @@ class DDLGenerator:
         # Tablas sin dependencias primero
         if 'team_stats' in self.metadata:
             order.append('team_stats')
+        if 'player_stats' in self.metadata:
+            order.append('player_stats')
         if 'games' in self.metadata:
             order.append('games')
         if 'standings' in self.metadata:
@@ -549,7 +660,12 @@ class DDLGenerator:
         
         for col_name, col_info in table_meta['columns'].items():
             col_type = col_info['type']
-            nullable = 'NULL' if col_info['nullable'] else 'NOT NULL'
+            # Para estructura dinámica, todas las columnas son nullable excepto PK
+            # La base de datos se adapta al CSV
+            if table_meta.get('primary_key') == col_name:
+                nullable = 'NOT NULL'
+            else:
+                nullable = 'NULL'
             columns_def.append(f"    {col_name} {col_type} {nullable}")
         
         # Agregar Primary Key si existe
@@ -623,8 +739,129 @@ class DataLoader:
                 print(f"⚠️  Error ejecutando DDL: {e}")
                 self.conn.rollback()
         
+        # Asegurar que todas las tablas tengan las columnas correctas según los datos
+        self._sync_table_structure(cursor)
+        
         cursor.close()
         print("✅ DDL ejecutado\n")
+    
+    def _sync_table_structure(self, cursor):
+        """Sincronizar estructura de tablas con los datos que llegan"""
+        for table_name, table_meta in self.metadata.items():
+            try:
+                # Verificar si la tabla existe
+                cursor.execute("""
+                    SELECT EXISTS (
+                        SELECT FROM information_schema.tables 
+                        WHERE table_schema = %s AND table_name = %s
+                    )
+                """, (self.config.schema, table_name))
+                
+                if not cursor.fetchone()[0]:
+                    continue  # La tabla no existe, se creará con el DDL
+                
+                # Obtener columnas actuales de la tabla con sus tipos
+                cursor.execute("""
+                    SELECT column_name, data_type, character_maximum_length, udt_name
+                    FROM information_schema.columns
+                    WHERE table_schema = %s AND table_name = %s
+                """, (self.config.schema, table_name))
+                
+                existing_columns = {}
+                for row in cursor.fetchall():
+                    col_name, data_type, max_length, udt_name = row
+                    # Normalizar tipo de datos para comparación
+                    if data_type == 'character varying':
+                        pg_type = f"VARCHAR({max_length})" if max_length else 'VARCHAR'
+                    elif data_type == 'bigint':
+                        pg_type = 'BIGINT'
+                    elif data_type == 'double precision':
+                        pg_type = 'DOUBLE PRECISION'
+                    elif data_type == 'integer':
+                        pg_type = 'INTEGER'
+                    elif data_type == 'date':
+                        pg_type = 'DATE'
+                    elif data_type == 'jsonb':
+                        pg_type = 'JSONB'
+                    else:
+                        pg_type = data_type.upper()
+                    existing_columns[col_name] = pg_type
+                
+                # Obtener columnas esperadas según los datos
+                expected_columns = table_meta.get('columns', {})
+                
+                # Agregar columnas faltantes o cambiar tipo si es necesario
+                for col_name, col_info in expected_columns.items():
+                    expected_type = col_info.get('type', 'TEXT')
+                    
+                    if col_name not in existing_columns:
+                        # Columna no existe, agregarla
+                        nullable = 'NULL' if col_info.get('nullable', True) else 'NOT NULL'
+                        
+                        try:
+                            alter_sql = f"""
+                                ALTER TABLE {self.config.schema}.{table_name}
+                                ADD COLUMN IF NOT EXISTS {col_name} {expected_type} {nullable}
+                            """
+                            cursor.execute(alter_sql)
+                            self.conn.commit()
+                            print(f"  ✓ Agregada columna {col_name} ({expected_type}) a {table_name}")
+                        except Exception as e:
+                            print(f"  ⚠️  Error agregando columna {col_name} a {table_name}: {e}")
+                            self.conn.rollback()
+                    else:
+                        # Columna existe, verificar si el tipo coincide
+                        existing_type = existing_columns[col_name]
+                        
+                        # Normalizar tipos para comparación
+                        def normalize_type(t):
+                            t = t.upper().strip()
+                            if 'VARCHAR' in t:
+                                return 'VARCHAR'
+                            return t
+                        
+                        if normalize_type(existing_type) != normalize_type(expected_type):
+                            # Tipo no coincide, cambiar tipo de columna
+                            try:
+                                # Para cambiar tipo, primero necesitamos verificar si hay datos
+                                cursor.execute(f"""
+                                    SELECT COUNT(*) FROM {self.config.schema}.{table_name}
+                                """)
+                                row_count = cursor.fetchone()[0]
+                                
+                                if row_count == 0:
+                                    # Tabla vacía, cambiar tipo directamente
+                                    alter_sql = f"""
+                                        ALTER TABLE {self.config.schema}.{table_name}
+                                        ALTER COLUMN {col_name} TYPE {expected_type}
+                                    """
+                                    cursor.execute(alter_sql)
+                                    self.conn.commit()
+                                    print(f"  ✓ Cambiado tipo de columna {col_name} de {existing_type} a {expected_type} en {table_name}")
+                                else:
+                                    # Tabla con datos, usar USING para conversión
+                                    # Para VARCHAR, simplemente convertir a texto
+                                    if 'VARCHAR' in expected_type.upper():
+                                        alter_sql = f"""
+                                            ALTER TABLE {self.config.schema}.{table_name}
+                                            ALTER COLUMN {col_name} TYPE {expected_type} USING {col_name}::text
+                                        """
+                                    else:
+                                        # Para otros tipos, intentar conversión directa
+                                        alter_sql = f"""
+                                            ALTER TABLE {self.config.schema}.{table_name}
+                                            ALTER COLUMN {col_name} TYPE {expected_type} USING {col_name}::{expected_type}
+                                        """
+                                    cursor.execute(alter_sql)
+                                    self.conn.commit()
+                                    print(f"  ✓ Cambiado tipo de columna {col_name} de {existing_type} a {expected_type} en {table_name}")
+                            except Exception as e:
+                                print(f"  ⚠️  Error cambiando tipo de columna {col_name} en {table_name}: {e}")
+                                self.conn.rollback()
+                
+            except Exception as e:
+                print(f"  ⚠️  Error sincronizando estructura de {table_name}: {e}")
+                self.conn.rollback()
     
     def load_all_data(self):
         """Cargar todos los datos"""
@@ -634,6 +871,17 @@ class DataLoader:
             print(f"\n  📊 Cargando {table_name}...")
             
             try:
+                # Para games, truncar la tabla antes de cargar
+                if table_name == 'games':
+                    cursor = self.conn.cursor()
+                    cursor.execute(f"TRUNCATE TABLE {self.config.schema}.{table_name}")
+                    self.conn.commit()
+                    cursor.close()
+                    print(f"    ✓ Tabla {table_name} truncada")
+                
+                # Obtener conteo antes de cargar
+                count_before = self._count_records(table_name)
+                
                 if table_meta['source_type'] == 'csv':
                     self._load_from_csv(table_name, table_meta)
                 elif table_meta['source_type'] == 'csv_multiple':
@@ -642,8 +890,9 @@ class DataLoader:
                     self._load_from_json(table_name, table_meta)
                 
                 # Verificar carga
-                count = self._count_records(table_name)
-                print(f"    ✅ {count} registros cargados")
+                count_after = self._count_records(table_name)
+                new_records = count_after - count_before
+                print(f"    ✅ {count_after} registros totales ({new_records} nuevos)")
                 
             except Exception as e:
                 print(f"    ❌ Error cargando {table_name}: {e}")
@@ -668,14 +917,38 @@ class DataLoader:
         for file_path in table_meta['source_files']:
             df = pd.read_csv(file_path)
             
-            # Para team_stats, agregar team_abbrev y nombre completo del equipo
+            # Para team_stats, extraer información del path
             if table_name == 'team_stats':
-                team_abbrev = Path(file_path).stem.lower()
-                df['team_abbrev'] = team_abbrev
+                file_path_obj = Path(file_path)
+                # Estructura: data/raw/team_stats/{season}_{season_type}/offensive|defensive/all_teams.csv
+                # El padre del archivo es la categoría (offensive/defensive)
+                category_dir = file_path_obj.parent.name  # offensive o defensive
+                # El abuelo es la temporada (2023-24_regular, etc.)
+                season_dir = file_path_obj.parent.parent.name
                 
-                # Reemplazar 'Unknown' con el nombre real del equipo
-                if team_abbrev in TEAM_NAMES_MAP:
-                    df['team_name'] = TEAM_NAMES_MAP[team_abbrev]
+                # Extraer season y season_type del nombre del directorio
+                if '_' in season_dir:
+                    parts = season_dir.split('_')
+                    if len(parts) == 2:
+                        season_from_dir = parts[0]
+                        season_type_from_dir = parts[1]
+                        # Si season y season_type no están en el DataFrame, agregarlos
+                        if 'season' not in df.columns:
+                            df['season'] = season_from_dir
+                        if 'season_type' not in df.columns:
+                            df['season_type'] = season_type_from_dir
+                
+                # Agregar categoría (offensive/defensive) como columna
+                if 'category' not in df.columns:
+                    df['category'] = category_dir
+                
+                # Asegurar que team_abbrev esté presente
+                if 'team_abbrev' not in df.columns and 'team_name' in df.columns:
+                    # Intentar obtener team_abbrev del team_name
+                    df['team_abbrev'] = df['team_name'].map(TEAM_ABBREV_MAP)
+            
+            # Para player_stats, los datos ya vienen con season y season_type
+            # No necesitamos agregar nada adicional, solo cargar los datos
             
             dfs.append(df)
         
@@ -734,10 +1007,13 @@ class DataLoader:
         # Renombrar columnas del DataFrame primero
         df = df.rename(columns=original_to_safe)
         
-        # Ahora seleccionar solo columnas que existen en la tabla
-        table_columns = list(table_meta['columns'].keys())
-        available_columns = [col for col in table_columns if col in df.columns]
-        df = df[available_columns]
+        # Para games, NO filtrar columnas - usar todas las del CSV procesado
+        # Esto permite incluir campos calculados como home_win y point_diff
+        if table_meta['table_name'] != 'games':
+            # Para otras tablas, seleccionar solo columnas que existen en la tabla
+            table_columns = list(table_meta['columns'].keys())
+            available_columns = [col for col in table_columns if col in df.columns]
+            df = df[available_columns]
         
         # Convertir fecha si existe
         if 'fecha' in df.columns:
@@ -760,8 +1036,41 @@ class DataLoader:
                     # Convertir NaN a None para PostgreSQL NULL
                     df[col] = df[col].where(pd.notna(df[col]), None)
         
+        # Para player_stats y team_stats, mantener season como VARCHAR (formato "2023-24")
+        if table_meta['table_name'] in ['player_stats', 'team_stats']:
+            # Asegurar que player_id sea numérico (solo para player_stats)
+            if table_meta['table_name'] == 'player_stats' and 'player_id' in df.columns:
+                df['player_id'] = pd.to_numeric(df['player_id'], errors='coerce')
+                df['player_id'] = df['player_id'].where(pd.notna(df['player_id']), None)
+            
+            # Para team_stats, convertir columnas numéricas correctamente
+            if table_meta['table_name'] == 'team_stats':
+                # Columnas que deben ser enteras (solo rank)
+                integer_columns = ['rank']
+                for col in integer_columns:
+                    if col in df.columns:
+                        # Convertir a float primero para manejar valores como "47.0"
+                        df[col] = pd.to_numeric(df[col], errors='coerce')
+                        # Convertir a int, pero mantener None para valores faltantes
+                        df[col] = df[col].apply(lambda x: int(x) if pd.notna(x) else None)
+                
+                # Todas las columnas estadísticas deben ser flotantes (incluyendo off_fgm, def_fgm)
+                float_columns = [
+                    'off_fgm', 'off_fga', 'off_fg_pct', 'off_3pm', 'off_3pa', 'off_3p_pct', 
+                    'off_ftm', 'off_fta', 'off_ft_pct', 'off_or', 'off_dr', 'off_reb',
+                    'off_ast', 'off_stl', 'off_blk', 'off_to', 'off_pf', 'off_pts',
+                    'def_fgm', 'def_fga', 'def_fg_pct', 'def_3pm', 'def_3pa', 'def_3p_pct',
+                    'def_ftm', 'def_fta', 'def_ft_pct', 'def_or', 'def_dr', 'def_reb',
+                    'def_ast', 'def_stl', 'def_blk', 'def_to', 'def_pf', 'def_pts'
+                ]
+                for col in float_columns:
+                    if col in df.columns:
+                        df[col] = pd.to_numeric(df[col], errors='coerce')
+                        df[col] = df[col].where(pd.notna(df[col]), None)
+            
+            # Season y season_type ya vienen como string, mantenerlos así
         # Convertir season a integer si existe (para otras tablas)
-        elif 'season' in df.columns:
+        elif 'season' in df.columns and table_meta['table_name'] not in ['player_stats', 'team_stats']:
             df['season'] = df['season'].fillna(0).astype(int)
             df['season'] = df['season'].replace(0, None)
         
@@ -777,6 +1086,14 @@ class DataLoader:
             print("    ⚠️  No hay datos para cargar")
             return
         
+        # Verificar duplicados antes de cargar
+        if table_name == 'player_stats':
+            # Eliminar duplicados basados en player_id + season + season_type
+            initial_count = len(df)
+            df = df.drop_duplicates(subset=['player_id', 'season', 'season_type'], keep='first')
+            if len(df) < initial_count:
+                print(f"    ⚠️  Se eliminaron {initial_count - len(df)} duplicados antes de cargar")
+        
         cursor = self.conn.cursor()
         
         # El DataFrame ya viene con columnas sanitizadas desde _clean_dataframe
@@ -786,10 +1103,213 @@ class DataLoader:
             df.to_csv(f, index=False, header=False, na_rep='\\N')
         
         try:
-            # Usar COPY para cargar
-            columns = ','.join(df.columns)
+            # Usar INSERT con ON CONFLICT DO NOTHING para omitir duplicados
+            # Esto es más lento que COPY pero permite manejar duplicados correctamente
+            self._insert_with_skip_duplicates(table_name, df, columns_meta)
+            
+        except Exception as e:
+            self.conn.rollback()
+            print(f"    ⚠️  Error cargando {table_name}: {e}")
+        finally:
+            cursor.close()
+            # Limpiar archivo temporal
+            os.unlink(temp_file)
+    
+    def _insert_with_skip_duplicates(self, table_name: str, df: pd.DataFrame, columns_meta: Dict):
+        """Insertar registros usando COPY con manejo de duplicados"""
+        cursor = self.conn.cursor()
+        
+        # El DataFrame ya viene con columnas sanitizadas desde _clean_dataframe
+        columns = list(df.columns)
+        
+        # Obtener metadata de la tabla para saber si tiene PK
+        table_meta = self.metadata.get(table_name, {})
+        pk_col = table_meta.get('primary_key')
+        
+        # Para games, obtener todas las columnas de la base de datos y sincronizar
+        if table_name == 'games':
+            # Obtener columnas existentes en la DB
+            cursor.execute(f"""
+                SELECT column_name, data_type, character_maximum_length
+                FROM information_schema.columns
+                WHERE table_schema = %s AND table_name = %s
+                ORDER BY ordinal_position
+            """, (self.config.schema, table_name))
+            
+            db_columns_info = {}
+            for row in cursor.fetchall():
+                col_name, data_type, max_length = row
+                if data_type == 'character varying':
+                    pg_type = f"VARCHAR({max_length})" if max_length else 'TEXT'
+                elif data_type == 'bigint':
+                    pg_type = 'BIGINT'
+                elif data_type == 'double precision':
+                    pg_type = 'DOUBLE PRECISION'
+                elif data_type == 'integer':
+                    pg_type = 'INTEGER'
+                elif data_type == 'date':
+                    pg_type = 'DATE'
+                else:
+                    pg_type = data_type.upper()
+                db_columns_info[col_name] = pg_type
+            
+            # Obtener todas las columnas de la DB primero
+            cursor.execute(f"""
+                SELECT column_name 
+                FROM information_schema.columns
+                WHERE table_schema = %s AND table_name = %s
+                ORDER BY ordinal_position
+            """, (self.config.schema, table_name))
+            all_db_columns = [row[0] for row in cursor.fetchall()]
+            
+            # Agregar columnas faltantes del CSV a la tabla
+            columns_info = table_meta.get('columns', {})
+            for col in columns:
+                if col not in db_columns_info:
+                    # Columna no existe en DB, agregarla
+                    col_info = columns_info.get(col, {})
+                    col_type = col_info.get('type', 'TEXT')
+                    # Para estructura dinámica, todas las columnas nuevas son nullable
+                    nullable = 'NULL'
+                    
+                    try:
+                        alter_sql = f"""
+                            ALTER TABLE {self.config.schema}.{table_name}
+                            ADD COLUMN IF NOT EXISTS "{col}" {col_type} {nullable}
+                        """
+                        cursor.execute(alter_sql)
+                        self.conn.commit()
+                        print(f"    ✓ Columna {col} agregada a {table_name}")
+                        # Actualizar lista de columnas de DB
+                        all_db_columns.append(col)
+                    except Exception as e:
+                        print(f"    ⚠️  Error agregando columna {col}: {e}")
+                        self.conn.rollback()
+            
+            # Asegurar que todas las columnas existentes sean nullable (excepto PK)
+            # Esto permite que la base de datos se adapte dinámicamente al CSV
+            pk_col = table_meta.get('primary_key')
+            for col_name in all_db_columns:
+                if col_name != pk_col:
+                    try:
+                        # Verificar si la columna tiene restricción NOT NULL
+                        cursor.execute(f"""
+                            SELECT is_nullable
+                            FROM information_schema.columns
+                            WHERE table_schema = %s 
+                            AND table_name = %s 
+                            AND column_name = %s
+                        """, (self.config.schema, table_name, col_name))
+                        result = cursor.fetchone()
+                        if result and result[0] == 'NO':
+                            # La columna es NOT NULL, cambiarla a NULL
+                            alter_sql = f"""
+                                ALTER TABLE {self.config.schema}.{table_name}
+                                ALTER COLUMN "{col_name}" DROP NOT NULL
+                            """
+                            cursor.execute(alter_sql)
+                            self.conn.commit()
+                    except Exception as e:
+                        # Ignorar errores (puede que la columna no tenga restricción)
+                        pass
+            
+            # Para games, usar TODAS las columnas del DataFrame (incluyendo home_win, point_diff, etc.)
+            # Agregar columnas faltantes del DataFrame a la DB si no existen
+            for col in df.columns:
+                if col not in all_db_columns:
+                    # Columna del CSV no existe en DB, agregarla
+                    if col in df.columns:
+                        dtype = df[col].dtype
+                        if pd.api.types.is_integer_dtype(dtype):
+                            col_type = 'BIGINT'
+                        elif pd.api.types.is_float_dtype(dtype):
+                            col_type = 'DOUBLE PRECISION'
+                        elif pd.api.types.is_datetime64_any_dtype(dtype):
+                            col_type = 'DATE'
+                        else:
+                            col_type = 'TEXT'
+                        
+                        try:
+                            alter_sql = f"""
+                                ALTER TABLE {self.config.schema}.{table_name}
+                                ADD COLUMN IF NOT EXISTS "{col}" {col_type} NULL
+                            """
+                            cursor.execute(alter_sql)
+                            self.conn.commit()
+                            print(f"    ✓ Columna {col} agregada a {table_name}")
+                            all_db_columns.append(col)
+                        except Exception as e:
+                            print(f"    ⚠️  Error agregando columna {col}: {e}")
+                            self.conn.rollback()
+            
+            # Agregar columnas faltantes de la DB al DataFrame con None
+            for col in all_db_columns:
+                if col not in df.columns:
+                    df[col] = None
+            
+            # Usar TODAS las columnas del DataFrame (no solo las de la DB)
+            columns = list(df.columns)
+        
+        # Crear tabla temporal para cargar datos
+        temp_table = f"{table_name}_temp_{int(pd.Timestamp.now().timestamp())}"
+        
+        try:
+            # Crear tabla temporal basándose en las columnas del DataFrame y metadatos
+            # Esto es necesario porque la tabla original puede no tener todas las columnas del DataFrame
+            table_meta = self.metadata.get(table_name, {})
+            columns_info = table_meta.get('columns', {})
+            
+            # Construir definición de columnas para la tabla temporal
+            # Las columnas del DataFrame ya vienen sanitizadas desde _clean_dataframe
+            temp_columns = []
+            for col in columns:
+                # La columna ya está sanitizada, buscar en metadatos o inferir tipo
+                if col in columns_info:
+                    col_info = columns_info.get(col, {})
+                    col_type = col_info.get('type', 'TEXT')
+                else:
+                    # Inferir tipo desde el DataFrame
+                    if col in df.columns:
+                        dtype = df[col].dtype
+                        if pd.api.types.is_integer_dtype(dtype):
+                            col_type = 'BIGINT'
+                        elif pd.api.types.is_float_dtype(dtype):
+                            col_type = 'DOUBLE PRECISION'
+                        elif pd.api.types.is_datetime64_any_dtype(dtype):
+                            col_type = 'DATE'
+                        else:
+                            col_type = 'TEXT'
+                    else:
+                        col_type = 'TEXT'
+                temp_columns.append(f'"{col}" {col_type}')
+            
+            create_temp_sql = f"""
+                CREATE TEMP TABLE {temp_table} (
+                    {','.join(temp_columns)}
+                )
+            """
+            cursor.execute(create_temp_sql)
+            
+            # Cargar datos en tabla temporal usando COPY (rápido)
+            # Antes de escribir, asegurar que los enteros se escriban sin decimales
+            df_for_copy = df.copy()
+            for col in df_for_copy.columns:
+                col_info = columns_info.get(col, {})
+                col_type = col_info.get('type', 'TEXT')
+                # Si la columna es BIGINT o INTEGER, convertir a int antes de escribir
+                if 'BIGINT' in col_type.upper() or 'INTEGER' in col_type.upper():
+                    df_for_copy[col] = df_for_copy[col].apply(
+                        lambda x: int(x) if pd.notna(x) and x != '' else None
+                    )
+            
+            with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.csv', newline='', encoding='utf-8') as f:
+                temp_file = f.name
+                # No usar float_format para preservar decimales en valores flotantes
+                df_for_copy.to_csv(f, index=False, header=False, na_rep='\\N')
+            
+            columns_str = ','.join(columns)
             copy_sql = f"""
-                COPY {self.config.schema}.{table_name} ({columns})
+                COPY {temp_table} ({columns_str})
                 FROM STDIN
                 WITH (FORMAT CSV, NULL '\\N', ENCODING 'UTF8')
             """
@@ -797,44 +1317,173 @@ class DataLoader:
             with open(temp_file, 'r', encoding='utf-8') as f:
                 cursor.copy_expert(copy_sql, f)
             
+            # Insertar desde tabla temporal a tabla real, omitiendo duplicados
+            if table_name == 'player_stats':
+                # Para player_stats, usar player_id + season + season_type como clave única
+                insert_sql = f"""
+                    INSERT INTO {self.config.schema}.{table_name} ({columns_str})
+                    SELECT {columns_str}
+                    FROM {temp_table} t
+                    WHERE NOT EXISTS (
+                        SELECT 1 FROM {self.config.schema}.{table_name} e
+                        WHERE e.player_id = t.player_id 
+                        AND e.season = t.season 
+                        AND e.season_type = t.season_type
+                    )
+                """
+            elif table_name == 'team_stats':
+                # Para team_stats, usar team_abbrev + season + season_type + category como clave única
+                # Si category no está en las columnas, usar solo team_abbrev + season + season_type
+                if 'category' in columns:
+                    insert_sql = f"""
+                        INSERT INTO {self.config.schema}.{table_name} ({columns_str})
+                        SELECT {columns_str}
+                        FROM {temp_table} t
+                        WHERE NOT EXISTS (
+                            SELECT 1 FROM {self.config.schema}.{table_name} e
+                            WHERE e.team_abbrev = t.team_abbrev 
+                            AND e.season = t.season 
+                            AND e.season_type = t.season_type
+                            AND e.category = t.category
+                        )
+                    """
+                else:
+                    insert_sql = f"""
+                        INSERT INTO {self.config.schema}.{table_name} ({columns_str})
+                        SELECT {columns_str}
+                        FROM {temp_table} t
+                        WHERE NOT EXISTS (
+                            SELECT 1 FROM {self.config.schema}.{table_name} e
+                            WHERE e.team_abbrev = t.team_abbrev 
+                            AND e.season = t.season 
+                            AND e.season_type = t.season_type
+                        )
+                    """
+            elif pk_col:
+                # Para tablas con PK
+                if table_name == 'games':
+                    # Para games, como ya truncamos la tabla, solo insertar
+                    insert_sql = f"""
+                        INSERT INTO {self.config.schema}.{table_name} ({columns_str})
+                        SELECT {columns_str}
+                        FROM {temp_table}
+                    """
+                else:
+                    # Para otras tablas con PK, solo insertar si no existe
+                    insert_sql = f"""
+                        INSERT INTO {self.config.schema}.{table_name} ({columns_str})
+                        SELECT {columns_str}
+                        FROM {temp_table}
+                        ON CONFLICT ({pk_col}) DO NOTHING
+                    """
+            else:
+                # Para otras tablas sin PK, insertar todos (pueden tener duplicados)
+                insert_sql = f"""
+                    INSERT INTO {self.config.schema}.{table_name} ({columns_str})
+                    SELECT {columns_str}
+                    FROM {temp_table}
+                """
+            
+            cursor.execute(insert_sql)
+            inserted_count = cursor.rowcount
+            
             self.conn.commit()
+            print(f"    ✓ {inserted_count}/{len(df)} registros nuevos insertados (duplicados omitidos)")
             
         except Exception as e:
             self.conn.rollback()
-            print(f"    ⚠️  Error en COPY: {e}")
-            # Fallback: usar INSERT individual (más lento pero maneja duplicados)
-            self._insert_with_skip_duplicates(table_name, df, columns_meta)
+            # Fallback: insertar uno por uno
+            print(f"    ⚠️  Error con tabla temporal, usando inserción individual: {e}")
+            self._insert_one_by_one(table_name, df, columns)
         finally:
             cursor.close()
             # Limpiar archivo temporal
-            os.unlink(temp_file)
+            if 'temp_file' in locals():
+                os.unlink(temp_file)
     
-    def _insert_with_skip_duplicates(self, table_name: str, df: pd.DataFrame, columns_meta: Dict):
-        """Insertar registros uno por uno, skipeando duplicados"""
+    def _insert_one_by_one(self, table_name: str, df: pd.DataFrame, columns: List[str]):
+        """Insertar o actualizar registros uno por uno como fallback"""
         cursor = self.conn.cursor()
         
-        # El DataFrame ya viene con columnas sanitizadas desde _clean_dataframe
-        columns = list(df.columns)
-        placeholders = ','.join(['%s'] * len(columns))
+        # Obtener PK de la tabla
+        table_meta = self.metadata.get(table_name, {})
+        pk_col = table_meta.get('primary_key')
         
-        insert_sql = f"""
-            INSERT INTO {self.config.schema}.{table_name} ({','.join(columns)})
-            VALUES ({placeholders})
-            ON CONFLICT DO NOTHING
-        """
+        # Filtrar columnas que existen en la base de datos
+        cursor.execute(f"""
+            SELECT column_name 
+            FROM information_schema.columns
+            WHERE table_schema = %s AND table_name = %s
+        """, (self.config.schema, table_name))
+        db_columns = [row[0] for row in cursor.fetchall()]
+        
+        # Solo usar columnas que existen en la DB
+        valid_columns = [col for col in columns if col in db_columns]
+        
+        if not valid_columns:
+            print(f"    ⚠️  No hay columnas válidas para cargar")
+            cursor.close()
+            return
+        
+        placeholders = ','.join(['%s'] * len(valid_columns))
+        
+        if pk_col and pk_col in valid_columns:
+            # Para tablas con PK, usar UPSERT
+            if table_name == 'games':
+                # Para games, actualizar si existe
+                update_cols = [col for col in valid_columns if col != pk_col]
+                update_set = ','.join([f'"{col}" = EXCLUDED."{col}"' for col in update_cols])
+                
+                insert_sql = f"""
+                    INSERT INTO {self.config.schema}.{table_name} ({','.join(valid_columns)})
+                    VALUES ({placeholders})
+                    ON CONFLICT ({pk_col}) DO UPDATE SET {update_set}
+                """
+            else:
+                # Para otras tablas, solo insertar si no existe
+                insert_sql = f"""
+                    INSERT INTO {self.config.schema}.{table_name} ({','.join(valid_columns)})
+                    VALUES ({placeholders})
+                    ON CONFLICT ({pk_col}) DO NOTHING
+                """
+        else:
+            # Sin PK, solo insertar
+            insert_sql = f"""
+                INSERT INTO {self.config.schema}.{table_name} ({','.join(valid_columns)})
+                VALUES ({placeholders})
+            """
         
         success_count = 0
+        updated_count = 0
+        
         for _, row in df.iterrows():
             try:
-                values = tuple(row[col] for col in columns)
+                values = tuple(row[col] for col in valid_columns)
                 cursor.execute(insert_sql, values)
-                success_count += 1
-            except Exception:
+                
+                if cursor.rowcount > 0:
+                    if table_name == 'games' and pk_col and pk_col in valid_columns:
+                        # Verificar si fue actualización o inserción
+                        cursor.execute(f"""
+                            SELECT COUNT(*) FROM {self.config.schema}.{table_name}
+                            WHERE "{pk_col}" = %s
+                        """, (row[pk_col],))
+                        if cursor.fetchone()[0] > 0:
+                            updated_count += 1
+                        else:
+                            success_count += 1
+                    else:
+                        success_count += 1
+            except Exception as e:
                 continue
         
         self.conn.commit()
         cursor.close()
-        print(f"    ✓ {success_count}/{len(df)} registros insertados (duplicados skipeados)")
+        
+        if updated_count > 0:
+            print(f"    ✓ {success_count} nuevos, {updated_count} actualizados de {len(df)} registros")
+        else:
+            print(f"    ✓ {success_count}/{len(df)} registros insertados (duplicados skipeados)")
     
     def _count_records(self, table_name: str) -> int:
         """Contar registros en una tabla"""

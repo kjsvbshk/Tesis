@@ -1,8 +1,32 @@
 {
-  "game_id": 401585333,
-  "fecha": "2025-10-24",
+  "game_id": "401585333",
+  "fecha": "2025-11-09",
   "home_team": "Suns",
   "away_team": "Wizards",
   "home_score": 112,
-  "away_score": 108
+  "away_score": 108,
+  "home_stats": {
+    "PTS": 112,
+    "REB": 35,
+    "AST": 32,
+    "STL": 11,
+    "BLK": 4,
+    "TO": 18,
+    "FG%": 49.0,
+    "3P%": 21.9,
+    "FT%": 64.7,
+    "PF": 19
+  },
+  "away_stats": {
+    "PTS": 140,
+    "REB": 42,
+    "AST": 33,
+    "STL": 13,
+    "BLK": 6,
+    "TO": 17,
+    "FG%": 61.4,
+    "3P%": 44.0,
+    "FT%": 80.8,
+    "PF": 12
+  }
 }

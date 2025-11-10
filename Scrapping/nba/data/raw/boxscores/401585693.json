@@ -1,8 +1,32 @@
 {
-  "game_id": 401585693,
-  "fecha": "2025-10-24",
+  "game_id": "401585693",
+  "fecha": "2025-11-09",
   "home_team": "Pistons",
   "away_team": "Wizards",
   "home_score": 107,
-  "away_score": 126
+  "away_score": 126,
+  "home_stats": {
+    "PTS": 87,
+    "REB": 47,
+    "AST": 22,
+    "STL": 2,
+    "BLK": 4,
+    "TO": 18,
+    "FG%": 40.9,
+    "3P%": 27.3,
+    "FT%": 75.0,
+    "PF": 18
+  },
+  "away_stats": {
+    "PTS": 96,
+    "REB": 47,
+    "AST": 19,
+    "STL": 9,
+    "BLK": 5,
+    "TO": 13,
+    "FG%": 41.6,
+    "3P%": 25.0,
+    "FT%": 80.0,
+    "PF": 18
+  }
 }

@@ -1,8 +1,32 @@
 {
-  "game_id": 401585054,
-  "fecha": "2025-10-24",
+  "game_id": "401585054",
+  "fecha": "2025-11-09",
   "home_team": "Warriors",
   "away_team": "Heat",
   "home_score": 102,
-  "away_score": 114
+  "away_score": 114,
+  "home_stats": {
+    "PTS": 102,
+    "REB": 43,
+    "AST": 27,
+    "STL": 4,
+    "BLK": 7,
+    "TO": 13,
+    "FG%": 42.0,
+    "3P%": 24.2,
+    "FT%": 80.0,
+    "PF": 19
+  },
+  "away_stats": {
+    "PTS": 114,
+    "REB": 44,
+    "AST": 26,
+    "STL": 6,
+    "BLK": 1,
+    "TO": 7,
+    "FG%": 48.4,
+    "3P%": 32.3,
+    "FT%": 72.7,
+    "PF": 19
+  }
 }

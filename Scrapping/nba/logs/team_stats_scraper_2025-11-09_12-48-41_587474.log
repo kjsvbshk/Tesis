@@ -1,0 +1,582 @@
+2025-11-09 12:48:41.591 | INFO     | __main__:main:47 - ================================================================================
+2025-11-09 12:48:41.593 | INFO     | __main__:main:48 - SCRAPING DE ESTADISTICAS DE EQUIPOS NBA
+2025-11-09 12:48:41.593 | INFO     | __main__:main:49 -    Temporada: 2024-25
+2025-11-09 12:48:41.594 | INFO     | __main__:main:50 -    Tipo: REGULAR
+2025-11-09 12:48:41.594 | INFO     | __main__:main:51 - ================================================================================
+
+2025-11-09 12:48:41.594 | INFO     | espn.team_scraper:scrape_all_teams_stats:335 - Iniciando scraping de estadísticas para 30 equipos - Temporada: 2024-25 regular
+2025-11-09 12:48:41.595 | INFO     | espn.team_scraper:scrape_all_teams_stats:339 - Procesando atlanta-hawks...
+2025-11-09 12:48:42.674 | WARNING  | espn.team_scraper:extract_team_averages:87 - No se encontró el contenedor principal de estadísticas
+2025-11-09 12:48:42.675 | INFO     | espn.team_scraper:extract_team_averages:90 - Encontradas 4 tablas
+2025-11-09 12:48:42.676 | INFO     | espn.team_scraper:extract_team_averages:98 - ✅ Tabla con estadísticas de porcentajes encontrada
+2025-11-09 12:48:42.677 | INFO     | espn.team_scraper:extract_team_averages:120 - Usando última fila como promedios: 14 celdas
+2025-11-09 12:48:42.678 | INFO     | espn.team_scraper:parse_team_stats_row:172 - Parseando fila con 14 celdas
+2025-11-09 12:48:42.678 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 0: '41.8'
+2025-11-09 12:48:42.679 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 1: '88.3'
+2025-11-09 12:48:42.680 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 2: '47.3'
+2025-11-09 12:48:42.680 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 3: '11.2'
+2025-11-09 12:48:42.681 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 4: '32.8'
+2025-11-09 12:48:42.681 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 5: '34.1'
+2025-11-09 12:48:42.683 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 6: '20.4'
+2025-11-09 12:48:42.683 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 7: '25.9'
+2025-11-09 12:48:42.683 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 8: '78.8'
+2025-11-09 12:48:42.684 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 9: '30.6'
+2025-11-09 12:48:42.684 | INFO     | espn.team_scraper:parse_team_stats_row:213 - Estadísticas parseadas: {'team_name': 'Unknown', 'season': None, 'fg_pct': 47.3, 'threep_pct': 34.1, 'ft_pct': 78.8, 'rpg': 55.1, 'apg': 1.305, 'spg': 0.54, 'bpg': 0.0, 'tpg': 0.0, 'ppg': 0.0, 'oppg': 0.0, 'net_rating': 0.0, 'FG%': 47.3, '3P%': 34.1, 'FT%': 78.8, 'REB': 55.1, 'AST': 1.305, 'STL': 0.54, 'BLK': 0.0, 'TO': 0.0, 'PF': 0.0, 'PTS': 0.0}
+2025-11-09 12:48:42.685 | INFO     | espn.team_scraper:scrape_team_stats:60 - Estadísticas extraídas exitosamente para atlanta-hawks
+2025-11-09 12:48:42.695 | INFO     | espn.team_scraper:save_team_stats_to_csv:287 - Estadísticas de equipo guardadas en data/raw/team_stats/2024-25_regular/atl.csv
+2025-11-09 12:48:42.696 | INFO     | espn.team_scraper:scrape_all_teams_stats:339 - Procesando boston-celtics...
+2025-11-09 12:48:43.862 | WARNING  | espn.team_scraper:extract_team_averages:87 - No se encontró el contenedor principal de estadísticas
+2025-11-09 12:48:43.863 | INFO     | espn.team_scraper:extract_team_averages:90 - Encontradas 4 tablas
+2025-11-09 12:48:43.864 | INFO     | espn.team_scraper:extract_team_averages:98 - ✅ Tabla con estadísticas de porcentajes encontrada
+2025-11-09 12:48:43.864 | INFO     | espn.team_scraper:extract_team_averages:120 - Usando última fila como promedios: 14 celdas
+2025-11-09 12:48:43.865 | INFO     | espn.team_scraper:parse_team_stats_row:172 - Parseando fila con 14 celdas
+2025-11-09 12:48:43.865 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 0: '42.0'
+2025-11-09 12:48:43.866 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 1: '94.0'
+2025-11-09 12:48:43.866 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 2: '44.7'
+2025-11-09 12:48:43.867 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 3: '14.8'
+2025-11-09 12:48:43.868 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 4: '46.0'
+2025-11-09 12:48:43.868 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 5: '32.2'
+2025-11-09 12:48:43.869 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 6: '14.2'
+2025-11-09 12:48:43.870 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 7: '18.2'
+2025-11-09 12:48:43.870 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 8: '78.0'
+2025-11-09 12:48:43.871 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 9: '27.2'
+2025-11-09 12:48:43.871 | INFO     | espn.team_scraper:parse_team_stats_row:213 - Estadísticas parseadas: {'team_name': 'Unknown', 'season': None, 'fg_pct': 44.7, 'threep_pct': 32.2, 'ft_pct': 78.0, 'rpg': 56.7, 'apg': 1.202, 'spg': 0.53, 'bpg': 0.0, 'tpg': 0.0, 'ppg': 0.0, 'oppg': 0.0, 'net_rating': 0.0, 'FG%': 44.7, '3P%': 32.2, 'FT%': 78.0, 'REB': 56.7, 'AST': 1.202, 'STL': 0.53, 'BLK': 0.0, 'TO': 0.0, 'PF': 0.0, 'PTS': 0.0}
+2025-11-09 12:48:43.872 | INFO     | espn.team_scraper:scrape_team_stats:60 - Estadísticas extraídas exitosamente para boston-celtics
+2025-11-09 12:48:43.887 | INFO     | espn.team_scraper:save_team_stats_to_csv:287 - Estadísticas de equipo guardadas en data/raw/team_stats/2024-25_regular/bos.csv
+2025-11-09 12:48:43.888 | INFO     | espn.team_scraper:scrape_all_teams_stats:339 - Procesando brooklyn-nets...
+2025-11-09 12:48:45.016 | WARNING  | espn.team_scraper:extract_team_averages:87 - No se encontró el contenedor principal de estadísticas
+2025-11-09 12:48:45.016 | INFO     | espn.team_scraper:extract_team_averages:90 - Encontradas 4 tablas
+2025-11-09 12:48:45.017 | INFO     | espn.team_scraper:extract_team_averages:98 - ✅ Tabla con estadísticas de porcentajes encontrada
+2025-11-09 12:48:45.018 | INFO     | espn.team_scraper:extract_team_averages:120 - Usando última fila como promedios: 14 celdas
+2025-11-09 12:48:45.019 | INFO     | espn.team_scraper:parse_team_stats_row:172 - Parseando fila con 14 celdas
+2025-11-09 12:48:45.019 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 0: '38.7'
+2025-11-09 12:48:45.019 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 1: '87.8'
+2025-11-09 12:48:45.020 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 2: '44.1'
+2025-11-09 12:48:45.020 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 3: '13.9'
+2025-11-09 12:48:45.020 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 4: '41.8'
+2025-11-09 12:48:45.020 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 5: '33.2'
+2025-11-09 12:48:45.021 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 6: '20.1'
+2025-11-09 12:48:45.021 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 7: '26.1'
+2025-11-09 12:48:45.021 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 8: '77.0'
+2025-11-09 12:48:45.021 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 9: '24.8'
+2025-11-09 12:48:45.021 | INFO     | espn.team_scraper:parse_team_stats_row:213 - Estadísticas parseadas: {'team_name': 'Unknown', 'season': None, 'fg_pct': 44.1, 'threep_pct': 33.2, 'ft_pct': 77.0, 'rpg': 53.9, 'apg': 1.268, 'spg': 0.52, 'bpg': 0.0, 'tpg': 0.0, 'ppg': 0.0, 'oppg': 0.0, 'net_rating': 0.0, 'FG%': 44.1, '3P%': 33.2, 'FT%': 77.0, 'REB': 53.9, 'AST': 1.268, 'STL': 0.52, 'BLK': 0.0, 'TO': 0.0, 'PF': 0.0, 'PTS': 0.0}
+2025-11-09 12:48:45.022 | INFO     | espn.team_scraper:scrape_team_stats:60 - Estadísticas extraídas exitosamente para brooklyn-nets
+2025-11-09 12:48:45.026 | INFO     | espn.team_scraper:save_team_stats_to_csv:287 - Estadísticas de equipo guardadas en data/raw/team_stats/2024-25_regular/bkn.csv
+2025-11-09 12:48:45.028 | INFO     | espn.team_scraper:scrape_all_teams_stats:339 - Procesando charlotte-hornets...
+2025-11-09 12:48:45.828 | WARNING  | espn.team_scraper:extract_team_averages:87 - No se encontró el contenedor principal de estadísticas
+2025-11-09 12:48:45.829 | INFO     | espn.team_scraper:extract_team_averages:90 - Encontradas 4 tablas
+2025-11-09 12:48:45.830 | INFO     | espn.team_scraper:extract_team_averages:98 - ✅ Tabla con estadísticas de porcentajes encontrada
+2025-11-09 12:48:45.831 | INFO     | espn.team_scraper:extract_team_averages:120 - Usando última fila como promedios: 14 celdas
+2025-11-09 12:48:45.831 | INFO     | espn.team_scraper:parse_team_stats_row:172 - Parseando fila con 14 celdas
+2025-11-09 12:48:45.831 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 0: '41.4'
+2025-11-09 12:48:45.832 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 1: '88.6'
+2025-11-09 12:48:45.832 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 2: '46.8'
+2025-11-09 12:48:45.832 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 3: '14.6'
+2025-11-09 12:48:45.832 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 4: '39.6'
+2025-11-09 12:48:45.833 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 5: '36.8'
+2025-11-09 12:48:45.833 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 6: '21.6'
+2025-11-09 12:48:45.833 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 7: '26.6'
+2025-11-09 12:48:45.833 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 8: '81.2'
+2025-11-09 12:48:45.834 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 9: '26.9'
+2025-11-09 12:48:45.834 | INFO     | espn.team_scraper:parse_team_stats_row:213 - Estadísticas parseadas: {'team_name': 'Unknown', 'season': None, 'fg_pct': 46.8, 'threep_pct': 36.8, 'ft_pct': 81.2, 'rpg': 54.9, 'apg': 1.344, 'spg': 0.55, 'bpg': 0.0, 'tpg': 0.0, 'ppg': 0.0, 'oppg': 0.0, 'net_rating': 0.0, 'FG%': 46.8, '3P%': 36.8, 'FT%': 81.2, 'REB': 54.9, 'AST': 1.344, 'STL': 0.55, 'BLK': 0.0, 'TO': 0.0, 'PF': 0.0, 'PTS': 0.0}
+2025-11-09 12:48:45.835 | INFO     | espn.team_scraper:scrape_team_stats:60 - Estadísticas extraídas exitosamente para charlotte-hornets
+2025-11-09 12:48:45.841 | INFO     | espn.team_scraper:save_team_stats_to_csv:287 - Estadísticas de equipo guardadas en data/raw/team_stats/2024-25_regular/cha.csv
+2025-11-09 12:48:45.841 | INFO     | espn.team_scraper:scrape_all_teams_stats:339 - Procesando chicago-bulls...
+2025-11-09 12:48:46.984 | WARNING  | espn.team_scraper:extract_team_averages:87 - No se encontró el contenedor principal de estadísticas
+2025-11-09 12:48:46.985 | INFO     | espn.team_scraper:extract_team_averages:90 - Encontradas 4 tablas
+2025-11-09 12:48:46.986 | INFO     | espn.team_scraper:extract_team_averages:98 - ✅ Tabla con estadísticas de porcentajes encontrada
+2025-11-09 12:48:46.986 | INFO     | espn.team_scraper:extract_team_averages:120 - Usando última fila como promedios: 14 celdas
+2025-11-09 12:48:46.987 | INFO     | espn.team_scraper:parse_team_stats_row:172 - Parseando fila con 14 celdas
+2025-11-09 12:48:46.987 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 0: '43.2'
+2025-11-09 12:48:46.987 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 1: '88.1'
+2025-11-09 12:48:46.987 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 2: '49.1'
+2025-11-09 12:48:46.988 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 3: '13.4'
+2025-11-09 12:48:46.988 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 4: '33.9'
+2025-11-09 12:48:46.988 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 5: '39.7'
+2025-11-09 12:48:46.988 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 6: '19.6'
+2025-11-09 12:48:46.989 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 7: '24.2'
+2025-11-09 12:48:46.989 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 8: '80.7'
+2025-11-09 12:48:46.989 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 9: '29.8'
+2025-11-09 12:48:46.989 | INFO     | espn.team_scraper:parse_team_stats_row:213 - Estadísticas parseadas: {'team_name': 'Unknown', 'season': None, 'fg_pct': 49.1, 'threep_pct': 39.7, 'ft_pct': 80.7, 'rpg': 54.9, 'apg': 1.356, 'spg': 0.57, 'bpg': 0.0, 'tpg': 0.0, 'ppg': 0.0, 'oppg': 0.0, 'net_rating': 0.0, 'FG%': 49.1, '3P%': 39.7, 'FT%': 80.7, 'REB': 54.9, 'AST': 1.356, 'STL': 0.57, 'BLK': 0.0, 'TO': 0.0, 'PF': 0.0, 'PTS': 0.0}
+2025-11-09 12:48:46.990 | INFO     | espn.team_scraper:scrape_team_stats:60 - Estadísticas extraídas exitosamente para chicago-bulls
+2025-11-09 12:48:46.994 | INFO     | espn.team_scraper:save_team_stats_to_csv:287 - Estadísticas de equipo guardadas en data/raw/team_stats/2024-25_regular/chi.csv
+2025-11-09 12:48:46.995 | INFO     | espn.team_scraper:scrape_all_teams_stats:339 - Procesando cleveland-cavaliers...
+2025-11-09 12:48:48.192 | WARNING  | espn.team_scraper:extract_team_averages:87 - No se encontró el contenedor principal de estadísticas
+2025-11-09 12:48:48.193 | INFO     | espn.team_scraper:extract_team_averages:90 - Encontradas 4 tablas
+2025-11-09 12:48:48.194 | INFO     | espn.team_scraper:extract_team_averages:98 - ✅ Tabla con estadísticas de porcentajes encontrada
+2025-11-09 12:48:48.194 | INFO     | espn.team_scraper:extract_team_averages:120 - Usando última fila como promedios: 14 celdas
+2025-11-09 12:48:48.195 | INFO     | espn.team_scraper:parse_team_stats_row:172 - Parseando fila con 14 celdas
+2025-11-09 12:48:48.196 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 0: '42.0'
+2025-11-09 12:48:48.196 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 1: '91.0'
+2025-11-09 12:48:48.196 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 2: '46.2'
+2025-11-09 12:48:48.197 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 3: '16.6'
+2025-11-09 12:48:48.197 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 4: '45.3'
+2025-11-09 12:48:48.197 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 5: '36.6'
+2025-11-09 12:48:48.198 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 6: '20.1'
+2025-11-09 12:48:48.198 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 7: '26.2'
+2025-11-09 12:48:48.198 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 8: '76.7'
+2025-11-09 12:48:48.198 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 9: '25.4'
+2025-11-09 12:48:48.199 | INFO     | espn.team_scraper:parse_team_stats_row:213 - Estadísticas parseadas: {'team_name': 'Unknown', 'season': None, 'fg_pct': 46.2, 'threep_pct': 36.6, 'ft_pct': 76.7, 'rpg': 55.6, 'apg': 1.326, 'spg': 0.55, 'bpg': 0.0, 'tpg': 0.0, 'ppg': 0.0, 'oppg': 0.0, 'net_rating': 0.0, 'FG%': 46.2, '3P%': 36.6, 'FT%': 76.7, 'REB': 55.6, 'AST': 1.326, 'STL': 0.55, 'BLK': 0.0, 'TO': 0.0, 'PF': 0.0, 'PTS': 0.0}
+2025-11-09 12:48:48.199 | INFO     | espn.team_scraper:scrape_team_stats:60 - Estadísticas extraídas exitosamente para cleveland-cavaliers
+2025-11-09 12:48:48.206 | INFO     | espn.team_scraper:save_team_stats_to_csv:287 - Estadísticas de equipo guardadas en data/raw/team_stats/2024-25_regular/cle.csv
+2025-11-09 12:48:48.207 | INFO     | espn.team_scraper:scrape_all_teams_stats:339 - Procesando dallas-mavericks...
+2025-11-09 12:48:49.092 | WARNING  | espn.team_scraper:extract_team_averages:87 - No se encontró el contenedor principal de estadísticas
+2025-11-09 12:48:49.093 | INFO     | espn.team_scraper:extract_team_averages:90 - Encontradas 4 tablas
+2025-11-09 12:48:49.094 | INFO     | espn.team_scraper:extract_team_averages:98 - ✅ Tabla con estadísticas de porcentajes encontrada
+2025-11-09 12:48:49.094 | INFO     | espn.team_scraper:extract_team_averages:120 - Usando última fila como promedios: 14 celdas
+2025-11-09 12:48:49.095 | INFO     | espn.team_scraper:parse_team_stats_row:172 - Parseando fila con 14 celdas
+2025-11-09 12:48:49.095 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 0: '38.3'
+2025-11-09 12:48:49.096 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 1: '85.9'
+2025-11-09 12:48:49.096 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 2: '44.6'
+2025-11-09 12:48:49.096 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 3: '9.7'
+2025-11-09 12:48:49.097 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 4: '32.0'
+2025-11-09 12:48:49.097 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 5: '30.3'
+2025-11-09 12:48:49.097 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 6: '20.2'
+2025-11-09 12:48:49.098 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 7: '26.8'
+2025-11-09 12:48:49.099 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 8: '75.4'
+2025-11-09 12:48:49.099 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 9: '28.6'
+2025-11-09 12:48:49.099 | INFO     | espn.team_scraper:parse_team_stats_row:213 - Estadísticas parseadas: {'team_name': 'Unknown', 'season': None, 'fg_pct': 44.6, 'threep_pct': 30.3, 'ft_pct': 75.4, 'rpg': 53.1, 'apg': 1.24, 'spg': 0.5, 'bpg': 0.0, 'tpg': 0.0, 'ppg': 0.0, 'oppg': 0.0, 'net_rating': 0.0, 'FG%': 44.6, '3P%': 30.3, 'FT%': 75.4, 'REB': 53.1, 'AST': 1.24, 'STL': 0.5, 'BLK': 0.0, 'TO': 0.0, 'PF': 0.0, 'PTS': 0.0}
+2025-11-09 12:48:49.100 | INFO     | espn.team_scraper:scrape_team_stats:60 - Estadísticas extraídas exitosamente para dallas-mavericks
+2025-11-09 12:48:49.106 | INFO     | espn.team_scraper:save_team_stats_to_csv:287 - Estadísticas de equipo guardadas en data/raw/team_stats/2024-25_regular/dal.csv
+2025-11-09 12:48:49.106 | INFO     | espn.team_scraper:scrape_all_teams_stats:339 - Procesando denver-nuggets...
+2025-11-09 12:48:50.132 | WARNING  | espn.team_scraper:extract_team_averages:87 - No se encontró el contenedor principal de estadísticas
+2025-11-09 12:48:50.133 | INFO     | espn.team_scraper:extract_team_averages:90 - Encontradas 4 tablas
+2025-11-09 12:48:50.134 | INFO     | espn.team_scraper:extract_team_averages:98 - ✅ Tabla con estadísticas de porcentajes encontrada
+2025-11-09 12:48:50.135 | INFO     | espn.team_scraper:extract_team_averages:120 - Usando última fila como promedios: 14 celdas
+2025-11-09 12:48:50.135 | INFO     | espn.team_scraper:parse_team_stats_row:172 - Parseando fila con 14 celdas
+2025-11-09 12:48:50.135 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 0: '45.6'
+2025-11-09 12:48:50.136 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 1: '89.9'
+2025-11-09 12:48:50.136 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 2: '50.7'
+2025-11-09 12:48:50.136 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 3: '11.7'
+2025-11-09 12:48:50.137 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 4: '33.6'
+2025-11-09 12:48:50.137 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 5: '34.8'
+2025-11-09 12:48:50.137 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 6: '21.4'
+2025-11-09 12:48:50.138 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 7: '25.1'
+2025-11-09 12:48:50.138 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 8: '85.4'
+2025-11-09 12:48:50.139 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 9: '33.9'
+2025-11-09 12:48:50.139 | INFO     | espn.team_scraper:parse_team_stats_row:213 - Estadísticas parseadas: {'team_name': 'Unknown', 'season': None, 'fg_pct': 50.7, 'threep_pct': 34.8, 'ft_pct': 85.4, 'rpg': 60.2, 'apg': 1.382, 'spg': 0.57, 'bpg': 0.0, 'tpg': 0.0, 'ppg': 0.0, 'oppg': 0.0, 'net_rating': 0.0, 'FG%': 50.7, '3P%': 34.8, 'FT%': 85.4, 'REB': 60.2, 'AST': 1.382, 'STL': 0.57, 'BLK': 0.0, 'TO': 0.0, 'PF': 0.0, 'PTS': 0.0}
+2025-11-09 12:48:50.139 | INFO     | espn.team_scraper:scrape_team_stats:60 - Estadísticas extraídas exitosamente para denver-nuggets
+2025-11-09 12:48:50.144 | INFO     | espn.team_scraper:save_team_stats_to_csv:287 - Estadísticas de equipo guardadas en data/raw/team_stats/2024-25_regular/den.csv
+2025-11-09 12:48:50.145 | INFO     | espn.team_scraper:scrape_all_teams_stats:339 - Procesando detroit-pistons...
+2025-11-09 12:48:51.164 | WARNING  | espn.team_scraper:extract_team_averages:87 - No se encontró el contenedor principal de estadísticas
+2025-11-09 12:48:51.165 | INFO     | espn.team_scraper:extract_team_averages:90 - Encontradas 4 tablas
+2025-11-09 12:48:51.166 | INFO     | espn.team_scraper:extract_team_averages:98 - ✅ Tabla con estadísticas de porcentajes encontrada
+2025-11-09 12:48:51.166 | INFO     | espn.team_scraper:extract_team_averages:120 - Usando última fila como promedios: 14 celdas
+2025-11-09 12:48:51.167 | INFO     | espn.team_scraper:parse_team_stats_row:172 - Parseando fila con 14 celdas
+2025-11-09 12:48:51.167 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 0: '42.7'
+2025-11-09 12:48:51.167 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 1: '90.0'
+2025-11-09 12:48:51.167 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 2: '47.4'
+2025-11-09 12:48:51.168 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 3: '10.2'
+2025-11-09 12:48:51.168 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 4: '30.4'
+2025-11-09 12:48:51.169 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 5: '33.6'
+2025-11-09 12:48:51.169 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 6: '21.1'
+2025-11-09 12:48:51.169 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 7: '29.0'
+2025-11-09 12:48:51.170 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 8: '72.8'
+2025-11-09 12:48:51.170 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 9: '32.4'
+2025-11-09 12:48:51.171 | INFO     | espn.team_scraper:parse_team_stats_row:213 - Estadísticas parseadas: {'team_name': 'Unknown', 'season': None, 'fg_pct': 47.4, 'threep_pct': 33.6, 'ft_pct': 72.8, 'rpg': 54.5, 'apg': 1.296, 'spg': 0.53, 'bpg': 0.0, 'tpg': 0.0, 'ppg': 0.0, 'oppg': 0.0, 'net_rating': 0.0, 'FG%': 47.4, '3P%': 33.6, 'FT%': 72.8, 'REB': 54.5, 'AST': 1.296, 'STL': 0.53, 'BLK': 0.0, 'TO': 0.0, 'PF': 0.0, 'PTS': 0.0}
+2025-11-09 12:48:51.171 | INFO     | espn.team_scraper:scrape_team_stats:60 - Estadísticas extraídas exitosamente para detroit-pistons
+2025-11-09 12:48:51.177 | INFO     | espn.team_scraper:save_team_stats_to_csv:287 - Estadísticas de equipo guardadas en data/raw/team_stats/2024-25_regular/det.csv
+2025-11-09 12:48:51.178 | INFO     | espn.team_scraper:scrape_all_teams_stats:339 - Procesando golden-state-warriors...
+2025-11-09 12:48:52.368 | WARNING  | espn.team_scraper:extract_team_averages:87 - No se encontró el contenedor principal de estadísticas
+2025-11-09 12:48:52.369 | INFO     | espn.team_scraper:extract_team_averages:90 - Encontradas 4 tablas
+2025-11-09 12:48:52.370 | INFO     | espn.team_scraper:extract_team_averages:98 - ✅ Tabla con estadísticas de porcentajes encontrada
+2025-11-09 12:48:52.371 | INFO     | espn.team_scraper:extract_team_averages:120 - Usando última fila como promedios: 14 celdas
+2025-11-09 12:48:52.371 | INFO     | espn.team_scraper:parse_team_stats_row:172 - Parseando fila con 14 celdas
+2025-11-09 12:48:52.371 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 0: '40.2'
+2025-11-09 12:48:52.372 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 1: '86.8'
+2025-11-09 12:48:52.372 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 2: '46.3'
+2025-11-09 12:48:52.372 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 3: '16.0'
+2025-11-09 12:48:52.372 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 4: '42.1'
+2025-11-09 12:48:52.373 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 5: '38.0'
+2025-11-09 12:48:52.373 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 6: '19.7'
+2025-11-09 12:48:52.373 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 7: '23.3'
+2025-11-09 12:48:52.373 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 8: '84.5'
+2025-11-09 12:48:52.374 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 9: '24.2'
+2025-11-09 12:48:52.374 | INFO     | espn.team_scraper:parse_team_stats_row:213 - Estadísticas parseadas: {'team_name': 'Unknown', 'season': None, 'fg_pct': 46.3, 'threep_pct': 38.0, 'ft_pct': 84.5, 'rpg': 54.1, 'apg': 1.338, 'spg': 0.56, 'bpg': 0.0, 'tpg': 0.0, 'ppg': 0.0, 'oppg': 0.0, 'net_rating': 0.0, 'FG%': 46.3, '3P%': 38.0, 'FT%': 84.5, 'REB': 54.1, 'AST': 1.338, 'STL': 0.56, 'BLK': 0.0, 'TO': 0.0, 'PF': 0.0, 'PTS': 0.0}
+2025-11-09 12:48:52.375 | INFO     | espn.team_scraper:scrape_team_stats:60 - Estadísticas extraídas exitosamente para golden-state-warriors
+2025-11-09 12:48:52.381 | INFO     | espn.team_scraper:save_team_stats_to_csv:287 - Estadísticas de equipo guardadas en data/raw/team_stats/2024-25_regular/gs.csv
+2025-11-09 12:48:52.382 | INFO     | espn.team_scraper:scrape_all_teams_stats:339 - Procesando houston-rockets...
+2025-11-09 12:48:53.205 | WARNING  | espn.team_scraper:extract_team_averages:87 - No se encontró el contenedor principal de estadísticas
+2025-11-09 12:48:53.206 | INFO     | espn.team_scraper:extract_team_averages:90 - Encontradas 4 tablas
+2025-11-09 12:48:53.207 | INFO     | espn.team_scraper:extract_team_averages:98 - ✅ Tabla con estadísticas de porcentajes encontrada
+2025-11-09 12:48:53.208 | INFO     | espn.team_scraper:extract_team_averages:120 - Usando última fila como promedios: 14 celdas
+2025-11-09 12:48:53.208 | INFO     | espn.team_scraper:parse_team_stats_row:172 - Parseando fila con 14 celdas
+2025-11-09 12:48:53.208 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 0: '43.0'
+2025-11-09 12:48:53.209 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 1: '88.0'
+2025-11-09 12:48:53.209 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 2: '48.9'
+2025-11-09 12:48:53.210 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 3: '12.9'
+2025-11-09 12:48:53.210 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 4: '29.8'
+2025-11-09 12:48:53.210 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 5: '43.3'
+2025-11-09 12:48:53.211 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 6: '24.0'
+2025-11-09 12:48:53.211 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 7: '30.4'
+2025-11-09 12:48:53.211 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 8: '79.0'
+2025-11-09 12:48:53.212 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 9: '30.1'
+2025-11-09 12:48:53.212 | INFO     | espn.team_scraper:parse_team_stats_row:213 - Estadísticas parseadas: {'team_name': 'Unknown', 'season': None, 'fg_pct': 48.9, 'threep_pct': 43.3, 'ft_pct': 79.0, 'rpg': 51.7, 'apg': 1.396, 'spg': 0.56, 'bpg': 0.0, 'tpg': 0.0, 'ppg': 0.0, 'oppg': 0.0, 'net_rating': 0.0, 'FG%': 48.9, '3P%': 43.3, 'FT%': 79.0, 'REB': 51.7, 'AST': 1.396, 'STL': 0.56, 'BLK': 0.0, 'TO': 0.0, 'PF': 0.0, 'PTS': 0.0}
+2025-11-09 12:48:53.212 | INFO     | espn.team_scraper:scrape_team_stats:60 - Estadísticas extraídas exitosamente para houston-rockets
+2025-11-09 12:48:53.217 | INFO     | espn.team_scraper:save_team_stats_to_csv:287 - Estadísticas de equipo guardadas en data/raw/team_stats/2024-25_regular/hou.csv
+2025-11-09 12:48:53.217 | INFO     | espn.team_scraper:scrape_all_teams_stats:339 - Procesando indiana-pacers...
+2025-11-09 12:48:54.367 | WARNING  | espn.team_scraper:extract_team_averages:87 - No se encontró el contenedor principal de estadísticas
+2025-11-09 12:48:54.368 | INFO     | espn.team_scraper:extract_team_averages:90 - Encontradas 4 tablas
+2025-11-09 12:48:54.369 | INFO     | espn.team_scraper:extract_team_averages:98 - ✅ Tabla con estadísticas de porcentajes encontrada
+2025-11-09 12:48:54.369 | INFO     | espn.team_scraper:extract_team_averages:120 - Usando última fila como promedios: 14 celdas
+2025-11-09 12:48:54.370 | INFO     | espn.team_scraper:parse_team_stats_row:172 - Parseando fila con 14 celdas
+2025-11-09 12:48:54.370 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 0: '38.4'
+2025-11-09 12:48:54.371 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 1: '95.7'
+2025-11-09 12:48:54.371 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 2: '40.2'
+2025-11-09 12:48:54.371 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 3: '11.8'
+2025-11-09 12:48:54.371 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 4: '39.2'
+2025-11-09 12:48:54.372 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 5: '30.0'
+2025-11-09 12:48:54.372 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 6: '21.7'
+2025-11-09 12:48:54.372 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 7: '29.3'
+2025-11-09 12:48:54.373 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 8: '73.9'
+2025-11-09 12:48:54.373 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 9: '26.7'
+2025-11-09 12:48:54.373 | INFO     | espn.team_scraper:parse_team_stats_row:213 - Estadísticas parseadas: {'team_name': 'Unknown', 'season': None, 'fg_pct': 40.2, 'threep_pct': 30.0, 'ft_pct': 73.9, 'rpg': 47.2, 'apg': 1.153, 'spg': 0.46, 'bpg': 0.0, 'tpg': 0.0, 'ppg': 0.0, 'oppg': 0.0, 'net_rating': 0.0, 'FG%': 40.2, '3P%': 30.0, 'FT%': 73.9, 'REB': 47.2, 'AST': 1.153, 'STL': 0.46, 'BLK': 0.0, 'TO': 0.0, 'PF': 0.0, 'PTS': 0.0}
+2025-11-09 12:48:54.373 | INFO     | espn.team_scraper:scrape_team_stats:60 - Estadísticas extraídas exitosamente para indiana-pacers
+2025-11-09 12:48:54.379 | INFO     | espn.team_scraper:save_team_stats_to_csv:287 - Estadísticas de equipo guardadas en data/raw/team_stats/2024-25_regular/ind.csv
+2025-11-09 12:48:54.381 | INFO     | espn.team_scraper:scrape_all_teams_stats:339 - Procesando los-angeles-clippers...
+2025-11-09 12:48:55.261 | WARNING  | espn.team_scraper:extract_team_averages:87 - No se encontró el contenedor principal de estadísticas
+2025-11-09 12:48:55.262 | INFO     | espn.team_scraper:extract_team_averages:90 - Encontradas 4 tablas
+2025-11-09 12:48:55.263 | INFO     | espn.team_scraper:extract_team_averages:98 - ✅ Tabla con estadísticas de porcentajes encontrada
+2025-11-09 12:48:55.264 | INFO     | espn.team_scraper:extract_team_averages:120 - Usando última fila como promedios: 14 celdas
+2025-11-09 12:48:55.264 | INFO     | espn.team_scraper:parse_team_stats_row:172 - Parseando fila con 14 celdas
+2025-11-09 12:48:55.265 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 0: '39.7'
+2025-11-09 12:48:55.265 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 1: '82.1'
+2025-11-09 12:48:55.265 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 2: '48.3'
+2025-11-09 12:48:55.266 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 3: '13.1'
+2025-11-09 12:48:55.266 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 4: '36.1'
+2025-11-09 12:48:55.266 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 5: '36.3'
+2025-11-09 12:48:55.267 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 6: '17.2'
+2025-11-09 12:48:55.267 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 7: '21.4'
+2025-11-09 12:48:55.268 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 8: '80.3'
+2025-11-09 12:48:55.268 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 9: '26.6'
+2025-11-09 12:48:55.268 | INFO     | espn.team_scraper:parse_team_stats_row:213 - Estadísticas parseadas: {'team_name': 'Unknown', 'season': None, 'fg_pct': 48.3, 'threep_pct': 36.3, 'ft_pct': 80.3, 'rpg': 57.7, 'apg': 1.336, 'spg': 0.56, 'bpg': 0.0, 'tpg': 0.0, 'ppg': 0.0, 'oppg': 0.0, 'net_rating': 0.0, 'FG%': 48.3, '3P%': 36.3, 'FT%': 80.3, 'REB': 57.7, 'AST': 1.336, 'STL': 0.56, 'BLK': 0.0, 'TO': 0.0, 'PF': 0.0, 'PTS': 0.0}
+2025-11-09 12:48:55.269 | INFO     | espn.team_scraper:scrape_team_stats:60 - Estadísticas extraídas exitosamente para los-angeles-clippers
+2025-11-09 12:48:55.277 | INFO     | espn.team_scraper:save_team_stats_to_csv:287 - Estadísticas de equipo guardadas en data/raw/team_stats/2024-25_regular/lac.csv
+2025-11-09 12:48:55.279 | INFO     | espn.team_scraper:scrape_all_teams_stats:339 - Procesando los-angeles-lakers...
+2025-11-09 12:48:56.234 | WARNING  | espn.team_scraper:extract_team_averages:87 - No se encontró el contenedor principal de estadísticas
+2025-11-09 12:48:56.235 | INFO     | espn.team_scraper:extract_team_averages:90 - Encontradas 4 tablas
+2025-11-09 12:48:56.236 | INFO     | espn.team_scraper:extract_team_averages:98 - ✅ Tabla con estadísticas de porcentajes encontrada
+2025-11-09 12:48:56.236 | INFO     | espn.team_scraper:extract_team_averages:120 - Usando última fila como promedios: 14 celdas
+2025-11-09 12:48:56.237 | INFO     | espn.team_scraper:parse_team_stats_row:172 - Parseando fila con 14 celdas
+2025-11-09 12:48:56.237 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 0: '42.2'
+2025-11-09 12:48:56.238 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 1: '82.2'
+2025-11-09 12:48:56.238 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 2: '51.3'
+2025-11-09 12:48:56.238 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 3: '10.5'
+2025-11-09 12:48:56.239 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 4: '31.2'
+2025-11-09 12:48:56.239 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 5: '33.7'
+2025-11-09 12:48:56.239 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 6: '22.9'
+2025-11-09 12:48:56.239 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 7: '29.0'
+2025-11-09 12:48:56.240 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 8: '79.0'
+2025-11-09 12:48:56.240 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 9: '31.7'
+2025-11-09 12:48:56.241 | INFO     | espn.team_scraper:parse_team_stats_row:213 - Estadísticas parseadas: {'team_name': 'Unknown', 'season': None, 'fg_pct': 51.3, 'threep_pct': 33.7, 'ft_pct': 79.0, 'rpg': 62.2, 'apg': 1.433, 'spg': 0.58, 'bpg': 0.0, 'tpg': 0.0, 'ppg': 0.0, 'oppg': 0.0, 'net_rating': 0.0, 'FG%': 51.3, '3P%': 33.7, 'FT%': 79.0, 'REB': 62.2, 'AST': 1.433, 'STL': 0.58, 'BLK': 0.0, 'TO': 0.0, 'PF': 0.0, 'PTS': 0.0}
+2025-11-09 12:48:56.241 | INFO     | espn.team_scraper:scrape_team_stats:60 - Estadísticas extraídas exitosamente para los-angeles-lakers
+2025-11-09 12:48:56.248 | INFO     | espn.team_scraper:save_team_stats_to_csv:287 - Estadísticas de equipo guardadas en data/raw/team_stats/2024-25_regular/lal.csv
+2025-11-09 12:48:56.249 | INFO     | espn.team_scraper:scrape_all_teams_stats:339 - Procesando memphis-grizzlies...
+2025-11-09 12:48:57.343 | WARNING  | espn.team_scraper:extract_team_averages:87 - No se encontró el contenedor principal de estadísticas
+2025-11-09 12:48:57.344 | INFO     | espn.team_scraper:extract_team_averages:90 - Encontradas 4 tablas
+2025-11-09 12:48:57.344 | INFO     | espn.team_scraper:extract_team_averages:98 - ✅ Tabla con estadísticas de porcentajes encontrada
+2025-11-09 12:48:57.345 | INFO     | espn.team_scraper:extract_team_averages:120 - Usando última fila como promedios: 14 celdas
+2025-11-09 12:48:57.345 | INFO     | espn.team_scraper:parse_team_stats_row:172 - Parseando fila con 14 celdas
+2025-11-09 12:48:57.346 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 0: '39.6'
+2025-11-09 12:48:57.346 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 1: '89.4'
+2025-11-09 12:48:57.346 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 2: '44.3'
+2025-11-09 12:48:57.347 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 3: '13.1'
+2025-11-09 12:48:57.347 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 4: '39.3'
+2025-11-09 12:48:57.348 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 5: '33.3'
+2025-11-09 12:48:57.348 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 6: '22.8'
+2025-11-09 12:48:57.348 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 7: '27.1'
+2025-11-09 12:48:57.349 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 8: '84.1'
+2025-11-09 12:48:57.349 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 9: '26.5'
+2025-11-09 12:48:57.349 | INFO     | espn.team_scraper:parse_team_stats_row:213 - Estadísticas parseadas: {'team_name': 'Unknown', 'season': None, 'fg_pct': 44.3, 'threep_pct': 33.3, 'ft_pct': 84.1, 'rpg': 52.9, 'apg': 1.287, 'spg': 0.52, 'bpg': 0.0, 'tpg': 0.0, 'ppg': 0.0, 'oppg': 0.0, 'net_rating': 0.0, 'FG%': 44.3, '3P%': 33.3, 'FT%': 84.1, 'REB': 52.9, 'AST': 1.287, 'STL': 0.52, 'BLK': 0.0, 'TO': 0.0, 'PF': 0.0, 'PTS': 0.0}
+2025-11-09 12:48:57.349 | INFO     | espn.team_scraper:scrape_team_stats:60 - Estadísticas extraídas exitosamente para memphis-grizzlies
+2025-11-09 12:48:57.354 | INFO     | espn.team_scraper:save_team_stats_to_csv:287 - Estadísticas de equipo guardadas en data/raw/team_stats/2024-25_regular/mem.csv
+2025-11-09 12:48:57.354 | INFO     | espn.team_scraper:scrape_all_teams_stats:339 - Procesando miami-heat...
+2025-11-09 12:48:58.427 | WARNING  | espn.team_scraper:extract_team_averages:87 - No se encontró el contenedor principal de estadísticas
+2025-11-09 12:48:58.428 | INFO     | espn.team_scraper:extract_team_averages:90 - Encontradas 4 tablas
+2025-11-09 12:48:58.428 | INFO     | espn.team_scraper:extract_team_averages:98 - ✅ Tabla con estadísticas de porcentajes encontrada
+2025-11-09 12:48:58.429 | INFO     | espn.team_scraper:extract_team_averages:120 - Usando última fila como promedios: 14 celdas
+2025-11-09 12:48:58.429 | INFO     | espn.team_scraper:parse_team_stats_row:172 - Parseando fila con 14 celdas
+2025-11-09 12:48:58.429 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 0: '45.4'
+2025-11-09 12:48:58.430 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 1: '91.0'
+2025-11-09 12:48:58.430 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 2: '49.9'
+2025-11-09 12:48:58.430 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 3: '13.6'
+2025-11-09 12:48:58.430 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 4: '35.7'
+2025-11-09 12:48:58.431 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 5: '38.1'
+2025-11-09 12:48:58.431 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 6: '19.7'
+2025-11-09 12:48:58.431 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 7: '24.8'
+2025-11-09 12:48:58.431 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 8: '79.4'
+2025-11-09 12:48:58.432 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 9: '31.8'
+2025-11-09 12:48:58.432 | INFO     | espn.team_scraper:parse_team_stats_row:213 - Estadísticas parseadas: {'team_name': 'Unknown', 'season': None, 'fg_pct': 49.9, 'threep_pct': 38.1, 'ft_pct': 79.4, 'rpg': 57.5, 'apg': 1.364, 'spg': 0.57, 'bpg': 0.0, 'tpg': 0.0, 'ppg': 0.0, 'oppg': 0.0, 'net_rating': 0.0, 'FG%': 49.9, '3P%': 38.1, 'FT%': 79.4, 'REB': 57.5, 'AST': 1.364, 'STL': 0.57, 'BLK': 0.0, 'TO': 0.0, 'PF': 0.0, 'PTS': 0.0}
+2025-11-09 12:48:58.432 | INFO     | espn.team_scraper:scrape_team_stats:60 - Estadísticas extraídas exitosamente para miami-heat
+2025-11-09 12:48:58.437 | INFO     | espn.team_scraper:save_team_stats_to_csv:287 - Estadísticas de equipo guardadas en data/raw/team_stats/2024-25_regular/mia.csv
+2025-11-09 12:48:58.437 | INFO     | espn.team_scraper:scrape_all_teams_stats:339 - Procesando milwaukee-bucks...
+2025-11-09 12:48:59.508 | WARNING  | espn.team_scraper:extract_team_averages:87 - No se encontró el contenedor principal de estadísticas
+2025-11-09 12:48:59.510 | INFO     | espn.team_scraper:extract_team_averages:90 - Encontradas 4 tablas
+2025-11-09 12:48:59.510 | INFO     | espn.team_scraper:extract_team_averages:98 - ✅ Tabla con estadísticas de porcentajes encontrada
+2025-11-09 12:48:59.511 | INFO     | espn.team_scraper:extract_team_averages:120 - Usando última fila como promedios: 14 celdas
+2025-11-09 12:48:59.512 | INFO     | espn.team_scraper:parse_team_stats_row:172 - Parseando fila con 14 celdas
+2025-11-09 12:48:59.512 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 0: '44.7'
+2025-11-09 12:48:59.512 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 1: '89.0'
+2025-11-09 12:48:59.512 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 2: '50.2'
+2025-11-09 12:48:59.513 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 3: '15.6'
+2025-11-09 12:48:59.513 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 4: '39.2'
+2025-11-09 12:48:59.514 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 5: '39.7'
+2025-11-09 12:48:59.514 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 6: '15.7'
+2025-11-09 12:48:59.515 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 7: '22.3'
+2025-11-09 12:48:59.515 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 8: '70.1'
+2025-11-09 12:48:59.515 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 9: '29.1'
+2025-11-09 12:48:59.516 | INFO     | espn.team_scraper:parse_team_stats_row:213 - Estadísticas parseadas: {'team_name': 'Unknown', 'season': None, 'fg_pct': 50.2, 'threep_pct': 39.7, 'ft_pct': 70.1, 'rpg': 58.5, 'apg': 1.355, 'spg': 0.59, 'bpg': 0.0, 'tpg': 0.0, 'ppg': 0.0, 'oppg': 0.0, 'net_rating': 0.0, 'FG%': 50.2, '3P%': 39.7, 'FT%': 70.1, 'REB': 58.5, 'AST': 1.355, 'STL': 0.59, 'BLK': 0.0, 'TO': 0.0, 'PF': 0.0, 'PTS': 0.0}
+2025-11-09 12:48:59.516 | INFO     | espn.team_scraper:scrape_team_stats:60 - Estadísticas extraídas exitosamente para milwaukee-bucks
+2025-11-09 12:48:59.521 | INFO     | espn.team_scraper:save_team_stats_to_csv:287 - Estadísticas de equipo guardadas en data/raw/team_stats/2024-25_regular/mil.csv
+2025-11-09 12:48:59.521 | INFO     | espn.team_scraper:scrape_all_teams_stats:339 - Procesando minnesota-timberwolves...
+2025-11-09 12:49:00.335 | WARNING  | espn.team_scraper:extract_team_averages:87 - No se encontró el contenedor principal de estadísticas
+2025-11-09 12:49:00.335 | INFO     | espn.team_scraper:extract_team_averages:90 - Encontradas 4 tablas
+2025-11-09 12:49:00.336 | INFO     | espn.team_scraper:extract_team_averages:98 - ✅ Tabla con estadísticas de porcentajes encontrada
+2025-11-09 12:49:00.337 | INFO     | espn.team_scraper:extract_team_averages:120 - Usando última fila como promedios: 14 celdas
+2025-11-09 12:49:00.337 | INFO     | espn.team_scraper:parse_team_stats_row:172 - Parseando fila con 14 celdas
+2025-11-09 12:49:00.338 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 0: '42.7'
+2025-11-09 12:49:00.338 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 1: '84.6'
+2025-11-09 12:49:00.339 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 2: '50.5'
+2025-11-09 12:49:00.339 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 3: '14.4'
+2025-11-09 12:49:00.339 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 4: '34.4'
+2025-11-09 12:49:00.339 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 5: '41.9'
+2025-11-09 12:49:00.340 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 6: '19.0'
+2025-11-09 12:49:00.340 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 7: '25.1'
+2025-11-09 12:49:00.340 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 8: '75.7'
+2025-11-09 12:49:00.341 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 9: '28.2'
+2025-11-09 12:49:00.341 | INFO     | espn.team_scraper:parse_team_stats_row:213 - Estadísticas parseadas: {'team_name': 'Unknown', 'season': None, 'fg_pct': 50.5, 'threep_pct': 41.9, 'ft_pct': 75.7, 'rpg': 56.3, 'apg': 1.405, 'spg': 0.59, 'bpg': 0.0, 'tpg': 0.0, 'ppg': 0.0, 'oppg': 0.0, 'net_rating': 0.0, 'FG%': 50.5, '3P%': 41.9, 'FT%': 75.7, 'REB': 56.3, 'AST': 1.405, 'STL': 0.59, 'BLK': 0.0, 'TO': 0.0, 'PF': 0.0, 'PTS': 0.0}
+2025-11-09 12:49:00.342 | INFO     | espn.team_scraper:scrape_team_stats:60 - Estadísticas extraídas exitosamente para minnesota-timberwolves
+2025-11-09 12:49:00.348 | INFO     | espn.team_scraper:save_team_stats_to_csv:287 - Estadísticas de equipo guardadas en data/raw/team_stats/2024-25_regular/min.csv
+2025-11-09 12:49:00.349 | INFO     | espn.team_scraper:scrape_all_teams_stats:339 - Procesando new-orleans-pelicans...
+2025-11-09 12:49:01.203 | WARNING  | espn.team_scraper:extract_team_averages:87 - No se encontró el contenedor principal de estadísticas
+2025-11-09 12:49:01.204 | INFO     | espn.team_scraper:extract_team_averages:90 - Encontradas 4 tablas
+2025-11-09 12:49:01.205 | INFO     | espn.team_scraper:extract_team_averages:98 - ✅ Tabla con estadísticas de porcentajes encontrada
+2025-11-09 12:49:01.205 | INFO     | espn.team_scraper:extract_team_averages:120 - Usando última fila como promedios: 14 celdas
+2025-11-09 12:49:01.206 | INFO     | espn.team_scraper:parse_team_stats_row:172 - Parseando fila con 14 celdas
+2025-11-09 12:49:01.206 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 0: '38.8'
+2025-11-09 12:49:01.207 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 1: '89.1'
+2025-11-09 12:49:01.207 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 2: '43.5'
+2025-11-09 12:49:01.207 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 3: '12.4'
+2025-11-09 12:49:01.208 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 4: '34.8'
+2025-11-09 12:49:01.208 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 5: '35.8'
+2025-11-09 12:49:01.211 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 6: '19.1'
+2025-11-09 12:49:01.211 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 7: '25.6'
+2025-11-09 12:49:01.211 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 8: '74.8'
+2025-11-09 12:49:01.212 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 9: '26.3'
+2025-11-09 12:49:01.212 | INFO     | espn.team_scraper:parse_team_stats_row:213 - Estadísticas parseadas: {'team_name': 'Unknown', 'season': None, 'fg_pct': 43.5, 'threep_pct': 35.8, 'ft_pct': 74.8, 'rpg': 48.5, 'apg': 1.224, 'spg': 0.5, 'bpg': 0.0, 'tpg': 0.0, 'ppg': 0.0, 'oppg': 0.0, 'net_rating': 0.0, 'FG%': 43.5, '3P%': 35.8, 'FT%': 74.8, 'REB': 48.5, 'AST': 1.224, 'STL': 0.5, 'BLK': 0.0, 'TO': 0.0, 'PF': 0.0, 'PTS': 0.0}
+2025-11-09 12:49:01.213 | INFO     | espn.team_scraper:scrape_team_stats:60 - Estadísticas extraídas exitosamente para new-orleans-pelicans
+2025-11-09 12:49:01.218 | INFO     | espn.team_scraper:save_team_stats_to_csv:287 - Estadísticas de equipo guardadas en data/raw/team_stats/2024-25_regular/no.csv
+2025-11-09 12:49:01.219 | INFO     | espn.team_scraper:scrape_all_teams_stats:339 - Procesando new-york-knicks...
+2025-11-09 12:49:02.145 | WARNING  | espn.team_scraper:extract_team_averages:87 - No se encontró el contenedor principal de estadísticas
+2025-11-09 12:49:02.147 | INFO     | espn.team_scraper:extract_team_averages:90 - Encontradas 4 tablas
+2025-11-09 12:49:02.148 | INFO     | espn.team_scraper:extract_team_averages:98 - ✅ Tabla con estadísticas de porcentajes encontrada
+2025-11-09 12:49:02.149 | INFO     | espn.team_scraper:extract_team_averages:120 - Usando última fila como promedios: 14 celdas
+2025-11-09 12:49:02.150 | INFO     | espn.team_scraper:parse_team_stats_row:172 - Parseando fila con 14 celdas
+2025-11-09 12:49:02.150 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 0: '41.8'
+2025-11-09 12:49:02.150 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 1: '93.0'
+2025-11-09 12:49:02.151 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 2: '44.9'
+2025-11-09 12:49:02.151 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 3: '16.4'
+2025-11-09 12:49:02.152 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 4: '43.6'
+2025-11-09 12:49:02.152 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 5: '37.5'
+2025-11-09 12:49:02.153 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 6: '19.0'
+2025-11-09 12:49:02.154 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 7: '22.4'
+2025-11-09 12:49:02.155 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 8: '84.9'
+2025-11-09 12:49:02.158 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 9: '25.4'
+2025-11-09 12:49:02.160 | INFO     | espn.team_scraper:parse_team_stats_row:213 - Estadísticas parseadas: {'team_name': 'Unknown', 'season': None, 'fg_pct': 44.9, 'threep_pct': 37.5, 'ft_pct': 84.9, 'rpg': 51.4, 'apg': 1.278, 'spg': 0.54, 'bpg': 0.0, 'tpg': 0.0, 'ppg': 0.0, 'oppg': 0.0, 'net_rating': 0.0, 'FG%': 44.9, '3P%': 37.5, 'FT%': 84.9, 'REB': 51.4, 'AST': 1.278, 'STL': 0.54, 'BLK': 0.0, 'TO': 0.0, 'PF': 0.0, 'PTS': 0.0}
+2025-11-09 12:49:02.160 | INFO     | espn.team_scraper:scrape_team_stats:60 - Estadísticas extraídas exitosamente para new-york-knicks
+2025-11-09 12:49:02.168 | INFO     | espn.team_scraper:save_team_stats_to_csv:287 - Estadísticas de equipo guardadas en data/raw/team_stats/2024-25_regular/ny.csv
+2025-11-09 12:49:02.168 | INFO     | espn.team_scraper:scrape_all_teams_stats:339 - Procesando oklahoma-city-thunder...
+2025-11-09 12:49:03.045 | WARNING  | espn.team_scraper:extract_team_averages:87 - No se encontró el contenedor principal de estadísticas
+2025-11-09 12:49:03.046 | INFO     | espn.team_scraper:extract_team_averages:90 - Encontradas 4 tablas
+2025-11-09 12:49:03.046 | INFO     | espn.team_scraper:extract_team_averages:98 - ✅ Tabla con estadísticas de porcentajes encontrada
+2025-11-09 12:49:03.047 | INFO     | espn.team_scraper:extract_team_averages:120 - Usando última fila como promedios: 14 celdas
+2025-11-09 12:49:03.048 | INFO     | espn.team_scraper:parse_team_stats_row:172 - Parseando fila con 14 celdas
+2025-11-09 12:49:03.048 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 0: '43.9'
+2025-11-09 12:49:03.048 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 1: '92.4'
+2025-11-09 12:49:03.048 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 2: '47.5'
+2025-11-09 12:49:03.049 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 3: '13.9'
+2025-11-09 12:49:03.049 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 4: '40.6'
+2025-11-09 12:49:03.049 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 5: '34.2'
+2025-11-09 12:49:03.049 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 6: '21.5'
+2025-11-09 12:49:03.050 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 7: '24.9'
+2025-11-09 12:49:03.050 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 8: '86.3'
+2025-11-09 12:49:03.050 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 9: '30.0'
+2025-11-09 12:49:03.051 | INFO     | espn.team_scraper:parse_team_stats_row:213 - Estadísticas parseadas: {'team_name': 'Unknown', 'season': None, 'fg_pct': 47.5, 'threep_pct': 34.2, 'ft_pct': 86.3, 'rpg': 57.9, 'apg': 1.333, 'spg': 0.55, 'bpg': 0.0, 'tpg': 0.0, 'ppg': 0.0, 'oppg': 0.0, 'net_rating': 0.0, 'FG%': 47.5, '3P%': 34.2, 'FT%': 86.3, 'REB': 57.9, 'AST': 1.333, 'STL': 0.55, 'BLK': 0.0, 'TO': 0.0, 'PF': 0.0, 'PTS': 0.0}
+2025-11-09 12:49:03.051 | INFO     | espn.team_scraper:scrape_team_stats:60 - Estadísticas extraídas exitosamente para oklahoma-city-thunder
+2025-11-09 12:49:03.055 | INFO     | espn.team_scraper:save_team_stats_to_csv:287 - Estadísticas de equipo guardadas en data/raw/team_stats/2024-25_regular/okc.csv
+2025-11-09 12:49:03.056 | INFO     | espn.team_scraper:scrape_all_teams_stats:339 - Procesando orlando-magic...
+2025-11-09 12:49:04.179 | WARNING  | espn.team_scraper:extract_team_averages:87 - No se encontró el contenedor principal de estadísticas
+2025-11-09 12:49:04.180 | INFO     | espn.team_scraper:extract_team_averages:90 - Encontradas 4 tablas
+2025-11-09 12:49:04.181 | INFO     | espn.team_scraper:extract_team_averages:98 - ✅ Tabla con estadísticas de porcentajes encontrada
+2025-11-09 12:49:04.181 | INFO     | espn.team_scraper:extract_team_averages:120 - Usando última fila como promedios: 14 celdas
+2025-11-09 12:49:04.182 | INFO     | espn.team_scraper:parse_team_stats_row:172 - Parseando fila con 14 celdas
+2025-11-09 12:49:04.182 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 0: '40.6'
+2025-11-09 12:49:04.182 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 1: '84.9'
+2025-11-09 12:49:04.183 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 2: '47.8'
+2025-11-09 12:49:04.183 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 3: '11.1'
+2025-11-09 12:49:04.183 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 4: '31.7'
+2025-11-09 12:49:04.183 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 5: '35.1'
+2025-11-09 12:49:04.184 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 6: '24.8'
+2025-11-09 12:49:04.184 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 7: '32.4'
+2025-11-09 12:49:04.185 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 8: '76.4'
+2025-11-09 12:49:04.185 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 9: '29.4'
+2025-11-09 12:49:04.186 | INFO     | espn.team_scraper:parse_team_stats_row:213 - Estadísticas parseadas: {'team_name': 'Unknown', 'season': None, 'fg_pct': 47.8, 'threep_pct': 35.1, 'ft_pct': 76.4, 'rpg': 55.3, 'apg': 1.378, 'spg': 0.54, 'bpg': 0.0, 'tpg': 0.0, 'ppg': 0.0, 'oppg': 0.0, 'net_rating': 0.0, 'FG%': 47.8, '3P%': 35.1, 'FT%': 76.4, 'REB': 55.3, 'AST': 1.378, 'STL': 0.54, 'BLK': 0.0, 'TO': 0.0, 'PF': 0.0, 'PTS': 0.0}
+2025-11-09 12:49:04.186 | INFO     | espn.team_scraper:scrape_team_stats:60 - Estadísticas extraídas exitosamente para orlando-magic
+2025-11-09 12:49:04.194 | INFO     | espn.team_scraper:save_team_stats_to_csv:287 - Estadísticas de equipo guardadas en data/raw/team_stats/2024-25_regular/orl.csv
+2025-11-09 12:49:04.195 | INFO     | espn.team_scraper:scrape_all_teams_stats:339 - Procesando philadelphia-76ers...
+2025-11-09 12:49:05.390 | WARNING  | espn.team_scraper:extract_team_averages:87 - No se encontró el contenedor principal de estadísticas
+2025-11-09 12:49:05.391 | INFO     | espn.team_scraper:extract_team_averages:90 - Encontradas 4 tablas
+2025-11-09 12:49:05.391 | INFO     | espn.team_scraper:extract_team_averages:98 - ✅ Tabla con estadísticas de porcentajes encontrada
+2025-11-09 12:49:05.392 | INFO     | espn.team_scraper:extract_team_averages:120 - Usando última fila como promedios: 14 celdas
+2025-11-09 12:49:05.393 | INFO     | espn.team_scraper:parse_team_stats_row:172 - Parseando fila con 14 celdas
+2025-11-09 12:49:05.394 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 0: '43.7'
+2025-11-09 12:49:05.394 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 1: '91.4'
+2025-11-09 12:49:05.395 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 2: '47.8'
+2025-11-09 12:49:05.395 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 3: '14.0'
+2025-11-09 12:49:05.396 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 4: '36.1'
+2025-11-09 12:49:05.396 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 5: '38.8'
+2025-11-09 12:49:05.397 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 6: '22.7'
+2025-11-09 12:49:05.397 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 7: '28.8'
+2025-11-09 12:49:05.397 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 8: '78.8'
+2025-11-09 12:49:05.398 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 9: '29.7'
+2025-11-09 12:49:05.398 | INFO     | espn.team_scraper:parse_team_stats_row:213 - Estadísticas parseadas: {'team_name': 'Unknown', 'season': None, 'fg_pct': 47.8, 'threep_pct': 38.8, 'ft_pct': 78.8, 'rpg': 53.6, 'apg': 1.356, 'spg': 0.55, 'bpg': 0.0, 'tpg': 0.0, 'ppg': 0.0, 'oppg': 0.0, 'net_rating': 0.0, 'FG%': 47.8, '3P%': 38.8, 'FT%': 78.8, 'REB': 53.6, 'AST': 1.356, 'STL': 0.55, 'BLK': 0.0, 'TO': 0.0, 'PF': 0.0, 'PTS': 0.0}
+2025-11-09 12:49:05.398 | INFO     | espn.team_scraper:scrape_team_stats:60 - Estadísticas extraídas exitosamente para philadelphia-76ers
+2025-11-09 12:49:05.403 | INFO     | espn.team_scraper:save_team_stats_to_csv:287 - Estadísticas de equipo guardadas en data/raw/team_stats/2024-25_regular/phi.csv
+2025-11-09 12:49:05.403 | INFO     | espn.team_scraper:scrape_all_teams_stats:339 - Procesando phoenix-suns...
+2025-11-09 12:49:06.549 | WARNING  | espn.team_scraper:extract_team_averages:87 - No se encontró el contenedor principal de estadísticas
+2025-11-09 12:49:06.550 | INFO     | espn.team_scraper:extract_team_averages:90 - Encontradas 4 tablas
+2025-11-09 12:49:06.551 | INFO     | espn.team_scraper:extract_team_averages:98 - ✅ Tabla con estadísticas de porcentajes encontrada
+2025-11-09 12:49:06.552 | INFO     | espn.team_scraper:extract_team_averages:120 - Usando última fila como promedios: 14 celdas
+2025-11-09 12:49:06.552 | INFO     | espn.team_scraper:parse_team_stats_row:172 - Parseando fila con 14 celdas
+2025-11-09 12:49:06.552 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 0: '41.6'
+2025-11-09 12:49:06.553 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 1: '90.1'
+2025-11-09 12:49:06.553 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 2: '46.2'
+2025-11-09 12:49:06.553 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 3: '16.2'
+2025-11-09 12:49:06.554 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 4: '42.7'
+2025-11-09 12:49:06.554 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 5: '37.9'
+2025-11-09 12:49:06.554 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 6: '17.0'
+2025-11-09 12:49:06.554 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 7: '20.9'
+2025-11-09 12:49:06.555 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 8: '81.3'
+2025-11-09 12:49:06.555 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 9: '25.4'
+2025-11-09 12:49:06.555 | INFO     | espn.team_scraper:parse_team_stats_row:213 - Estadísticas parseadas: {'team_name': 'Unknown', 'season': None, 'fg_pct': 46.2, 'threep_pct': 37.9, 'ft_pct': 81.3, 'rpg': 53.6, 'apg': 1.292, 'spg': 0.55, 'bpg': 0.0, 'tpg': 0.0, 'ppg': 0.0, 'oppg': 0.0, 'net_rating': 0.0, 'FG%': 46.2, '3P%': 37.9, 'FT%': 81.3, 'REB': 53.6, 'AST': 1.292, 'STL': 0.55, 'BLK': 0.0, 'TO': 0.0, 'PF': 0.0, 'PTS': 0.0}
+2025-11-09 12:49:06.556 | INFO     | espn.team_scraper:scrape_team_stats:60 - Estadísticas extraídas exitosamente para phoenix-suns
+2025-11-09 12:49:06.561 | INFO     | espn.team_scraper:save_team_stats_to_csv:287 - Estadísticas de equipo guardadas en data/raw/team_stats/2024-25_regular/phx.csv
+2025-11-09 12:49:06.561 | INFO     | espn.team_scraper:scrape_all_teams_stats:339 - Procesando portland-trail-blazers...
+2025-11-09 12:49:07.691 | WARNING  | espn.team_scraper:extract_team_averages:87 - No se encontró el contenedor principal de estadísticas
+2025-11-09 12:49:07.694 | INFO     | espn.team_scraper:extract_team_averages:90 - Encontradas 4 tablas
+2025-11-09 12:49:07.698 | INFO     | espn.team_scraper:extract_team_averages:98 - ✅ Tabla con estadísticas de porcentajes encontrada
+2025-11-09 12:49:07.708 | INFO     | espn.team_scraper:extract_team_averages:120 - Usando última fila como promedios: 14 celdas
+2025-11-09 12:49:07.717 | INFO     | espn.team_scraper:parse_team_stats_row:172 - Parseando fila con 14 celdas
+2025-11-09 12:49:07.718 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 0: '42.0'
+2025-11-09 12:49:07.718 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 1: '94.1'
+2025-11-09 12:49:07.719 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 2: '44.6'
+2025-11-09 12:49:07.719 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 3: '14.2'
+2025-11-09 12:49:07.719 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 4: '43.1'
+2025-11-09 12:49:07.720 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 5: '33.0'
+2025-11-09 12:49:07.721 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 6: '23.3'
+2025-11-09 12:49:07.721 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 7: '28.0'
+2025-11-09 12:49:07.728 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 8: '83.3'
+2025-11-09 12:49:07.736 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 9: '27.8'
+2025-11-09 12:49:07.744 | INFO     | espn.team_scraper:parse_team_stats_row:213 - Estadísticas parseadas: {'team_name': 'Unknown', 'season': None, 'fg_pct': 44.6, 'threep_pct': 33.0, 'ft_pct': 83.3, 'rpg': 54.5, 'apg': 1.292, 'spg': 0.52, 'bpg': 0.0, 'tpg': 0.0, 'ppg': 0.0, 'oppg': 0.0, 'net_rating': 0.0, 'FG%': 44.6, '3P%': 33.0, 'FT%': 83.3, 'REB': 54.5, 'AST': 1.292, 'STL': 0.52, 'BLK': 0.0, 'TO': 0.0, 'PF': 0.0, 'PTS': 0.0}
+2025-11-09 12:49:07.748 | INFO     | espn.team_scraper:scrape_team_stats:60 - Estadísticas extraídas exitosamente para portland-trail-blazers
+2025-11-09 12:49:07.756 | INFO     | espn.team_scraper:save_team_stats_to_csv:287 - Estadísticas de equipo guardadas en data/raw/team_stats/2024-25_regular/por.csv
+2025-11-09 12:49:07.756 | INFO     | espn.team_scraper:scrape_all_teams_stats:339 - Procesando sacramento-kings...
+2025-11-09 12:49:08.667 | WARNING  | espn.team_scraper:extract_team_averages:87 - No se encontró el contenedor principal de estadísticas
+2025-11-09 12:49:08.668 | INFO     | espn.team_scraper:extract_team_averages:90 - Encontradas 4 tablas
+2025-11-09 12:49:08.669 | INFO     | espn.team_scraper:extract_team_averages:98 - ✅ Tabla con estadísticas de porcentajes encontrada
+2025-11-09 12:49:08.669 | INFO     | espn.team_scraper:extract_team_averages:120 - Usando última fila como promedios: 14 celdas
+2025-11-09 12:49:08.670 | INFO     | espn.team_scraper:parse_team_stats_row:172 - Parseando fila con 14 celdas
+2025-11-09 12:49:08.670 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 0: '42.4'
+2025-11-09 12:49:08.670 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 1: '88.6'
+2025-11-09 12:49:08.671 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 2: '47.9'
+2025-11-09 12:49:08.671 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 3: '11.4'
+2025-11-09 12:49:08.671 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 4: '30.4'
+2025-11-09 12:49:08.672 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 5: '37.6'
+2025-11-09 12:49:08.672 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 6: '18.8'
+2025-11-09 12:49:08.672 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 7: '24.0'
+2025-11-09 12:49:08.672 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 8: '78.2'
+2025-11-09 12:49:08.672 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 9: '31.0'
+2025-11-09 12:49:08.673 | INFO     | espn.team_scraper:parse_team_stats_row:213 - Estadísticas parseadas: {'team_name': 'Unknown', 'season': None, 'fg_pct': 47.9, 'threep_pct': 37.6, 'ft_pct': 78.2, 'rpg': 53.3, 'apg': 1.3, 'spg': 0.54, 'bpg': 0.0, 'tpg': 0.0, 'ppg': 0.0, 'oppg': 0.0, 'net_rating': 0.0, 'FG%': 47.9, '3P%': 37.6, 'FT%': 78.2, 'REB': 53.3, 'AST': 1.3, 'STL': 0.54, 'BLK': 0.0, 'TO': 0.0, 'PF': 0.0, 'PTS': 0.0}
+2025-11-09 12:49:08.673 | INFO     | espn.team_scraper:scrape_team_stats:60 - Estadísticas extraídas exitosamente para sacramento-kings
+2025-11-09 12:49:08.681 | INFO     | espn.team_scraper:save_team_stats_to_csv:287 - Estadísticas de equipo guardadas en data/raw/team_stats/2024-25_regular/sac.csv
+2025-11-09 12:49:08.682 | INFO     | espn.team_scraper:scrape_all_teams_stats:339 - Procesando san-antonio-spurs...
+2025-11-09 12:49:09.759 | WARNING  | espn.team_scraper:extract_team_averages:87 - No se encontró el contenedor principal de estadísticas
+2025-11-09 12:49:09.760 | INFO     | espn.team_scraper:extract_team_averages:90 - Encontradas 4 tablas
+2025-11-09 12:49:09.761 | INFO     | espn.team_scraper:extract_team_averages:98 - ✅ Tabla con estadísticas de porcentajes encontrada
+2025-11-09 12:49:09.762 | INFO     | espn.team_scraper:extract_team_averages:120 - Usando última fila como promedios: 14 celdas
+2025-11-09 12:49:09.762 | INFO     | espn.team_scraper:parse_team_stats_row:172 - Parseando fila con 14 celdas
+2025-11-09 12:49:09.762 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 0: '42.2'
+2025-11-09 12:49:09.762 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 1: '85.0'
+2025-11-09 12:49:09.763 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 2: '49.7'
+2025-11-09 12:49:09.763 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 3: '12.8'
+2025-11-09 12:49:09.763 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 4: '35.2'
+2025-11-09 12:49:09.763 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 5: '36.3'
+2025-11-09 12:49:09.764 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 6: '21.9'
+2025-11-09 12:49:09.764 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 7: '28.3'
+2025-11-09 12:49:09.764 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 8: '77.3'
+2025-11-09 12:49:09.765 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 9: '29.4'
+2025-11-09 12:49:09.765 | INFO     | espn.team_scraper:parse_team_stats_row:213 - Estadísticas parseadas: {'team_name': 'Unknown', 'season': None, 'fg_pct': 49.7, 'threep_pct': 36.3, 'ft_pct': 77.3, 'rpg': 59.2, 'apg': 1.401, 'spg': 0.57, 'bpg': 0.0, 'tpg': 0.0, 'ppg': 0.0, 'oppg': 0.0, 'net_rating': 0.0, 'FG%': 49.7, '3P%': 36.3, 'FT%': 77.3, 'REB': 59.2, 'AST': 1.401, 'STL': 0.57, 'BLK': 0.0, 'TO': 0.0, 'PF': 0.0, 'PTS': 0.0}
+2025-11-09 12:49:09.765 | INFO     | espn.team_scraper:scrape_team_stats:60 - Estadísticas extraídas exitosamente para san-antonio-spurs
+2025-11-09 12:49:09.771 | INFO     | espn.team_scraper:save_team_stats_to_csv:287 - Estadísticas de equipo guardadas en data/raw/team_stats/2024-25_regular/sa.csv
+2025-11-09 12:49:09.771 | INFO     | espn.team_scraper:scrape_all_teams_stats:339 - Procesando toronto-raptors...
+2025-11-09 12:49:10.602 | WARNING  | espn.team_scraper:extract_team_averages:87 - No se encontró el contenedor principal de estadísticas
+2025-11-09 12:49:10.603 | INFO     | espn.team_scraper:extract_team_averages:90 - Encontradas 4 tablas
+2025-11-09 12:49:10.604 | INFO     | espn.team_scraper:extract_team_averages:98 - ✅ Tabla con estadísticas de porcentajes encontrada
+2025-11-09 12:49:10.604 | INFO     | espn.team_scraper:extract_team_averages:120 - Usando última fila como promedios: 14 celdas
+2025-11-09 12:49:10.605 | INFO     | espn.team_scraper:parse_team_stats_row:172 - Parseando fila con 14 celdas
+2025-11-09 12:49:10.605 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 0: '43.2'
+2025-11-09 12:49:10.605 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 1: '88.7'
+2025-11-09 12:49:10.606 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 2: '48.7'
+2025-11-09 12:49:10.606 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 3: '13.2'
+2025-11-09 12:49:10.607 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 4: '33.8'
+2025-11-09 12:49:10.607 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 5: '39.1'
+2025-11-09 12:49:10.607 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 6: '19.7'
+2025-11-09 12:49:10.608 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 7: '25.3'
+2025-11-09 12:49:10.610 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 8: '77.9'
+2025-11-09 12:49:10.610 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 9: '30.0'
+2025-11-09 12:49:10.611 | INFO     | espn.team_scraper:parse_team_stats_row:213 - Estadísticas parseadas: {'team_name': 'Unknown', 'season': None, 'fg_pct': 48.7, 'threep_pct': 39.1, 'ft_pct': 77.9, 'rpg': 54.6, 'apg': 1.345, 'spg': 0.56, 'bpg': 0.0, 'tpg': 0.0, 'ppg': 0.0, 'oppg': 0.0, 'net_rating': 0.0, 'FG%': 48.7, '3P%': 39.1, 'FT%': 77.9, 'REB': 54.6, 'AST': 1.345, 'STL': 0.56, 'BLK': 0.0, 'TO': 0.0, 'PF': 0.0, 'PTS': 0.0}
+2025-11-09 12:49:10.611 | INFO     | espn.team_scraper:scrape_team_stats:60 - Estadísticas extraídas exitosamente para toronto-raptors
+2025-11-09 12:49:10.617 | INFO     | espn.team_scraper:save_team_stats_to_csv:287 - Estadísticas de equipo guardadas en data/raw/team_stats/2024-25_regular/tor.csv
+2025-11-09 12:49:10.617 | INFO     | espn.team_scraper:scrape_all_teams_stats:339 - Procesando utah-jazz...
+2025-11-09 12:49:11.750 | WARNING  | espn.team_scraper:extract_team_averages:87 - No se encontró el contenedor principal de estadísticas
+2025-11-09 12:49:11.751 | INFO     | espn.team_scraper:extract_team_averages:90 - Encontradas 4 tablas
+2025-11-09 12:49:11.752 | INFO     | espn.team_scraper:extract_team_averages:98 - ✅ Tabla con estadísticas de porcentajes encontrada
+2025-11-09 12:49:11.752 | INFO     | espn.team_scraper:extract_team_averages:120 - Usando última fila como promedios: 14 celdas
+2025-11-09 12:49:11.753 | INFO     | espn.team_scraper:parse_team_stats_row:172 - Parseando fila con 14 celdas
+2025-11-09 12:49:11.753 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 0: '38.1'
+2025-11-09 12:49:11.753 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 1: '88.6'
+2025-11-09 12:49:11.754 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 2: '43.0'
+2025-11-09 12:49:11.754 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 3: '11.8'
+2025-11-09 12:49:11.754 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 4: '38.6'
+2025-11-09 12:49:11.755 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 5: '30.5'
+2025-11-09 12:49:11.755 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 6: '24.1'
+2025-11-09 12:49:11.755 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 7: '29.1'
+2025-11-09 12:49:11.756 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 8: '82.8'
+2025-11-09 12:49:11.756 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 9: '26.3'
+2025-11-09 12:49:11.756 | INFO     | espn.team_scraper:parse_team_stats_row:213 - Estadísticas parseadas: {'team_name': 'Unknown', 'season': None, 'fg_pct': 43.0, 'threep_pct': 30.5, 'ft_pct': 82.8, 'rpg': 52.7, 'apg': 1.266, 'spg': 0.5, 'bpg': 0.0, 'tpg': 0.0, 'ppg': 0.0, 'oppg': 0.0, 'net_rating': 0.0, 'FG%': 43.0, '3P%': 30.5, 'FT%': 82.8, 'REB': 52.7, 'AST': 1.266, 'STL': 0.5, 'BLK': 0.0, 'TO': 0.0, 'PF': 0.0, 'PTS': 0.0}
+2025-11-09 12:49:11.757 | INFO     | espn.team_scraper:scrape_team_stats:60 - Estadísticas extraídas exitosamente para utah-jazz
+2025-11-09 12:49:11.763 | INFO     | espn.team_scraper:save_team_stats_to_csv:287 - Estadísticas de equipo guardadas en data/raw/team_stats/2024-25_regular/utah.csv
+2025-11-09 12:49:11.765 | INFO     | espn.team_scraper:scrape_all_teams_stats:339 - Procesando washington-wizards...
+2025-11-09 12:49:12.630 | WARNING  | espn.team_scraper:extract_team_averages:87 - No se encontró el contenedor principal de estadísticas
+2025-11-09 12:49:12.631 | INFO     | espn.team_scraper:extract_team_averages:90 - Encontradas 4 tablas
+2025-11-09 12:49:12.633 | INFO     | espn.team_scraper:extract_team_averages:98 - ✅ Tabla con estadísticas de porcentajes encontrada
+2025-11-09 12:49:12.634 | INFO     | espn.team_scraper:extract_team_averages:120 - Usando última fila como promedios: 14 celdas
+2025-11-09 12:49:12.636 | INFO     | espn.team_scraper:parse_team_stats_row:172 - Parseando fila con 14 celdas
+2025-11-09 12:49:12.636 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 0: '41.1'
+2025-11-09 12:49:12.637 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 1: '90.9'
+2025-11-09 12:49:12.639 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 2: '45.2'
+2025-11-09 12:49:12.640 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 3: '13.3'
+2025-11-09 12:49:12.640 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 4: '36.0'
+2025-11-09 12:49:12.645 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 5: '36.9'
+2025-11-09 12:49:12.647 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 6: '16.0'
+2025-11-09 12:49:12.647 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 7: '21.8'
+2025-11-09 12:49:12.649 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 8: '73.4'
+2025-11-09 12:49:12.650 | INFO     | espn.team_scraper:parse_team_stats_row:181 -   Celda 9: '27.8'
+2025-11-09 12:49:12.651 | INFO     | espn.team_scraper:parse_team_stats_row:213 - Estadísticas parseadas: {'team_name': 'Unknown', 'season': None, 'fg_pct': 45.2, 'threep_pct': 36.9, 'ft_pct': 73.4, 'rpg': 50.6, 'apg': 1.227, 'spg': 0.53, 'bpg': 0.0, 'tpg': 0.0, 'ppg': 0.0, 'oppg': 0.0, 'net_rating': 0.0, 'FG%': 45.2, '3P%': 36.9, 'FT%': 73.4, 'REB': 50.6, 'AST': 1.227, 'STL': 0.53, 'BLK': 0.0, 'TO': 0.0, 'PF': 0.0, 'PTS': 0.0}
+2025-11-09 12:49:12.651 | INFO     | espn.team_scraper:scrape_team_stats:60 - Estadísticas extraídas exitosamente para washington-wizards
+2025-11-09 12:49:12.658 | INFO     | espn.team_scraper:save_team_stats_to_csv:287 - Estadísticas de equipo guardadas en data/raw/team_stats/2024-25_regular/wsh.csv
+2025-11-09 12:49:12.660 | INFO     | espn.team_scraper:scrape_all_teams_stats:349 - Scraping de estadísticas de equipos completado: 30/30 equipos
+2025-11-09 12:49:12.661 | INFO     | __main__:main:56 - 
+================================================================================
+2025-11-09 12:49:12.661 | INFO     | __main__:main:57 - SCRAPING COMPLETADO
+2025-11-09 12:49:12.662 | INFO     | __main__:main:58 - ================================================================================

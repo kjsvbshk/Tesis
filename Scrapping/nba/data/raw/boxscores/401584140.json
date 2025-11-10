@@ -1,8 +1,32 @@
 {
-  "game_id": 401584140,
-  "fecha": "2025-10-24",
+  "game_id": "401584140",
+  "fecha": "2025-11-09",
   "home_team": "Clippers",
   "away_team": "Pelicans",
   "home_score": 106,
-  "away_score": 116
+  "away_score": 116,
+  "home_stats": {
+    "PTS": 106,
+    "REB": 39,
+    "AST": 27,
+    "STL": 11,
+    "BLK": 8,
+    "TO": 11,
+    "FG%": 45.7,
+    "3P%": 29.7,
+    "FT%": 64.7,
+    "PF": 24
+  },
+  "away_stats": {
+    "PTS": 116,
+    "REB": 50,
+    "AST": 26,
+    "STL": 6,
+    "BLK": 5,
+    "TO": 15,
+    "FG%": 48.9,
+    "3P%": 41.7,
+    "FT%": 74.1,
+    "PF": 19
+  }
 }

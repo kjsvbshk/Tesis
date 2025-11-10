@@ -38,8 +38,8 @@ def scrape_boxscore(game_id):
         teams = [t.text for t in soup.select(".ScoreCell__TeamName")]
         scores = [s.text for s in soup.select(".ScoreCell__Score")]
         
-        # Parse tabla de estadísticas
-        team_stats = soup.select("table.mod-data")
+        # Parse tabla de estadísticas - buscar tablas con clase Table
+        team_stats_tables = soup.find_all("table", class_="Table")
         
         # Extraer datos básicos del juego
         game_data = {
@@ -52,12 +52,34 @@ def scrape_boxscore(game_id):
         }
         
         # Extraer estadísticas de equipos
-        if team_stats:
-            home_stats = extract_team_stats(team_stats[1]) if len(team_stats) > 1 else {}
-            away_stats = extract_team_stats(team_stats[0]) if len(team_stats) > 0 else {}
+        # La estructura tiene tablas fijas (con "team" en 1 celda) y tablas scrollables (con estadísticas en 17 celdas)
+        home_stats = {}
+        away_stats = {}
+        
+        # Buscar todas las tablas scrollables (las que tienen muchas columnas)
+        for table in team_stats_tables:
+            rows = table.find_all("tr")
             
-            game_data["home_stats"] = home_stats
-            game_data["away_stats"] = away_stats
+            # Buscar la fila que tiene 17 celdas y la primera está vacía (fila "team" con estadísticas)
+            for row in rows:
+                cells = row.find_all("td")
+                if len(cells) >= 17:
+                    first_cell_text = cells[0].get_text(strip=True)
+                    # La fila de TOTALS del equipo tiene la primera celda vacía o "team"
+                    if first_cell_text == "" or first_cell_text.lower() == "team":
+                        # Esta es la fila de TOTALS del equipo con todas las estadísticas
+                        stats = extract_team_stats_from_row(row)
+                        if stats:
+                            # Determinar si es home o away basándose en el orden
+                            # La primera tabla con estadísticas es away, la segunda es home
+                            if not away_stats:
+                                away_stats = stats
+                            elif not home_stats:
+                                home_stats = stats
+                            break
+        
+        game_data["home_stats"] = home_stats
+        game_data["away_stats"] = away_stats
         
         logger.info(f"Boxscore extraído exitosamente para game_id: {game_id}")
         return game_data
@@ -90,40 +112,48 @@ def extract_game_date(soup):
     except:
         return datetime.now().strftime("%Y-%m-%d")
 
-def extract_team_stats(team_table):
+def extract_team_stats_from_row(team_row):
     """
-    Extraer estadísticas de equipo desde la tabla.
+    Extraer estadísticas de equipo desde la fila "team" (TOTALS).
     
     Args:
-        team_table: BeautifulSoup table element
-        
+        team_row: BeautifulSoup tr element que contiene la fila "team"
+    
     Returns:
         dict: Estadísticas del equipo
     """
     stats = {}
     
     try:
-        # Buscar fila "TOTALS" en la tabla
-        totals_row = team_table.find("tr", class_="Table__TR--sm")
-        if not totals_row:
-            # Buscar alternativa
-            totals_row = team_table.find("tr", string=lambda text: text and "TOTALS" in text.upper())
+        cells = team_row.find_all("td")
         
-        if totals_row:
-            cells = totals_row.find_all("td")
-            if len(cells) >= 10:  # Asegurar que tenemos suficientes columnas
-                stats = {
-                    "FG%": parse_stat(cells[1].text) if len(cells) > 1 else None,
-                    "3P%": parse_stat(cells[3].text) if len(cells) > 3 else None,
-                    "FT%": parse_stat(cells[5].text) if len(cells) > 5 else None,
-                    "REB": parse_stat(cells[6].text) if len(cells) > 6 else None,
-                    "AST": parse_stat(cells[7].text) if len(cells) > 7 else None,
-                    "STL": parse_stat(cells[8].text) if len(cells) > 8 else None,
-                    "BLK": parse_stat(cells[9].text) if len(cells) > 9 else None,
-                    "TO": parse_stat(cells[10].text) if len(cells) > 10 else None,
-                    "PF": parse_stat(cells[11].text) if len(cells) > 11 else None,
-                    "PTS": parse_stat(cells[12].text) if len(cells) > 12 else None
-                }
+        # La estructura es: [team, PTS, OREB, DREB, REB, AST, STL, BLK, TO, FG, FG%, 3PT, 3PT%, FT, FT%, PF, +/-]
+        # Necesitamos: FG%, 3PT%, FT%, REB, AST, STL, BLK, TO, PF, PTS
+        
+        if len(cells) >= 17:
+            # PTS está en la celda 1 (índice 1)
+            # REB está en la celda 4 (índice 4)
+            # AST está en la celda 5 (índice 5)
+            # STL está en la celda 6 (índice 6)
+            # BLK está en la celda 7 (índice 7)
+            # TO está en la celda 8 (índice 8)
+            # FG% está en la celda 10 (índice 10)
+            # 3PT% está en la celda 12 (índice 12)
+            # FT% está en la celda 14 (índice 14)
+            # PF está en la celda 15 (índice 15)
+            
+            stats = {
+                "PTS": parse_stat(cells[1].get_text(strip=True)) if len(cells) > 1 else None,
+                "REB": parse_stat(cells[4].get_text(strip=True)) if len(cells) > 4 else None,
+                "AST": parse_stat(cells[5].get_text(strip=True)) if len(cells) > 5 else None,
+                "STL": parse_stat(cells[6].get_text(strip=True)) if len(cells) > 6 else None,
+                "BLK": parse_stat(cells[7].get_text(strip=True)) if len(cells) > 7 else None,
+                "TO": parse_stat(cells[8].get_text(strip=True)) if len(cells) > 8 else None,
+                "FG%": parse_stat(cells[10].get_text(strip=True)) if len(cells) > 10 else None,
+                "3P%": parse_stat(cells[12].get_text(strip=True)) if len(cells) > 12 else None,
+                "FT%": parse_stat(cells[14].get_text(strip=True)) if len(cells) > 14 else None,
+                "PF": parse_stat(cells[15].get_text(strip=True)) if len(cells) > 15 else None
+            }
         
         logger.debug(f"Estadísticas extraídas: {stats}")
         return stats

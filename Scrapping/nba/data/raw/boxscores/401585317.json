@@ -1,8 +1,32 @@
 {
-  "game_id": 401585317,
-  "fecha": "2025-10-24",
+  "game_id": "401585317",
+  "fecha": "2025-11-09",
   "home_team": "Heat",
   "away_team": "Wizards",
   "home_score": 121,
-  "away_score": 114
+  "away_score": 114,
+  "home_stats": {
+    "PTS": 102,
+    "REB": 43,
+    "AST": 28,
+    "STL": 5,
+    "BLK": 4,
+    "TO": 8,
+    "FG%": 41.1,
+    "3P%": 26.2,
+    "FT%": 81.0,
+    "PF": 25
+  },
+  "away_stats": {
+    "PTS": 110,
+    "REB": 59,
+    "AST": 24,
+    "STL": 4,
+    "BLK": 1,
+    "TO": 12,
+    "FG%": 43.2,
+    "3P%": 22.6,
+    "FT%": 77.1,
+    "PF": 18
+  }
 }

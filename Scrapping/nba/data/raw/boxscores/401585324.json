@@ -1,8 +1,32 @@
 {
-  "game_id": 401585324,
-  "fecha": "2025-10-24",
+  "game_id": "401585324",
+  "fecha": "2025-11-09",
   "home_team": "Pelicans",
   "away_team": "Spurs",
   "home_score": 121,
-  "away_score": 106
+  "away_score": 106,
+  "home_stats": {
+    "PTS": 113,
+    "REB": 55,
+    "AST": 35,
+    "STL": 6,
+    "BLK": 10,
+    "TO": 18,
+    "FG%": 47.9,
+    "3P%": 25.6,
+    "FT%": 61.1,
+    "PF": 16
+  },
+  "away_stats": {
+    "PTS": 114,
+    "REB": 39,
+    "AST": 29,
+    "STL": 14,
+    "BLK": 3,
+    "TO": 9,
+    "FG%": 48.4,
+    "3P%": 26.9,
+    "FT%": 71.4,
+    "PF": 17
+  }
 }

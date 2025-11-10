@@ -1,8 +1,32 @@
 {
-  "game_id": 401585799,
-  "fecha": "2025-10-24",
+  "game_id": "401585799",
+  "fecha": "2025-11-09",
   "home_team": "Magic",
   "away_team": "76ers",
   "home_score": 92,
-  "away_score": 112
+  "away_score": 112,
+  "home_stats": {
+    "PTS": 125,
+    "REB": 44,
+    "AST": 22,
+    "STL": 6,
+    "BLK": 6,
+    "TO": 11,
+    "FG%": 47.7,
+    "3P%": 48.6,
+    "FT%": 82.1,
+    "PF": 20
+  },
+  "away_stats": {
+    "PTS": 113,
+    "REB": 45,
+    "AST": 25,
+    "STL": 7,
+    "BLK": 7,
+    "TO": 11,
+    "FG%": 45.3,
+    "3P%": 29.6,
+    "FT%": 76.0,
+    "PF": 21
+  }
 }

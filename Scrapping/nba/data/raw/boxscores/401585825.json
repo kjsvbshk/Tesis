@@ -1,8 +1,32 @@
 {
-  "game_id": 401585825,
-  "fecha": "2025-10-24",
+  "game_id": "401585825",
+  "fecha": "2025-11-09",
   "home_team": "Pistons",
   "away_team": "Spurs",
   "home_score": 108,
-  "away_score": 130
+  "away_score": 130,
+  "home_stats": {
+    "PTS": 123,
+    "REB": 54,
+    "AST": 33,
+    "STL": 9,
+    "BLK": 3,
+    "TO": 13,
+    "FG%": 53.8,
+    "3P%": 44.1,
+    "FT%": 71.4,
+    "PF": 17
+  },
+  "away_stats": {
+    "PTS": 95,
+    "REB": 40,
+    "AST": 17,
+    "STL": 7,
+    "BLK": 3,
+    "TO": 14,
+    "FG%": 39.1,
+    "3P%": 24.2,
+    "FT%": 75.0,
+    "PF": 9
+  }
 }

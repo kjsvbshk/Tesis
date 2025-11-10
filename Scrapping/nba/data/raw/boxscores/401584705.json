@@ -1,8 +1,32 @@
 {
-  "game_id": 401584705,
-  "fecha": "2025-10-24",
+  "game_id": "401584705",
+  "fecha": "2025-11-09",
   "home_team": "Hornets",
   "away_team": "Pistons",
   "home_score": 99,
-  "away_score": 111
+  "away_score": 111,
+  "home_stats": {
+    "PTS": 99,
+    "REB": 41,
+    "AST": 20,
+    "STL": 13,
+    "BLK": 7,
+    "TO": 18,
+    "FG%": 37.5,
+    "3P%": 25.0,
+    "FT%": 76.5,
+    "PF": 23
+  },
+  "away_stats": {
+    "PTS": 111,
+    "REB": 53,
+    "AST": 28,
+    "STL": 7,
+    "BLK": 6,
+    "TO": 23,
+    "FG%": 45.5,
+    "3P%": 33.3,
+    "FT%": 84.0,
+    "PF": 29
+  }
 }

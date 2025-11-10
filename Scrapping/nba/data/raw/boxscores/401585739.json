@@ -1,8 +1,32 @@
 {
-  "game_id": 401585739,
-  "fecha": "2025-10-24",
+  "game_id": "401585739",
+  "fecha": "2025-11-09",
   "home_team": "Heat",
   "away_team": "76ers",
   "home_score": 119,
-  "away_score": 113
+  "away_score": 113,
+  "home_stats": {
+    "PTS": 105,
+    "REB": 51,
+    "AST": 24,
+    "STL": 8,
+    "BLK": 4,
+    "TO": 15,
+    "FG%": 41.5,
+    "3P%": 30.2,
+    "FT%": 87.5,
+    "PF": 10
+  },
+  "away_stats": {
+    "PTS": 109,
+    "REB": 41,
+    "AST": 28,
+    "STL": 11,
+    "BLK": 7,
+    "TO": 11,
+    "FG%": 46.7,
+    "3P%": 35.0,
+    "FT%": 81.8,
+    "PF": 15
+  }
 }

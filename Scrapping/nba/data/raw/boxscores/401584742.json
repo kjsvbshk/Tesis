@@ -1,8 +1,32 @@
 {
-  "game_id": 401584742,
-  "fecha": "2025-10-24",
+  "game_id": "401584742",
+  "fecha": "2025-11-09",
   "home_team": "Clippers",
   "away_team": "Magic",
   "home_score": 118,
-  "away_score": 102
+  "away_score": 102,
+  "home_stats": {
+    "PTS": 118,
+    "REB": 44,
+    "AST": 29,
+    "STL": 10,
+    "BLK": 4,
+    "TO": 16,
+    "FG%": 49.4,
+    "3P%": 45.2,
+    "FT%": 69.6,
+    "PF": 26
+  },
+  "away_stats": {
+    "PTS": 102,
+    "REB": 40,
+    "AST": 23,
+    "STL": 9,
+    "BLK": 3,
+    "TO": 16,
+    "FG%": 46.9,
+    "3P%": 23.3,
+    "FT%": 57.6,
+    "PF": 24
+  }
 }

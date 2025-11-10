@@ -1,8 +1,32 @@
 {
-  "game_id": 401616463,
-  "fecha": "2025-10-24",
+  "game_id": "401616463",
+  "fecha": "2025-11-09",
   "home_team": "Hawks",
   "away_team": "Nets",
   "home_score": 147,
-  "away_score": 145
+  "away_score": 145,
+  "home_stats": {
+    "PTS": 113,
+    "REB": 49,
+    "AST": 25,
+    "STL": 5,
+    "BLK": 4,
+    "TO": 12,
+    "FG%": 44.7,
+    "3P%": 34.3,
+    "FT%": 94.4,
+    "PF": 23
+  },
+  "away_stats": {
+    "PTS": 114,
+    "REB": 45,
+    "AST": 24,
+    "STL": 7,
+    "BLK": 6,
+    "TO": 12,
+    "FG%": 45.7,
+    "3P%": 40.7,
+    "FT%": 70.8,
+    "PF": 19
+  }
 }

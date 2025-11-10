@@ -1,8 +1,32 @@
 {
-  "game_id": 401585412,
-  "fecha": "2025-10-24",
+  "game_id": "401585412",
+  "fecha": "2025-11-09",
   "home_team": "Wizards",
   "away_team": "Pelicans",
   "home_score": 122,
-  "away_score": 142
+  "away_score": 142,
+  "home_stats": {
+    "PTS": 133,
+    "REB": 39,
+    "AST": 36,
+    "STL": 14,
+    "BLK": 6,
+    "TO": 10,
+    "FG%": 56.2,
+    "3P%": 31.3,
+    "FT%": 79.3,
+    "PF": 21
+  },
+  "away_stats": {
+    "PTS": 126,
+    "REB": 42,
+    "AST": 35,
+    "STL": 7,
+    "BLK": 3,
+    "TO": 19,
+    "FG%": 47.8,
+    "3P%": 46.7,
+    "FT%": 85.0,
+    "PF": 22
+  }
 }

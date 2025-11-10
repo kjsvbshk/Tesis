@@ -1,8 +1,32 @@
 {
-  "game_id": 401585702,
-  "fecha": "2025-10-24",
+  "game_id": "401585702",
+  "fecha": "2025-11-09",
   "home_team": "Celtics",
   "away_team": "Pelicans",
   "home_score": 118,
-  "away_score": 112
+  "away_score": 112,
+  "home_stats": {
+    "PTS": 92,
+    "REB": 41,
+    "AST": 22,
+    "STL": 9,
+    "BLK": 3,
+    "TO": 9,
+    "FG%": 39.5,
+    "3P%": 37.1,
+    "FT%": 61.1,
+    "PF": 12
+  },
+  "away_stats": {
+    "PTS": 104,
+    "REB": 51,
+    "AST": 27,
+    "STL": 7,
+    "BLK": 7,
+    "TO": 12,
+    "FG%": 47.6,
+    "3P%": 40.5,
+    "FT%": 91.7,
+    "PF": 13
+  }
 }

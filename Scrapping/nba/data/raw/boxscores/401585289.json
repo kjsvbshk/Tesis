@@ -1,8 +1,32 @@
 {
-  "game_id": 401585289,
-  "fecha": "2025-10-24",
+  "game_id": "401585289",
+  "fecha": "2025-11-09",
   "home_team": "Suns",
   "away_team": "Heat",
   "home_score": 113,
-  "away_score": 97
+  "away_score": 97,
+  "home_stats": {
+    "PTS": 105,
+    "REB": 44,
+    "AST": 20,
+    "STL": 5,
+    "BLK": 5,
+    "TO": 11,
+    "FG%": 39.3,
+    "3P%": 38.9,
+    "FT%": 100.0,
+    "PF": 18
+  },
+  "away_stats": {
+    "PTS": 118,
+    "REB": 47,
+    "AST": 30,
+    "STL": 8,
+    "BLK": 8,
+    "TO": 7,
+    "FG%": 48.9,
+    "3P%": 35.0,
+    "FT%": 70.6,
+    "PF": 16
+  }
 }

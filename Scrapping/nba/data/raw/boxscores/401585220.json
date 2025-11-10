@@ -1,8 +1,32 @@
 {
-  "game_id": 401585220,
-  "fecha": "2025-10-24",
+  "game_id": "401585220",
+  "fecha": "2025-11-09",
   "home_team": "Bucks",
   "away_team": "Pistons",
   "home_score": 120,
-  "away_score": 118
+  "away_score": 118,
+  "home_stats": {
+    "PTS": 135,
+    "REB": 40,
+    "AST": 30,
+    "STL": 6,
+    "BLK": 2,
+    "TO": 8,
+    "FG%": 46.8,
+    "3P%": 56.8,
+    "FT%": 81.3,
+    "PF": 30
+  },
+  "away_stats": {
+    "PTS": 141,
+    "REB": 49,
+    "AST": 30,
+    "STL": 6,
+    "BLK": 6,
+    "TO": 10,
+    "FG%": 55.3,
+    "3P%": 37.5,
+    "FT%": 71.4,
+    "PF": 18
+  }
 }

@@ -1,8 +1,32 @@
 {
-  "game_id": 401585566,
-  "fecha": "2025-10-24",
+  "game_id": "401585566",
+  "fecha": "2025-11-09",
   "home_team": "Trail Blazers",
   "away_team": "Celtics",
   "home_score": 99,
-  "away_score": 121
+  "away_score": 121,
+  "home_stats": {
+    "PTS": 99,
+    "REB": 38,
+    "AST": 23,
+    "STL": 3,
+    "BLK": 5,
+    "TO": 11,
+    "FG%": 44.8,
+    "3P%": 35.7,
+    "FT%": 100.0,
+    "PF": 11
+  },
+  "away_stats": {
+    "PTS": 121,
+    "REB": 45,
+    "AST": 34,
+    "STL": 7,
+    "BLK": 10,
+    "TO": 3,
+    "FG%": 49.0,
+    "3P%": 37.5,
+    "FT%": 66.7,
+    "PF": 11
+  }
 }

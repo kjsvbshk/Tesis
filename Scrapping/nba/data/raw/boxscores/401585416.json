@@ -1,8 +1,32 @@
 {
-  "game_id": 401585416,
-  "fecha": "2025-10-24",
+  "game_id": "401585416",
+  "fecha": "2025-11-09",
   "home_team": "Lakers",
   "away_team": "Jazz",
   "home_score": 131,
-  "away_score": 99
+  "away_score": 99,
+  "home_stats": {
+    "PTS": 122,
+    "REB": 44,
+    "AST": 29,
+    "STL": 5,
+    "BLK": 7,
+    "TO": 13,
+    "FG%": 48.5,
+    "3P%": 31.1,
+    "FT%": 76.9,
+    "PF": 21
+  },
+  "away_stats": {
+    "PTS": 138,
+    "REB": 37,
+    "AST": 34,
+    "STL": 8,
+    "BLK": 4,
+    "TO": 9,
+    "FG%": 57.1,
+    "3P%": 45.2,
+    "FT%": 83.3,
+    "PF": 13
+  }
 }

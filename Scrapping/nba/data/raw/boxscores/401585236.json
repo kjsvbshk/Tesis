@@ -1,8 +1,32 @@
 {
-  "game_id": 401585236,
-  "fecha": "2025-10-24",
+  "game_id": "401585236",
+  "fecha": "2025-11-09",
   "home_team": "76ers",
   "away_team": "Spurs",
   "home_score": 133,
-  "away_score": 123
+  "away_score": 123,
+  "home_stats": {
+    "PTS": 133,
+    "REB": 48,
+    "AST": 28,
+    "STL": 5,
+    "BLK": 3,
+    "TO": 4,
+    "FG%": 49.5,
+    "3P%": 25.0,
+    "FT%": 80.0,
+    "PF": 20
+  },
+  "away_stats": {
+    "PTS": 123,
+    "REB": 43,
+    "AST": 29,
+    "STL": 3,
+    "BLK": 3,
+    "TO": 8,
+    "FG%": 46.2,
+    "3P%": 31.7,
+    "FT%": 88.9,
+    "PF": 22
+  }
 }

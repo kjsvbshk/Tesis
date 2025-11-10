@@ -1,8 +1,32 @@
 {
-  "game_id": 401584106,
-  "fecha": "2025-10-24",
+  "game_id": "401584106",
+  "fecha": "2025-11-09",
   "home_team": "Pistons",
   "away_team": "Hawks",
   "home_score": 120,
-  "away_score": 126
+  "away_score": 126,
+  "home_stats": {
+    "PTS": 120,
+    "REB": 42,
+    "AST": 36,
+    "STL": 9,
+    "BLK": 6,
+    "TO": 17,
+    "FG%": 52.2,
+    "3P%": 34.5,
+    "FT%": 69.6,
+    "PF": 20
+  },
+  "away_stats": {
+    "PTS": 126,
+    "REB": 41,
+    "AST": 28,
+    "STL": 9,
+    "BLK": 7,
+    "TO": 14,
+    "FG%": 51.7,
+    "3P%": 36.4,
+    "FT%": 92.3,
+    "PF": 19
+  }
 }

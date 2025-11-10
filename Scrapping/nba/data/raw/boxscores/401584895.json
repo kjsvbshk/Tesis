@@ -1,8 +1,32 @@
 {
-  "game_id": 401584895,
-  "fecha": "2025-10-24",
+  "game_id": "401584895",
+  "fecha": "2025-11-09",
   "home_team": "Heat",
   "away_team": "Pacers",
   "home_score": 142,
-  "away_score": 132
+  "away_score": 132,
+  "home_stats": {
+    "PTS": 142,
+    "REB": 48,
+    "AST": 25,
+    "STL": 4,
+    "BLK": 1,
+    "TO": 14,
+    "FG%": 55.8,
+    "3P%": 38.1,
+    "FT%": 84.4,
+    "PF": 28
+  },
+  "away_stats": {
+    "PTS": 132,
+    "REB": 34,
+    "AST": 30,
+    "STL": 11,
+    "BLK": 5,
+    "TO": 9,
+    "FG%": 51.0,
+    "3P%": 25.6,
+    "FT%": 65.6,
+    "PF": 31
+  }
 }

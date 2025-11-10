@@ -1,8 +1,32 @@
 {
-  "game_id": 401584726,
-  "fecha": "2025-10-24",
+  "game_id": "401584726",
+  "fecha": "2025-11-09",
   "home_team": "76ers",
   "away_team": "Trail Blazers",
   "home_score": 126,
-  "away_score": 98
+  "away_score": 98,
+  "home_stats": {
+    "PTS": 126,
+    "REB": 51,
+    "AST": 28,
+    "STL": 10,
+    "BLK": 17,
+    "TO": 15,
+    "FG%": 48.8,
+    "3P%": 39.3,
+    "FT%": 87.5,
+    "PF": 20
+  },
+  "away_stats": {
+    "PTS": 98,
+    "REB": 42,
+    "AST": 19,
+    "STL": 10,
+    "BLK": 9,
+    "TO": 15,
+    "FG%": 38.3,
+    "3P%": 22.6,
+    "FT%": 86.4,
+    "PF": 26
+  }
 }

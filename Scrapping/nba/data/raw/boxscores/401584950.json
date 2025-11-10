@@ -1,8 +1,32 @@
 {
-  "game_id": 401584950,
-  "fecha": "2025-10-24",
+  "game_id": "401584950",
+  "fecha": "2025-11-09",
   "home_team": "Nuggets",
   "away_team": "Nets",
   "home_score": 124,
-  "away_score": 101
+  "away_score": 101,
+  "home_stats": {
+    "PTS": 124,
+    "REB": 48,
+    "AST": 31,
+    "STL": 13,
+    "BLK": 6,
+    "TO": 8,
+    "FG%": 47.5,
+    "3P%": 33.3,
+    "FT%": 85.7,
+    "PF": 15
+  },
+  "away_stats": {
+    "PTS": 101,
+    "REB": 53,
+    "AST": 28,
+    "STL": 5,
+    "BLK": 4,
+    "TO": 16,
+    "FG%": 41.1,
+    "3P%": 26.7,
+    "FT%": 75.0,
+    "PF": 23
+  }
 }

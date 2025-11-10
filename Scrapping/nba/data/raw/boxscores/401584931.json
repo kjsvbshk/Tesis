@@ -1,8 +1,32 @@
 {
-  "game_id": 401584931,
-  "fecha": "2025-10-24",
+  "game_id": "401584931",
+  "fecha": "2025-11-09",
   "home_team": "Kings",
   "away_team": "Nets",
   "home_score": 131,
-  "away_score": 118
+  "away_score": 118,
+  "home_stats": {
+    "PTS": 131,
+    "REB": 43,
+    "AST": 38,
+    "STL": 4,
+    "BLK": 3,
+    "TO": 13,
+    "FG%": 51.1,
+    "3P%": 55.6,
+    "FT%": 71.4,
+    "PF": 24
+  },
+  "away_stats": {
+    "PTS": 118,
+    "REB": 41,
+    "AST": 24,
+    "STL": 4,
+    "BLK": 6,
+    "TO": 13,
+    "FG%": 47.7,
+    "3P%": 48.3,
+    "FT%": 95.2,
+    "PF": 13
+  }
 }

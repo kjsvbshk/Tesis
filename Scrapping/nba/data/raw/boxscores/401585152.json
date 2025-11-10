@@ -1,8 +1,32 @@
 {
-  "game_id": 401585152,
-  "fecha": "2025-10-24",
+  "game_id": "401585152",
+  "fecha": "2025-11-09",
   "home_team": "Nuggets",
   "away_team": "Jazz",
   "home_score": 110,
-  "away_score": 102
+  "away_score": 102,
+  "home_stats": {
+    "PTS": 124,
+    "REB": 40,
+    "AST": 34,
+    "STL": 12,
+    "BLK": 8,
+    "TO": 16,
+    "FG%": 55.4,
+    "3P%": 39.4,
+    "FT%": 82.6,
+    "PF": 19
+  },
+  "away_stats": {
+    "PTS": 111,
+    "REB": 34,
+    "AST": 26,
+    "STL": 11,
+    "BLK": 4,
+    "TO": 16,
+    "FG%": 45.7,
+    "3P%": 39.4,
+    "FT%": 85.7,
+    "PF": 23
+  }
 }

@@ -1,8 +1,32 @@
 {
-  "game_id": 401585001,
-  "fecha": "2025-10-24",
+  "game_id": "401585001",
+  "fecha": "2025-11-09",
   "home_team": "Kings",
   "away_team": "Celtics",
   "home_score": 119,
-  "away_score": 144
+  "away_score": 144,
+  "home_stats": {
+    "PTS": 119,
+    "REB": 37,
+    "AST": 29,
+    "STL": 4,
+    "BLK": 8,
+    "TO": 7,
+    "FG%": 47.3,
+    "3P%": 47.7,
+    "FT%": 52.2,
+    "PF": 15
+  },
+  "away_stats": {
+    "PTS": 144,
+    "REB": 50,
+    "AST": 35,
+    "STL": 6,
+    "BLK": 10,
+    "TO": 9,
+    "FG%": 55.4,
+    "3P%": 52.4,
+    "FT%": 83.3,
+    "PF": 17
+  }
 }

@@ -1,8 +1,32 @@
 {
-  "game_id": 401585480,
-  "fecha": "2025-10-24",
+  "game_id": "401585480",
+  "fecha": "2025-11-09",
   "home_team": "Knicks",
   "away_team": "Warriors",
   "home_score": 99,
-  "away_score": 110
+  "away_score": 110,
+  "home_stats": {
+    "PTS": 99,
+    "REB": 56,
+    "AST": 23,
+    "STL": 7,
+    "BLK": 3,
+    "TO": 12,
+    "FG%": 36.8,
+    "3P%": 30.8,
+    "FT%": 70.8,
+    "PF": 15
+  },
+  "away_stats": {
+    "PTS": 110,
+    "REB": 53,
+    "AST": 26,
+    "STL": 8,
+    "BLK": 5,
+    "TO": 11,
+    "FG%": 44.9,
+    "3P%": 31.8,
+    "FT%": 50.0,
+    "PF": 19
+  }
 }

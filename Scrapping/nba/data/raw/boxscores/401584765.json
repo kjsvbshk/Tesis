@@ -1,8 +1,32 @@
 {
-  "game_id": 401584765,
-  "fecha": "2025-10-24",
+  "game_id": "401584765",
+  "fecha": "2025-11-09",
   "home_team": "Rockets",
   "away_team": "Kings",
   "home_score": 107,
-  "away_score": 89
+  "away_score": 89,
+  "home_stats": {
+    "PTS": 107,
+    "REB": 53,
+    "AST": 28,
+    "STL": 4,
+    "BLK": 3,
+    "TO": 11,
+    "FG%": 46.0,
+    "3P%": 36.1,
+    "FT%": 70.0,
+    "PF": 18
+  },
+  "away_stats": {
+    "PTS": 89,
+    "REB": 43,
+    "AST": 20,
+    "STL": 5,
+    "BLK": 6,
+    "TO": 11,
+    "FG%": 38.1,
+    "3P%": 26.8,
+    "FT%": 73.7,
+    "PF": 19
+  }
 }

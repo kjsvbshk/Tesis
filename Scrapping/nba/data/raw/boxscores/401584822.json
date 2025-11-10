@@ -1,8 +1,32 @@
 {
-  "game_id": 401584822,
-  "fecha": "2025-10-24",
+  "game_id": "401584822",
+  "fecha": "2025-11-09",
   "home_team": "76ers",
   "away_team": "Celtics",
   "home_score": 106,
-  "away_score": 103
+  "away_score": 103,
+  "home_stats": {
+    "PTS": 107,
+    "REB": 41,
+    "AST": 18,
+    "STL": 5,
+    "BLK": 1,
+    "TO": 9,
+    "FG%": 45.9,
+    "3P%": 36.7,
+    "FT%": 81.8,
+    "PF": 14
+  },
+  "away_stats": {
+    "PTS": 117,
+    "REB": 45,
+    "AST": 23,
+    "STL": 7,
+    "BLK": 8,
+    "TO": 9,
+    "FG%": 47.7,
+    "3P%": 36.0,
+    "FT%": 78.9,
+    "PF": 15
+  }
 }

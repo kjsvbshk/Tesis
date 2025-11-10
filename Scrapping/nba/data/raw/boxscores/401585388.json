@@ -1,8 +1,32 @@
 {
-  "game_id": 401585388,
-  "fecha": "2025-10-24",
+  "game_id": "401585388",
+  "fecha": "2025-11-09",
   "home_team": "Kings",
   "away_team": "Thunder",
   "home_score": 105,
-  "away_score": 98
+  "away_score": 98,
+  "home_stats": {
+    "PTS": 127,
+    "REB": 36,
+    "AST": 30,
+    "STL": 8,
+    "BLK": 9,
+    "TO": 9,
+    "FG%": 54.1,
+    "3P%": 48.1,
+    "FT%": 81.5,
+    "PF": 17
+  },
+  "away_stats": {
+    "PTS": 113,
+    "REB": 40,
+    "AST": 32,
+    "STL": 5,
+    "BLK": 5,
+    "TO": 18,
+    "FG%": 48.9,
+    "3P%": 38.1,
+    "FT%": 69.2,
+    "PF": 22
+  }
 }

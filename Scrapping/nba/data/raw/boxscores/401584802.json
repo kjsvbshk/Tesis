@@ -1,8 +1,32 @@
 {
-  "game_id": 401584802,
-  "fecha": "2025-10-24",
+  "game_id": "401584802",
+  "fecha": "2025-11-09",
   "home_team": "Celtics",
   "away_team": "Raptors",
   "home_score": 117,
-  "away_score": 94
+  "away_score": 94,
+  "home_stats": {
+    "PTS": 117,
+    "REB": 46,
+    "AST": 30,
+    "STL": 1,
+    "BLK": 4,
+    "TO": 12,
+    "FG%": 54.7,
+    "3P%": 34.1,
+    "FT%": 61.5,
+    "PF": 14
+  },
+  "away_stats": {
+    "PTS": 94,
+    "REB": 37,
+    "AST": 25,
+    "STL": 8,
+    "BLK": 1,
+    "TO": 8,
+    "FG%": 38.5,
+    "3P%": 27.0,
+    "FT%": 87.5,
+    "PF": 14
+  }
 }

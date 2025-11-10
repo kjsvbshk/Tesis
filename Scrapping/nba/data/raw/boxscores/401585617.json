@@ -1,8 +1,32 @@
 {
-  "game_id": 401585617,
-  "fecha": "2025-10-24",
+  "game_id": "401585617",
+  "fecha": "2025-11-09",
   "home_team": "Grizzlies",
   "away_team": "Kings",
   "home_score": 92,
-  "away_score": 123
+  "away_score": 123,
+  "home_stats": {
+    "PTS": 121,
+    "REB": 59,
+    "AST": 30,
+    "STL": 7,
+    "BLK": 10,
+    "TO": 17,
+    "FG%": 44.7,
+    "3P%": 31.4,
+    "FT%": 81.3,
+    "PF": 25
+  },
+  "away_stats": {
+    "PTS": 111,
+    "REB": 49,
+    "AST": 22,
+    "STL": 13,
+    "BLK": 7,
+    "TO": 12,
+    "FG%": 37.8,
+    "3P%": 34.2,
+    "FT%": 80.0,
+    "PF": 23
+  }
 }

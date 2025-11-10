@@ -1,8 +1,32 @@
 {
-  "game_id": 401585577,
-  "fecha": "2025-10-24",
+  "game_id": "401585577",
+  "fecha": "2025-11-09",
   "home_team": "Nuggets",
   "away_team": "Heat",
   "home_score": 103,
-  "away_score": 97
+  "away_score": 97,
+  "home_stats": {
+    "PTS": 88,
+    "REB": 42,
+    "AST": 18,
+    "STL": 5,
+    "BLK": 2,
+    "TO": 8,
+    "FG%": 42.5,
+    "3P%": 23.8,
+    "FT%": 83.3,
+    "PF": 13
+  },
+  "away_stats": {
+    "PTS": 100,
+    "REB": 41,
+    "AST": 24,
+    "STL": 4,
+    "BLK": 2,
+    "TO": 9,
+    "FG%": 48.8,
+    "3P%": 33.3,
+    "FT%": 69.2,
+    "PF": 13
+  }
 }

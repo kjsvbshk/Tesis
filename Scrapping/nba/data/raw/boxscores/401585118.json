@@ -1,8 +1,32 @@
 {
-  "game_id": 401585118,
-  "fecha": "2025-10-24",
+  "game_id": "401585118",
+  "fecha": "2025-11-09",
   "home_team": "Pistons",
   "away_team": "Warriors",
   "home_score": 109,
-  "away_score": 120
+  "away_score": 120,
+  "home_stats": {
+    "PTS": 113,
+    "REB": 45,
+    "AST": 24,
+    "STL": 3,
+    "BLK": 5,
+    "TO": 16,
+    "FG%": 46.3,
+    "3P%": 42.1,
+    "FT%": 84.0,
+    "PF": 18
+  },
+  "away_stats": {
+    "PTS": 109,
+    "REB": 40,
+    "AST": 25,
+    "STL": 8,
+    "BLK": 9,
+    "TO": 11,
+    "FG%": 44.9,
+    "3P%": 29.5,
+    "FT%": 80.0,
+    "PF": 23
+  }
 }

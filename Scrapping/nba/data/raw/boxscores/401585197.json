@@ -1,8 +1,32 @@
 {
-  "game_id": 401585197,
-  "fecha": "2025-10-24",
+  "game_id": "401585197",
+  "fecha": "2025-11-09",
   "home_team": "Pistons",
   "away_team": "Timberwolves",
   "home_score": 117,
-  "away_score": 124
+  "away_score": 124,
+  "home_stats": {
+    "PTS": 117,
+    "REB": 40,
+    "AST": 30,
+    "STL": 4,
+    "BLK": 7,
+    "TO": 12,
+    "FG%": 51.7,
+    "3P%": 38.7,
+    "FT%": 68.4,
+    "PF": 18
+  },
+  "away_stats": {
+    "PTS": 124,
+    "REB": 42,
+    "AST": 32,
+    "STL": 7,
+    "BLK": 5,
+    "TO": 9,
+    "FG%": 50.5,
+    "3P%": 50.0,
+    "FT%": 71.4,
+    "PF": 14
+  }
 }

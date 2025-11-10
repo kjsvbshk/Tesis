@@ -1,8 +1,32 @@
 {
-  "game_id": 401585582,
-  "fecha": "2025-10-24",
+  "game_id": "401585582",
+  "fecha": "2025-11-09",
   "home_team": "Kings",
   "away_team": "Lakers",
   "home_score": 132,
-  "away_score": 127
+  "away_score": 127,
+  "home_stats": {
+    "PTS": 120,
+    "REB": 44,
+    "AST": 30,
+    "STL": 11,
+    "BLK": 2,
+    "TO": 12,
+    "FG%": 52.3,
+    "3P%": 46.3,
+    "FT%": 75.0,
+    "PF": 19
+  },
+  "away_stats": {
+    "PTS": 107,
+    "REB": 38,
+    "AST": 25,
+    "STL": 8,
+    "BLK": 2,
+    "TO": 14,
+    "FG%": 48.7,
+    "3P%": 43.8,
+    "FT%": 77.3,
+    "PF": 12
+  }
 }

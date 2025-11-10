@@ -1,8 +1,32 @@
 {
-  "game_id": 401585335,
-  "fecha": "2025-10-24",
+  "game_id": "401585335",
+  "fecha": "2025-11-09",
   "home_team": "Pacers",
   "away_team": "Hornets",
   "home_score": 124,
-  "away_score": 125
+  "away_score": 125,
+  "home_stats": {
+    "PTS": 99,
+    "REB": 43,
+    "AST": 18,
+    "STL": 6,
+    "BLK": 5,
+    "TO": 10,
+    "FG%": 39.8,
+    "3P%": 27.6,
+    "FT%": 84.0,
+    "PF": 16
+  },
+  "away_stats": {
+    "PTS": 115,
+    "REB": 49,
+    "AST": 34,
+    "STL": 5,
+    "BLK": 4,
+    "TO": 11,
+    "FG%": 48.9,
+    "3P%": 33.3,
+    "FT%": 77.8,
+    "PF": 15
+  }
 }

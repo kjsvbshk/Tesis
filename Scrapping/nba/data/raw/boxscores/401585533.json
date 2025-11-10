@@ -1,8 +1,32 @@
 {
-  "game_id": 401585533,
-  "fecha": "2025-10-24",
+  "game_id": "401585533",
+  "fecha": "2025-11-09",
   "home_team": "Raptors",
   "away_team": "Suns",
   "home_score": 112,
-  "away_score": 105
+  "away_score": 105,
+  "home_stats": {
+    "PTS": 120,
+    "REB": 49,
+    "AST": 29,
+    "STL": 6,
+    "BLK": 6,
+    "TO": 14,
+    "FG%": 51.2,
+    "3P%": 42.9,
+    "FT%": 85.0,
+    "PF": 16
+  },
+  "away_stats": {
+    "PTS": 113,
+    "REB": 36,
+    "AST": 30,
+    "STL": 5,
+    "BLK": 2,
+    "TO": 9,
+    "FG%": 45.7,
+    "3P%": 36.4,
+    "FT%": 73.3,
+    "PF": 20
+  }
 }

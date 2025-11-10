@@ -1,8 +1,32 @@
 {
-  "game_id": 401585625,
-  "fecha": "2025-10-24",
+  "game_id": "401585625",
+  "fecha": "2025-11-09",
   "home_team": "Pacers",
   "away_team": "Pistons",
   "home_score": 136,
-  "away_score": 113
+  "away_score": 113,
+  "home_stats": {
+    "PTS": 103,
+    "REB": 46,
+    "AST": 23,
+    "STL": 8,
+    "BLK": 1,
+    "TO": 15,
+    "FG%": 41.1,
+    "3P%": 21.7,
+    "FT%": 80.0,
+    "PF": 14
+  },
+  "away_stats": {
+    "PTS": 122,
+    "REB": 40,
+    "AST": 38,
+    "STL": 13,
+    "BLK": 6,
+    "TO": 12,
+    "FG%": 56.8,
+    "3P%": 37.9,
+    "FT%": 61.1,
+    "PF": 16
+  }
 }

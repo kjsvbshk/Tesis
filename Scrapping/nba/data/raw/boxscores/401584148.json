@@ -1,8 +1,32 @@
 {
-  "game_id": 401584148,
-  "fecha": "2025-10-24",
+  "game_id": "401584148",
+  "fecha": "2025-11-09",
   "home_team": "Kings",
   "away_team": "Warriors",
   "home_score": 114,
-  "away_score": 122
+  "away_score": 122,
+  "home_stats": {
+    "PTS": 124,
+    "REB": 46,
+    "AST": 25,
+    "STL": 8,
+    "BLK": 7,
+    "TO": 10,
+    "FG%": 45.1,
+    "3P%": 34.1,
+    "FT%": 64.3,
+    "PF": 23
+  },
+  "away_stats": {
+    "PTS": 123,
+    "REB": 52,
+    "AST": 25,
+    "STL": 6,
+    "BLK": 6,
+    "TO": 18,
+    "FG%": 48.2,
+    "3P%": 41.5,
+    "FT%": 86.7,
+    "PF": 31
+  }
 }

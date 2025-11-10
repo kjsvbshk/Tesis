@@ -1,8 +1,32 @@
 {
-  "game_id": 401584812,
-  "fecha": "2025-10-24",
+  "game_id": "401584812",
+  "fecha": "2025-11-09",
   "home_team": "Spurs",
   "away_team": "Heat",
   "home_score": 113,
-  "away_score": 118
+  "away_score": 118,
+  "home_stats": {
+    "PTS": 113,
+    "REB": 50,
+    "AST": 35,
+    "STL": 3,
+    "BLK": 6,
+    "TO": 17,
+    "FG%": 46.2,
+    "3P%": 43.2,
+    "FT%": 83.3,
+    "PF": 21
+  },
+  "away_stats": {
+    "PTS": 118,
+    "REB": 41,
+    "AST": 26,
+    "STL": 7,
+    "BLK": 3,
+    "TO": 4,
+    "FG%": 43.8,
+    "3P%": 38.7,
+    "FT%": 93.3,
+    "PF": 12
+  }
 }

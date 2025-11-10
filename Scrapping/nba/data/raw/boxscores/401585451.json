@@ -1,8 +1,32 @@
 {
-  "game_id": 401585451,
-  "fecha": "2025-10-24",
+  "game_id": "401585451",
+  "fecha": "2025-11-09",
   "home_team": "Bulls",
   "away_team": "Pelicans",
   "home_score": 124,
-  "away_score": 118
+  "away_score": 118,
+  "home_stats": {
+    "PTS": 106,
+    "REB": 49,
+    "AST": 25,
+    "STL": 5,
+    "BLK": 7,
+    "TO": 19,
+    "FG%": 45.5,
+    "3P%": 39.0,
+    "FT%": 71.4,
+    "PF": 17
+  },
+  "away_stats": {
+    "PTS": 114,
+    "REB": 49,
+    "AST": 29,
+    "STL": 12,
+    "BLK": 0,
+    "TO": 9,
+    "FG%": 43.2,
+    "3P%": 32.5,
+    "FT%": 90.5,
+    "PF": 15
+  }
 }

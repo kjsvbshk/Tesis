@@ -1,8 +1,32 @@
 {
-  "game_id": 401585085,
-  "fecha": "2025-10-24",
+  "game_id": "401585085",
+  "fecha": "2025-11-09",
   "home_team": "Mavericks",
   "away_team": "Jazz",
   "home_score": 147,
-  "away_score": 97
+  "away_score": 97,
+  "home_stats": {
+    "PTS": 127,
+    "REB": 53,
+    "AST": 37,
+    "STL": 9,
+    "BLK": 6,
+    "TO": 12,
+    "FG%": 51.0,
+    "3P%": 27.3,
+    "FT%": 94.4,
+    "PF": 15
+  },
+  "away_stats": {
+    "PTS": 90,
+    "REB": 41,
+    "AST": 28,
+    "STL": 6,
+    "BLK": 5,
+    "TO": 16,
+    "FG%": 39.8,
+    "3P%": 27.5,
+    "FT%": 50.0,
+    "PF": 15
+  }
 }

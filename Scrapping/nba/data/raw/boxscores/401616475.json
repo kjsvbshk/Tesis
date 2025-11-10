@@ -1,8 +1,32 @@
 {
-  "game_id": 401616475,
-  "fecha": "2025-10-24",
+  "game_id": "401616475",
+  "fecha": "2025-11-09",
   "home_team": "Grizzlies",
   "away_team": "Timberwolves",
   "home_score": 97,
-  "away_score": 119
+  "away_score": 119,
+  "home_stats": {
+    "PTS": 103,
+    "REB": 28,
+    "AST": 24,
+    "STL": 7,
+    "BLK": 4,
+    "TO": 9,
+    "FG%": 43.0,
+    "3P%": 42.9,
+    "FT%": 73.7,
+    "PF": 23
+  },
+  "away_stats": {
+    "PTS": 127,
+    "REB": 54,
+    "AST": 30,
+    "STL": 4,
+    "BLK": 8,
+    "TO": 13,
+    "FG%": 50.0,
+    "3P%": 39.5,
+    "FT%": 92.3,
+    "PF": 17
+  }
 }

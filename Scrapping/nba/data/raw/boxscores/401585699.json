@@ -1,8 +1,32 @@
 {
-  "game_id": 401585699,
-  "fecha": "2025-10-24",
+  "game_id": "401585699",
+  "fecha": "2025-11-09",
   "home_team": "Timberwolves",
   "away_team": "Nuggets",
   "home_score": 110,
-  "away_score": 89
+  "away_score": 89,
+  "home_stats": {
+    "PTS": 98,
+    "REB": 46,
+    "AST": 29,
+    "STL": 6,
+    "BLK": 1,
+    "TO": 12,
+    "FG%": 39.8,
+    "3P%": 28.6,
+    "FT%": 74.1,
+    "PF": 24
+  },
+  "away_stats": {
+    "PTS": 111,
+    "REB": 39,
+    "AST": 28,
+    "STL": 6,
+    "BLK": 7,
+    "TO": 7,
+    "FG%": 51.4,
+    "3P%": 32.1,
+    "FT%": 70.3,
+    "PF": 20
+  }
 }

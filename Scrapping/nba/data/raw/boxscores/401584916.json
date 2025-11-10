@@ -1,8 +1,32 @@
 {
-  "game_id": 401584916,
-  "fecha": "2025-10-24",
+  "game_id": "401584916",
+  "fecha": "2025-11-09",
   "home_team": "Grizzlies",
   "away_team": "Suns",
   "home_score": 89,
-  "away_score": 110
+  "away_score": 110,
+  "home_stats": {
+    "PTS": 116,
+    "REB": 44,
+    "AST": 24,
+    "STL": 10,
+    "BLK": 5,
+    "TO": 16,
+    "FG%": 43.4,
+    "3P%": 34.6,
+    "FT%": 81.4,
+    "PF": 21
+  },
+  "away_stats": {
+    "PTS": 109,
+    "REB": 40,
+    "AST": 14,
+    "STL": 9,
+    "BLK": 8,
+    "TO": 15,
+    "FG%": 45.3,
+    "3P%": 29.0,
+    "FT%": 91.7,
+    "PF": 31
+  }
 }

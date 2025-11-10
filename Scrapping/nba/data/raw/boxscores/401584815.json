@@ -1,8 +1,32 @@
 {
-  "game_id": 401584815,
-  "fecha": "2025-10-24",
+  "game_id": "401584815",
+  "fecha": "2025-11-09",
   "home_team": "Lakers",
   "away_team": "Trail Blazers",
   "home_score": 116,
-  "away_score": 110
+  "away_score": 110,
+  "home_stats": {
+    "PTS": 116,
+    "REB": 41,
+    "AST": 27,
+    "STL": 8,
+    "BLK": 4,
+    "TO": 9,
+    "FG%": 48.8,
+    "3P%": 21.1,
+    "FT%": 81.1,
+    "PF": 11
+  },
+  "away_stats": {
+    "PTS": 110,
+    "REB": 38,
+    "AST": 29,
+    "STL": 2,
+    "BLK": 8,
+    "TO": 15,
+    "FG%": 50.0,
+    "3P%": 35.1,
+    "FT%": 77.8,
+    "PF": 25
+  }
 }

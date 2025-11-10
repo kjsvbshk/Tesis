@@ -1,8 +1,32 @@
 {
-  "game_id": 401585349,
-  "fecha": "2025-10-24",
+  "game_id": "401585349",
+  "fecha": "2025-11-09",
   "home_team": "Magic",
   "away_team": "Heat",
   "home_score": 106,
-  "away_score": 115
+  "away_score": 115,
+  "home_stats": {
+    "PTS": 121,
+    "REB": 45,
+    "AST": 31,
+    "STL": 10,
+    "BLK": 3,
+    "TO": 13,
+    "FG%": 54.0,
+    "3P%": 36.1,
+    "FT%": 77.8,
+    "PF": 19
+  },
+  "away_stats": {
+    "PTS": 95,
+    "REB": 39,
+    "AST": 25,
+    "STL": 7,
+    "BLK": 3,
+    "TO": 18,
+    "FG%": 43.8,
+    "3P%": 28.6,
+    "FT%": 71.4,
+    "PF": 17
+  }
 }

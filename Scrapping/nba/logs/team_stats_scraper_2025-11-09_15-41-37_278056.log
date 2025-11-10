@@ -1,0 +1,22 @@
+2025-11-09 15:41:37.280 | INFO     | __main__:main:47 - ================================================================================
+2025-11-09 15:41:37.280 | INFO     | __main__:main:48 - SCRAPING DE ESTADISTICAS DE EQUIPOS NBA
+2025-11-09 15:41:37.281 | INFO     | __main__:main:49 -    Temporada: 2023-24
+2025-11-09 15:41:37.281 | INFO     | __main__:main:50 -    Tipo: REGULAR
+2025-11-09 15:41:37.281 | INFO     | __main__:main:51 - ================================================================================
+
+2025-11-09 15:41:37.281 | INFO     | espn.team_scraper:scrape_all_teams_stats:359 - ================================================================================
+2025-11-09 15:41:37.281 | INFO     | espn.team_scraper:scrape_all_teams_stats:360 - SCRAPING DE ESTADISTICAS DE EQUIPOS
+2025-11-09 15:41:37.281 | INFO     | espn.team_scraper:scrape_all_teams_stats:361 -    Temporada: 2023-24
+2025-11-09 15:41:37.281 | INFO     | espn.team_scraper:scrape_all_teams_stats:362 -    Tipo: REGULAR
+2025-11-09 15:41:37.281 | INFO     | espn.team_scraper:scrape_all_teams_stats:363 - ================================================================================
+
+2025-11-09 15:41:37.281 | INFO     | espn.team_scraper:scrape_team_stats_offensive:261 - [WEB] Scrapeando estadisticas ofensivas
+2025-11-09 15:41:37.281 | INFO     | espn.team_scraper:scrape_team_stats_offensive:262 -    URL: https://www.espn.com/nba/stats/team/_/season/2024/seasontype/2
+2025-11-09 15:41:38.171 | INFO     | espn.team_scraper:parse_espn_team_table:230 -    [DATA] 30 equipos parseados
+2025-11-09 15:41:38.172 | INFO     | espn.team_scraper:scrape_team_stats_offensive:282 -    [OK] 30 equipos extraidos (ofensivos)
+2025-11-09 15:41:38.173 | INFO     | espn.team_scraper:scrape_team_stats_defensive:316 - [WEB] Scrapeando estadisticas defensivas
+2025-11-09 15:41:38.173 | INFO     | espn.team_scraper:scrape_team_stats_defensive:317 -    URL: https://www.espn.com/nba/stats/team/_/view/opponent/season/2024/seasontype/2
+2025-11-09 15:41:39.045 | INFO     | espn.team_scraper:parse_espn_team_table:230 -    [DATA] 30 equipos parseados
+2025-11-09 15:41:39.046 | INFO     | espn.team_scraper:scrape_team_stats_defensive:337 -    [OK] 30 equipos extraidos (defensivos)
+2025-11-09 15:41:39.060 | INFO     | espn.team_scraper:save_team_stats_by_team:437 - 
+[SAVE] Guardando datos en data\raw\team_stats\2023-24_regular/

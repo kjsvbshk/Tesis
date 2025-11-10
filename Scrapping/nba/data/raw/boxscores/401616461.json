@@ -1,8 +1,32 @@
 {
-  "game_id": 401616461,
-  "fecha": "2025-10-24",
+  "game_id": "401616461",
+  "fecha": "2025-11-09",
   "home_team": "Raptors",
   "away_team": "Heat",
   "home_score": 103,
-  "away_score": 112
+  "away_score": 112,
+  "home_stats": {
+    "PTS": 103,
+    "REB": 46,
+    "AST": 29,
+    "STL": 3,
+    "BLK": 8,
+    "TO": 14,
+    "FG%": 43.0,
+    "3P%": 37.8,
+    "FT%": 88.2,
+    "PF": 18
+  },
+  "away_stats": {
+    "PTS": 112,
+    "REB": 44,
+    "AST": 33,
+    "STL": 5,
+    "BLK": 4,
+    "TO": 7,
+    "FG%": 46.1,
+    "3P%": 36.8,
+    "FT%": 84.2,
+    "PF": 18
+  }
 }

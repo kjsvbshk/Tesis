@@ -1,8 +1,32 @@
 {
-  "game_id": 401584099,
-  "fecha": "2025-10-24",
+  "game_id": "401584099",
+  "fecha": "2025-11-09",
   "home_team": "Rockets",
   "away_team": "Pelicans",
   "home_score": 104,
-  "away_score": 101
+  "away_score": 101,
+  "home_stats": {
+    "PTS": 104,
+    "REB": 42,
+    "AST": 20,
+    "STL": 9,
+    "BLK": 5,
+    "TO": 9,
+    "FG%": 40.9,
+    "3P%": 28.6,
+    "FT%": 78.6,
+    "PF": 22
+  },
+  "away_stats": {
+    "PTS": 101,
+    "REB": 49,
+    "AST": 12,
+    "STL": 6,
+    "BLK": 6,
+    "TO": 18,
+    "FG%": 45.3,
+    "3P%": 32.0,
+    "FT%": 73.5,
+    "PF": 26
+  }
 }

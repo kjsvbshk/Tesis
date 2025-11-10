@@ -1,8 +1,32 @@
 {
-  "game_id": 401585196,
-  "fecha": "2025-10-24",
+  "game_id": "401585196",
+  "fecha": "2025-11-09",
   "home_team": "Thunder",
   "away_team": "Clippers",
   "home_score": 134,
-  "away_score": 115
+  "away_score": 115,
+  "home_stats": {
+    "PTS": 128,
+    "REB": 39,
+    "AST": 30,
+    "STL": 5,
+    "BLK": 10,
+    "TO": 9,
+    "FG%": 54.0,
+    "3P%": 46.5,
+    "FT%": 60.9,
+    "PF": 18
+  },
+  "away_stats": {
+    "PTS": 117,
+    "REB": 35,
+    "AST": 30,
+    "STL": 5,
+    "BLK": 5,
+    "TO": 12,
+    "FG%": 50.6,
+    "3P%": 47.1,
+    "FT%": 85.0,
+    "PF": 19
+  }
 }

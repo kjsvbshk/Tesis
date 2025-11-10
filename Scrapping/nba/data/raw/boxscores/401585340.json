@@ -1,8 +1,32 @@
 {
-  "game_id": 401585340,
-  "fecha": "2025-10-24",
+  "game_id": "401585340",
+  "fecha": "2025-11-09",
   "home_team": "Nuggets",
   "away_team": "Trail Blazers",
   "home_score": 120,
-  "away_score": 108
+  "away_score": 108,
+  "home_stats": {
+    "PTS": 112,
+    "REB": 42,
+    "AST": 26,
+    "STL": 8,
+    "BLK": 6,
+    "TO": 8,
+    "FG%": 48.8,
+    "3P%": 42.9,
+    "FT%": 84.2,
+    "PF": 11
+  },
+  "away_stats": {
+    "PTS": 103,
+    "REB": 42,
+    "AST": 29,
+    "STL": 6,
+    "BLK": 3,
+    "TO": 13,
+    "FG%": 45.9,
+    "3P%": 35.5,
+    "FT%": 93.3,
+    "PF": 16
+  }
 }

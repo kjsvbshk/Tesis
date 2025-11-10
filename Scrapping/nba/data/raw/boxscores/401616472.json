@@ -1,8 +1,32 @@
 {
-  "game_id": 401616472,
-  "fecha": "2025-10-24",
+  "game_id": "401616472",
+  "fecha": "2025-11-09",
   "home_team": "Hawks",
   "away_team": "76ers",
   "home_score": 116,
-  "away_score": 126
+  "away_score": 126,
+  "home_stats": {
+    "PTS": 125,
+    "REB": 48,
+    "AST": 24,
+    "STL": 6,
+    "BLK": 8,
+    "TO": 10,
+    "FG%": 48.3,
+    "3P%": 36.7,
+    "FT%": 81.1,
+    "PF": 14
+  },
+  "away_stats": {
+    "PTS": 114,
+    "REB": 55,
+    "AST": 20,
+    "STL": 3,
+    "BLK": 4,
+    "TO": 13,
+    "FG%": 39.4,
+    "3P%": 33.3,
+    "FT%": 90.5,
+    "PF": 23
+  }
 }

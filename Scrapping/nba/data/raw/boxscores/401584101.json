@@ -1,8 +1,32 @@
 {
-  "game_id": 401584101,
-  "fecha": "2025-10-24",
+  "game_id": "401584101",
+  "fecha": "2025-11-09",
   "home_team": "Spurs",
   "away_team": "Timberwolves",
   "home_score": 110,
-  "away_score": 117
+  "away_score": 117,
+  "home_stats": {
+    "PTS": 110,
+    "REB": 38,
+    "AST": 29,
+    "STL": 9,
+    "BLK": 8,
+    "TO": 14,
+    "FG%": 46.7,
+    "3P%": 35.3,
+    "FT%": 63.2,
+    "PF": 21
+  },
+  "away_stats": {
+    "PTS": 117,
+    "REB": 51,
+    "AST": 23,
+    "STL": 6,
+    "BLK": 4,
+    "TO": 18,
+    "FG%": 49.4,
+    "3P%": 37.0,
+    "FT%": 77.8,
+    "PF": 19
+  }
 }

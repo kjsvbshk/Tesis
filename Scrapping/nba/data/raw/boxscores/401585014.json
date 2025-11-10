@@ -1,8 +1,32 @@
 {
-  "game_id": 401585014,
-  "fecha": "2025-10-24",
+  "game_id": "401585014",
+  "fecha": "2025-11-09",
   "home_team": "Warriors",
   "away_team": "Wizards",
   "home_score": 129,
-  "away_score": 118
+  "away_score": 118,
+  "home_stats": {
+    "PTS": 129,
+    "REB": 57,
+    "AST": 33,
+    "STL": 5,
+    "BLK": 2,
+    "TO": 12,
+    "FG%": 48.5,
+    "3P%": 40.0,
+    "FT%": 85.0,
+    "PF": 17
+  },
+  "away_stats": {
+    "PTS": 118,
+    "REB": 39,
+    "AST": 25,
+    "STL": 7,
+    "BLK": 4,
+    "TO": 9,
+    "FG%": 45.4,
+    "3P%": 31.4,
+    "FT%": 79.2,
+    "PF": 16
+  }
 }

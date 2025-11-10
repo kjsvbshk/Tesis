@@ -1,8 +1,32 @@
 {
-  "game_id": 401584737,
-  "fecha": "2025-10-24",
+  "game_id": "401584737",
+  "fecha": "2025-11-09",
   "home_team": "Thunder",
   "away_team": "Pistons",
   "home_score": 124,
-  "away_score": 112
+  "away_score": 112,
+  "home_stats": {
+    "PTS": 124,
+    "REB": 44,
+    "AST": 21,
+    "STL": 9,
+    "BLK": 10,
+    "TO": 15,
+    "FG%": 53.0,
+    "3P%": 44.8,
+    "FT%": 82.1,
+    "PF": 19
+  },
+  "away_stats": {
+    "PTS": 112,
+    "REB": 41,
+    "AST": 31,
+    "STL": 6,
+    "BLK": 5,
+    "TO": 16,
+    "FG%": 42.9,
+    "3P%": 53.6,
+    "FT%": 79.2,
+    "PF": 25
+  }
 }

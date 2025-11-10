@@ -1,8 +1,32 @@
 {
-  "game_id": 401585598,
-  "fecha": "2025-10-24",
+  "game_id": "401585598",
+  "fecha": "2025-11-09",
   "home_team": "Trail Blazers",
   "away_team": "Pelicans",
   "home_score": 84,
-  "away_score": 93
+  "away_score": 93,
+  "home_stats": {
+    "PTS": 126,
+    "REB": 39,
+    "AST": 36,
+    "STL": 8,
+    "BLK": 5,
+    "TO": 9,
+    "FG%": 53.6,
+    "3P%": 39.4,
+    "FT%": 90.0,
+    "PF": 13
+  },
+  "away_stats": {
+    "PTS": 107,
+    "REB": 36,
+    "AST": 23,
+    "STL": 3,
+    "BLK": 7,
+    "TO": 19,
+    "FG%": 50.0,
+    "3P%": 36.4,
+    "FT%": 91.7,
+    "PF": 15
+  }
 }

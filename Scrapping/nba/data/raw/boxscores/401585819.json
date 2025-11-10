@@ -1,8 +1,32 @@
 {
-  "game_id": 401585819,
-  "fecha": "2025-10-24",
+  "game_id": "401585819",
+  "fecha": "2025-11-09",
   "home_team": "Magic",
   "away_team": "Bucks",
   "home_score": 112,
-  "away_score": 97
+  "away_score": 97,
+  "home_stats": {
+    "PTS": 113,
+    "REB": 43,
+    "AST": 27,
+    "STL": 11,
+    "BLK": 5,
+    "TO": 11,
+    "FG%": 49.4,
+    "3P%": 31.4,
+    "FT%": 94.7,
+    "PF": 18
+  },
+  "away_stats": {
+    "PTS": 88,
+    "REB": 34,
+    "AST": 16,
+    "STL": 10,
+    "BLK": 4,
+    "TO": 17,
+    "FG%": 40.0,
+    "3P%": 25.9,
+    "FT%": 91.3,
+    "PF": 18
+  }
 }

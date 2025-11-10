@@ -1,8 +1,32 @@
 {
-  "game_id": 401585504,
-  "fecha": "2025-10-24",
+  "game_id": "401585504",
+  "fecha": "2025-11-09",
   "home_team": "Cavaliers",
   "away_team": "Knicks",
   "home_score": 91,
-  "away_score": 109
+  "away_score": 109,
+  "home_stats": {
+    "PTS": 98,
+    "REB": 39,
+    "AST": 31,
+    "STL": 7,
+    "BLK": 5,
+    "TO": 10,
+    "FG%": 44.8,
+    "3P%": 38.6,
+    "FT%": 37.5,
+    "PF": 11
+  },
+  "away_stats": {
+    "PTS": 107,
+    "REB": 47,
+    "AST": 32,
+    "STL": 8,
+    "BLK": 9,
+    "TO": 9,
+    "FG%": 48.8,
+    "3P%": 41.0,
+    "FT%": 70.0,
+    "PF": 13
+  }
 }

@@ -1,8 +1,32 @@
 {
-  "game_id": 401584799,
-  "fecha": "2025-10-24",
+  "game_id": "401584799",
+  "fecha": "2025-11-09",
   "home_team": "Pacers",
   "away_team": "Bucks",
   "home_score": 126,
-  "away_score": 124
+  "away_score": 124,
+  "home_stats": {
+    "PTS": 126,
+    "REB": 40,
+    "AST": 27,
+    "STL": 6,
+    "BLK": 6,
+    "TO": 11,
+    "FG%": 47.8,
+    "3P%": 41.7,
+    "FT%": 90.0,
+    "PF": 25
+  },
+  "away_stats": {
+    "PTS": 124,
+    "REB": 41,
+    "AST": 23,
+    "STL": 6,
+    "BLK": 5,
+    "TO": 14,
+    "FG%": 52.9,
+    "3P%": 33.3,
+    "FT%": 88.5,
+    "PF": 19
+  }
 }

@@ -1,8 +1,32 @@
 {
-  "game_id": 401585035,
-  "fecha": "2025-10-24",
+  "game_id": "401585035",
+  "fecha": "2025-11-09",
   "home_team": "Magic",
   "away_team": "Wizards",
   "home_score": 139,
-  "away_score": 120
+  "away_score": 120,
+  "home_stats": {
+    "PTS": 119,
+    "REB": 47,
+    "AST": 27,
+    "STL": 10,
+    "BLK": 8,
+    "TO": 20,
+    "FG%": 49.4,
+    "3P%": 38.1,
+    "FT%": 81.0,
+    "PF": 21
+  },
+  "away_stats": {
+    "PTS": 127,
+    "REB": 40,
+    "AST": 30,
+    "STL": 11,
+    "BLK": 5,
+    "TO": 16,
+    "FG%": 52.7,
+    "3P%": 46.2,
+    "FT%": 68.0,
+    "PF": 16
+  }
 }

@@ -1,8 +1,32 @@
 {
-  "game_id": 401585136,
-  "fecha": "2025-10-24",
+  "game_id": "401585136",
+  "fecha": "2025-11-09",
   "home_team": "Wizards",
   "away_team": "Thunder",
   "home_score": 128,
-  "away_score": 136
+  "away_score": 136,
+  "home_stats": {
+    "PTS": 128,
+    "REB": 38,
+    "AST": 32,
+    "STL": 7,
+    "BLK": 5,
+    "TO": 14,
+    "FG%": 49.4,
+    "3P%": 46.9,
+    "FT%": 86.2,
+    "PF": 23
+  },
+  "away_stats": {
+    "PTS": 136,
+    "REB": 40,
+    "AST": 37,
+    "STL": 11,
+    "BLK": 7,
+    "TO": 14,
+    "FG%": 59.1,
+    "3P%": 50.0,
+    "FT%": 75.0,
+    "PF": 21
+  }
 }

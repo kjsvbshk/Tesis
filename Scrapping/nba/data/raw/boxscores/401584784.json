@@ -1,8 +1,32 @@
 {
-  "game_id": 401584784,
-  "fecha": "2025-10-24",
+  "game_id": "401584784",
+  "fecha": "2025-11-09",
   "home_team": "Nuggets",
   "away_team": "Pelicans",
   "home_score": 134,
-  "away_score": 116
+  "away_score": 116,
+  "home_stats": {
+    "PTS": 134,
+    "REB": 45,
+    "AST": 37,
+    "STL": 6,
+    "BLK": 5,
+    "TO": 9,
+    "FG%": 53.7,
+    "3P%": 38.5,
+    "FT%": 73.9,
+    "PF": 16
+  },
+  "away_stats": {
+    "PTS": 116,
+    "REB": 38,
+    "AST": 24,
+    "STL": 6,
+    "BLK": 2,
+    "TO": 13,
+    "FG%": 50.0,
+    "3P%": 43.3,
+    "FT%": 86.7,
+    "PF": 18
+  }
 }

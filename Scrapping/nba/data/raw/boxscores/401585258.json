@@ -1,8 +1,32 @@
 {
-  "game_id": 401585258,
-  "fecha": "2025-10-24",
+  "game_id": "401585258",
+  "fecha": "2025-11-09",
   "home_team": "Celtics",
   "away_team": "Heat",
   "home_score": 119,
-  "away_score": 111
+  "away_score": 111,
+  "home_stats": {
+    "PTS": 110,
+    "REB": 31,
+    "AST": 25,
+    "STL": 7,
+    "BLK": 1,
+    "TO": 4,
+    "FG%": 44.7,
+    "3P%": 38.1,
+    "FT%": 76.9,
+    "PF": 12
+  },
+  "away_stats": {
+    "PTS": 143,
+    "REB": 47,
+    "AST": 36,
+    "STL": 4,
+    "BLK": 5,
+    "TO": 11,
+    "FG%": 63.7,
+    "3P%": 55.0,
+    "FT%": 95.0,
+    "PF": 10
+  }
 }

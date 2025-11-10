@@ -1,8 +1,32 @@
 {
-  "game_id": 401585789,
-  "fecha": "2025-10-24",
+  "game_id": "401585789",
+  "fecha": "2025-11-09",
   "home_team": "Mavericks",
   "away_team": "Heat",
   "home_score": 114,
-  "away_score": 108
+  "away_score": 108,
+  "home_stats": {
+    "PTS": 92,
+    "REB": 46,
+    "AST": 22,
+    "STL": 3,
+    "BLK": 1,
+    "TO": 15,
+    "FG%": 40.7,
+    "3P%": 43.3,
+    "FT%": 100.0,
+    "PF": 16
+  },
+  "away_stats": {
+    "PTS": 111,
+    "REB": 39,
+    "AST": 27,
+    "STL": 8,
+    "BLK": 8,
+    "TO": 7,
+    "FG%": 49.4,
+    "3P%": 34.1,
+    "FT%": 76.9,
+    "PF": 13
+  }
 }

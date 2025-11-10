@@ -1,8 +1,32 @@
 {
-  "game_id": 401584112,
-  "fecha": "2025-10-24",
+  "game_id": "401584112",
+  "fecha": "2025-11-09",
   "home_team": "Nuggets",
   "away_team": "Clippers",
   "home_score": 111,
-  "away_score": 108
+  "away_score": 108,
+  "home_stats": {
+    "PTS": 111,
+    "REB": 36,
+    "AST": 26,
+    "STL": 4,
+    "BLK": 2,
+    "TO": 14,
+    "FG%": 53.4,
+    "3P%": 34.8,
+    "FT%": 78.1,
+    "PF": 19
+  },
+  "away_stats": {
+    "PTS": 108,
+    "REB": 42,
+    "AST": 21,
+    "STL": 10,
+    "BLK": 1,
+    "TO": 10,
+    "FG%": 43.0,
+    "3P%": 44.8,
+    "FT%": 87.5,
+    "PF": 24
+  }
 }

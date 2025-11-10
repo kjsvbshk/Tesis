@@ -1,8 +1,32 @@
 {
-  "game_id": 401584795,
-  "fecha": "2025-10-24",
+  "game_id": "401584795",
+  "fecha": "2025-11-09",
   "home_team": "Cavaliers",
   "away_team": "Thunder",
   "home_score": 105,
-  "away_score": 108
+  "away_score": 108,
+  "home_stats": {
+    "PTS": 128,
+    "REB": 41,
+    "AST": 23,
+    "STL": 10,
+    "BLK": 8,
+    "TO": 14,
+    "FG%": 51.2,
+    "3P%": 42.9,
+    "FT%": 93.3,
+    "PF": 27
+  },
+  "away_stats": {
+    "PTS": 120,
+    "REB": 41,
+    "AST": 26,
+    "STL": 9,
+    "BLK": 5,
+    "TO": 18,
+    "FG%": 50.6,
+    "3P%": 31.0,
+    "FT%": 73.0,
+    "PF": 24
+  }
 }

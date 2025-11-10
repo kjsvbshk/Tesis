@@ -1,8 +1,32 @@
 {
-  "game_id": 401584798,
-  "fecha": "2025-10-24",
+  "game_id": "401584798",
+  "fecha": "2025-11-09",
   "home_team": "Kings",
   "away_team": "Trail Blazers",
   "home_score": 121,
-  "away_score": 118
+  "away_score": 118,
+  "home_stats": {
+    "PTS": 121,
+    "REB": 50,
+    "AST": 32,
+    "STL": 11,
+    "BLK": 6,
+    "TO": 21,
+    "FG%": 46.1,
+    "3P%": 29.7,
+    "FT%": 73.7,
+    "PF": 24
+  },
+  "away_stats": {
+    "PTS": 118,
+    "REB": 36,
+    "AST": 26,
+    "STL": 10,
+    "BLK": 5,
+    "TO": 18,
+    "FG%": 50.6,
+    "3P%": 36.4,
+    "FT%": 75.9,
+    "PF": 29
+  }
 }

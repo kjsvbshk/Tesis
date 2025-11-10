@@ -1,8 +1,32 @@
 {
-  "game_id": 401584851,
-  "fecha": "2025-10-24",
+  "game_id": "401584851",
+  "fecha": "2025-11-09",
   "home_team": "Clippers",
   "away_team": "Spurs",
   "home_score": 123,
-  "away_score": 83
+  "away_score": 83,
+  "home_stats": {
+    "PTS": 99,
+    "REB": 49,
+    "AST": 23,
+    "STL": 4,
+    "BLK": 7,
+    "TO": 16,
+    "FG%": 43.3,
+    "3P%": 26.3,
+    "FT%": 78.6,
+    "PF": 17
+  },
+  "away_stats": {
+    "PTS": 124,
+    "REB": 51,
+    "AST": 30,
+    "STL": 15,
+    "BLK": 3,
+    "TO": 7,
+    "FG%": 47.4,
+    "3P%": 33.3,
+    "FT%": 88.0,
+    "PF": 10
+  }
 }

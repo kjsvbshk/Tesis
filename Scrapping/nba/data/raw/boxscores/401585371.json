@@ -1,8 +1,32 @@
 {
-  "game_id": 401585371,
-  "fecha": "2025-10-24",
+  "game_id": "401585371",
+  "fecha": "2025-11-09",
   "home_team": "Wizards",
   "away_team": "Celtics",
   "home_score": 107,
-  "away_score": 126
+  "away_score": 126,
+  "home_stats": {
+    "PTS": 133,
+    "REB": 49,
+    "AST": 25,
+    "STL": 9,
+    "BLK": 5,
+    "TO": 13,
+    "FG%": 52.2,
+    "3P%": 32.4,
+    "FT%": 92.9,
+    "PF": 17
+  },
+  "away_stats": {
+    "PTS": 129,
+    "REB": 39,
+    "AST": 32,
+    "STL": 8,
+    "BLK": 1,
+    "TO": 12,
+    "FG%": 47.4,
+    "3P%": 42.6,
+    "FT%": 90.5,
+    "PF": 25
+  }
 }

@@ -1,8 +1,32 @@
 {
-  "game_id": 401585397,
-  "fecha": "2025-10-24",
+  "game_id": "401585397",
+  "fecha": "2025-11-09",
   "home_team": "Jazz",
   "away_team": "Warriors",
   "home_score": null,
-  "away_score": null
+  "away_score": null,
+  "home_stats": {
+    "PTS": 107,
+    "REB": 44,
+    "AST": 23,
+    "STL": 8,
+    "BLK": 7,
+    "TO": 17,
+    "FG%": 44.6,
+    "3P%": 34.4,
+    "FT%": 87.5,
+    "PF": 17
+  },
+  "away_stats": {
+    "PTS": 129,
+    "REB": 51,
+    "AST": 31,
+    "STL": 8,
+    "BLK": 4,
+    "TO": 13,
+    "FG%": 48.0,
+    "3P%": 45.5,
+    "FT%": 76.5,
+    "PF": 13
+  }
 }

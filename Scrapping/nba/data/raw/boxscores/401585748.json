@@ -1,8 +1,32 @@
 {
-  "game_id": 401585748,
-  "fecha": "2025-10-24",
+  "game_id": "401585748",
+  "fecha": "2025-11-09",
   "home_team": "Heat",
   "away_team": "Rockets",
   "home_score": 120,
-  "away_score": 113
+  "away_score": 113,
+  "home_stats": {
+    "PTS": 104,
+    "REB": 45,
+    "AST": 25,
+    "STL": 7,
+    "BLK": 2,
+    "TO": 9,
+    "FG%": 37.8,
+    "3P%": 31.8,
+    "FT%": 88.0,
+    "PF": 13
+  },
+  "away_stats": {
+    "PTS": 119,
+    "REB": 48,
+    "AST": 27,
+    "STL": 8,
+    "BLK": 4,
+    "TO": 9,
+    "FG%": 49.4,
+    "3P%": 36.1,
+    "FT%": 85.7,
+    "PF": 18
+  }
 }

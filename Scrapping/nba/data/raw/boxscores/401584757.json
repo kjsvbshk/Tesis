@@ -1,8 +1,32 @@
 {
-  "game_id": 401584757,
-  "fecha": "2025-10-24",
+  "game_id": "401584757",
+  "fecha": "2025-11-09",
   "home_team": "Pelicans",
   "away_team": "Pistons",
   "home_score": 125,
-  "away_score": 116
+  "away_score": 116,
+  "home_stats": {
+    "PTS": 125,
+    "REB": 36,
+    "AST": 27,
+    "STL": 5,
+    "BLK": 7,
+    "TO": 12,
+    "FG%": 48.8,
+    "3P%": 43.8,
+    "FT%": 94.3,
+    "PF": 18
+  },
+  "away_stats": {
+    "PTS": 116,
+    "REB": 48,
+    "AST": 30,
+    "STL": 4,
+    "BLK": 5,
+    "TO": 16,
+    "FG%": 43.6,
+    "3P%": 34.2,
+    "FT%": 80.8,
+    "PF": 31
+  }
 }

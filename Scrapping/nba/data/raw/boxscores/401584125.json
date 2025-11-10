@@ -1,8 +1,32 @@
 {
-  "game_id": 401584125,
-  "fecha": "2025-10-24",
+  "game_id": "401584125",
+  "fecha": "2025-11-09",
   "home_team": "Clippers",
   "away_team": "Rockets",
   "home_score": 106,
-  "away_score": 100
+  "away_score": 100,
+  "home_stats": {
+    "PTS": 106,
+    "REB": 47,
+    "AST": 22,
+    "STL": 10,
+    "BLK": 7,
+    "TO": 12,
+    "FG%": 43.4,
+    "3P%": 38.2,
+    "FT%": 70.0,
+    "PF": 19
+  },
+  "away_stats": {
+    "PTS": 100,
+    "REB": 47,
+    "AST": 24,
+    "STL": 6,
+    "BLK": 5,
+    "TO": 16,
+    "FG%": 43.2,
+    "3P%": 32.3,
+    "FT%": 70.0,
+    "PF": 28
+  }
 }

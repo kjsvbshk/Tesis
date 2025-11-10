@@ -1,8 +1,32 @@
 {
-  "game_id": 401585656,
-  "fecha": "2025-10-24",
+  "game_id": "401585656",
+  "fecha": "2025-11-09",
   "home_team": "Clippers",
   "away_team": "76ers",
   "home_score": 107,
-  "away_score": 121
+  "away_score": 121,
+  "home_stats": {
+    "PTS": 107,
+    "REB": 37,
+    "AST": 27,
+    "STL": 2,
+    "BLK": 9,
+    "TO": 13,
+    "FG%": 48.2,
+    "3P%": 35.7,
+    "FT%": 94.4,
+    "PF": 11
+  },
+  "away_stats": {
+    "PTS": 121,
+    "REB": 37,
+    "AST": 32,
+    "STL": 7,
+    "BLK": 10,
+    "TO": 8,
+    "FG%": 53.3,
+    "3P%": 48.6,
+    "FT%": 77.8,
+    "PF": 18
+  }
 }

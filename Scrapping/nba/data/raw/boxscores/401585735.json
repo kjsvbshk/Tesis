@@ -1,8 +1,32 @@
 {
-  "game_id": 401585735,
-  "fecha": "2025-10-24",
+  "game_id": "401585735",
+  "fecha": "2025-11-09",
   "home_team": "Grizzlies",
   "away_team": "Bucks",
   "home_score": 113,
-  "away_score": 110
+  "away_score": 110,
+  "home_stats": {
+    "PTS": 101,
+    "REB": 44,
+    "AST": 26,
+    "STL": 5,
+    "BLK": 10,
+    "TO": 11,
+    "FG%": 40.0,
+    "3P%": 40.9,
+    "FT%": 58.3,
+    "PF": 14
+  },
+  "away_stats": {
+    "PTS": 111,
+    "REB": 54,
+    "AST": 25,
+    "STL": 5,
+    "BLK": 8,
+    "TO": 8,
+    "FG%": 50.5,
+    "3P%": 30.4,
+    "FT%": 70.6,
+    "PF": 12
+  }
 }

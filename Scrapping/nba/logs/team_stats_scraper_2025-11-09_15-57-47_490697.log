@@ -1,0 +1,74 @@
+2025-11-09 15:57:47.493 | INFO     | __main__:main:47 - ================================================================================
+2025-11-09 15:57:47.493 | INFO     | __main__:main:48 - SCRAPING DE ESTADISTICAS DE EQUIPOS NBA
+2025-11-09 15:57:47.494 | INFO     | __main__:main:49 -    Temporada: 2023-24
+2025-11-09 15:57:47.494 | INFO     | __main__:main:50 -    Tipo: REGULAR
+2025-11-09 15:57:47.494 | INFO     | __main__:main:51 - ================================================================================
+
+2025-11-09 15:57:47.494 | INFO     | espn.team_scraper:scrape_all_teams_stats:469 - ================================================================================
+2025-11-09 15:57:47.494 | INFO     | espn.team_scraper:scrape_all_teams_stats:470 - SCRAPING DE ESTADISTICAS DE EQUIPOS
+2025-11-09 15:57:47.494 | INFO     | espn.team_scraper:scrape_all_teams_stats:471 -    Temporada: 2023-24
+2025-11-09 15:57:47.494 | INFO     | espn.team_scraper:scrape_all_teams_stats:472 -    Tipo: REGULAR
+2025-11-09 15:57:47.494 | INFO     | espn.team_scraper:scrape_all_teams_stats:473 - ================================================================================
+
+2025-11-09 15:57:47.494 | INFO     | espn.team_scraper:scrape_team_stats_offensive:307 - [WEB] Scrapeando estadisticas ofensivas
+2025-11-09 15:57:47.494 | INFO     | espn.team_scraper:scrape_team_stats_offensive:308 -    URL: https://www.espn.com/nba/stats/team/_/season/2024/seasontype/2
+2025-11-09 15:57:47.495 | INFO     | espn.team_scraper:scrape_team_stats_offensive:324 - [BROWSER] Iniciando navegador...
+2025-11-09 15:57:52.278 | INFO     | espn.team_scraper:scrape_team_stats_offensive:329 - [BROWSER] Navegando a la pagina...
+2025-11-09 15:57:56.344 | INFO     | espn.team_scraper:scrape_team_stats_offensive:335 - [BROWSER] Tabla encontrada
+2025-11-09 15:57:58.468 | INFO     | espn.team_scraper:parse_espn_team_table:276 -    [DATA] 30 equipos parseados
+2025-11-09 15:57:58.470 | INFO     | espn.team_scraper:scrape_team_stats_offensive:357 -    [OK] 30 equipos extraidos (ofensivos)
+2025-11-09 15:58:00.952 | INFO     | espn.team_scraper:scrape_team_stats_offensive:370 - [BROWSER] Navegador cerrado
+2025-11-09 15:58:00.952 | INFO     | espn.team_scraper:scrape_team_stats_defensive:394 - [WEB] Scrapeando estadisticas defensivas
+2025-11-09 15:58:00.952 | INFO     | espn.team_scraper:scrape_team_stats_defensive:395 -    URL: https://www.espn.com/nba/stats/team/_/view/opponent/season/2024/seasontype/2
+2025-11-09 15:58:00.952 | INFO     | espn.team_scraper:scrape_team_stats_defensive:411 - [BROWSER] Iniciando navegador...
+2025-11-09 15:58:05.348 | INFO     | espn.team_scraper:scrape_team_stats_defensive:416 - [BROWSER] Navegando a la pagina...
+2025-11-09 15:58:10.173 | INFO     | espn.team_scraper:scrape_team_stats_defensive:422 - [BROWSER] Tabla encontrada
+2025-11-09 15:58:12.352 | INFO     | espn.team_scraper:parse_espn_team_table:276 -    [DATA] 30 equipos parseados
+2025-11-09 15:58:12.355 | INFO     | espn.team_scraper:scrape_team_stats_defensive:444 -    [OK] 30 equipos extraidos (defensivos)
+2025-11-09 15:58:14.664 | INFO     | espn.team_scraper:scrape_team_stats_defensive:457 - [BROWSER] Navegador cerrado
+2025-11-09 15:58:14.669 | INFO     | espn.team_scraper:save_team_stats_by_team:547 - 
+[SAVE] Guardando datos en data\raw\team_stats\2023-24_regular/
+2025-11-09 15:58:14.675 | INFO     | espn.team_scraper:save_team_stats_by_team:580 -    [OK] ind.csv
+2025-11-09 15:58:14.677 | INFO     | espn.team_scraper:save_team_stats_by_team:580 -    [OK] bos.csv
+2025-11-09 15:58:14.678 | INFO     | espn.team_scraper:save_team_stats_by_team:580 -    [OK] okc.csv
+2025-11-09 15:58:14.680 | INFO     | espn.team_scraper:save_team_stats_by_team:580 -    [OK] mil.csv
+2025-11-09 15:58:14.682 | INFO     | espn.team_scraper:save_team_stats_by_team:580 -    [OK] atl.csv
+2025-11-09 15:58:14.684 | INFO     | espn.team_scraper:save_team_stats_by_team:580 -    [OK] lal.csv
+2025-11-09 15:58:14.686 | INFO     | espn.team_scraper:save_team_stats_by_team:580 -    [OK] dal.csv
+2025-11-09 15:58:14.687 | INFO     | espn.team_scraper:save_team_stats_by_team:580 -    [OK] gs.csv
+2025-11-09 15:58:14.689 | INFO     | espn.team_scraper:save_team_stats_by_team:580 -    [OK] sac.csv
+2025-11-09 15:58:14.691 | INFO     | espn.team_scraper:save_team_stats_by_team:580 -    [OK] phx.csv
+2025-11-09 15:58:14.693 | INFO     | espn.team_scraper:save_team_stats_by_team:580 -    [OK] utah.csv
+2025-11-09 15:58:14.695 | INFO     | espn.team_scraper:save_team_stats_by_team:580 -    [OK] lac.csv
+2025-11-09 15:58:14.697 | INFO     | espn.team_scraper:save_team_stats_by_team:580 -    [OK] no.csv
+2025-11-09 15:58:14.702 | INFO     | espn.team_scraper:save_team_stats_by_team:580 -    [OK] den.csv
+2025-11-09 15:58:14.707 | INFO     | espn.team_scraper:save_team_stats_by_team:580 -    [OK] phi.csv
+2025-11-09 15:58:14.713 | INFO     | espn.team_scraper:save_team_stats_by_team:580 -    [OK] hou.csv
+2025-11-09 15:58:14.717 | INFO     | espn.team_scraper:save_team_stats_by_team:580 -    [OK] wsh.csv
+2025-11-09 15:58:14.719 | INFO     | espn.team_scraper:save_team_stats_by_team:580 -    [OK] min.csv
+2025-11-09 15:58:14.721 | INFO     | espn.team_scraper:save_team_stats_by_team:580 -    [OK] ny.csv
+2025-11-09 15:58:14.724 | INFO     | espn.team_scraper:save_team_stats_by_team:580 -    [OK] cle.csv
+2025-11-09 15:58:14.726 | INFO     | espn.team_scraper:save_team_stats_by_team:580 -    [OK] tor.csv
+2025-11-09 15:58:14.728 | INFO     | espn.team_scraper:save_team_stats_by_team:580 -    [OK] chi.csv
+2025-11-09 15:58:14.730 | INFO     | espn.team_scraper:save_team_stats_by_team:580 -    [OK] sa.csv
+2025-11-09 15:58:14.732 | INFO     | espn.team_scraper:save_team_stats_by_team:580 -    [OK] orl.csv
+2025-11-09 15:58:14.735 | INFO     | espn.team_scraper:save_team_stats_by_team:580 -    [OK] bkn.csv
+2025-11-09 15:58:14.739 | INFO     | espn.team_scraper:save_team_stats_by_team:580 -    [OK] mia.csv
+2025-11-09 15:58:14.743 | INFO     | espn.team_scraper:save_team_stats_by_team:580 -    [OK] det.csv
+2025-11-09 15:58:14.746 | INFO     | espn.team_scraper:save_team_stats_by_team:580 -    [OK] cha.csv
+2025-11-09 15:58:14.753 | INFO     | espn.team_scraper:save_team_stats_by_team:580 -    [OK] por.csv
+2025-11-09 15:58:14.757 | INFO     | espn.team_scraper:save_team_stats_by_team:580 -    [OK] mem.csv
+2025-11-09 15:58:14.757 | INFO     | espn.team_scraper:save_team_stats_by_team:582 - [OK] Datos guardados exitosamente
+
+2025-11-09 15:58:14.757 | INFO     | espn.team_scraper:scrape_all_teams_stats:525 - ================================================================================
+2025-11-09 15:58:14.757 | INFO     | espn.team_scraper:scrape_all_teams_stats:526 - RESUMEN DE SCRAPING
+2025-11-09 15:58:14.757 | INFO     | espn.team_scraper:scrape_all_teams_stats:527 - ================================================================================
+2025-11-09 15:58:14.757 | INFO     | espn.team_scraper:scrape_all_teams_stats:528 - 
+[RESULT] Equipos extraidos: 30
+2025-11-09 15:58:14.757 | INFO     | espn.team_scraper:scrape_all_teams_stats:529 - [RESULT] Columnas de datos: 47
+2025-11-09 15:58:14.757 | INFO     | espn.team_scraper:scrape_all_teams_stats:530 - [SAVE] Datos guardados en: data/raw/team_stats/2023-24_regular/
+
+2025-11-09 15:58:14.757 | INFO     | __main__:main:56 - 
+================================================================================
+2025-11-09 15:58:14.758 | INFO     | __main__:main:57 - SCRAPING COMPLETADO
+2025-11-09 15:58:14.758 | INFO     | __main__:main:58 - ================================================================================

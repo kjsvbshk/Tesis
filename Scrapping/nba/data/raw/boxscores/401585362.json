@@ -1,8 +1,32 @@
 {
-  "game_id": 401585362,
-  "fecha": "2025-10-24",
+  "game_id": "401585362",
+  "fecha": "2025-11-09",
   "home_team": "Spurs",
   "away_team": "Magic",
   "home_score": 98,
-  "away_score": 108
+  "away_score": 108,
+  "home_stats": {
+    "PTS": 127,
+    "REB": 39,
+    "AST": 34,
+    "STL": 11,
+    "BLK": 5,
+    "TO": 16,
+    "FG%": 59.8,
+    "3P%": 59.3,
+    "FT%": 65.0,
+    "PF": 20
+  },
+  "away_stats": {
+    "PTS": 111,
+    "REB": 27,
+    "AST": 29,
+    "STL": 7,
+    "BLK": 5,
+    "TO": 14,
+    "FG%": 51.9,
+    "3P%": 31.4,
+    "FT%": 94.1,
+    "PF": 16
+  }
 }

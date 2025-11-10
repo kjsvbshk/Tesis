@@ -1,8 +1,32 @@
 {
-  "game_id": 401585632,
-  "fecha": "2025-10-24",
+  "game_id": "401585632",
+  "fecha": "2025-11-09",
   "home_team": "Magic",
   "away_team": "Pelicans",
   "home_score": 121,
-  "away_score": 106
+  "away_score": 106,
+  "home_stats": {
+    "PTS": 121,
+    "REB": 40,
+    "AST": 33,
+    "STL": 12,
+    "BLK": 4,
+    "TO": 14,
+    "FG%": 54.7,
+    "3P%": 38.9,
+    "FT%": 68.4,
+    "PF": 16
+  },
+  "away_stats": {
+    "PTS": 106,
+    "REB": 33,
+    "AST": 24,
+    "STL": 11,
+    "BLK": 1,
+    "TO": 18,
+    "FG%": 53.8,
+    "3P%": 30.0,
+    "FT%": 76.2,
+    "PF": 18
+  }
 }

@@ -1,8 +1,32 @@
 {
-  "game_id": 401585116,
-  "fecha": "2025-10-24",
+  "game_id": "401585116",
+  "fecha": "2025-11-09",
   "home_team": "Magic",
   "away_team": "Nuggets",
   "home_score": 124,
-  "away_score": 119
+  "away_score": 119,
+  "home_stats": {
+    "PTS": 120,
+    "REB": 38,
+    "AST": 28,
+    "STL": 8,
+    "BLK": 1,
+    "TO": 13,
+    "FG%": 50.5,
+    "3P%": 27.3,
+    "FT%": 78.9,
+    "PF": 23
+  },
+  "away_stats": {
+    "PTS": 122,
+    "REB": 40,
+    "AST": 25,
+    "STL": 9,
+    "BLK": 3,
+    "TO": 14,
+    "FG%": 50.0,
+    "3P%": 47.2,
+    "FT%": 67.6,
+    "PF": 20
+  }
 }

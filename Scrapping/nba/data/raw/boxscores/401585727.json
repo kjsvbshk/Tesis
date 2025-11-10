@@ -1,8 +1,32 @@
 {
-  "game_id": 401585727,
-  "fecha": "2025-10-24",
+  "game_id": "401585727",
+  "fecha": "2025-11-09",
   "home_team": "Nuggets",
   "away_team": "Spurs",
   "home_score": 132,
-  "away_score": 120
+  "away_score": 120,
+  "home_stats": {
+    "PTS": 110,
+    "REB": 52,
+    "AST": 28,
+    "STL": 5,
+    "BLK": 10,
+    "TO": 8,
+    "FG%": 43.9,
+    "3P%": 32.4,
+    "FT%": 81.3,
+    "PF": 15
+  },
+  "away_stats": {
+    "PTS": 105,
+    "REB": 59,
+    "AST": 33,
+    "STL": 4,
+    "BLK": 12,
+    "TO": 7,
+    "FG%": 40.0,
+    "3P%": 29.5,
+    "FT%": 50.0,
+    "PF": 19
+  }
 }

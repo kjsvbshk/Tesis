@@ -1,8 +1,32 @@
 {
-  "game_id": 401585475,
-  "fecha": "2025-10-24",
+  "game_id": "401585475",
+  "fecha": "2025-11-09",
   "home_team": "Kings",
   "away_team": "Nuggets",
   "home_score": 123,
-  "away_score": 117
+  "away_score": 117,
+  "home_stats": {
+    "PTS": 117,
+    "REB": 43,
+    "AST": 35,
+    "STL": 10,
+    "BLK": 6,
+    "TO": 15,
+    "FG%": 53.5,
+    "3P%": 42.9,
+    "FT%": 90.9,
+    "PF": 17
+  },
+  "away_stats": {
+    "PTS": 96,
+    "REB": 43,
+    "AST": 28,
+    "STL": 8,
+    "BLK": 5,
+    "TO": 14,
+    "FG%": 40.0,
+    "3P%": 34.3,
+    "FT%": 61.5,
+    "PF": 14
+  }
 }

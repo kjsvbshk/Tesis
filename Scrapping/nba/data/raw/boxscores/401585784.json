@@ -1,8 +1,32 @@
 {
-  "game_id": 401585784,
-  "fecha": "2025-10-24",
+  "game_id": "401585784",
+  "fecha": "2025-11-09",
   "home_team": "Suns",
   "away_team": "Clippers",
   "home_score": 122,
-  "away_score": 131
+  "away_score": 131,
+  "home_stats": {
+    "PTS": 92,
+    "REB": 38,
+    "AST": 17,
+    "STL": 16,
+    "BLK": 7,
+    "TO": 8,
+    "FG%": 33.7,
+    "3P%": 22.9,
+    "FT%": 85.7,
+    "PF": 13
+  },
+  "away_stats": {
+    "PTS": 105,
+    "REB": 63,
+    "AST": 28,
+    "STL": 5,
+    "BLK": 3,
+    "TO": 18,
+    "FG%": 47.1,
+    "3P%": 46.2,
+    "FT%": 100.0,
+    "PF": 22
+  }
 }

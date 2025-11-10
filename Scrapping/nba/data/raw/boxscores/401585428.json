@@ -1,8 +1,32 @@
 {
-  "game_id": 401585428,
-  "fecha": "2025-10-24",
+  "game_id": "401585428",
+  "fecha": "2025-11-09",
   "home_team": "Wizards",
   "away_team": "Nuggets",
   "home_score": 104,
-  "away_score": 113
+  "away_score": 113,
+  "home_stats": {
+    "PTS": 130,
+    "REB": 60,
+    "AST": 41,
+    "STL": 11,
+    "BLK": 11,
+    "TO": 16,
+    "FG%": 55.4,
+    "3P%": 22.6,
+    "FT%": 73.3,
+    "PF": 16
+  },
+  "away_stats": {
+    "PTS": 110,
+    "REB": 40,
+    "AST": 30,
+    "STL": 14,
+    "BLK": 1,
+    "TO": 14,
+    "FG%": 38.5,
+    "3P%": 44.7,
+    "FT%": 56.5,
+    "PF": 15
+  }
 }

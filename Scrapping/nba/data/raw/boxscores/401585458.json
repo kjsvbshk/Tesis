@@ -1,8 +1,32 @@
 {
-  "game_id": 401585458,
-  "fecha": "2025-10-24",
+  "game_id": "401585458",
+  "fecha": "2025-11-09",
   "home_team": "Grizzlies",
   "away_team": "Nets",
   "home_score": 86,
-  "away_score": 111
+  "away_score": 111,
+  "home_stats": {
+    "PTS": 86,
+    "REB": 40,
+    "AST": 16,
+    "STL": 6,
+    "BLK": 4,
+    "TO": 14,
+    "FG%": 38.7,
+    "3P%": 26.9,
+    "FT%": 80.8,
+    "PF": 13
+  },
+  "away_stats": {
+    "PTS": 111,
+    "REB": 46,
+    "AST": 32,
+    "STL": 5,
+    "BLK": 5,
+    "TO": 8,
+    "FG%": 48.9,
+    "3P%": 35.7,
+    "FT%": 57.1,
+    "PF": 24
+  }
 }

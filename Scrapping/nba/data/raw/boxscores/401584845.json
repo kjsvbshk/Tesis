@@ -1,8 +1,32 @@
 {
-  "game_id": 401584845,
-  "fecha": "2025-10-24",
+  "game_id": "401584845",
+  "fecha": "2025-11-09",
   "home_team": "Hornets",
   "away_team": "Celtics",
   "home_score": 121,
-  "away_score": 118
+  "away_score": 118,
+  "home_stats": {
+    "PTS": 121,
+    "REB": 57,
+    "AST": 29,
+    "STL": 9,
+    "BLK": 7,
+    "TO": 13,
+    "FG%": 44.2,
+    "3P%": 33.3,
+    "FT%": 94.1,
+    "PF": 18
+  },
+  "away_stats": {
+    "PTS": 118,
+    "REB": 48,
+    "AST": 19,
+    "STL": 6,
+    "BLK": 8,
+    "TO": 13,
+    "FG%": 43.3,
+    "3P%": 32.0,
+    "FT%": 64.3,
+    "PF": 15
+  }
 }

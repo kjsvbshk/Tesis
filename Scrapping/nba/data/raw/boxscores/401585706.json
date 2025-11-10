@@ -1,8 +1,32 @@
 {
-  "game_id": 401585706,
-  "fecha": "2025-10-24",
+  "game_id": "401585706",
+  "fecha": "2025-11-09",
   "home_team": "Lakers",
   "away_team": "Nets",
   "home_score": 112,
-  "away_score": 130
+  "away_score": 130,
+  "home_stats": {
+    "PTS": 104,
+    "REB": 38,
+    "AST": 19,
+    "STL": 12,
+    "BLK": 3,
+    "TO": 12,
+    "FG%": 42.4,
+    "3P%": 33.3,
+    "FT%": 73.7,
+    "PF": 17
+  },
+  "away_stats": {
+    "PTS": 116,
+    "REB": 50,
+    "AST": 24,
+    "STL": 8,
+    "BLK": 6,
+    "TO": 19,
+    "FG%": 54.5,
+    "3P%": 37.5,
+    "FT%": 77.3,
+    "PF": 15
+  }
 }

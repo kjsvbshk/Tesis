@@ -1,8 +1,32 @@
 {
-  "game_id": 401585034,
-  "fecha": "2025-10-24",
+  "game_id": "401585034",
+  "fecha": "2025-11-09",
   "home_team": "Nets",
   "away_team": "Pistons",
   "home_score": 126,
-  "away_score": 115
+  "away_score": 115,
+  "home_stats": {
+    "PTS": 112,
+    "REB": 52,
+    "AST": 20,
+    "STL": 6,
+    "BLK": 4,
+    "TO": 13,
+    "FG%": 44.4,
+    "3P%": 36.0,
+    "FT%": 71.9,
+    "PF": 27
+  },
+  "away_stats": {
+    "PTS": 118,
+    "REB": 42,
+    "AST": 22,
+    "STL": 6,
+    "BLK": 7,
+    "TO": 9,
+    "FG%": 50.0,
+    "3P%": 40.9,
+    "FT%": 62.8,
+    "PF": 22
+  }
 }

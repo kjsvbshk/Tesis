@@ -1,8 +1,32 @@
 {
-  "game_id": 401585401,
-  "fecha": "2025-10-24",
+  "game_id": "401585401",
+  "fecha": "2025-11-09",
   "home_team": "Bucks",
   "away_team": "Heat",
   "home_score": 122,
-  "away_score": 114
+  "away_score": 114,
+  "home_stats": {
+    "PTS": 97,
+    "REB": 38,
+    "AST": 24,
+    "STL": 8,
+    "BLK": 4,
+    "TO": 18,
+    "FG%": 44.6,
+    "3P%": 33.3,
+    "FT%": 90.9,
+    "PF": 12
+  },
+  "away_stats": {
+    "PTS": 123,
+    "REB": 47,
+    "AST": 34,
+    "STL": 10,
+    "BLK": 3,
+    "TO": 14,
+    "FG%": 51.7,
+    "3P%": 47.5,
+    "FT%": 77.8,
+    "PF": 13
+  }
 }

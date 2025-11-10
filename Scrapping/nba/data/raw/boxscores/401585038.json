@@ -1,8 +1,32 @@
 {
-  "game_id": 401585038,
-  "fecha": "2025-10-24",
+  "game_id": "401585038",
+  "fecha": "2025-11-09",
   "home_team": "Grizzlies",
   "away_team": "Pelicans",
   "home_score": 104,
-  "away_score": 111
+  "away_score": 111,
+  "home_stats": {
+    "PTS": 115,
+    "REB": 46,
+    "AST": 18,
+    "STL": 12,
+    "BLK": 6,
+    "TO": 14,
+    "FG%": 43.3,
+    "3P%": 32.3,
+    "FT%": 63.6,
+    "PF": 26
+  },
+  "away_stats": {
+    "PTS": 116,
+    "REB": 50,
+    "AST": 24,
+    "STL": 10,
+    "BLK": 17,
+    "TO": 17,
+    "FG%": 43.3,
+    "3P%": 23.9,
+    "FT%": 84.4,
+    "PF": 24
+  }
 }

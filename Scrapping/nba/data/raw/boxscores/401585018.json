@@ -1,8 +1,32 @@
 {
-  "game_id": 401585018,
-  "fecha": "2025-10-24",
+  "game_id": "401585018",
+  "fecha": "2025-11-09",
   "home_team": "Hornets",
   "away_team": "Nuggets",
   "home_score": 95,
-  "away_score": 102
+  "away_score": 102,
+  "home_stats": {
+    "PTS": 95,
+    "REB": 47,
+    "AST": 23,
+    "STL": 8,
+    "BLK": 11,
+    "TO": 17,
+    "FG%": 38.6,
+    "3P%": 28.6,
+    "FT%": 82.6,
+    "PF": 15
+  },
+  "away_stats": {
+    "PTS": 102,
+    "REB": 48,
+    "AST": 25,
+    "STL": 11,
+    "BLK": 13,
+    "TO": 14,
+    "FG%": 43.3,
+    "3P%": 40.0,
+    "FT%": 85.7,
+    "PF": 21
+  }
 }

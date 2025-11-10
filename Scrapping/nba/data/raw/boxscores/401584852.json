@@ -1,8 +1,32 @@
 {
-  "game_id": 401584852,
-  "fecha": "2025-10-24",
+  "game_id": "401584852",
+  "fecha": "2025-11-09",
   "home_team": "Rockets",
   "away_team": "Warriors",
   "home_score": 95,
-  "away_score": 106
+  "away_score": 106,
+  "home_stats": {
+    "PTS": 121,
+    "REB": 43,
+    "AST": 26,
+    "STL": 3,
+    "BLK": 1,
+    "TO": 8,
+    "FG%": 46.8,
+    "3P%": 48.8,
+    "FT%": 84.8,
+    "PF": 21
+  },
+  "away_stats": {
+    "PTS": 116,
+    "REB": 48,
+    "AST": 28,
+    "STL": 6,
+    "BLK": 3,
+    "TO": 8,
+    "FG%": 46.3,
+    "3P%": 31.7,
+    "FT%": 78.9,
+    "PF": 24
+  }
 }

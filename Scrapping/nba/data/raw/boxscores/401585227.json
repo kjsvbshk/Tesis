@@ -1,8 +1,32 @@
 {
-  "game_id": 401585227,
-  "fecha": "2025-10-24",
+  "game_id": "401585227",
+  "fecha": "2025-11-09",
   "home_team": "Timberwolves",
   "away_team": "Thunder",
   "home_score": 106,
-  "away_score": 103
+  "away_score": 103,
+  "home_stats": {
+    "PTS": 97,
+    "REB": 50,
+    "AST": 22,
+    "STL": 4,
+    "BLK": 7,
+    "TO": 21,
+    "FG%": 41.3,
+    "3P%": 37.8,
+    "FT%": 72.4,
+    "PF": 26
+  },
+  "away_stats": {
+    "PTS": 102,
+    "REB": 37,
+    "AST": 21,
+    "STL": 12,
+    "BLK": 4,
+    "TO": 8,
+    "FG%": 39.5,
+    "3P%": 33.3,
+    "FT%": 85.7,
+    "PF": 20
+  }
 }

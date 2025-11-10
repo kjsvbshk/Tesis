@@ -1,8 +1,32 @@
 {
-  "game_id": 401584910,
-  "fecha": "2025-10-24",
+  "game_id": "401584910",
+  "fecha": "2025-11-09",
   "home_team": "Nets",
   "away_team": "Magic",
   "home_score": 124,
-  "away_score": 104
+  "away_score": 104,
+  "home_stats": {
+    "PTS": 129,
+    "REB": 57,
+    "AST": 31,
+    "STL": 4,
+    "BLK": 8,
+    "TO": 11,
+    "FG%": 50.5,
+    "3P%": 41.2,
+    "FT%": 74.2,
+    "PF": 21
+  },
+  "away_stats": {
+    "PTS": 101,
+    "REB": 37,
+    "AST": 24,
+    "STL": 3,
+    "BLK": 5,
+    "TO": 11,
+    "FG%": 39.8,
+    "3P%": 31.0,
+    "FT%": 81.5,
+    "PF": 27
+  }
 }

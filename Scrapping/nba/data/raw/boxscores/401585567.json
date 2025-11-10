@@ -1,8 +1,32 @@
 {
-  "game_id": 401585567,
-  "fecha": "2025-10-24",
+  "game_id": "401585567",
+  "fecha": "2025-11-09",
   "home_team": "76ers",
   "away_team": "Knicks",
   "home_score": 92,
-  "away_score": 128
+  "away_score": 128,
+  "home_stats": {
+    "PTS": 106,
+    "REB": 51,
+    "AST": 32,
+    "STL": 4,
+    "BLK": 4,
+    "TO": 12,
+    "FG%": 50.6,
+    "3P%": 35.0,
+    "FT%": 80.0,
+    "PF": 15
+  },
+  "away_stats": {
+    "PTS": 79,
+    "REB": 31,
+    "AST": 17,
+    "STL": 7,
+    "BLK": 4,
+    "TO": 8,
+    "FG%": 37.5,
+    "3P%": 24.2,
+    "FT%": 68.8,
+    "PF": 16
+  }
 }

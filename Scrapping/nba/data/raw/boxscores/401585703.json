@@ -1,8 +1,32 @@
 {
-  "game_id": 401585703,
-  "fecha": "2025-10-24",
+  "game_id": "401585703",
+  "fecha": "2025-11-09",
   "home_team": "Grizzlies",
   "away_team": "Magic",
   "home_score": 107,
-  "away_score": 106
+  "away_score": 106,
+  "home_stats": {
+    "PTS": 118,
+    "REB": 43,
+    "AST": 28,
+    "STL": 8,
+    "BLK": 8,
+    "TO": 15,
+    "FG%": 48.7,
+    "3P%": 50.0,
+    "FT%": 87.0,
+    "PF": 16
+  },
+  "away_stats": {
+    "PTS": 88,
+    "REB": 45,
+    "AST": 25,
+    "STL": 11,
+    "BLK": 7,
+    "TO": 19,
+    "FG%": 36.0,
+    "3P%": 33.3,
+    "FT%": 82.4,
+    "PF": 19
+  }
 }

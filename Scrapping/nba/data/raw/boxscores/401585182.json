@@ -1,8 +1,32 @@
 {
-  "game_id": 401585182,
-  "fecha": "2025-10-24",
+  "game_id": "401585182",
+  "fecha": "2025-11-09",
   "home_team": "Suns",
   "away_team": "Trail Blazers",
   "home_score": 120,
-  "away_score": 107
+  "away_score": 107,
+  "home_stats": {
+    "PTS": 116,
+    "REB": 36,
+    "AST": 23,
+    "STL": 8,
+    "BLK": 1,
+    "TO": 13,
+    "FG%": 44.9,
+    "3P%": 47.6,
+    "FT%": 72.7,
+    "PF": 21
+  },
+  "away_stats": {
+    "PTS": 127,
+    "REB": 41,
+    "AST": 27,
+    "STL": 7,
+    "BLK": 5,
+    "TO": 12,
+    "FG%": 60.5,
+    "3P%": 46.4,
+    "FT%": 81.5,
+    "PF": 20
+  }
 }

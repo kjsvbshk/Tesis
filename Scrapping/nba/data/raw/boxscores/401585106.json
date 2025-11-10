@@ -1,8 +1,32 @@
 {
-  "game_id": 401585106,
-  "fecha": "2025-10-24",
+  "game_id": "401585106",
+  "fecha": "2025-11-09",
   "home_team": "Nuggets",
   "away_team": "Warriors",
   "home_score": 108,
-  "away_score": 105
+  "away_score": 105,
+  "home_stats": {
+    "PTS": 127,
+    "REB": 33,
+    "AST": 35,
+    "STL": 4,
+    "BLK": 3,
+    "TO": 8,
+    "FG%": 54.4,
+    "3P%": 41.7,
+    "FT%": 87.5,
+    "PF": 20
+  },
+  "away_stats": {
+    "PTS": 130,
+    "REB": 36,
+    "AST": 28,
+    "STL": 7,
+    "BLK": 4,
+    "TO": 7,
+    "FG%": 56.5,
+    "3P%": 34.6,
+    "FT%": 86.2,
+    "PF": 15
+  }
 }

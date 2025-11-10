@@ -1,8 +1,32 @@
 {
-  "game_id": 401584873,
-  "fecha": "2025-10-24",
+  "game_id": "401584873",
+  "fecha": "2025-11-09",
   "home_team": "Bucks",
   "away_team": "Trail Blazers",
   "home_score": 108,
-  "away_score": 102
+  "away_score": 102,
+  "home_stats": {
+    "PTS": 108,
+    "REB": 52,
+    "AST": 19,
+    "STL": 13,
+    "BLK": 11,
+    "TO": 17,
+    "FG%": 39.3,
+    "3P%": 33.3,
+    "FT%": 75.0,
+    "PF": 20
+  },
+  "away_stats": {
+    "PTS": 102,
+    "REB": 40,
+    "AST": 21,
+    "STL": 15,
+    "BLK": 4,
+    "TO": 17,
+    "FG%": 40.7,
+    "3P%": 40.6,
+    "FT%": 75.0,
+    "PF": 26
+  }
 }

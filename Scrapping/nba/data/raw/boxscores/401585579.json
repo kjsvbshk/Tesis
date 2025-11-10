@@ -1,8 +1,32 @@
 {
-  "game_id": 401585579,
-  "fecha": "2025-10-24",
+  "game_id": "401585579",
+  "fecha": "2025-11-09",
   "home_team": "Cavaliers",
   "away_team": "Pelicans",
   "home_score": 104,
-  "away_score": 123
+  "away_score": 123,
+  "home_stats": {
+    "PTS": 95,
+    "REB": 43,
+    "AST": 22,
+    "STL": 7,
+    "BLK": 6,
+    "TO": 11,
+    "FG%": 43.8,
+    "3P%": 18.2,
+    "FT%": 80.8,
+    "PF": 13
+  },
+  "away_stats": {
+    "PTS": 116,
+    "REB": 46,
+    "AST": 38,
+    "STL": 4,
+    "BLK": 4,
+    "TO": 9,
+    "FG%": 51.1,
+    "3P%": 44.4,
+    "FT%": 66.7,
+    "PF": 18
+  }
 }

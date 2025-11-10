@@ -1,8 +1,32 @@
 {
-  "game_id": 401584933,
-  "fecha": "2025-10-24",
+  "game_id": "401584933",
+  "fecha": "2025-11-09",
   "home_team": "Celtics",
   "away_team": "Cavaliers",
   "home_score": 120,
-  "away_score": 113
+  "away_score": 113,
+  "home_stats": {
+    "PTS": 120,
+    "REB": 45,
+    "AST": 23,
+    "STL": 9,
+    "BLK": 9,
+    "TO": 13,
+    "FG%": 45.2,
+    "3P%": 40.9,
+    "FT%": 100.0,
+    "PF": 13
+  },
+  "away_stats": {
+    "PTS": 113,
+    "REB": 35,
+    "AST": 27,
+    "STL": 6,
+    "BLK": 4,
+    "TO": 12,
+    "FG%": 47.8,
+    "3P%": 42.2,
+    "FT%": 66.7,
+    "PF": 18
+  }
 }

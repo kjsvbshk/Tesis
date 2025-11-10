@@ -1,8 +1,32 @@
 {
-  "game_id": 401584786,
-  "fecha": "2025-10-24",
+  "game_id": "401584786",
+  "fecha": "2025-11-09",
   "home_team": "Pacers",
   "away_team": "Jazz",
   "home_score": 134,
-  "away_score": 118
+  "away_score": 118,
+  "home_stats": {
+    "PTS": 134,
+    "REB": 46,
+    "AST": 26,
+    "STL": 14,
+    "BLK": 7,
+    "TO": 11,
+    "FG%": 51.5,
+    "3P%": 31.7,
+    "FT%": 85.0,
+    "PF": 15
+  },
+  "away_stats": {
+    "PTS": 118,
+    "REB": 47,
+    "AST": 26,
+    "STL": 3,
+    "BLK": 5,
+    "TO": 21,
+    "FG%": 46.9,
+    "3P%": 40.7,
+    "FT%": 94.4,
+    "PF": 17
+  }
 }

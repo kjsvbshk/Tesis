@@ -1,8 +1,32 @@
 {
-  "game_id": 401585195,
-  "fecha": "2025-10-24",
+  "game_id": "401585195",
+  "fecha": "2025-11-09",
   "home_team": "Suns",
   "away_team": "Kings",
   "home_score": 106,
-  "away_score": 114
+  "away_score": 114,
+  "home_stats": {
+    "PTS": 119,
+    "REB": 46,
+    "AST": 32,
+    "STL": 7,
+    "BLK": 6,
+    "TO": 16,
+    "FG%": 49.4,
+    "3P%": 45.9,
+    "FT%": 90.0,
+    "PF": 15
+  },
+  "away_stats": {
+    "PTS": 117,
+    "REB": 31,
+    "AST": 34,
+    "STL": 7,
+    "BLK": 4,
+    "TO": 14,
+    "FG%": 50.0,
+    "3P%": 45.0,
+    "FT%": 58.3,
+    "PF": 20
+  }
 }

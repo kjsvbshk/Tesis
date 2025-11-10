@@ -1,8 +1,32 @@
 {
-  "game_id": 401584698,
-  "fecha": "2025-10-24",
+  "game_id": "401584698",
+  "fecha": "2025-11-09",
   "home_team": "Bulls",
   "away_team": "Thunder",
   "home_score": 104,
-  "away_score": 124
+  "away_score": 124,
+  "home_stats": {
+    "PTS": 104,
+    "REB": 42,
+    "AST": 26,
+    "STL": 10,
+    "BLK": 3,
+    "TO": 12,
+    "FG%": 41.5,
+    "3P%": 28.6,
+    "FT%": 77.8,
+    "PF": 16
+  },
+  "away_stats": {
+    "PTS": 124,
+    "REB": 43,
+    "AST": 30,
+    "STL": 6,
+    "BLK": 4,
+    "TO": 15,
+    "FG%": 54.9,
+    "3P%": 48.7,
+    "FT%": 83.3,
+    "PF": 19
+  }
 }

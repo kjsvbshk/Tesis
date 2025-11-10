@@ -1,8 +1,32 @@
 {
-  "game_id": 401585091,
-  "fecha": "2025-10-24",
+  "game_id": "401585091",
+  "fecha": "2025-11-09",
   "home_team": "Warriors",
   "away_team": "Magic",
   "home_score": 121,
-  "away_score": 115
+  "away_score": 115,
+  "home_stats": {
+    "PTS": 121,
+    "REB": 36,
+    "AST": 23,
+    "STL": 9,
+    "BLK": 6,
+    "TO": 12,
+    "FG%": 53.8,
+    "3P%": 37.1,
+    "FT%": 64.9,
+    "PF": 19
+  },
+  "away_stats": {
+    "PTS": 115,
+    "REB": 41,
+    "AST": 19,
+    "STL": 8,
+    "BLK": 4,
+    "TO": 17,
+    "FG%": 44.6,
+    "3P%": 38.9,
+    "FT%": 82.6,
+    "PF": 24
+  }
 }

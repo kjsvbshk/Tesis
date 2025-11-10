@@ -1,8 +1,32 @@
 {
-  "game_id": 401585336,
-  "fecha": "2025-10-24",
+  "game_id": "401585336",
+  "fecha": "2025-11-09",
   "home_team": "Clippers",
   "away_team": "Heat",
   "home_score": 121,
-  "away_score": 104
+  "away_score": 104,
+  "home_stats": {
+    "PTS": 95,
+    "REB": 45,
+    "AST": 24,
+    "STL": 9,
+    "BLK": 0,
+    "TO": 10,
+    "FG%": 41.8,
+    "3P%": 26.7,
+    "FT%": 91.7,
+    "PF": 19
+  },
+  "away_stats": {
+    "PTS": 103,
+    "REB": 48,
+    "AST": 23,
+    "STL": 6,
+    "BLK": 5,
+    "TO": 15,
+    "FG%": 44.2,
+    "3P%": 41.0,
+    "FT%": 86.4,
+    "PF": 12
+  }
 }

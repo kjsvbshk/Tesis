@@ -1,0 +1,48 @@
+2025-11-09 16:32:04.666 | INFO     | __main__:main:47 - ================================================================================
+2025-11-09 16:32:04.666 | INFO     | __main__:main:48 - SCRAPING DE ESTADISTICAS DE EQUIPOS NBA
+2025-11-09 16:32:04.666 | INFO     | __main__:main:49 -    Temporada: 2023-24
+2025-11-09 16:32:04.666 | INFO     | __main__:main:50 -    Tipo: PLAYOFFS
+2025-11-09 16:32:04.666 | INFO     | __main__:main:51 - ================================================================================
+
+2025-11-09 16:32:04.667 | INFO     | espn.team_scraper:scrape_all_teams_stats:465 - ================================================================================
+2025-11-09 16:32:04.667 | INFO     | espn.team_scraper:scrape_all_teams_stats:466 - SCRAPING DE ESTADISTICAS DE EQUIPOS
+2025-11-09 16:32:04.667 | INFO     | espn.team_scraper:scrape_all_teams_stats:467 -    Temporada: 2023-24
+2025-11-09 16:32:04.667 | INFO     | espn.team_scraper:scrape_all_teams_stats:468 -    Tipo: PLAYOFFS
+2025-11-09 16:32:04.667 | INFO     | espn.team_scraper:scrape_all_teams_stats:469 - ================================================================================
+
+2025-11-09 16:32:04.667 | INFO     | espn.team_scraper:scrape_team_stats_offensive:303 - [WEB] Scrapeando estadisticas ofensivas
+2025-11-09 16:32:04.667 | INFO     | espn.team_scraper:scrape_team_stats_offensive:304 -    URL: https://www.espn.com/nba/stats/team/_/season/2024/seasontype/3
+2025-11-09 16:32:04.667 | INFO     | espn.team_scraper:scrape_team_stats_offensive:320 - [BROWSER] Iniciando navegador...
+2025-11-09 16:32:09.159 | INFO     | espn.team_scraper:scrape_team_stats_offensive:325 - [BROWSER] Navegando a la pagina...
+2025-11-09 16:32:11.434 | INFO     | espn.team_scraper:scrape_team_stats_offensive:331 - [BROWSER] Tabla encontrada
+2025-11-09 16:32:13.921 | INFO     | espn.team_scraper:parse_espn_team_table:272 -    [DATA] 16 equipos parseados
+2025-11-09 16:32:13.922 | INFO     | espn.team_scraper:scrape_team_stats_offensive:353 -    [OK] 16 equipos extraidos (ofensivos)
+2025-11-09 16:32:16.099 | INFO     | espn.team_scraper:scrape_team_stats_offensive:366 - [BROWSER] Navegador cerrado
+2025-11-09 16:32:16.100 | INFO     | espn.team_scraper:scrape_team_stats_defensive:390 - [WEB] Scrapeando estadisticas defensivas
+2025-11-09 16:32:16.100 | INFO     | espn.team_scraper:scrape_team_stats_defensive:391 -    URL: https://www.espn.com/nba/stats/team/_/view/opponent/season/2024/seasontype/3
+2025-11-09 16:32:16.100 | INFO     | espn.team_scraper:scrape_team_stats_defensive:407 - [BROWSER] Iniciando navegador...
+2025-11-09 16:32:20.287 | INFO     | espn.team_scraper:scrape_team_stats_defensive:412 - [BROWSER] Navegando a la pagina...
+2025-11-09 16:32:22.497 | INFO     | espn.team_scraper:scrape_team_stats_defensive:418 - [BROWSER] Tabla encontrada
+2025-11-09 16:32:24.951 | INFO     | espn.team_scraper:parse_espn_team_table:272 -    [DATA] 16 equipos parseados
+2025-11-09 16:32:24.953 | INFO     | espn.team_scraper:scrape_team_stats_defensive:440 -    [OK] 16 equipos extraidos (defensivos)
+2025-11-09 16:32:27.106 | INFO     | espn.team_scraper:scrape_team_stats_defensive:453 - [BROWSER] Navegador cerrado
+2025-11-09 16:32:27.109 | INFO     | espn.team_scraper:save_team_stats_by_category:524 - 
+[SAVE] Guardando datos en data\raw\team_stats\2023-24_playoffs/
+2025-11-09 16:32:27.112 | INFO     | espn.team_scraper:save_team_stats_by_category:533 -    [OK] offensive/all_teams.csv - 16 equipos
+2025-11-09 16:32:27.113 | INFO     | espn.team_scraper:save_team_stats_by_category:544 -    [OK] defensive/all_teams.csv - 16 equipos
+2025-11-09 16:32:27.114 | INFO     | espn.team_scraper:save_team_stats_by_category:548 - [OK] Datos guardados exitosamente
+
+2025-11-09 16:32:27.114 | INFO     | espn.team_scraper:scrape_all_teams_stats:499 - ================================================================================
+2025-11-09 16:32:27.114 | INFO     | espn.team_scraper:scrape_all_teams_stats:500 - RESUMEN DE SCRAPING
+2025-11-09 16:32:27.114 | INFO     | espn.team_scraper:scrape_all_teams_stats:501 - ================================================================================
+2025-11-09 16:32:27.114 | INFO     | espn.team_scraper:scrape_all_teams_stats:502 - 
+[RESULT] Equipos extraidos (ofensivos): 16
+2025-11-09 16:32:27.114 | INFO     | espn.team_scraper:scrape_all_teams_stats:503 - [RESULT] Equipos extraidos (defensivos): 16
+2025-11-09 16:32:27.114 | INFO     | espn.team_scraper:scrape_all_teams_stats:504 - [SAVE] Datos guardados en: data/raw/team_stats/2023-24_playoffs/
+2025-11-09 16:32:27.114 | INFO     | espn.team_scraper:scrape_all_teams_stats:505 -    - offensive/all_teams.csv
+2025-11-09 16:32:27.114 | INFO     | espn.team_scraper:scrape_all_teams_stats:506 -    - defensive/all_teams.csv
+
+2025-11-09 16:32:27.114 | INFO     | __main__:main:56 - 
+================================================================================
+2025-11-09 16:32:27.114 | INFO     | __main__:main:57 - SCRAPING COMPLETADO
+2025-11-09 16:32:27.114 | INFO     | __main__:main:58 - ================================================================================

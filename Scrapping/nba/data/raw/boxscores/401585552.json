@@ -1,8 +1,32 @@
 {
-  "game_id": 401585552,
-  "fecha": "2025-10-24",
+  "game_id": "401585552",
+  "fecha": "2025-11-09",
   "home_team": "Bucks",
   "away_team": "Clippers",
   "home_score": 113,
-  "away_score": 106
+  "away_score": 106,
+  "home_stats": {
+    "PTS": 117,
+    "REB": 52,
+    "AST": 30,
+    "STL": 3,
+    "BLK": 9,
+    "TO": 10,
+    "FG%": 45.2,
+    "3P%": 29.8,
+    "FT%": 90.0,
+    "PF": 23
+  },
+  "away_stats": {
+    "PTS": 124,
+    "REB": 41,
+    "AST": 28,
+    "STL": 5,
+    "BLK": 6,
+    "TO": 7,
+    "FG%": 49.4,
+    "3P%": 44.7,
+    "FT%": 77.8,
+    "PF": 15
+  }
 }

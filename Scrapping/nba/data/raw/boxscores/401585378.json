@@ -1,8 +1,32 @@
 {
-  "game_id": 401585378,
-  "fecha": "2025-10-24",
+  "game_id": "401585378",
+  "fecha": "2025-11-09",
   "home_team": "Nets",
   "away_team": "Spurs",
   "home_score": 123,
-  "away_score": 103
+  "away_score": 103,
+  "home_stats": {
+    "PTS": 123,
+    "REB": 41,
+    "AST": 31,
+    "STL": 8,
+    "BLK": 7,
+    "TO": 11,
+    "FG%": 56.3,
+    "3P%": 50.0,
+    "FT%": 72.7,
+    "PF": 23
+  },
+  "away_stats": {
+    "PTS": 103,
+    "REB": 41,
+    "AST": 20,
+    "STL": 5,
+    "BLK": 3,
+    "TO": 14,
+    "FG%": 39.6,
+    "3P%": 32.4,
+    "FT%": 95.2,
+    "PF": 11
+  }
 }

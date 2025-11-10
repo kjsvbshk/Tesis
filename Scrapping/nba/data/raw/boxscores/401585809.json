@@ -1,8 +1,32 @@
 {
-  "game_id": 401585809,
-  "fecha": "2025-10-24",
+  "game_id": "401585809",
+  "fecha": "2025-11-09",
   "home_team": "Pistons",
   "away_team": "Mavericks",
   "home_score": 124,
-  "away_score": 142
+  "away_score": 142,
+  "home_stats": {
+    "PTS": 89,
+    "REB": 49,
+    "AST": 20,
+    "STL": 5,
+    "BLK": 5,
+    "TO": 20,
+    "FG%": 43.4,
+    "3P%": 27.6,
+    "FT%": 75.0,
+    "PF": 9
+  },
+  "away_stats": {
+    "PTS": 107,
+    "REB": 40,
+    "AST": 23,
+    "STL": 11,
+    "BLK": 7,
+    "TO": 6,
+    "FG%": 48.4,
+    "3P%": 25.8,
+    "FT%": 77.8,
+    "PF": 10
+  }
 }

@@ -161,6 +161,34 @@ python -m espn.player_stats_scraper --season "2024-25" --type "regular"
 python -m espn.player_stats_scraper --season "2024-25" --type "playoffs"
 ```
 
+### Actualizar Injuries y Odds
+
+Para actualizar los reportes de lesiones y cuotas de apuestas (datos que cambian diariamente):
+
+```bash
+# Actualizar ambos (injuries y odds) - solo archivos
+python update_injuries_odds.py
+
+# Actualizar ambos y cargar a la base de datos
+python update_injuries_odds.py --load-db
+
+# Actualizar solo reportes de lesiones
+python update_injuries_odds.py --injuries
+
+# Actualizar solo cuotas de apuestas
+python update_injuries_odds.py --odds
+
+# Actualizar injuries y cargar a la base de datos
+python update_injuries_odds.py --injuries --load-db
+
+# Actualizar odds y cargar a la base de datos
+python update_injuries_odds.py --odds --load-db
+```
+
+Este script es útil para mantener actualizados los datos de lesiones y cuotas de apuestas sin necesidad de ejecutar todo el sistema de scraping.
+
+**Nota:** Por defecto, el script solo actualiza los archivos CSV/JSON. Si quieres que también actualice la base de datos, usa la opción `--load-db`.
+
 ### Cargar Datos a la Base de Datos
 
 Una vez que tengas los datos extraídos, puedes cargarlos a la base de datos:

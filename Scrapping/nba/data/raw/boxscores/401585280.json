@@ -1,8 +1,32 @@
 {
-  "game_id": 401585280,
-  "fecha": "2025-10-24",
+  "game_id": "401585280",
+  "fecha": "2025-11-09",
   "home_team": "Grizzlies",
   "away_team": "Pacers",
   "home_score": 116,
-  "away_score": 103
+  "away_score": 103,
+  "home_stats": {
+    "PTS": 116,
+    "REB": 44,
+    "AST": 31,
+    "STL": 8,
+    "BLK": 6,
+    "TO": 10,
+    "FG%": 48.9,
+    "3P%": 37.1,
+    "FT%": 93.8,
+    "PF": 26
+  },
+  "away_stats": {
+    "PTS": 110,
+    "REB": 45,
+    "AST": 20,
+    "STL": 5,
+    "BLK": 7,
+    "TO": 13,
+    "FG%": 46.3,
+    "3P%": 36.7,
+    "FT%": 74.2,
+    "PF": 20
+  }
 }

@@ -1,8 +1,32 @@
 {
-  "game_id": 401584817,
-  "fecha": "2025-10-24",
+  "game_id": "401584817",
+  "fecha": "2025-11-09",
   "home_team": "Raptors",
   "away_team": "Wizards",
   "home_score": 111,
-  "away_score": 107
+  "away_score": 107,
+  "home_stats": {
+    "PTS": 111,
+    "REB": 48,
+    "AST": 28,
+    "STL": 11,
+    "BLK": 4,
+    "TO": 16,
+    "FG%": 50.0,
+    "3P%": 20.0,
+    "FT%": 68.0,
+    "PF": 13
+  },
+  "away_stats": {
+    "PTS": 107,
+    "REB": 38,
+    "AST": 32,
+    "STL": 11,
+    "BLK": 5,
+    "TO": 22,
+    "FG%": 51.2,
+    "3P%": 46.2,
+    "FT%": 75.0,
+    "PF": 22
+  }
 }

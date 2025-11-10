@@ -1,8 +1,32 @@
 {
-  "game_id": 401584971,
-  "fecha": "2025-10-24",
+  "game_id": "401584971",
+  "fecha": "2025-11-09",
   "home_team": "Knicks",
   "away_team": "Clippers",
   "home_score": 111,
-  "away_score": 97
+  "away_score": 97,
+  "home_stats": {
+    "PTS": 144,
+    "REB": 42,
+    "AST": 36,
+    "STL": 8,
+    "BLK": 6,
+    "TO": 8,
+    "FG%": 56.8,
+    "3P%": 48.5,
+    "FT%": 82.4,
+    "PF": 21
+  },
+  "away_stats": {
+    "PTS": 122,
+    "REB": 39,
+    "AST": 20,
+    "STL": 7,
+    "BLK": 4,
+    "TO": 10,
+    "FG%": 46.8,
+    "3P%": 31.4,
+    "FT%": 88.5,
+    "PF": 22
+  }
 }

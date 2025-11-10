@@ -1,8 +1,32 @@
 {
-  "game_id": 401585455,
-  "fecha": "2025-10-24",
+  "game_id": "401585455",
+  "fecha": "2025-11-09",
   "home_team": "Kings",
   "away_team": "Clippers",
   "home_score": 117,
-  "away_score": 131
+  "away_score": 131,
+  "home_stats": {
+    "PTS": 107,
+    "REB": 39,
+    "AST": 23,
+    "STL": 7,
+    "BLK": 2,
+    "TO": 15,
+    "FG%": 48.8,
+    "3P%": 29.6,
+    "FT%": 95.0,
+    "PF": 14
+  },
+  "away_stats": {
+    "PTS": 123,
+    "REB": 41,
+    "AST": 29,
+    "STL": 10,
+    "BLK": 1,
+    "TO": 10,
+    "FG%": 49.5,
+    "3P%": 40.5,
+    "FT%": 81.8,
+    "PF": 15
+  }
 }

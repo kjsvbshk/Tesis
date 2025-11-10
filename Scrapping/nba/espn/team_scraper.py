@@ -1,310 +1,548 @@
+"""
+ESPN Team Stats Scraper
+=======================
+
+Scraper de estadísticas de equipos NBA por temporada.
+Extrae estadísticas ofensivas y defensivas de todos los equipos.
+
+URLs:
+- Offensive Leaders: https://www.espn.com/nba/stats/team/_/season/{year}/seasontype/{type}
+- Defensive Leaders: https://www.espn.com/nba/stats/team/_/view/opponent/season/{year}/seasontype/{type}
+"""
+
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 import os
+import time
+from pathlib import Path
 from loguru import logger
+from datetime import datetime
 
-def scrape_team_stats(team_abbrev, team_name):
+# Selenium para manejo de JavaScript (contenido dinámico)
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from selenium.common.exceptions import TimeoutException, NoSuchElementException
+from webdriver_manager.chrome import ChromeDriverManager
+
+# Mapeo de temporadas a años de ESPN
+SEASON_MAPPING = {
+    "2023-24": {"year": 2024, "regular": 2, "playoffs": 3},
+    "2024-25": {"year": 2025, "regular": 2, "playoffs": 3}
+}
+
+# Headers para requests
+HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+    'Accept-Language': 'en-US,en;q=0.9',
+    'Accept-Encoding': 'gzip, deflate, br',
+    'Connection': 'keep-alive',
+    'Upgrade-Insecure-Requests': '1',
+    'Sec-Fetch-Dest': 'document',
+    'Sec-Fetch-Mode': 'navigate',
+    'Sec-Fetch-Site': 'none',
+    'Cache-Control': 'max-age=0'
+}
+
+# Mapeo de abreviaciones de equipos a nombres completos
+TEAM_NAMES_MAP = {
+    'atl': 'Atlanta Hawks',
+    'bos': 'Boston Celtics',
+    'bkn': 'Brooklyn Nets',
+    'cha': 'Charlotte Hornets',
+    'chi': 'Chicago Bulls',
+    'cle': 'Cleveland Cavaliers',
+    'dal': 'Dallas Mavericks',
+    'den': 'Denver Nuggets',
+    'det': 'Detroit Pistons',
+    'gs': 'Golden State Warriors',
+    'hou': 'Houston Rockets',
+    'ind': 'Indiana Pacers',
+    'lac': 'LA Clippers',
+    'lal': 'Los Angeles Lakers',
+    'mem': 'Memphis Grizzlies',
+    'mia': 'Miami Heat',
+    'mil': 'Milwaukee Bucks',
+    'min': 'Minnesota Timberwolves',
+    'no': 'New Orleans Pelicans',
+    'ny': 'New York Knicks',
+    'okc': 'Oklahoma City Thunder',
+    'orl': 'Orlando Magic',
+    'phi': 'Philadelphia 76ers',
+    'phx': 'Phoenix Suns',
+    'por': 'Portland Trail Blazers',
+    'sac': 'Sacramento Kings',
+    'sa': 'San Antonio Spurs',
+    'tor': 'Toronto Raptors',
+    'utah': 'Utah Jazz',
+    'wsh': 'Washington Wizards'
+}
+
+# Mapeo inverso: nombre completo a abreviación
+TEAM_ABBREV_MAP = {v: k for k, v in TEAM_NAMES_MAP.items()}
+
+
+def parse_espn_team_table(soup: BeautifulSoup) -> list:
     """
-    Extraer rendimiento promedio por temporada de un equipo.
+    Parsear tabla dual de ESPN para estadísticas de equipos
+    
+    ESPN usa dos tablas separadas:
+    - .Table--fixed-left: RANK, NAME
+    - .Table__Scroller: Estadísticas numéricas
     
     Args:
-        team_abbrev (str): Abreviación del equipo (ej: 'bos')
-        team_name (str): Nombre completo del equipo (ej: 'boston-celtics')
+        soup: BeautifulSoup object
         
     Returns:
-        dict: Estadísticas del equipo
+        Lista de diccionarios con datos de equipos
     """
-    url = f"https://www.espn.com/nba/team/stats/_/name/{team_abbrev}/{team_name}"
+    
+    teams_data = []
     
     try:
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-            'Accept-Language': 'en-US,en;q=0.9',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Connection': 'keep-alive',
-            'Upgrade-Insecure-Requests': '1',
-            'Sec-Fetch-Dest': 'document',
-            'Sec-Fetch-Mode': 'navigate',
-            'Sec-Fetch-Site': 'none',
-            'Cache-Control': 'max-age=0'
-        }
-        res = requests.get(url, headers=headers)
-        res.raise_for_status()
-        soup = BeautifulSoup(res.text, "lxml")
+        # Buscar contenedor principal de la tabla responsiva
+        responsive_table = soup.find('div', class_='ResponsiveTable')
         
-        # Buscar tabla principal de promedios
-        team_stats = extract_team_averages(soup)
+        if not responsive_table:
+            logger.warning("   [WARN] No se encontro contenedor .ResponsiveTable")
+            return []
         
-        if team_stats:
-            logger.info(f"Estadísticas extraídas exitosamente para {team_name}")
-            return team_stats
-        else:
-            logger.warning(f"No se encontraron estadísticas para {team_name}")
-            return None
+        # Buscar tabla fija (nombres de equipos)
+        fixed_table_elem = responsive_table.find('table', class_='Table--fixed-left')
+        
+        # Buscar tabla scrollable (estadísticas)
+        # Intentar diferentes clases posibles
+        scrollable_container = responsive_table.find('div', class_='Table__Scroller')
+        if not scrollable_container:
+            scrollable_container = responsive_table.find('div', class_='Table_Scroller')
+        if not scrollable_container:
+            scrollable_container = responsive_table.find('div', class_='Table_ScrollerWrapper')
+        
+        if not fixed_table_elem:
+            logger.warning("   [WARN] No se encontro tabla fija (table.Table--fixed-left)")
+            return []
+        
+        if not scrollable_container:
+            logger.warning("   [WARN] No se encontro contenedor scrollable")
+            return []
+        
+        # Buscar tabla dentro del contenedor scrollable
+        scrollable_table_elem = scrollable_container.find('table')
+        if not scrollable_table_elem and scrollable_container.find('div', class_='Table_Scroller'):
+            scrollable_table_elem = scrollable_container.find('div', class_='Table_Scroller').find('table')
+        
+        if not scrollable_table_elem:
+            logger.warning("   [WARN] No se encontro tabla dentro de .Table__Scroller")
+            return []
+        
+        # Extraer encabezados de tabla fija
+        fixed_headers = []
+        fixed_thead = fixed_table_elem.find('thead')
+        if fixed_thead:
+            fixed_header_row = fixed_thead.find('tr')
+            if fixed_header_row:
+                fixed_headers = [th.get_text(strip=True) for th in fixed_header_row.find_all('th')]
+        
+        # Extraer encabezados de tabla scrollable
+        scrollable_headers = []
+        scrollable_thead = scrollable_table_elem.find('thead')
+        if scrollable_thead:
+            scrollable_header_row = scrollable_thead.find('tr')
+            if scrollable_header_row:
+                scrollable_headers = [th.get_text(strip=True) for th in scrollable_header_row.find_all('th')]
+        
+        # Combinar encabezados (excluir "TEAM" de fixed_headers ya que lo procesamos por separado)
+        # fixed_headers tiene: [RK, TEAM] - solo necesitamos RK
+        fixed_headers_filtered = fixed_headers[:1] if len(fixed_headers) > 0 else []  # Solo RK
+        all_headers = fixed_headers_filtered + scrollable_headers
+        
+        # Extraer filas de ambas tablas
+        fixed_tbody = fixed_table_elem.find('tbody')
+        scrollable_tbody = scrollable_table_elem.find('tbody')
+        
+        if not fixed_tbody or not scrollable_tbody:
+            logger.warning("   [WARN] No se encontro tbody en las tablas")
+            return []
+        
+        fixed_rows = fixed_tbody.find_all('tr')
+        scrollable_rows = scrollable_tbody.find_all('tr')
+        
+        # Combinar datos de ambas tablas
+        max_rows = min(len(fixed_rows), len(scrollable_rows))
+        
+        for i in range(max_rows):
+            # Extraer celdas de tabla fija
+            fixed_cells = fixed_rows[i].find_all('td')
+            fixed_values = []
+            team_name = None
+            team_abbrev = None
             
-    except requests.RequestException as e:
-        logger.error(f"Error de conexión al obtener estadísticas de {team_name}: {e}")
-        return None
-    except Exception as e:
-        logger.error(f"Error inesperado al procesar estadísticas de {team_name}: {e}")
-        return None
-
-def extract_team_averages(soup):
-    """
-    Extraer estadísticas promedio desde la tabla principal.
-    
-    Args:
-        soup: BeautifulSoup object del HTML
-        
-    Returns:
-        dict: Estadísticas promedio del equipo
-    """
-    try:
-        # Buscar el contenedor principal con la clase específica
-        main_container = soup.find('div', class_='ResponsiveTable ResponsiveTable--fixed-left mt4 Table2__title--remove-capitalization')
-        if not main_container:
-            logger.warning("No se encontró el contenedor principal de estadísticas")
-            # Fallback: buscar todas las tablas
-            tables = soup.find_all("table")
-            logger.info(f"Encontradas {len(tables)} tablas")
+            # El nombre del equipo está en la segunda celda (índice 1) de la tabla fija
+            # Hay un <a class="AnchorLink"> con href="/nba/team//name/ind/indiana-pacers"
+            if len(fixed_cells) > 1:
+                team_cell = fixed_cells[1]  # Segunda celda (índice 1)
+                
+                # Buscar el link del equipo - buscar en toda la celda (puede estar anidado en divs)
+                # El link tiene clase "AnchorLink" y href="/nba/team//name/ind/indiana-pacers"
+                team_link = team_cell.find('a', class_='AnchorLink')
+                if not team_link:
+                    # Buscar cualquier link dentro de la celda o en sus descendientes
+                    team_link = team_cell.find('a')
+                
+                if team_link:
+                    # El texto visible es la abreviación (ej: "IND")
+                    team_abbrev = team_link.get_text(strip=True)
+                    # El nombre completo está en el href (ej: "/nba/team//name/ind/indiana-pacers")
+                    team_url = team_link.get('href', '')
+                    
+                    # Extraer nombre completo de la URL
+                    # La URL puede ser: /nba/team//name/ind/indiana-pacers
+                    if '/name/' in team_url:
+                        parts = team_url.split('/name/')
+                        if len(parts) > 1:
+                            # parts[1] = "ind/indiana-pacers"
+                            url_parts = parts[1].split('/')
+                            if len(url_parts) >= 2:
+                                # url_parts[0] = "ind" (abreviación)
+                                # url_parts[1] = "indiana-pacers" (nombre completo)
+                                team_abbrev_from_url = url_parts[0]
+                                team_name_slug = url_parts[1]
+                                # Convertir slug a nombre completo (ej: "indiana-pacers" -> "Indiana Pacers")
+                                team_name = team_name_slug.replace('-', ' ').title()
+                                # Si no tenemos abreviación del texto, usar la de la URL
+                                if not team_abbrev:
+                                    team_abbrev = team_abbrev_from_url
+                    else:
+                        # Si no podemos extraer de la URL, usar el texto del link como abreviación
+                        if not team_abbrev:
+                            team_abbrev = team_link.get_text(strip=True)
+                        # Intentar obtener nombre completo del mapa
+                        team_name = TEAM_NAMES_MAP.get(team_abbrev.lower())
+                else:
+                    # Fallback: buscar texto directamente en la celda
+                    team_name = team_cell.get_text(strip=True)
             
-            # Buscar la tabla con estadísticas de porcentajes (FG%, 3P%, etc.)
-            target_table = None
-            for table in tables:
-                table_text = table.get_text()
-                if "FG%" in table_text and "3P%" in table_text:
-                    target_table = table
-                    logger.info("✅ Tabla con estadísticas de porcentajes encontrada")
-                    break
+            # Extraer valores de tabla fija (excluir la celda del equipo que ya procesamos)
+            # La tabla fija tiene: [RK, TEAM] - solo necesitamos RK (índice 0)
+            if len(fixed_cells) > 0:
+                # Solo agregar RK (primera celda), excluir TEAM (segunda celda)
+                fixed_values.append(fixed_cells[0].get_text(strip=True))
             
-            if not target_table:
-                logger.warning("No se encontró tabla con estadísticas de porcentajes")
-                return None
-        else:
-            # Buscar la tabla dentro del contenedor principal
-            target_table = main_container.find('table', class_='Table')
-            if not target_table:
-                logger.warning("No se encontró tabla dentro del contenedor principal")
-                return None
-            logger.info("✅ Tabla encontrada dentro del contenedor principal")
+            # Extraer celdas de tabla scrollable
+            scrollable_cells = scrollable_rows[i].find_all('td')
+            scrollable_values = []
+            for cell in scrollable_cells:
+                scrollable_values.append(cell.get_text(strip=True))
+            
+            # Si no tenemos abreviación, buscarla en el mapa usando el nombre completo
+            if not team_abbrev and team_name:
+                team_abbrev = TEAM_ABBREV_MAP.get(team_name)
+                # Si aún no tenemos, intentar buscar por coincidencia parcial
+                if not team_abbrev:
+                    for full_name, abbrev in TEAM_ABBREV_MAP.items():
+                        if team_name.lower() in full_name.lower() or full_name.lower() in team_name.lower():
+                            team_abbrev = abbrev
+                            break
+            
+            # Combinar ambas filas (fixed_values solo tiene RK, scrollable_values tiene el resto)
+            combined_values = fixed_values + scrollable_values
+            
+            # Crear diccionario con los datos
+            row_data = {
+                'rank': i + 1,
+                'team_name': team_name,
+                'team_abbrev': team_abbrev,
+            }
+            
+            # Agregar el resto de columnas
+            for idx, header in enumerate(all_headers):
+                if idx < len(combined_values):
+                    col_name = header.strip().lower().replace(' ', '_').replace('%', '_pct').replace('-', '_')
+                    # Prefijo para evitar conflictos
+                    if col_name not in ['rank', 'name']:
+                        row_data[col_name] = combined_values[idx]
+            
+            teams_data.append(row_data)
         
-        # Buscar fila de promedios (generalmente la última fila)
-        rows = target_table.find_all("tr")
-        if not rows:
-            logger.warning("No se encontraron filas en la tabla")
-            return None
-        
-        # Usar la última fila como promedios
-        avg_row = rows[-1]
-        logger.info(f"Usando última fila como promedios: {len(avg_row.find_all(['td', 'th']))} celdas")
-        
-        # Extraer datos de la fila
-        stats = parse_team_stats_row(avg_row)
-        
-        return stats
+        logger.info(f"   [DATA] {len(teams_data)} equipos parseados")
+        return teams_data
         
     except Exception as e:
-        logger.error(f"Error al extraer estadísticas promedio: {e}")
-        return None
+        logger.error(f"   [ERROR] Error parseando tabla: {e}")
+        import traceback
+        logger.error(traceback.format_exc())
+        return []
 
-def find_averages_row(table):
+
+def scrape_team_stats_offensive(season: str, season_type: str) -> pd.DataFrame:
     """
-    Encontrar la fila que contiene los promedios del equipo.
+    Scrapear estadísticas ofensivas de todos los equipos usando Selenium
     
     Args:
-        table: BeautifulSoup table element
+        season: Temporada ("2023-24", "2024-25")
+        season_type: Tipo ("regular", "playoffs")
         
     Returns:
-        BeautifulSoup tr element o None
+        DataFrame con estadísticas ofensivas
     """
-    try:
-        # Buscar fila con texto "AVG" o "TOTALS"
-        rows = table.find_all("tr")
-        
-        for row in rows:
-            row_text = row.get_text().upper()
-            if "AVG" in row_text or "TOTALS" in row_text or "AVERAGE" in row_text:
-                return row
-        
-        # Si no se encuentra, usar la última fila
-        if rows:
-            return rows[-1]
-        
-        return None
-        
-    except Exception as e:
-        logger.error(f"Error al buscar fila de promedios: {e}")
-        return None
-
-def parse_team_stats_row(row):
-    """
-    Parsear datos de la fila de estadísticas.
     
-    Args:
-        row: BeautifulSoup tr element
-        
-    Returns:
-        dict: Estadísticas parseadas
-    """
+    if season not in SEASON_MAPPING:
+        logger.error(f"[ERROR] Temporada invalida: {season}")
+        return None
+    
+    year = SEASON_MAPPING[season]["year"]
+    season_type_code = SEASON_MAPPING[season][season_type]
+    
+    url = f"https://www.espn.com/nba/stats/team/_/season/{year}/seasontype/{season_type_code}"
+    
+    logger.info(f"[WEB] Scrapeando estadisticas ofensivas")
+    logger.info(f"   URL: {url}")
+    
+    # Configurar Chrome en modo headless
+    chrome_options = Options()
+    chrome_options.add_argument('--headless=new')
+    chrome_options.add_argument('--disable-gpu')
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('--disable-dev-shm-usage')
+    chrome_options.add_argument('--disable-blink-features=AutomationControlled')
+    chrome_options.add_argument(f'user-agent={HEADERS["User-Agent"]}')
+    chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])
+    
+    driver = None
+    
     try:
-        cells = row.find_all(["td", "th"])
-        logger.info(f"Parseando fila con {len(cells)} celdas")
+        # Iniciar Chrome con webdriver-manager
+        logger.info("[BROWSER] Iniciando navegador...")
+        service = Service(ChromeDriverManager().install())
+        driver = webdriver.Chrome(service=service, options=chrome_options)
         
-        if len(cells) < 10:
-            logger.warning(f"Fila con pocas celdas: {len(cells)}")
+        # Navegar a la URL
+        logger.info("[BROWSER] Navegando a la pagina...")
+        driver.get(url)
+        
+        # Esperar a que la tabla cargue
+        wait = WebDriverWait(driver, 15)
+        wait.until(EC.presence_of_element_located((By.CLASS_NAME, "ResponsiveTable")))
+        logger.info("[BROWSER] Tabla encontrada")
+        
+        # Esperar un poco más para que el contenido dinámico cargue
+        time.sleep(2)
+        
+        # Obtener HTML final
+        page_html = driver.page_source
+        soup = BeautifulSoup(page_html, 'lxml')
+        
+        teams_data = parse_espn_team_table(soup)
+        
+        if not teams_data:
+            logger.warning("   [WARN] No se pudieron extraer datos ofensivos")
             return None
         
-        # Mostrar contenido de las celdas para debug
-        for i, cell in enumerate(cells[:10]):
-            text = cell.get_text().strip()
-            logger.info(f"  Celda {i}: '{text}'")
+        df = pd.DataFrame(teams_data)
         
-        # Mapeo de columnas basado en la estructura real de ESPN
-        # Columnas: FGM, FGA, FG%, 3PM, 3PA, 3P%, FTM, FTA, FT%, OR, DR, REB, AST, STL, BLK, TO, PF, PTS
-        stats = {
-            "team_name": "Unknown",
-            "season": 2024,
-            # Estadísticas básicas
-            "fg_pct": parse_stat_value(cells[2].get_text()) if len(cells) > 2 else 0.0,  # FG%
-            "threep_pct": parse_stat_value(cells[5].get_text()) if len(cells) > 5 else 0.0,  # 3P%
-            "ft_pct": parse_stat_value(cells[8].get_text()) if len(cells) > 8 else 0.0,  # FT%
-            "rpg": parse_stat_value(cells[11].get_text()) if len(cells) > 11 else 0.0,  # REB
-            "apg": parse_stat_value(cells[12].get_text()) if len(cells) > 12 else 0.0,  # AST
-            "spg": parse_stat_value(cells[13].get_text()) if len(cells) > 13 else 0.0,  # STL
-            "bpg": parse_stat_value(cells[14].get_text()) if len(cells) > 14 else 0.0,  # BLK
-            "tpg": parse_stat_value(cells[15].get_text()) if len(cells) > 15 else 0.0,  # TO
-            "ppg": parse_stat_value(cells[17].get_text()) if len(cells) > 17 else 0.0,  # PTS
-            "oppg": 0.0,  # Se calculará por separado
-            "net_rating": 0.0,  # Se calculará por separado
-            # Columnas adicionales para compatibilidad
-            "FG%": parse_stat_value(cells[2].get_text()) if len(cells) > 2 else 0.0,
-            "3P%": parse_stat_value(cells[5].get_text()) if len(cells) > 5 else 0.0,
-            "FT%": parse_stat_value(cells[8].get_text()) if len(cells) > 8 else 0.0,
-            "REB": parse_stat_value(cells[11].get_text()) if len(cells) > 11 else 0.0,
-            "AST": parse_stat_value(cells[12].get_text()) if len(cells) > 12 else 0.0,
-            "STL": parse_stat_value(cells[13].get_text()) if len(cells) > 13 else 0.0,
-            "BLK": parse_stat_value(cells[14].get_text()) if len(cells) > 14 else 0.0,
-            "TO": parse_stat_value(cells[15].get_text()) if len(cells) > 15 else 0.0,
-            "PF": parse_stat_value(cells[16].get_text()) if len(cells) > 16 else 0.0,
-            "PTS": parse_stat_value(cells[17].get_text()) if len(cells) > 17 else 0.0
-        }
+        # Agregar prefijo 'off_' a las columnas estadísticas (excepto rank, team_name, team_abbrev)
+        stat_columns = [col for col in df.columns if col not in ['rank', 'team_name', 'team_abbrev']]
+        rename_dict = {col: f'off_{col}' for col in stat_columns}
+        df = df.rename(columns=rename_dict)
         
-        logger.info(f"Estadísticas parseadas: {stats}")
-        return stats
+        logger.info(f"   [OK] {len(df)} equipos extraidos (ofensivos)")
+        return df
         
     except Exception as e:
-        logger.error(f"Error al parsear fila de estadísticas: {e}")
+        logger.error(f"   [ERROR] Error inesperado: {e}")
+        import traceback
+        logger.error(traceback.format_exc())
         return None
+        
+    finally:
+        # Cerrar navegador
+        if driver:
+            driver.quit()
+            logger.info("[BROWSER] Navegador cerrado")
 
-def parse_stat_value(text):
+
+def scrape_team_stats_defensive(season: str, season_type: str) -> pd.DataFrame:
     """
-    Parsear valor estadístico desde texto.
+    Scrapear estadísticas defensivas de todos los equipos usando Selenium
     
     Args:
-        text (str): Texto de la estadística
+        season: Temporada ("2023-24", "2024-25")
+        season_type: Tipo ("regular", "playoffs")
         
     Returns:
-        float or int: Valor parseado o None si no se puede parsear
+        DataFrame con estadísticas defensivas
     """
+    
+    if season not in SEASON_MAPPING:
+        logger.error(f"[ERROR] Temporada invalida: {season}")
+        return None
+    
+    year = SEASON_MAPPING[season]["year"]
+    season_type_code = SEASON_MAPPING[season][season_type]
+    
+    url = f"https://www.espn.com/nba/stats/team/_/view/opponent/season/{year}/seasontype/{season_type_code}"
+    
+    logger.info(f"[WEB] Scrapeando estadisticas defensivas")
+    logger.info(f"   URL: {url}")
+    
+    # Configurar Chrome en modo headless
+    chrome_options = Options()
+    chrome_options.add_argument('--headless=new')
+    chrome_options.add_argument('--disable-gpu')
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('--disable-dev-shm-usage')
+    chrome_options.add_argument('--disable-blink-features=AutomationControlled')
+    chrome_options.add_argument(f'user-agent={HEADERS["User-Agent"]}')
+    chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])
+    
+    driver = None
+    
     try:
-        # Limpiar texto
-        clean_text = text.strip().replace("%", "")
+        # Iniciar Chrome con webdriver-manager
+        logger.info("[BROWSER] Iniciando navegador...")
+        service = Service(ChromeDriverManager().install())
+        driver = webdriver.Chrome(service=service, options=chrome_options)
         
-        # Si está vacío, retornar None
-        if not clean_text or clean_text == "-":
+        # Navegar a la URL
+        logger.info("[BROWSER] Navegando a la pagina...")
+        driver.get(url)
+        
+        # Esperar a que la tabla cargue
+        wait = WebDriverWait(driver, 15)
+        wait.until(EC.presence_of_element_located((By.CLASS_NAME, "ResponsiveTable")))
+        logger.info("[BROWSER] Tabla encontrada")
+        
+        # Esperar un poco más para que el contenido dinámico cargue
+        time.sleep(2)
+        
+        # Obtener HTML final
+        page_html = driver.page_source
+        soup = BeautifulSoup(page_html, 'lxml')
+        
+        teams_data = parse_espn_team_table(soup)
+        
+        if not teams_data:
+            logger.warning("   [WARN] No se pudieron extraer datos defensivos")
             return None
         
-        # Si es porcentaje, convertir a float
-        if "%" in text:
-            return float(clean_text) if clean_text else None
+        df = pd.DataFrame(teams_data)
         
-        # Si es número entero, convertir a int
-        if clean_text.replace(".", "").isdigit():
-            if "." in clean_text:
-                return float(clean_text)
-            else:
-                return int(clean_text)
+        # Agregar prefijo 'def_' a las columnas estadísticas (excepto rank, team_name, team_abbrev)
+        stat_columns = [col for col in df.columns if col not in ['rank', 'team_name', 'team_abbrev']]
+        rename_dict = {col: f'def_{col}' for col in stat_columns}
+        df = df.rename(columns=rename_dict)
         
-        return None
+        logger.info(f"   [OK] {len(df)} equipos extraidos (defensivos)")
+        return df
         
     except Exception as e:
-        logger.debug(f"Error al parsear valor '{text}': {e}")
+        logger.error(f"   [ERROR] Error inesperado: {e}")
+        import traceback
+        logger.error(traceback.format_exc())
         return None
+        
+    finally:
+        # Cerrar navegador
+        if driver:
+            driver.quit()
+            logger.info("[BROWSER] Navegador cerrado")
 
-def save_team_stats_to_csv(team_stats, team_abbrev):
+
+def scrape_all_teams_stats(season: str, season_type: str):
     """
-    Guardar estadísticas de equipo en data/raw/team_stats/{team}.csv.
+    Scrapear estadísticas ofensivas y defensivas de todos los equipos
     
     Args:
-        team_stats (dict): Estadísticas del equipo
-        team_abbrev (str): Abreviación del equipo
+        season: Temporada ("2023-24", "2024-25")
+        season_type: Tipo ("regular", "playoffs")
     """
-    try:
-        # Crear directorio si no existe
-        os.makedirs("data/raw/team_stats", exist_ok=True)
-        
-        # Crear DataFrame
-        df = pd.DataFrame([team_stats])
-        
-        # Guardar CSV
-        csv_path = f"data/raw/team_stats/{team_abbrev}.csv"
-        df.to_csv(csv_path, index=False)
-        
-        logger.info(f"Estadísticas de equipo guardadas en {csv_path}")
-        
-    except Exception as e:
-        logger.error(f"Error al guardar estadísticas de {team_abbrev}: {e}")
+    
+    logger.info("="*80)
+    logger.info(f"SCRAPING DE ESTADISTICAS DE EQUIPOS")
+    logger.info(f"   Temporada: {season}")
+    logger.info(f"   Tipo: {season_type.upper()}")
+    logger.info("="*80 + "\n")
+    
+    # Scrapear estadísticas ofensivas
+    df_offensive = scrape_team_stats_offensive(season, season_type)
+    
+    # Scrapear estadísticas defensivas
+    df_defensive = scrape_team_stats_defensive(season, season_type)
+    
+    if df_offensive is None or df_defensive is None:
+        logger.error("[ERROR] No se pudieron obtener todas las estadisticas")
+        return
+    
+    # Asegurar que team_abbrev esté presente en ambos DataFrames
+    # Si no tenemos team_abbrev, intentar obtenerlo del team_name
+    for df in [df_offensive, df_defensive]:
+        if 'team_abbrev' in df.columns:
+            # Rellenar team_abbrev faltantes usando team_name
+            mask = df['team_abbrev'].isna() | (df['team_abbrev'] == '')
+            if mask.any():
+                df.loc[mask, 'team_abbrev'] = df.loc[mask, 'team_name'].map(TEAM_ABBREV_MAP)
+    
+    # Agregar season y season_type a cada DataFrame
+    df_offensive['season'] = season
+    df_offensive['season_type'] = season_type
+    df_defensive['season'] = season
+    df_defensive['season_type'] = season_type
+    
+    # Guardar datos por categoría (offensive y defensive por separado)
+    save_team_stats_by_category(df_offensive, df_defensive, season, season_type)
+    
+    logger.info("="*80)
+    logger.info("RESUMEN DE SCRAPING")
+    logger.info("="*80)
+    logger.info(f"\n[RESULT] Equipos extraidos (ofensivos): {len(df_offensive)}")
+    logger.info(f"[RESULT] Equipos extraidos (defensivos): {len(df_defensive)}")
+    logger.info(f"[SAVE] Datos guardados en: data/raw/team_stats/{season}_{season_type}/")
+    logger.info(f"   - offensive/all_teams.csv")
+    logger.info(f"   - defensive/all_teams.csv\n")
 
-def scrape_all_teams_stats():
+
+def save_team_stats_by_category(df_offensive: pd.DataFrame, df_defensive: pd.DataFrame, season: str, season_type: str):
     """
-    Scrapear estadísticas de todos los equipos NBA.
+    Guardar estadísticas de equipos por categoría (offensive y defensive)
+    
+    Args:
+        df_offensive: DataFrame con estadísticas ofensivas
+        df_defensive: DataFrame con estadísticas defensivas
+        season: Temporada
+        season_type: Tipo de temporada
     """
-    # Lista de equipos NBA (abreviación, nombre)
-    teams = [
-        ("atl", "atlanta-hawks"),
-        ("bos", "boston-celtics"),
-        ("bkn", "brooklyn-nets"),
-        ("cha", "charlotte-hornets"),
-        ("chi", "chicago-bulls"),
-        ("cle", "cleveland-cavaliers"),
-        ("dal", "dallas-mavericks"),
-        ("den", "denver-nuggets"),
-        ("det", "detroit-pistons"),
-        ("gs", "golden-state-warriors"),
-        ("hou", "houston-rockets"),
-        ("ind", "indiana-pacers"),
-        ("lac", "los-angeles-clippers"),
-        ("lal", "los-angeles-lakers"),
-        ("mem", "memphis-grizzlies"),
-        ("mia", "miami-heat"),
-        ("mil", "milwaukee-bucks"),
-        ("min", "minnesota-timberwolves"),
-        ("no", "new-orleans-pelicans"),
-        ("ny", "new-york-knicks"),
-        ("okc", "oklahoma-city-thunder"),
-        ("orl", "orlando-magic"),
-        ("phi", "philadelphia-76ers"),
-        ("phx", "phoenix-suns"),
-        ("por", "portland-trail-blazers"),
-        ("sac", "sacramento-kings"),
-        ("sa", "san-antonio-spurs"),
-        ("tor", "toronto-raptors"),
-        ("utah", "utah-jazz"),
-        ("wsh", "washington-wizards")
-    ]
     
-    logger.info(f"Iniciando scraping de estadísticas para {len(teams)} equipos")
+    # Crear directorio base
+    season_dir = Path(f"data/raw/team_stats/{season}_{season_type}")
+    season_dir.mkdir(parents=True, exist_ok=True)
     
-    for team_abbrev, team_name in teams:
-        logger.info(f"Procesando {team_name}...")
-        
-        team_stats = scrape_team_stats(team_abbrev, team_name)
-        
-        if team_stats:
-            save_team_stats_to_csv(team_stats, team_abbrev)
-        else:
-            logger.warning(f"No se pudieron obtener estadísticas para {team_name}")
+    logger.info(f"\n[SAVE] Guardando datos en {season_dir}/")
     
-    logger.info("Scraping de estadísticas de equipos completado")
+    # Guardar estadísticas ofensivas
+    offensive_dir = season_dir / "offensive"
+    offensive_dir.mkdir(parents=True, exist_ok=True)
+    
+    if df_offensive is not None and not df_offensive.empty:
+        file_path = offensive_dir / "all_teams.csv"
+        df_offensive.to_csv(file_path, index=False)
+        logger.info(f"   [OK] offensive/all_teams.csv - {len(df_offensive)} equipos")
+    else:
+        logger.warning("   [WARN] Sin datos ofensivos para guardar")
+    
+    # Guardar estadísticas defensivas
+    defensive_dir = season_dir / "defensive"
+    defensive_dir.mkdir(parents=True, exist_ok=True)
+    
+    if df_defensive is not None and not df_defensive.empty:
+        file_path = defensive_dir / "all_teams.csv"
+        df_defensive.to_csv(file_path, index=False)
+        logger.info(f"   [OK] defensive/all_teams.csv - {len(df_defensive)} equipos")
+    else:
+        logger.warning("   [WARN] Sin datos defensivos para guardar")
+    
+    logger.info("[OK] Datos guardados exitosamente\n")

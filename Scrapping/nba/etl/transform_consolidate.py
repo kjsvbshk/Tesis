@@ -153,6 +153,7 @@ def process_boxscore_game(game_data):
 def read_team_stats_data():
     """
     Leer datos de estadísticas de equipos desde archivos CSV.
+    Nueva estructura: data/raw/team_stats/{season}_{season_type}/offensive|defensive/all_teams.csv
     
     Returns:
         pd.DataFrame: DataFrame con estadísticas de equipos
@@ -165,23 +166,38 @@ def read_team_stats_data():
             logger.warning(f"Directorio {team_stats_dir} no existe")
             return None
         
-        # Leer todos los archivos CSV de estadísticas de equipos
-        for filename in os.listdir(team_stats_dir):
-            if filename.endswith('.csv'):
-                file_path = os.path.join(team_stats_dir, filename)
-                
-                try:
-                    df = pd.read_csv(file_path)
-                    df['team_abbrev'] = filename.replace('.csv', '')
-                    team_stats_data.append(df)
-                    
-                except Exception as e:
-                    logger.warning(f"Error al procesar {filename}: {e}")
-                    continue
+        # Buscar archivos en la nueva estructura: {season}_{season_type}/offensive|defensive/all_teams.csv
+        from pathlib import Path
+        team_stats_path = Path(team_stats_dir)
+        
+        # Buscar en subdirectorios por temporada (formato: 2023-24_regular, 2024-25_playoffs, etc.)
+        season_dirs = [d for d in team_stats_path.iterdir() if d.is_dir() and '_' in d.name]
+        
+        for season_dir in season_dirs:
+            # Buscar en subdirectorios offensive y defensive
+            for category_dir in ['offensive', 'defensive']:
+                category_path = season_dir / category_dir
+                if category_path.exists():
+                    all_teams_file = category_path / 'all_teams.csv'
+                    if all_teams_file.exists():
+                        try:
+                            df = pd.read_csv(all_teams_file)
+                            # Extraer season y season_type del nombre del directorio
+                            season_dir_name = season_dir.name
+                            if '_' in season_dir_name:
+                                parts = season_dir_name.split('_')
+                                if len(parts) == 2:
+                                    df['season'] = parts[0]
+                                    df['season_type'] = parts[1]
+                            df['category'] = category_dir
+                            team_stats_data.append(df)
+                        except Exception as e:
+                            logger.warning(f"Error al procesar {all_teams_file}: {e}")
+                            continue
         
         if team_stats_data:
             combined_df = pd.concat(team_stats_data, ignore_index=True)
-            logger.info(f"Estadísticas de equipos cargadas: {len(combined_df)} equipos")
+            logger.info(f"Estadísticas de equipos cargadas: {len(combined_df)} registros")
             return combined_df
         else:
             logger.warning("No se encontraron datos de estadísticas de equipos")
@@ -271,11 +287,13 @@ def combine_datasets(boxscores_df, team_stats_df, standings_df):
 def create_team_mapping():
     """
     Crear mapeo de nombres de equipos para normalización.
+    Mapea nombres abreviados (como aparecen en los JSONs) a abreviaturas de 3 letras.
     
     Returns:
-        dict: Mapeo de nombres de equipos
+        dict: Mapeo de nombres de equipos a abreviaturas
     """
     return {
+        # Nombres completos (por si acaso)
         'Boston Celtics': 'BOS',
         'Los Angeles Lakers': 'LAL',
         'Golden State Warriors': 'GSW',
@@ -305,7 +323,39 @@ def create_team_mapping():
         'Los Angeles Clippers': 'LAC',
         'Denver Nuggets': 'DEN',
         'Portland Trail Blazers': 'POR',
-        'Utah Jazz': 'UTA'
+        'Utah Jazz': 'UTA',
+        # Nombres abreviados (como aparecen en los JSONs)
+        'Celtics': 'BOS',
+        'Lakers': 'LAL',
+        'Warriors': 'GSW',
+        'Bulls': 'CHI',
+        'Heat': 'MIA',
+        'Spurs': 'SAS',
+        'Knicks': 'NYK',
+        'Nets': 'BKN',
+        '76ers': 'PHI',
+        'Raptors': 'TOR',
+        'Bucks': 'MIL',
+        'Pacers': 'IND',
+        'Cavaliers': 'CLE',
+        'Pistons': 'DET',
+        'Hawks': 'ATL',
+        'Hornets': 'CHA',
+        'Magic': 'ORL',
+        'Wizards': 'WAS',
+        'Mavericks': 'DAL',
+        'Rockets': 'HOU',
+        'Grizzlies': 'MEM',
+        'Pelicans': 'NOP',
+        'Suns': 'PHX',
+        'Kings': 'SAC',
+        'Thunder': 'OKC',
+        'Timberwolves': 'MIN',
+        'Clippers': 'LAC',
+        'Nuggets': 'DEN',
+        'Trail Blazers': 'POR',
+        'Blazers': 'POR',
+        'Jazz': 'UTA'
     }
 
 def calculate_derived_variables(df):
@@ -369,7 +419,8 @@ def clean_dataset(df):
                           'home_ft_pct', 'home_reb', 'home_ast', 'home_stl', 'home_blk', 
                           'home_to', 'home_pf', 'home_pts', 'away_fg_pct', 'away_3p_pct', 
                           'away_ft_pct', 'away_reb', 'away_ast', 'away_stl', 'away_blk', 
-                          'away_to', 'away_pf', 'away_pts']
+                          'away_to', 'away_pf', 'away_pts', 'home_win', 'point_diff',
+                          'net_rating_diff', 'reb_diff', 'ast_diff', 'tov_diff']
         
         for col in numeric_columns:
             if col in df.columns:

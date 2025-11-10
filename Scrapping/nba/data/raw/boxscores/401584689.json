@@ -1,8 +1,32 @@
 {
-  "game_id": 401584689,
-  "fecha": "2025-10-24",
+  "game_id": "401584689",
+  "fecha": "2025-11-09",
   "home_team": "Nuggets",
   "away_team": "Lakers",
   "home_score": 119,
-  "away_score": 107
+  "away_score": 107,
+  "home_stats": {
+    "PTS": 119,
+    "REB": 42,
+    "AST": 29,
+    "STL": 9,
+    "BLK": 6,
+    "TO": 11,
+    "FG%": 52.7,
+    "3P%": 41.2,
+    "FT%": 75.0,
+    "PF": 15
+  },
+  "away_stats": {
+    "PTS": 107,
+    "REB": 44,
+    "AST": 23,
+    "STL": 5,
+    "BLK": 4,
+    "TO": 11,
+    "FG%": 45.6,
+    "3P%": 34.5,
+    "FT%": 75.0,
+    "PF": 18
+  }
 }

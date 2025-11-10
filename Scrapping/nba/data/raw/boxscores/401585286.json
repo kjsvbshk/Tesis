@@ -1,8 +1,32 @@
 {
-  "game_id": 401585286,
-  "fecha": "2025-10-24",
+  "game_id": "401585286",
+  "fecha": "2025-11-09",
   "home_team": "Cavaliers",
   "away_team": "Clippers",
   "home_score": 118,
-  "away_score": 108
+  "away_score": 108,
+  "home_stats": {
+    "PTS": 118,
+    "REB": 46,
+    "AST": 28,
+    "STL": 6,
+    "BLK": 3,
+    "TO": 13,
+    "FG%": 48.8,
+    "3P%": 32.5,
+    "FT%": 80.8,
+    "PF": 18
+  },
+  "away_stats": {
+    "PTS": 108,
+    "REB": 37,
+    "AST": 28,
+    "STL": 8,
+    "BLK": 3,
+    "TO": 12,
+    "FG%": 47.5,
+    "3P%": 32.4,
+    "FT%": 75.0,
+    "PF": 21
+  }
 }

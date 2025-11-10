@@ -1,8 +1,32 @@
 {
-  "game_id": 401585090,
-  "fecha": "2025-10-24",
+  "game_id": "401585090",
+  "fecha": "2025-11-09",
   "home_team": "Thunder",
   "away_team": "Celtics",
   "home_score": 127,
-  "away_score": 123
+  "away_score": 123,
+  "home_stats": {
+    "PTS": 127,
+    "REB": 38,
+    "AST": 34,
+    "STL": 7,
+    "BLK": 10,
+    "TO": 10,
+    "FG%": 52.7,
+    "3P%": 45.0,
+    "FT%": 76.5,
+    "PF": 22
+  },
+  "away_stats": {
+    "PTS": 123,
+    "REB": 47,
+    "AST": 33,
+    "STL": 7,
+    "BLK": 10,
+    "TO": 14,
+    "FG%": 45.7,
+    "3P%": 37.5,
+    "FT%": 82.8,
+    "PF": 15
+  }
 }

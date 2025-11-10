@@ -1,8 +1,32 @@
 {
-  "game_id": 401585342,
-  "fecha": "2025-10-24",
+  "game_id": "401585342",
+  "fecha": "2025-11-09",
   "home_team": "Kings",
   "away_team": "Cavaliers",
   "home_score": 132,
-  "away_score": 120
+  "away_score": 120,
+  "home_stats": {
+    "PTS": 136,
+    "REB": 45,
+    "AST": 36,
+    "STL": 10,
+    "BLK": 5,
+    "TO": 8,
+    "FG%": 58.0,
+    "3P%": 56.1,
+    "FT%": 64.7,
+    "PF": 15
+  },
+  "away_stats": {
+    "PTS": 110,
+    "REB": 40,
+    "AST": 28,
+    "STL": 5,
+    "BLK": 1,
+    "TO": 12,
+    "FG%": 46.2,
+    "3P%": 38.6,
+    "FT%": 58.3,
+    "PF": 18
+  }
 }

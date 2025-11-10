@@ -1,8 +1,32 @@
 {
-  "game_id": 401585573,
-  "fecha": "2025-10-24",
+  "game_id": "401585573",
+  "fecha": "2025-11-09",
   "home_team": "Bucks",
   "away_team": "Kings",
   "home_score": 143,
-  "away_score": 142
+  "away_score": 142,
+  "home_stats": {
+    "PTS": 129,
+    "REB": 51,
+    "AST": 34,
+    "STL": 11,
+    "BLK": 1,
+    "TO": 8,
+    "FG%": 53.3,
+    "3P%": 45.0,
+    "FT%": 81.3,
+    "PF": 26
+  },
+  "away_stats": {
+    "PTS": 94,
+    "REB": 44,
+    "AST": 23,
+    "STL": 3,
+    "BLK": 2,
+    "TO": 13,
+    "FG%": 36.6,
+    "3P%": 17.9,
+    "FT%": 77.1,
+    "PF": 18
+  }
 }

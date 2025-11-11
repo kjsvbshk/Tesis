@@ -1,0 +1,370 @@
+2025-11-10 00:42:09 | INFO | __main__:main:755 | ================================================================================
+2025-11-10 00:42:09 | INFO | __main__:main:756 | SISTEMA DE CARGA DINAMICA DE DATOS PREMIER LEAGUE
+2025-11-10 00:42:09 | INFO | __main__:main:757 | ================================================================================
+2025-11-10 00:42:09 | INFO | __main__:main:758 | 
+2025-11-10 00:42:09 | INFO | __main__:analyze_all_files:78 | Analizando estructura de datos...
+2025-11-10 00:42:09 | INFO | __main__:_analyze_processed_dataset:114 |   matches: 374 registros
+2025-11-10 00:42:09 | INFO | __main__:_analyze_standings:152 |   standings: 20 registros de 1 archivos
+2025-11-10 00:42:09 | INFO | __main__:_analyze_team_stats:190 |   team_stats: 1 registros de 1 archivos
+2025-11-10 00:42:09 | INFO | __main__:analyze_all_files:91 | 3 tablas detectadas
+2025-11-10 00:42:09 | INFO | __main__:main:777 | 
+2025-11-10 00:42:09 | INFO | __main__:main:778 | RESUMEN DE DATOS A CARGAR:
+2025-11-10 00:42:09 | INFO | __main__:main:779 | --------------------------------------------------------------------------------
+2025-11-10 00:42:09 | INFO | __main__:main:781 |   matches: 374 registros
+2025-11-10 00:42:09 | INFO | __main__:main:781 |   standings: 20 registros
+2025-11-10 00:42:09 | INFO | __main__:main:781 |   team_stats: 1 registros
+2025-11-10 00:42:09 | INFO | __main__:main:782 | 
+2025-11-10 00:44:17 | INFO | __main__:connect:523 | Conectado a PostgreSQL
+2025-11-10 00:44:17 | INFO | __main__:execute_ddl:537 | Ejecutando DDL...
+2025-11-10 00:44:17 | INFO | __main__:execute_ddl:550 | DDL ejecutado
+2025-11-10 00:44:17 | INFO | __main__:load_all_data:554 | Cargando datos...
+2025-11-10 00:44:17 | INFO | __main__:load_all_data:557 | Cargando matches...
+2025-11-10 00:44:17 | INFO | __main__:_copy_from_dataframe:726 |   0/374 registros insertados (duplicados omitidos)
+2025-11-10 00:44:17 | INFO | __main__:load_all_data:573 |   matches: 374 registros totales (0 nuevos)
+2025-11-10 00:44:17 | INFO | __main__:load_all_data:557 | Cargando standings...
+2025-11-10 00:44:17 | INFO | __main__:_copy_from_dataframe:726 |   20/20 registros insertados (duplicados omitidos)
+2025-11-10 00:44:17 | INFO | __main__:load_all_data:573 |   standings: 60 registros totales (20 nuevos)
+2025-11-10 00:44:17 | INFO | __main__:load_all_data:557 | Cargando team_stats...
+2025-11-10 00:44:17 | INFO | __main__:_copy_from_dataframe:726 |   1/1 registros insertados (duplicados omitidos)
+2025-11-10 00:44:17 | INFO | __main__:load_all_data:573 |   team_stats: 2 registros totales (1 nuevos)
+2025-11-10 00:44:17 | INFO | __main__:main:802 | 
+2025-11-10 00:44:17 | INFO | __main__:main:803 | ================================================================================
+2025-11-10 00:44:17 | INFO | __main__:main:804 | CARGA COMPLETADA EXITOSAMENTE
+2025-11-10 00:44:17 | INFO | __main__:main:805 | ================================================================================
+2025-11-10 00:44:17 | INFO | __main__:disconnect:533 | Desconectado de PostgreSQL
+2025-11-10 00:46:27 | INFO | __main__:scrape_standings:49 | Scrapeando clasificaciones de Premier League desde: https://www.espn.com/soccer/standings/_/league/ENG.1
+2025-11-10 00:46:38 | INFO | __main__:extract_standings_data:101 | Encontradas 2 tablas de standings
+2025-11-10 00:46:38 | INFO | __main__:extract_standings_data:173 | Total de equipos procesados: 0
+2025-11-10 00:46:38 | WARNING | __main__:scrape_standings:70 | No se pudieron extraer datos de clasificaciones
+2025-11-10 00:46:38 | ERROR | __main__:main:237 | No se pudieron obtener las clasificaciones
+2025-11-10 00:47:33 | INFO | __main__:scrape_standings:49 | Scrapeando clasificaciones de Premier League desde: https://www.espn.com/soccer/standings/_/league/ENG.1
+2025-11-10 00:47:40 | INFO | __main__:extract_standings_data:101 | Encontradas 2 tablas de standings
+2025-11-10 00:47:40 | INFO | __main__:extract_standings_data:173 | Total de equipos procesados: 0
+2025-11-10 00:47:40 | WARNING | __main__:scrape_standings:70 | No se pudieron extraer datos de clasificaciones
+2025-11-10 00:47:40 | ERROR | __main__:main:237 | No se pudieron obtener las clasificaciones
+2025-11-10 00:48:40 | INFO | __main__:scrape_all_teams_stats:199 | Iniciando scraping de estadísticas de equipos - Temporada 2024
+2025-11-10 00:48:40 | INFO | __main__:scrape_all_teams_stats:200 | Total de equipos: 20
+2025-11-10 00:48:40 | INFO | __main__:scrape_team_stats:74 | Scrapeando estadísticas de Arsenal (temporada 2024)
+2025-11-10 00:48:48 | INFO | __main__:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Arsenal
+2025-11-10 00:48:50 | INFO | __main__:scrape_team_stats:74 | Scrapeando estadísticas de Aston Villa (temporada 2024)
+2025-11-10 00:48:59 | INFO | __main__:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Aston Villa
+2025-11-10 00:49:01 | INFO | __main__:scrape_team_stats:74 | Scrapeando estadísticas de Brentford (temporada 2024)
+2025-11-10 00:49:09 | INFO | __main__:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Brentford
+2025-11-10 00:49:11 | INFO | __main__:scrape_team_stats:74 | Scrapeando estadísticas de Brighton & Hove Albion (temporada 2024)
+2025-11-10 00:49:19 | INFO | __main__:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Brighton & Hove Albion
+2025-11-10 00:49:21 | INFO | __main__:scrape_team_stats:74 | Scrapeando estadísticas de Burnley (temporada 2024)
+2025-11-10 00:49:30 | INFO | __main__:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Burnley
+2025-11-10 00:49:32 | INFO | __main__:scrape_team_stats:74 | Scrapeando estadísticas de Chelsea (temporada 2024)
+2025-11-10 00:49:40 | INFO | __main__:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Chelsea
+2025-11-10 00:49:42 | INFO | __main__:scrape_team_stats:74 | Scrapeando estadísticas de Crystal Palace (temporada 2024)
+2025-11-10 00:49:52 | INFO | __main__:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Crystal Palace
+2025-11-10 00:49:54 | INFO | __main__:scrape_team_stats:74 | Scrapeando estadísticas de Everton (temporada 2024)
+2025-11-10 00:50:02 | INFO | __main__:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Everton
+2025-11-10 00:50:04 | INFO | __main__:scrape_team_stats:74 | Scrapeando estadísticas de Leeds United (temporada 2024)
+2025-11-10 00:50:14 | INFO | __main__:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Leeds United
+2025-11-10 00:50:16 | INFO | __main__:scrape_team_stats:74 | Scrapeando estadísticas de Leicester City (temporada 2024)
+2025-11-10 00:50:24 | INFO | __main__:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Leicester City
+2025-11-10 00:50:26 | INFO | __main__:scrape_team_stats:74 | Scrapeando estadísticas de Liverpool (temporada 2024)
+2025-11-10 00:50:34 | INFO | __main__:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Liverpool
+2025-11-10 00:50:36 | INFO | __main__:scrape_team_stats:74 | Scrapeando estadísticas de Manchester City (temporada 2024)
+2025-11-10 00:50:44 | INFO | __main__:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Manchester City
+2025-11-10 00:50:46 | INFO | __main__:scrape_team_stats:74 | Scrapeando estadísticas de Manchester United (temporada 2024)
+2025-11-10 00:50:54 | INFO | __main__:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Manchester United
+2025-11-10 00:50:56 | INFO | __main__:scrape_team_stats:74 | Scrapeando estadísticas de Newcastle United (temporada 2024)
+2025-11-10 00:51:04 | INFO | __main__:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Newcastle United
+2025-11-10 00:51:06 | INFO | __main__:scrape_team_stats:74 | Scrapeando estadísticas de Norwich City (temporada 2024)
+2025-11-10 00:51:14 | INFO | __main__:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Norwich City
+2025-11-10 00:51:16 | INFO | __main__:scrape_team_stats:74 | Scrapeando estadísticas de Southampton (temporada 2024)
+2025-11-10 00:51:24 | INFO | __main__:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Southampton
+2025-11-10 00:51:26 | INFO | __main__:scrape_team_stats:74 | Scrapeando estadísticas de Tottenham Hotspur (temporada 2024)
+2025-11-10 00:51:34 | INFO | __main__:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Tottenham Hotspur
+2025-11-10 00:51:36 | INFO | __main__:scrape_team_stats:74 | Scrapeando estadísticas de Watford (temporada 2024)
+2025-11-10 00:51:44 | INFO | __main__:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Watford
+2025-11-10 00:51:46 | INFO | __main__:scrape_team_stats:74 | Scrapeando estadísticas de West Ham United (temporada 2024)
+2025-11-10 00:51:53 | INFO | __main__:scrape_team_stats:92 | Estadísticas extraídas exitosamente para West Ham United
+2025-11-10 00:51:55 | INFO | __main__:scrape_team_stats:74 | Scrapeando estadísticas de Wolverhampton Wanderers (temporada 2024)
+2025-11-10 00:52:03 | INFO | __main__:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Wolverhampton Wanderers
+2025-11-10 00:52:05 | INFO | __main__:scrape_all_teams_stats:219 | Total de equipos scrapeados: 20
+2025-11-10 00:52:05 | INFO | __main__:save_team_stats_to_csv:239 | Archivo guardado: data/raw/team_stats\premier_league_team_stats_2024.csv
+2025-11-10 00:52:05 | INFO | __main__:save_team_stats_to_csv:240 | Total de registros: 20
+2025-11-10 00:52:05 | INFO | __main__:main:283 | Scraping de estadísticas de equipos completado exitosamente
+2025-11-10 00:52:30 | INFO | __main__:scrape_standings:49 | Scrapeando clasificaciones de Premier League desde: https://www.espn.com/soccer/standings/_/league/ENG.1
+2025-11-10 00:52:37 | INFO | __main__:extract_standings_data:101 | Encontradas 2 tablas de standings
+2025-11-10 00:52:37 | INFO | __main__:extract_standings_data:173 | Total de equipos procesados: 0
+2025-11-10 00:52:37 | WARNING | __main__:scrape_standings:70 | No se pudieron extraer datos de clasificaciones
+2025-11-10 00:52:37 | ERROR | __main__:main:237 | No se pudieron obtener las clasificaciones
+2025-11-10 00:58:13 | INFO | __main__:scrape_all_player_stats:209 | Iniciando scraping de estadísticas de jugadores - Temporada 2024
+2025-11-10 00:58:13 | INFO | __main__:scrape_all_player_stats:210 | Categorías: goals
+2025-11-10 00:58:13 | INFO | __main__:scrape_player_stats:84 | Scrapeando estadísticas de Goals - Temporada 2024
+2025-11-10 00:58:21 | WARNING | __main__:scrape_player_stats:105 | No se pudieron extraer estadísticas de Goals
+2025-11-10 00:58:23 | WARNING | __main__:scrape_all_player_stats:225 | No se encontraron estadísticas de jugadores
+2025-11-10 00:58:23 | ERROR | __main__:main:295 | No se pudieron obtener estadísticas de jugadores
+2025-11-10 00:58:24 | INFO | __main__:scrape_injuries:52 | Scrapeando reportes de lesiones desde: https://www.espn.com/soccer/team/injuries/_/league/ENG.1
+2025-11-10 00:58:25 | ERROR | __main__:scrape_injuries:69 | Error de conexión al obtener reportes de lesiones: 404 Client Error: Not Found for url: https://www.espn.com/soccer/team/injuries/
+2025-11-10 00:58:25 | ERROR | __main__:main:357 | No se pudieron obtener los reportes de lesiones
+2025-11-10 00:58:52 | INFO | __main__:main:180 | ================================================================================
+2025-11-10 00:58:52 | INFO | __main__:main:181 | INICIANDO SCRAPING COMPLETO DE PREMIER LEAGUE
+2025-11-10 00:58:52 | INFO | __main__:main:182 | Temporada: 2024
+2025-11-10 00:58:52 | INFO | __main__:main:183 | ================================================================================
+2025-11-10 00:58:52 | INFO | __main__:main:184 | 
+2025-11-10 00:58:52 | INFO | __main__:run_standings_scraper:20 | ================================================================================
+2025-11-10 00:58:52 | INFO | __main__:run_standings_scraper:21 | EJECUTANDO SCRAPER DE CLASIFICACIONES
+2025-11-10 00:58:52 | INFO | __main__:run_standings_scraper:22 | ================================================================================
+2025-11-10 00:58:52 | INFO | espn.standings_scraper:scrape_standings:49 | Scrapeando clasificaciones de Premier League desde: https://www.espn.com/soccer/standings/_/league/ENG.1
+2025-11-10 00:59:00 | INFO | espn.standings_scraper:extract_standings_data:101 | Encontradas 2 tablas de standings
+2025-11-10 00:59:00 | INFO | espn.standings_scraper:extract_standings_data:173 | Total de equipos procesados: 0
+2025-11-10 00:59:00 | WARNING | espn.standings_scraper:scrape_standings:70 | No se pudieron extraer datos de clasificaciones
+2025-11-10 00:59:00 | ERROR | __main__:run_standings_scraper:34 | ✗ No se pudieron obtener las clasificaciones
+2025-11-10 00:59:00 | INFO | __main__:main:191 | 
+2025-11-10 00:59:00 | INFO | __main__:run_team_stats_scraper:43 | ================================================================================
+2025-11-10 00:59:00 | INFO | __main__:run_team_stats_scraper:44 | EJECUTANDO SCRAPER DE ESTADÍSTICAS DE EQUIPOS
+2025-11-10 00:59:00 | INFO | __main__:run_team_stats_scraper:45 | ================================================================================
+2025-11-10 00:59:00 | INFO | espn.team_stats_scraper:scrape_all_teams_stats:199 | Iniciando scraping de estadísticas de equipos - Temporada 2024
+2025-11-10 00:59:00 | INFO | espn.team_stats_scraper:scrape_all_teams_stats:200 | Total de equipos: 20
+2025-11-10 00:59:00 | INFO | espn.team_stats_scraper:scrape_team_stats:74 | Scrapeando estadísticas de Arsenal (temporada 2024)
+2025-11-10 00:59:07 | INFO | espn.team_stats_scraper:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Arsenal
+2025-11-10 00:59:09 | INFO | espn.team_stats_scraper:scrape_team_stats:74 | Scrapeando estadísticas de Aston Villa (temporada 2024)
+2025-11-10 00:59:17 | INFO | espn.team_stats_scraper:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Aston Villa
+2025-11-10 00:59:19 | INFO | espn.team_stats_scraper:scrape_team_stats:74 | Scrapeando estadísticas de Brentford (temporada 2024)
+2025-11-10 00:59:31 | INFO | espn.team_stats_scraper:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Brentford
+2025-11-10 00:59:33 | INFO | espn.team_stats_scraper:scrape_team_stats:74 | Scrapeando estadísticas de Brighton & Hove Albion (temporada 2024)
+2025-11-10 00:59:46 | INFO | espn.team_stats_scraper:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Brighton & Hove Albion
+2025-11-10 00:59:48 | INFO | espn.team_stats_scraper:scrape_team_stats:74 | Scrapeando estadísticas de Burnley (temporada 2024)
+2025-11-10 01:00:00 | INFO | espn.team_stats_scraper:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Burnley
+2025-11-10 01:00:02 | INFO | espn.team_stats_scraper:scrape_team_stats:74 | Scrapeando estadísticas de Chelsea (temporada 2024)
+2025-11-10 01:00:14 | INFO | espn.team_stats_scraper:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Chelsea
+2025-11-10 01:00:16 | INFO | espn.team_stats_scraper:scrape_team_stats:74 | Scrapeando estadísticas de Crystal Palace (temporada 2024)
+2025-11-10 01:00:28 | INFO | espn.team_stats_scraper:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Crystal Palace
+2025-11-10 01:00:30 | INFO | espn.team_stats_scraper:scrape_team_stats:74 | Scrapeando estadísticas de Everton (temporada 2024)
+2025-11-10 01:00:41 | INFO | espn.team_stats_scraper:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Everton
+2025-11-10 01:00:43 | INFO | espn.team_stats_scraper:scrape_team_stats:74 | Scrapeando estadísticas de Leeds United (temporada 2024)
+2025-11-10 01:00:53 | INFO | espn.team_stats_scraper:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Leeds United
+2025-11-10 01:00:55 | INFO | espn.team_stats_scraper:scrape_team_stats:74 | Scrapeando estadísticas de Leicester City (temporada 2024)
+2025-11-10 01:01:02 | INFO | espn.team_stats_scraper:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Leicester City
+2025-11-10 01:01:04 | INFO | espn.team_stats_scraper:scrape_team_stats:74 | Scrapeando estadísticas de Liverpool (temporada 2024)
+2025-11-10 01:01:12 | INFO | espn.team_stats_scraper:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Liverpool
+2025-11-10 01:01:14 | INFO | espn.team_stats_scraper:scrape_team_stats:74 | Scrapeando estadísticas de Manchester City (temporada 2024)
+2025-11-10 01:01:21 | INFO | espn.team_stats_scraper:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Manchester City
+2025-11-10 01:01:23 | INFO | espn.team_stats_scraper:scrape_team_stats:74 | Scrapeando estadísticas de Manchester United (temporada 2024)
+2025-11-10 01:01:32 | INFO | espn.team_stats_scraper:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Manchester United
+2025-11-10 01:01:34 | INFO | espn.team_stats_scraper:scrape_team_stats:74 | Scrapeando estadísticas de Newcastle United (temporada 2024)
+2025-11-10 01:01:41 | INFO | espn.team_stats_scraper:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Newcastle United
+2025-11-10 01:01:43 | INFO | espn.team_stats_scraper:scrape_team_stats:74 | Scrapeando estadísticas de Norwich City (temporada 2024)
+2025-11-10 01:01:50 | INFO | espn.team_stats_scraper:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Norwich City
+2025-11-10 01:01:52 | INFO | espn.team_stats_scraper:scrape_team_stats:74 | Scrapeando estadísticas de Southampton (temporada 2024)
+2025-11-10 01:02:00 | INFO | espn.team_stats_scraper:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Southampton
+2025-11-10 01:02:02 | INFO | espn.team_stats_scraper:scrape_team_stats:74 | Scrapeando estadísticas de Tottenham Hotspur (temporada 2024)
+2025-11-10 01:02:10 | INFO | espn.team_stats_scraper:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Tottenham Hotspur
+2025-11-10 01:02:12 | INFO | espn.team_stats_scraper:scrape_team_stats:74 | Scrapeando estadísticas de Watford (temporada 2024)
+2025-11-10 01:02:19 | INFO | espn.team_stats_scraper:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Watford
+2025-11-10 01:02:21 | INFO | espn.team_stats_scraper:scrape_team_stats:74 | Scrapeando estadísticas de West Ham United (temporada 2024)
+2025-11-10 01:02:30 | INFO | espn.team_stats_scraper:scrape_team_stats:92 | Estadísticas extraídas exitosamente para West Ham United
+2025-11-10 01:02:32 | INFO | espn.team_stats_scraper:scrape_team_stats:74 | Scrapeando estadísticas de Wolverhampton Wanderers (temporada 2024)
+2025-11-10 01:02:39 | INFO | espn.team_stats_scraper:scrape_team_stats:92 | Estadísticas extraídas exitosamente para Wolverhampton Wanderers
+2025-11-10 01:02:41 | INFO | espn.team_stats_scraper:scrape_all_teams_stats:219 | Total de equipos scrapeados: 20
+2025-11-10 01:02:41 | INFO | espn.team_stats_scraper:save_team_stats_to_csv:239 | Archivo guardado: data/raw/team_stats\premier_league_team_stats_2024.csv
+2025-11-10 01:02:41 | INFO | espn.team_stats_scraper:save_team_stats_to_csv:240 | Total de registros: 20
+2025-11-10 01:02:41 | INFO | __main__:run_team_stats_scraper:54 | ✓ Estadísticas de equipos scrapeadas exitosamente: 20 equipos
+2025-11-10 01:02:41 | INFO | __main__:main:195 | 
+2025-11-10 01:02:41 | INFO | __main__:run_match_stats_scraper:66 | ================================================================================
+2025-11-10 01:02:41 | INFO | __main__:run_match_stats_scraper:67 | EJECUTANDO SCRAPER DE ESTADÍSTICAS DE PARTIDOS
+2025-11-10 01:02:41 | INFO | __main__:run_match_stats_scraper:68 | ================================================================================
+2025-11-10 01:02:41 | INFO | espn.match_stats_scraper:scrape_matches_from_season:178 | Iniciando scraping de estadísticas de partidos - Temporada 2024
+2025-11-10 01:02:41 | ERROR | __main__:run_match_stats_scraper:83 | ✗ Error ejecutando scraper de estadísticas de partidos: name 'Path' is not defined
+2025-11-10 01:02:41 | INFO | __main__:main:199 | 
+2025-11-10 01:02:41 | INFO | __main__:run_player_stats_scraper:89 | ================================================================================
+2025-11-10 01:02:41 | INFO | __main__:run_player_stats_scraper:90 | EJECUTANDO SCRAPER DE ESTADÍSTICAS DE JUGADORES
+2025-11-10 01:02:41 | INFO | __main__:run_player_stats_scraper:91 | ================================================================================
+2025-11-10 01:02:41 | INFO | espn.player_stats_scraper:scrape_all_player_stats:209 | Iniciando scraping de estadísticas de jugadores - Temporada 2024
+2025-11-10 01:02:41 | INFO | espn.player_stats_scraper:scrape_all_player_stats:210 | Categorías: goals, assists
+2025-11-10 01:02:41 | INFO | espn.player_stats_scraper:scrape_player_stats:84 | Scrapeando estadísticas de Goals - Temporada 2024
+2025-11-10 01:02:49 | WARNING | espn.player_stats_scraper:scrape_player_stats:105 | No se pudieron extraer estadísticas de Goals
+2025-11-10 01:02:51 | INFO | espn.player_stats_scraper:scrape_player_stats:84 | Scrapeando estadísticas de Assists - Temporada 2024
+2025-11-10 01:02:59 | WARNING | espn.player_stats_scraper:scrape_player_stats:105 | No se pudieron extraer estadísticas de Assists
+2025-11-10 01:03:01 | WARNING | espn.player_stats_scraper:scrape_all_player_stats:225 | No se encontraron estadísticas de jugadores
+2025-11-10 01:03:01 | WARNING | __main__:run_player_stats_scraper:103 | ⚠ No se pudieron obtener estadísticas de jugadores
+2025-11-10 01:03:01 | INFO | __main__:main:203 | 
+2025-11-10 01:03:01 | INFO | __main__:run_injuries_scraper:112 | ================================================================================
+2025-11-10 01:03:01 | INFO | __main__:run_injuries_scraper:113 | EJECUTANDO SCRAPER DE LESIONES
+2025-11-10 01:03:01 | INFO | __main__:run_injuries_scraper:114 | ================================================================================
+2025-11-10 01:03:01 | INFO | espn.injuries_scraper:scrape_injuries:52 | Scrapeando reportes de lesiones desde: https://www.espn.com/soccer/team/injuries/_/league/ENG.1
+2025-11-10 01:03:01 | ERROR | espn.injuries_scraper:scrape_injuries:69 | Error de conexión al obtener reportes de lesiones: 404 Client Error: Not Found for url: https://www.espn.com/soccer/team/injuries/
+2025-11-10 01:03:01 | WARNING | __main__:run_injuries_scraper:126 | ⚠ No se pudieron obtener datos de lesiones
+2025-11-10 01:03:01 | INFO | __main__:main:207 | 
+2025-11-10 01:03:01 | INFO | __main__:main:210 | ================================================================================
+2025-11-10 01:03:01 | INFO | __main__:main:211 | RESUMEN DE SCRAPING
+2025-11-10 01:03:01 | INFO | __main__:main:212 | ================================================================================
+2025-11-10 01:03:01 | INFO | __main__:main:216 |   standings: ✗ FALLIDO
+2025-11-10 01:03:01 | INFO | __main__:main:216 |   team_stats: ✓ EXITOSO
+2025-11-10 01:03:01 | INFO | __main__:main:216 |   match_stats: ✗ FALLIDO
+2025-11-10 01:03:01 | INFO | __main__:main:216 |   player_stats: ✗ FALLIDO
+2025-11-10 01:03:01 | INFO | __main__:main:216 |   injuries: ✗ FALLIDO
+2025-11-10 01:03:01 | INFO | __main__:main:218 | 
+2025-11-10 01:03:01 | INFO | __main__:main:219 | ================================================================================
+2025-11-10 01:03:01 | INFO | __main__:main:220 | SCRAPING COMPLETADO
+2025-11-10 01:03:01 | INFO | __main__:main:221 | ================================================================================
+2025-11-10 01:03:22 | INFO | __main__:main:180 | ================================================================================
+2025-11-10 01:03:22 | INFO | __main__:main:181 | INICIANDO SCRAPING COMPLETO DE PREMIER LEAGUE
+2025-11-10 01:03:22 | INFO | __main__:main:182 | Temporada: 2024
+2025-11-10 01:03:22 | INFO | __main__:main:183 | ================================================================================
+2025-11-10 01:03:22 | INFO | __main__:main:184 | 
+2025-11-10 01:03:22 | INFO | __main__:run_standings_scraper:20 | ================================================================================
+2025-11-10 01:03:22 | INFO | __main__:run_standings_scraper:21 | EJECUTANDO SCRAPER DE CLASIFICACIONES
+2025-11-10 01:03:22 | INFO | __main__:run_standings_scraper:22 | ================================================================================
+2025-11-10 01:03:22 | INFO | espn.standings_scraper:scrape_standings:49 | Scrapeando clasificaciones de Premier League desde: https://www.espn.com/soccer/standings/_/league/ENG.1
+2025-11-10 01:03:31 | INFO | espn.standings_scraper:extract_standings_data:103 | Encontradas 2 tablas de standings
+2025-11-10 01:03:31 | INFO | espn.standings_scraper:extract_standings_data:107 | Procesando tabla con 21 filas
+2025-11-10 01:03:31 | INFO | espn.standings_scraper:extract_standings_data:107 | Procesando tabla con 21 filas
+2025-11-10 01:03:31 | INFO | espn.standings_scraper:extract_standings_data:192 | Total de equipos procesados: 0
+2025-11-10 01:03:31 | WARNING | espn.standings_scraper:scrape_standings:70 | No se pudieron extraer datos de clasificaciones
+2025-11-10 01:03:31 | ERROR | __main__:run_standings_scraper:34 | ✗ No se pudieron obtener las clasificaciones
+2025-11-10 01:03:31 | INFO | __main__:main:191 | 
+2025-11-10 01:03:31 | INFO | __main__:run_match_stats_scraper:66 | ================================================================================
+2025-11-10 01:03:31 | INFO | __main__:run_match_stats_scraper:67 | EJECUTANDO SCRAPER DE ESTADÍSTICAS DE PARTIDOS
+2025-11-10 01:03:31 | INFO | __main__:run_match_stats_scraper:68 | ================================================================================
+2025-11-10 01:03:31 | INFO | espn.match_stats_scraper:scrape_matches_from_season:179 | Iniciando scraping de estadísticas de partidos - Temporada 2024
+2025-11-10 01:03:31 | WARNING | espn.match_stats_scraper:scrape_matches_from_season:207 | No se encontraron match_ids válidos. Ejecuta primero matches_scraper para obtener los IDs.
+2025-11-10 01:03:31 | WARNING | __main__:run_match_stats_scraper:80 | ⚠ No se pudieron obtener estadísticas de partidos (puede requerir match_ids)
+2025-11-10 01:03:31 | INFO | __main__:main:199 | 
+2025-11-10 01:03:31 | INFO | __main__:run_player_stats_scraper:89 | ================================================================================
+2025-11-10 01:03:31 | INFO | __main__:run_player_stats_scraper:90 | EJECUTANDO SCRAPER DE ESTADÍSTICAS DE JUGADORES
+2025-11-10 01:03:31 | INFO | __main__:run_player_stats_scraper:91 | ================================================================================
+2025-11-10 01:03:31 | INFO | espn.player_stats_scraper:scrape_all_player_stats:209 | Iniciando scraping de estadísticas de jugadores - Temporada 2024
+2025-11-10 01:03:31 | INFO | espn.player_stats_scraper:scrape_all_player_stats:210 | Categorías: goals, assists
+2025-11-10 01:03:31 | INFO | espn.player_stats_scraper:scrape_player_stats:84 | Scrapeando estadísticas de Goals - Temporada 2024
+2025-11-10 01:03:39 | WARNING | espn.player_stats_scraper:scrape_player_stats:105 | No se pudieron extraer estadísticas de Goals
+2025-11-10 01:03:41 | INFO | espn.player_stats_scraper:scrape_player_stats:84 | Scrapeando estadísticas de Assists - Temporada 2024
+2025-11-10 01:03:50 | WARNING | espn.player_stats_scraper:scrape_player_stats:105 | No se pudieron extraer estadísticas de Assists
+2025-11-10 01:03:52 | WARNING | espn.player_stats_scraper:scrape_all_player_stats:225 | No se encontraron estadísticas de jugadores
+2025-11-10 01:03:52 | WARNING | __main__:run_player_stats_scraper:103 | ⚠ No se pudieron obtener estadísticas de jugadores
+2025-11-10 01:03:52 | INFO | __main__:main:203 | 
+2025-11-10 01:03:52 | INFO | __main__:run_injuries_scraper:112 | ================================================================================
+2025-11-10 01:03:52 | INFO | __main__:run_injuries_scraper:113 | EJECUTANDO SCRAPER DE LESIONES
+2025-11-10 01:03:52 | INFO | __main__:run_injuries_scraper:114 | ================================================================================
+2025-11-10 01:03:52 | INFO | espn.injuries_scraper:scrape_injuries:52 | Scrapeando reportes de lesiones desde: https://www.espn.com/soccer/team/injuries/_/league/ENG.1
+2025-11-10 01:03:53 | ERROR | espn.injuries_scraper:scrape_injuries:69 | Error de conexión al obtener reportes de lesiones: 404 Client Error: Not Found for url: https://www.espn.com/soccer/team/injuries/
+2025-11-10 01:03:53 | WARNING | __main__:run_injuries_scraper:126 | ⚠ No se pudieron obtener datos de lesiones
+2025-11-10 01:03:53 | INFO | __main__:main:207 | 
+2025-11-10 01:03:53 | INFO | __main__:main:210 | ================================================================================
+2025-11-10 01:03:53 | INFO | __main__:main:211 | RESUMEN DE SCRAPING
+2025-11-10 01:03:53 | INFO | __main__:main:212 | ================================================================================
+2025-11-10 01:03:53 | INFO | __main__:main:216 |   standings: ✗ FALLIDO
+2025-11-10 01:03:53 | INFO | __main__:main:216 |   match_stats: ✗ FALLIDO
+2025-11-10 01:03:53 | INFO | __main__:main:216 |   player_stats: ✗ FALLIDO
+2025-11-10 01:03:53 | INFO | __main__:main:216 |   injuries: ✗ FALLIDO
+2025-11-10 01:03:53 | INFO | __main__:main:218 | 
+2025-11-10 01:03:53 | INFO | __main__:main:219 | ================================================================================
+2025-11-10 01:03:53 | INFO | __main__:main:220 | SCRAPING COMPLETADO
+2025-11-10 01:03:53 | INFO | __main__:main:221 | ================================================================================
+2025-11-10 01:04:01 | INFO | __main__:scrape_season_matches:189 | Iniciando scraping de Premier League - Temporada 2024
+2025-11-10 01:04:01 | INFO | __main__:scrape_season_matches:190 | Total de equipos: 20
+2025-11-10 01:04:01 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de Arsenal (temporada 2024)
+2025-11-10 01:04:10 | INFO | __main__:fetch_team_results:167 |   → 38 partidos encontrados para Arsenal
+2025-11-10 01:04:11 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de Aston Villa (temporada 2024)
+2025-11-10 01:04:19 | INFO | __main__:fetch_team_results:167 |   → 38 partidos encontrados para Aston Villa
+2025-11-10 01:04:20 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de Brentford (temporada 2024)
+2025-11-10 01:04:28 | INFO | __main__:fetch_team_results:167 |   → 38 partidos encontrados para Brentford
+2025-11-10 01:04:29 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de Brighton & Hove Albion (temporada 2024)
+2025-11-10 01:04:37 | INFO | __main__:fetch_team_results:167 |   → 38 partidos encontrados para Brighton & Hove Albion
+2025-11-10 01:04:38 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de Burnley (temporada 2024)
+2025-11-10 01:04:48 | INFO | __main__:fetch_team_results:167 |   → 0 partidos encontrados para Burnley
+2025-11-10 01:04:49 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de Chelsea (temporada 2024)
+2025-11-10 01:04:59 | INFO | __main__:fetch_team_results:167 |   → 38 partidos encontrados para Chelsea
+2025-11-10 01:05:00 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de Crystal Palace (temporada 2024)
+2025-11-10 01:05:09 | INFO | __main__:fetch_team_results:167 |   → 38 partidos encontrados para Crystal Palace
+2025-11-10 01:05:10 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de Everton (temporada 2024)
+2025-11-10 01:05:19 | INFO | __main__:fetch_team_results:167 |   → 38 partidos encontrados para Everton
+2025-11-10 01:05:20 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de Leeds United (temporada 2024)
+2025-11-10 01:05:27 | INFO | __main__:fetch_team_results:167 |   → 0 partidos encontrados para Leeds United
+2025-11-10 01:05:28 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de Leicester City (temporada 2024)
+2025-11-10 01:05:36 | INFO | __main__:fetch_team_results:167 |   → 38 partidos encontrados para Leicester City
+2025-11-10 01:05:37 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de Liverpool (temporada 2024)
+2025-11-10 01:05:45 | INFO | __main__:fetch_team_results:167 |   → 38 partidos encontrados para Liverpool
+2025-11-10 01:05:46 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de Manchester City (temporada 2024)
+2025-11-10 01:05:54 | INFO | __main__:fetch_team_results:167 |   → 38 partidos encontrados para Manchester City
+2025-11-10 01:05:55 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de Manchester United (temporada 2024)
+2025-11-10 01:06:03 | INFO | __main__:fetch_team_results:167 |   → 38 partidos encontrados para Manchester United
+2025-11-10 01:06:04 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de Newcastle United (temporada 2024)
+2025-11-10 01:06:12 | INFO | __main__:fetch_team_results:167 |   → 38 partidos encontrados para Newcastle United
+2025-11-10 01:06:13 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de Norwich City (temporada 2024)
+2025-11-10 01:06:22 | INFO | __main__:fetch_team_results:167 |   → 0 partidos encontrados para Norwich City
+2025-11-10 01:06:23 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de Southampton (temporada 2024)
+2025-11-10 01:06:31 | INFO | __main__:fetch_team_results:167 |   → 38 partidos encontrados para Southampton
+2025-11-10 01:06:32 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de Tottenham Hotspur (temporada 2024)
+2025-11-10 01:06:40 | INFO | __main__:fetch_team_results:167 |   → 38 partidos encontrados para Tottenham Hotspur
+2025-11-10 01:06:41 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de Watford (temporada 2024)
+2025-11-10 01:06:49 | INFO | __main__:fetch_team_results:167 |   → 0 partidos encontrados para Watford
+2025-11-10 01:06:50 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de West Ham United (temporada 2024)
+2025-11-10 01:06:58 | INFO | __main__:fetch_team_results:167 |   → 38 partidos encontrados para West Ham United
+2025-11-10 01:06:59 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de Wolverhampton Wanderers (temporada 2024)
+2025-11-10 01:07:07 | INFO | __main__:fetch_team_results:167 |   → 38 partidos encontrados para Wolverhampton Wanderers
+2025-11-10 01:07:08 | INFO | __main__:scrape_season_matches:208 | Total de partidos scrapeados: 608
+2025-11-10 01:07:08 | INFO | __main__:save_matches_to_csv:228 | Archivo guardado: data/raw\premier_league_matches_2024.csv
+2025-11-10 01:07:08 | INFO | __main__:save_matches_to_csv:229 | Total de registros: 608
+2025-11-10 01:07:08 | INFO | __main__:main:272 | Scraping completado exitosamente
+2025-11-10 01:07:14 | INFO | __main__:main:180 | ================================================================================
+2025-11-10 01:07:14 | INFO | __main__:main:181 | INICIANDO SCRAPING COMPLETO DE PREMIER LEAGUE
+2025-11-10 01:07:14 | INFO | __main__:main:182 | Temporada: 2024
+2025-11-10 01:07:14 | INFO | __main__:main:183 | ================================================================================
+2025-11-10 01:07:14 | INFO | __main__:main:184 | 
+2025-11-10 01:07:14 | INFO | __main__:run_match_stats_scraper:66 | ================================================================================
+2025-11-10 01:07:14 | INFO | __main__:run_match_stats_scraper:67 | EJECUTANDO SCRAPER DE ESTADÍSTICAS DE PARTIDOS
+2025-11-10 01:07:14 | INFO | __main__:run_match_stats_scraper:68 | ================================================================================
+2025-11-10 01:07:14 | INFO | espn.match_stats_scraper:scrape_matches_from_season:179 | Iniciando scraping de estadísticas de partidos - Temporada 2024
+2025-11-10 01:07:14 | WARNING | espn.match_stats_scraper:scrape_matches_from_season:207 | No se encontraron match_ids válidos. Ejecuta primero matches_scraper para obtener los IDs.
+2025-11-10 01:07:14 | WARNING | __main__:run_match_stats_scraper:80 | ⚠ No se pudieron obtener estadísticas de partidos (puede requerir match_ids)
+2025-11-10 01:07:14 | INFO | __main__:main:199 | 
+2025-11-10 01:07:14 | INFO | __main__:main:210 | ================================================================================
+2025-11-10 01:07:14 | INFO | __main__:main:211 | RESUMEN DE SCRAPING
+2025-11-10 01:07:14 | INFO | __main__:main:212 | ================================================================================
+2025-11-10 01:07:14 | INFO | __main__:main:216 |   match_stats: ✗ FALLIDO
+2025-11-10 01:07:14 | INFO | __main__:main:218 | 
+2025-11-10 01:07:14 | INFO | __main__:main:219 | ================================================================================
+2025-11-10 01:07:14 | INFO | __main__:main:220 | SCRAPING COMPLETADO
+2025-11-10 01:07:14 | INFO | __main__:main:221 | ================================================================================
+2025-11-10 01:07:29 | INFO | __main__:scrape_season_matches:202 | Iniciando scraping de Premier League - Temporada 2024
+2025-11-10 01:07:29 | INFO | __main__:scrape_season_matches:203 | Total de equipos: 20
+2025-11-10 01:07:29 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de Arsenal (temporada 2024)
+2025-11-10 01:07:36 | INFO | __main__:fetch_team_results:180 |   → 38 partidos encontrados para Arsenal
+2025-11-10 01:07:37 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de Aston Villa (temporada 2024)
+2025-11-10 01:07:44 | INFO | __main__:fetch_team_results:180 |   → 38 partidos encontrados para Aston Villa
+2025-11-10 01:07:45 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de Brentford (temporada 2024)
+2025-11-10 01:07:52 | INFO | __main__:fetch_team_results:180 |   → 38 partidos encontrados para Brentford
+2025-11-10 01:07:53 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de Brighton & Hove Albion (temporada 2024)
+2025-11-10 01:08:00 | INFO | __main__:fetch_team_results:180 |   → 38 partidos encontrados para Brighton & Hove Albion
+2025-11-10 01:08:01 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de Burnley (temporada 2024)
+2025-11-10 01:08:10 | INFO | __main__:fetch_team_results:180 |   → 0 partidos encontrados para Burnley
+2025-11-10 01:08:11 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de Chelsea (temporada 2024)
+2025-11-10 01:08:18 | INFO | __main__:fetch_team_results:180 |   → 38 partidos encontrados para Chelsea
+2025-11-10 01:08:19 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de Crystal Palace (temporada 2024)
+2025-11-10 01:08:27 | INFO | __main__:fetch_team_results:180 |   → 38 partidos encontrados para Crystal Palace
+2025-11-10 01:08:28 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de Everton (temporada 2024)
+2025-11-10 01:08:36 | INFO | __main__:fetch_team_results:180 |   → 38 partidos encontrados para Everton
+2025-11-10 01:08:37 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de Leeds United (temporada 2024)
+2025-11-10 01:08:45 | INFO | __main__:fetch_team_results:180 |   → 0 partidos encontrados para Leeds United
+2025-11-10 01:08:46 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de Leicester City (temporada 2024)
+2025-11-10 01:08:53 | INFO | __main__:fetch_team_results:180 |   → 38 partidos encontrados para Leicester City
+2025-11-10 01:08:54 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de Liverpool (temporada 2024)
+2025-11-10 01:09:02 | INFO | __main__:fetch_team_results:180 |   → 38 partidos encontrados para Liverpool
+2025-11-10 01:09:03 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de Manchester City (temporada 2024)
+2025-11-10 01:09:10 | INFO | __main__:fetch_team_results:180 |   → 38 partidos encontrados para Manchester City
+2025-11-10 01:09:11 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de Manchester United (temporada 2024)
+2025-11-10 01:09:19 | INFO | __main__:fetch_team_results:180 |   → 38 partidos encontrados para Manchester United
+2025-11-10 01:09:20 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de Newcastle United (temporada 2024)
+2025-11-10 01:09:27 | INFO | __main__:fetch_team_results:180 |   → 38 partidos encontrados para Newcastle United
+2025-11-10 01:09:28 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de Norwich City (temporada 2024)
+2025-11-10 01:09:37 | INFO | __main__:fetch_team_results:180 |   → 0 partidos encontrados para Norwich City
+2025-11-10 01:09:38 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de Southampton (temporada 2024)
+2025-11-10 01:09:46 | INFO | __main__:fetch_team_results:180 |   → 38 partidos encontrados para Southampton
+2025-11-10 01:09:47 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de Tottenham Hotspur (temporada 2024)
+2025-11-10 01:09:55 | INFO | __main__:fetch_team_results:180 |   → 38 partidos encontrados para Tottenham Hotspur
+2025-11-10 01:09:56 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de Watford (temporada 2024)
+2025-11-10 01:10:03 | INFO | __main__:fetch_team_results:180 |   → 0 partidos encontrados para Watford
+2025-11-10 01:10:04 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de West Ham United (temporada 2024)
+2025-11-10 01:10:12 | INFO | __main__:fetch_team_results:180 |   → 38 partidos encontrados para West Ham United
+2025-11-10 01:10:13 | INFO | __main__:fetch_team_results:61 | Scrapeando resultados de Wolverhampton Wanderers (temporada 2024)
+2025-11-10 01:10:21 | INFO | __main__:fetch_team_results:180 |   → 38 partidos encontrados para Wolverhampton Wanderers
+2025-11-10 01:10:22 | INFO | __main__:scrape_season_matches:221 | Total de partidos scrapeados: 608
+2025-11-10 01:10:22 | INFO | __main__:save_matches_to_csv:241 | Archivo guardado: data/raw\premier_league_matches_2024.csv
+2025-11-10 01:10:22 | INFO | __main__:save_matches_to_csv:242 | Total de registros: 608
+2025-11-10 01:10:22 | INFO | __main__:main:285 | Scraping completado exitosamente

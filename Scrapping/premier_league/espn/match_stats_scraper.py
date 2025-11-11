@@ -9,6 +9,7 @@ import pandas as pd
 import os
 import time
 from datetime import datetime
+from pathlib import Path
 from loguru import logger
 import sys
 from playwright.sync_api import sync_playwright
@@ -177,14 +178,36 @@ def scrape_matches_from_season(season="2024"):
     """
     logger.info(f"Iniciando scraping de estadísticas de partidos - Temporada {season}")
     
-    # Leer match_ids desde el dataset consolidado
-    try:
-        matches_df = pd.read_csv(f"data/processed/premier_league_full_dataset.csv")
-        match_ids = matches_df['match_id'].unique()
-        logger.info(f"Encontrados {len(match_ids)} partidos para scrapear")
-    except Exception as e:
-        logger.error(f"Error al leer match_ids: {e}")
+    # Leer match_ids desde los archivos raw de matches
+    match_ids = []
+    matches_dir = Path("data/raw")
+    
+    # Buscar archivos CSV de matches
+    csv_files = list(matches_dir.glob("premier_league*.csv"))
+    
+    for csv_file in csv_files:
+        try:
+            df = pd.read_csv(csv_file)
+            if 'match_id' in df.columns:
+                # Filtrar match_ids válidos (que sean números, no strings complejos)
+                valid_ids = df['match_id'].dropna()
+                for match_id in valid_ids:
+                    if isinstance(match_id, str) and match_id.isdigit():
+                        match_ids.append(match_id)
+                    elif isinstance(match_id, (int, float)) and not pd.isna(match_id):
+                        match_ids.append(str(int(match_id)))
+        except Exception as e:
+            logger.warning(f"Error al leer {csv_file.name}: {e}")
+            continue
+    
+    # Eliminar duplicados
+    match_ids = list(set(match_ids))
+    
+    if not match_ids:
+        logger.warning("No se encontraron match_ids válidos. Ejecuta primero matches_scraper para obtener los IDs.")
         return None
+    
+    logger.info(f"Encontrados {len(match_ids)} partidos únicos para scrapear")
     
     all_stats = []
     

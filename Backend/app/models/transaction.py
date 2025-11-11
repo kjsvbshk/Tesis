@@ -5,7 +5,7 @@ Transaction model for credit management
 from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, Enum
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
-from app.core.database import Base
+from app.core.database import SysBase
 import enum
 
 class TransactionType(str, enum.Enum):
@@ -16,14 +16,15 @@ class TransactionType(str, enum.Enum):
     CREDIT_PURCHASE = "credit_purchase"
     ADMIN_ADJUSTMENT = "admin_adjustment"
 
-class Transaction(Base):
+class Transaction(SysBase):
     """Transaction model for credit tracking"""
     
     __tablename__ = "transactions"
+    __table_args__ = {'schema': 'app'}
     
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    bet_id = Column(Integer, ForeignKey("bets.id"), nullable=True)  # Null for non-bet transactions
+    user_id = Column(Integer, ForeignKey("app.users.id"), nullable=False)
+    bet_id = Column(Integer, ForeignKey("app.bets.id"), nullable=True)  # Null for non-bet transactions
     
     # Transaction details
     transaction_type = Column(Enum(TransactionType), nullable=False)

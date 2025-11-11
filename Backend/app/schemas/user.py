@@ -9,13 +9,19 @@ from datetime import datetime
 class UserBase(BaseModel):
     username: str
     email: EmailStr
+    rol: str = "usuario"  # Rol por defecto: usuario (solo lectura en respuesta)
 
-class UserCreate(UserBase):
+class UserCreate(BaseModel):
+    """Schema para crear usuario - username, email y password son requeridos"""
+    username: str
+    email: EmailStr
     password: str
+    # Nota: el rol siempre será 'usuario' por defecto, no se acepta en el request
 
 class UserUpdate(BaseModel):
     username: Optional[str] = None
     email: Optional[EmailStr] = None
+    rol: Optional[str] = None
     credits: Optional[float] = None
 
 class UserResponse(UserBase):
@@ -27,6 +33,11 @@ class UserResponse(UserBase):
     
     class Config:
         from_attributes = True
+
+class UserCreateWithRol(UserBase):
+    """Schema para crear usuario con rol explícito (solo admin)"""
+    password: str
+    rol: str = "usuario"  # Por defecto usuario, pero puede ser especificado
 
 class UserLogin(BaseModel):
     username: str

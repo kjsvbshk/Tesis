@@ -5,16 +5,17 @@ Team statistics model for games
 from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, Boolean
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
-from app.core.database import Base
+from app.core.database import EspnBase
 
-class TeamStatsGame(Base):
+class TeamStatsGame(EspnBase):
     """Team statistics for a specific game"""
     
     __tablename__ = "team_stats_game"
+    __table_args__ = {'schema': 'espn'}
     
     id = Column(Integer, primary_key=True, index=True)
-    game_id = Column(Integer, ForeignKey("games.id"), nullable=False)
-    team_id = Column(Integer, ForeignKey("teams.id"), nullable=False)
+    game_id = Column(Integer, ForeignKey("espn.games.id"), nullable=False)
+    team_id = Column(Integer, ForeignKey("espn.teams.id"), nullable=False)
     is_home = Column(Boolean, nullable=False)  # True if home team, False if away
     
     # Basic stats

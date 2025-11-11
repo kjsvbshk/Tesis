@@ -1,0 +1,122 @@
+2025-11-11 01:02:16 | INFO | __main__:main:767 | ================================================================================
+2025-11-11 01:02:16 | INFO | __main__:main:768 | SISTEMA DE CARGA DINAMICA DE DATOS PREMIER LEAGUE
+2025-11-11 01:02:16 | INFO | __main__:main:769 | ================================================================================
+2025-11-11 01:02:16 | INFO | __main__:main:770 | 
+2025-11-11 01:02:16 | INFO | __main__:analyze_all_files:90 | Analizando estructura de datos...
+2025-11-11 01:02:16 | INFO | __main__:_analyze_processed_dataset:126 |   matches: 374 registros
+2025-11-11 01:02:16 | INFO | __main__:_analyze_standings:164 |   standings: 20 registros de 1 archivos
+2025-11-11 01:02:16 | INFO | __main__:_analyze_team_stats:202 |   team_stats: 20 registros de 1 archivos
+2025-11-11 01:02:16 | INFO | __main__:analyze_all_files:103 | 3 tablas detectadas
+2025-11-11 01:02:16 | INFO | __main__:main:789 | 
+2025-11-11 01:02:16 | INFO | __main__:main:790 | RESUMEN DE DATOS A CARGAR:
+2025-11-11 01:02:16 | INFO | __main__:main:791 | --------------------------------------------------------------------------------
+2025-11-11 01:02:16 | INFO | __main__:main:793 |   matches: 374 registros
+2025-11-11 01:02:16 | INFO | __main__:main:793 |   standings: 20 registros
+2025-11-11 01:02:16 | INFO | __main__:main:793 |   team_stats: 20 registros
+2025-11-11 01:02:16 | INFO | __main__:main:794 | 
+2025-11-11 01:02:26 | INFO | __main__:connect:535 | Conectado a PostgreSQL
+2025-11-11 01:02:26 | INFO | __main__:execute_ddl:549 | Ejecutando DDL...
+2025-11-11 01:02:28 | WARNING | __main__:execute_ddl:558 | Error ejecutando DDL: column "date" does not exist
+
+2025-11-11 01:02:29 | WARNING | __main__:execute_ddl:558 | Error ejecutando DDL: column "team_name" does not exist
+
+2025-11-11 01:02:29 | WARNING | __main__:execute_ddl:558 | Error ejecutando DDL: column "position" does not exist
+
+2025-11-11 01:02:30 | WARNING | __main__:execute_ddl:558 | Error ejecutando DDL: column "date" does not exist
+
+2025-11-11 01:02:30 | INFO | __main__:execute_ddl:562 | DDL ejecutado
+2025-11-11 01:02:30 | INFO | __main__:load_all_data:566 | Cargando datos...
+2025-11-11 01:02:30 | INFO | __main__:load_all_data:569 | Cargando matches...
+2025-11-11 01:02:31 | INFO | __main__:_copy_from_dataframe:738 |   374/374 registros insertados (duplicados omitidos)
+2025-11-11 01:02:31 | INFO | __main__:load_all_data:585 |   matches: 374 registros totales (374 nuevos)
+2025-11-11 01:02:31 | INFO | __main__:load_all_data:569 | Cargando standings...
+2025-11-11 01:02:32 | ERROR | __main__:_copy_from_dataframe:742 | Error cargando datos: column "date" of relation "standings" does not exist
+LINE 2: ...              INSERT INTO espn.standings (season, date, posi...
+                                                             ^
+
+2025-11-11 01:02:32 | ERROR | __main__:load_all_data:588 | Error cargando standings: column "date" of relation "standings" does not exist
+LINE 2: ...              INSERT INTO espn.standings (season, date, posi...
+                                                             ^
+
+2025-11-11 01:02:32 | INFO | __main__:load_all_data:569 | Cargando team_stats...
+2025-11-11 01:02:32 | ERROR | __main__:_copy_from_dataframe:742 | Error cargando datos: column "date" of relation "team_stats" does not exist
+LINE 2: ...  INSERT INTO espn.team_stats (season, team_name, date, goal...
+                                                             ^
+
+2025-11-11 01:02:32 | ERROR | __main__:load_all_data:588 | Error cargando team_stats: column "date" of relation "team_stats" does not exist
+LINE 2: ...  INSERT INTO espn.team_stats (season, team_name, date, goal...
+                                                             ^
+
+2025-11-11 01:02:32 | INFO | __main__:main:814 | 
+2025-11-11 01:02:32 | INFO | __main__:main:815 | ================================================================================
+2025-11-11 01:02:32 | INFO | __main__:main:816 | CARGA COMPLETADA EXITOSAMENTE
+2025-11-11 01:02:32 | INFO | __main__:main:817 | ================================================================================
+2025-11-11 01:02:32 | INFO | __main__:disconnect:545 | Desconectado de PostgreSQL
+2025-11-11 01:03:50 | INFO | __main__:main:767 | ================================================================================
+2025-11-11 01:03:50 | INFO | __main__:main:768 | SISTEMA DE CARGA DINAMICA DE DATOS PREMIER LEAGUE
+2025-11-11 01:03:50 | INFO | __main__:main:769 | ================================================================================
+2025-11-11 01:03:50 | INFO | __main__:main:770 | 
+2025-11-11 01:03:50 | INFO | __main__:analyze_all_files:90 | Analizando estructura de datos...
+2025-11-11 01:03:50 | INFO | __main__:_analyze_processed_dataset:126 |   matches: 374 registros
+2025-11-11 01:03:50 | INFO | __main__:_analyze_standings:164 |   standings: 20 registros de 1 archivos
+2025-11-11 01:03:50 | INFO | __main__:_analyze_team_stats:202 |   team_stats: 20 registros de 1 archivos
+2025-11-11 01:03:50 | INFO | __main__:analyze_all_files:103 | 3 tablas detectadas
+2025-11-11 01:03:50 | INFO | __main__:main:789 | 
+2025-11-11 01:03:50 | INFO | __main__:main:790 | RESUMEN DE DATOS A CARGAR:
+2025-11-11 01:03:50 | INFO | __main__:main:791 | --------------------------------------------------------------------------------
+2025-11-11 01:03:50 | INFO | __main__:main:793 |   matches: 374 registros
+2025-11-11 01:03:50 | INFO | __main__:main:793 |   standings: 20 registros
+2025-11-11 01:03:50 | INFO | __main__:main:793 |   team_stats: 20 registros
+2025-11-11 01:03:50 | INFO | __main__:main:794 | 
+2025-11-11 01:04:00 | INFO | __main__:connect:535 | Conectado a PostgreSQL
+2025-11-11 01:04:00 | INFO | __main__:execute_ddl:549 | Ejecutando DDL...
+2025-11-11 01:04:04 | INFO | __main__:execute_ddl:562 | DDL ejecutado
+2025-11-11 01:04:04 | INFO | __main__:load_all_data:566 | Cargando datos...
+2025-11-11 01:04:04 | INFO | __main__:load_all_data:569 | Cargando matches...
+2025-11-11 01:04:05 | INFO | __main__:_copy_from_dataframe:738 |   0/374 registros insertados (duplicados omitidos)
+2025-11-11 01:04:05 | INFO | __main__:load_all_data:585 |   matches: 374 registros totales (0 nuevos)
+2025-11-11 01:04:05 | INFO | __main__:load_all_data:569 | Cargando standings...
+2025-11-11 01:04:06 | INFO | __main__:_copy_from_dataframe:738 |   20/20 registros insertados (duplicados omitidos)
+2025-11-11 01:04:06 | INFO | __main__:load_all_data:585 |   standings: 20 registros totales (20 nuevos)
+2025-11-11 01:04:06 | INFO | __main__:load_all_data:569 | Cargando team_stats...
+2025-11-11 01:04:06 | INFO | __main__:_copy_from_dataframe:738 |   20/20 registros insertados (duplicados omitidos)
+2025-11-11 01:04:07 | INFO | __main__:load_all_data:585 |   team_stats: 20 registros totales (20 nuevos)
+2025-11-11 01:04:07 | INFO | __main__:main:814 | 
+2025-11-11 01:04:07 | INFO | __main__:main:815 | ================================================================================
+2025-11-11 01:04:07 | INFO | __main__:main:816 | CARGA COMPLETADA EXITOSAMENTE
+2025-11-11 01:04:07 | INFO | __main__:main:817 | ================================================================================
+2025-11-11 01:04:07 | INFO | __main__:disconnect:545 | Desconectado de PostgreSQL
+2025-11-11 01:06:13 | INFO | __main__:main:767 | ================================================================================
+2025-11-11 01:06:13 | INFO | __main__:main:768 | SISTEMA DE CARGA DINAMICA DE DATOS PREMIER LEAGUE
+2025-11-11 01:06:13 | INFO | __main__:main:769 | ================================================================================
+2025-11-11 01:06:13 | INFO | __main__:main:770 | 
+2025-11-11 01:06:13 | INFO | __main__:analyze_all_files:90 | Analizando estructura de datos...
+2025-11-11 01:06:13 | INFO | __main__:_analyze_processed_dataset:126 |   matches: 374 registros
+2025-11-11 01:06:13 | INFO | __main__:_analyze_standings:164 |   standings: 20 registros de 1 archivos
+2025-11-11 01:06:13 | INFO | __main__:_analyze_team_stats:202 |   team_stats: 20 registros de 1 archivos
+2025-11-11 01:06:13 | INFO | __main__:analyze_all_files:103 | 3 tablas detectadas
+2025-11-11 01:06:13 | INFO | __main__:main:789 | 
+2025-11-11 01:06:13 | INFO | __main__:main:790 | RESUMEN DE DATOS A CARGAR:
+2025-11-11 01:06:13 | INFO | __main__:main:791 | --------------------------------------------------------------------------------
+2025-11-11 01:06:13 | INFO | __main__:main:793 |   matches: 374 registros
+2025-11-11 01:06:13 | INFO | __main__:main:793 |   standings: 20 registros
+2025-11-11 01:06:13 | INFO | __main__:main:793 |   team_stats: 20 registros
+2025-11-11 01:06:13 | INFO | __main__:main:794 | 
+2025-11-11 01:06:18 | INFO | __main__:connect:535 | Conectado a PostgreSQL
+2025-11-11 01:06:18 | INFO | __main__:execute_ddl:549 | Ejecutando DDL...
+2025-11-11 01:06:22 | INFO | __main__:execute_ddl:562 | DDL ejecutado
+2025-11-11 01:06:22 | INFO | __main__:load_all_data:566 | Cargando datos...
+2025-11-11 01:06:22 | INFO | __main__:load_all_data:569 | Cargando matches...
+2025-11-11 01:06:23 | INFO | __main__:_copy_from_dataframe:738 |   374/374 registros insertados (duplicados omitidos)
+2025-11-11 01:06:23 | INFO | __main__:load_all_data:585 |   matches: 374 registros totales (374 nuevos)
+2025-11-11 01:06:23 | INFO | __main__:load_all_data:569 | Cargando standings...
+2025-11-11 01:06:24 | INFO | __main__:_copy_from_dataframe:738 |   20/20 registros insertados (duplicados omitidos)
+2025-11-11 01:06:24 | INFO | __main__:load_all_data:585 |   standings: 20 registros totales (20 nuevos)
+2025-11-11 01:06:24 | INFO | __main__:load_all_data:569 | Cargando team_stats...
+2025-11-11 01:06:24 | INFO | __main__:_copy_from_dataframe:738 |   20/20 registros insertados (duplicados omitidos)
+2025-11-11 01:06:24 | INFO | __main__:load_all_data:585 |   team_stats: 20 registros totales (20 nuevos)
+2025-11-11 01:06:24 | INFO | __main__:main:814 | 
+2025-11-11 01:06:24 | INFO | __main__:main:815 | ================================================================================
+2025-11-11 01:06:24 | INFO | __main__:main:816 | CARGA COMPLETADA EXITOSAMENTE
+2025-11-11 01:06:24 | INFO | __main__:main:817 | ================================================================================
+2025-11-11 01:06:24 | INFO | __main__:disconnect:545 | Desconectado de PostgreSQL

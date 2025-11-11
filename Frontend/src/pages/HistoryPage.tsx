@@ -7,27 +7,33 @@ const rows = [
 
 export function HistoryPage() {
   return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-semibold">Historial</h1>
-      <div className="rounded-md border overflow-x-auto">
+    <div className="space-y-6">
+      <h1 className="text-3xl font-heading font-bold text-white">Historial</h1>
+      <div className="rounded-lg border border-[#1C2541]/50 overflow-x-auto bg-[#1C2541] card-glow">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Fecha</TableHead>
-              <TableHead>Evento</TableHead>
-              <TableHead>Cuota</TableHead>
-              <TableHead>Resultado</TableHead>
-              <TableHead className="text-right">Ganancia</TableHead>
+              <TableHead className="text-[#B0B3C5]">Fecha</TableHead>
+              <TableHead className="text-[#B0B3C5]">Evento</TableHead>
+              <TableHead className="text-[#B0B3C5]">Cuota</TableHead>
+              <TableHead className="text-[#B0B3C5]">Resultado</TableHead>
+              <TableHead className="text-right text-[#B0B3C5]">Ganancia</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {rows.map((r, idx) => (
-              <TableRow key={idx}>
-                <TableCell>{r.date}</TableCell>
-                <TableCell>{r.event}</TableCell>
-                <TableCell>{r.odd.toFixed(2)}</TableCell>
-                <TableCell>{r.result}</TableCell>
-                <TableCell className="text-right">{r.profit.toFixed(2)}</TableCell>
+              <TableRow key={idx} className={r.profit > 0 ? 'win-highlight' : 'loss-highlight'}>
+                <TableCell className="text-white font-mono text-sm">{r.date}</TableCell>
+                <TableCell className="text-white">{r.event}</TableCell>
+                <TableCell className="text-[#B0B3C5] font-mono">{r.odd.toFixed(2)}</TableCell>
+                <TableCell>
+                  <span className={`font-medium ${r.result === 'Ganada' ? 'text-neon-green' : 'text-[#FF4C4C]'}`}>
+                    {r.result}
+                  </span>
+                </TableCell>
+                <TableCell className={`text-right font-mono font-bold ${r.profit > 0 ? 'text-neon-green' : 'text-[#FF4C4C]'}`}>
+                  {r.profit > 0 ? '+' : ''}{r.profit.toFixed(2)}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

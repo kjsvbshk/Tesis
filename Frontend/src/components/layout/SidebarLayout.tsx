@@ -14,14 +14,14 @@ export function SidebarLayout() {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
-          className="p-5 text-2xl font-bold tracking-wide text-foreground flex items-center gap-2"
+          className="p-5 text-2xl font-heading font-bold tracking-wide text-white flex items-center gap-3"
         >
-          <div className="logo-container">
+          <div className="logo-container pulse-glow">
             <img src="/logo.png" alt="Logo" width={28} height={28} />
           </div>
-          HAW
+          <span className="bg-gradient-to-r from-[#00FF73] to-[#FFD700] bg-clip-text text-transparent">HAW</span>
         </motion.div>
-        <div className="px-4 pb-2 text-xs uppercase tracking-wider text-muted-foreground">Place your bets, we’ve already won</div>
+        <div className="px-4 pb-4 text-xs uppercase tracking-wider text-[#B0B3C5] font-medium">Place your bets, we've already won</div>
         <nav className="px-2 space-y-1">
           <SideLink to="/" icon={<Home size={22} />}>Inicio</SideLink>
           <SideLink to="/partidos" icon={<Trophy size={22} />}>Partidos</SideLink>
@@ -31,22 +31,22 @@ export function SidebarLayout() {
         </nav>
       </aside>
 
-      <main className="col-span-12 md:col-span-7 p-4 h-full">
+      <main className="col-span-12 md:col-span-7 p-4 h-full bg-[#0B132B] overflow-y-auto">
         <div className="md:hidden mb-4">
           <MobileNav />
         </div>
         <Outlet />
       </main>
 
-      <section className="hidden md:block col-span-3 border-l p-4 bg-card/40 h-full">
+      <section className="hidden md:block col-span-3 border-l border-[#1C2541]/50 p-4 bg-[#0B132B] h-full">
         <motion.div 
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-lg font-semibold mb-2 flex items-center gap-2"
+          className="text-lg font-heading font-semibold mb-4 flex items-center gap-2 text-white"
         >
-          <Zap size={20} className="text-green-400" />
-          Boleta
+          <Zap size={20} className="text-neon-green neon-glow-green" />
+          <span>Boleta</span>
         </motion.div>
         <BetSlip />
       </section>
@@ -60,7 +60,11 @@ function SideLink({ to, icon, children }: { to: string; icon: React.ReactNode; c
     <NavLink
       to={to}
       className={({ isActive }) =>
-        `flex items-center gap-3 px-4 py-3 rounded-md text-base hover:bg-accent/50 transition-all duration-200 ${isActive ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:text-foreground'}`
+        `flex items-center gap-3 px-4 py-3 rounded-lg text-base transition-all duration-300 ${
+          isActive 
+            ? 'bg-[#00FF73]/10 text-[#00FF73] border-l-4 border-[#00FF73] shadow-[0_0_15px_rgba(0,255,115,0.2)]' 
+            : 'text-[#B0B3C5] hover:bg-[#1C2541]/50 hover:text-white hover:border-l-4 hover:border-[#00FF73]/30'
+        }`
       }
       end
     >

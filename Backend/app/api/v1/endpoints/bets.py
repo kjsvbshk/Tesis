@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 from datetime import datetime
 
-from app.core.database import get_db
+from app.core.database import get_sys_db
 from app.models.bet import Bet, BetType, BetStatus
 from app.schemas.bet import BetResponse, BetCreate, BetUpdate
 from app.services.bet_service import BetService
@@ -22,7 +22,7 @@ async def get_user_bets(
     limit: int = Query(50, description="Number of bets to return"),
     offset: int = Query(0, description="Number of bets to skip"),
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_sys_db)
 ):
     """Get current user's bets"""
     try:
@@ -41,7 +41,7 @@ async def get_user_bets(
 async def place_bet(
     bet: BetCreate,
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_sys_db)
 ):
     """Place a new bet"""
     try:
@@ -72,7 +72,7 @@ async def place_bet(
 async def get_bet(
     bet_id: int,
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_sys_db)
 ):
     """Get a specific bet by ID"""
     try:
@@ -91,7 +91,7 @@ async def update_bet(
     bet_id: int,
     bet_update: BetUpdate,
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_sys_db)
 ):
     """Update a bet (only if pending)"""
     try:
@@ -109,7 +109,7 @@ async def update_bet(
 async def cancel_bet(
     bet_id: int,
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_sys_db)
 ):
     """Cancel a pending bet"""
     try:
@@ -126,7 +126,7 @@ async def cancel_bet(
 @router.get("/stats/summary")
 async def get_betting_stats(
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_sys_db)
 ):
     """Get user's betting statistics"""
     try:

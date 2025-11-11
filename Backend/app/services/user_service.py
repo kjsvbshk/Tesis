@@ -29,12 +29,13 @@ class UserService:
         return self.db.query(User).offset(offset).limit(limit).all()
     
     async def create_user(self, user: UserCreate) -> User:
-        """Create a new user"""
+        """Create a new user - siempre con rol 'usuario' por defecto"""
         hashed_password = get_password_hash(user.password)
         db_user = User(
             username=user.username,
             email=user.email,
             hashed_password=hashed_password,
+            rol="usuario",  # Rol por defecto siempre es 'usuario'
             credits=1000.0  # Initial credits
         )
         self.db.add(db_user)

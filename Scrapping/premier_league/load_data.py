@@ -43,10 +43,16 @@ class Config:
         with open('config.yaml', 'r') as f:
             config = yaml.safe_load(f)
         
-        # Parsear DATABASE_URL
+        # Parsear DATABASE_URL (soporta URLs con parámetros de query)
         db_url = config['DATABASE_URL']
-        # postgresql://postgres:admin@localhost:5432/premier_league_data
-        parts = db_url.replace('postgresql://', '').split('@')
+        # Remover parámetros de query si existen
+        if '?' in db_url:
+            db_url_base = db_url.split('?')[0]
+        else:
+            db_url_base = db_url
+        
+        # postgresql://user:password@host:port/database
+        parts = db_url_base.replace('postgresql://', '').split('@')
         user_pass = parts[0].split(':')
         host_db = parts[1].split('/')
         host_port = host_db[0].split(':')
@@ -58,6 +64,12 @@ class Config:
             'port': int(host_port[1]),
             'database': host_db[1]
         }
+        
+        # Agregar parámetros SSL si están en la URL original
+        if 'sslmode=require' in db_url:
+            self.db_config['sslmode'] = 'require'
+        if 'channel_binding=require' in db_url:
+            self.db_config['channel_binding'] = 'require'
         
         self.schema = config.get('DB_SCHEMA', 'espn')
         self.data_dir = Path('data')

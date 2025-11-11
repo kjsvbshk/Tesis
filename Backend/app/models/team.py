@@ -4,12 +4,13 @@ Team model for NBA teams
 
 from sqlalchemy import Column, Integer, String, Float, DateTime
 from sqlalchemy.sql import func
-from app.core.database import Base
+from app.core.database import EspnBase
 
-class Team(Base):
+class Team(EspnBase):
     """NBA Team model"""
     
     __tablename__ = "teams"
+    __table_args__ = {'schema': 'espn'}
     
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), unique=True, nullable=False)  # e.g., "Los Angeles Lakers"

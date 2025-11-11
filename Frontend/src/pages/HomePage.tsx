@@ -10,10 +10,10 @@ export function HomePage() {
         transition={{ duration: 0.6 }}
         className="text-center"
       >
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent mb-2">
+        <h1 className="text-5xl font-heading font-bold bg-gradient-to-r from-[#00FF73] via-[#00D95F] to-[#FFD700] bg-clip-text text-transparent mb-3 drop-shadow-[0_0_15px_rgba(0,255,115,0.5)]">
           House Always Wins
         </h1>
-        <p className="text-muted-foreground text-lg">Bienvenido a HAW. Explora partidos y arma tu boleta.</p>
+        <p className="text-[#B0B3C5] text-lg font-medium">Bienvenido a HAW. Explora partidos y arma tu boleta.</p>
       </motion.div>
       
       <motion.div 
@@ -34,14 +34,14 @@ function StatCard({ title, value, icon }: { title: string; value: string; icon: 
   return (
     <motion.div 
       whileHover={{ scale: 1.05, y: -5 }}
-      transition={{ duration: 0.2 }}
-      className="rounded-lg border bg-card/60 backdrop-blur p-4 shadow-sm hover:shadow-lg transition-all duration-200"
+      transition={{ duration: 0.3 }}
+      className="rounded-lg border border-[#1C2541]/50 bg-[#1C2541] p-6 shadow-lg hover:shadow-[0_0_25px_rgba(0,255,115,0.2)] hover:border-[#00FF73]/30 transition-all duration-300 card-glow"
     >
-      <div className="flex items-center justify-between mb-2">
-        <div className="text-sm text-muted-foreground">{title}</div>
-        <div className="text-primary">{icon}</div>
+      <div className="flex items-center justify-between mb-3">
+        <div className="text-sm text-[#B0B3C5] font-medium uppercase tracking-wider">{title}</div>
+        <div className="text-[#00FF73] neon-glow-green rounded-full p-2 bg-[#00FF73]/10">{icon}</div>
       </div>
-      <div className="text-2xl font-bold text-green-400">{value}</div>
+      <div className="text-3xl font-mono font-bold text-neon-green">{value}</div>
     </motion.div>
   )
 }

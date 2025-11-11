@@ -10,6 +10,7 @@ import os
 from datetime import datetime
 from loguru import logger
 import sys
+from playwright.sync_api import sync_playwright
 
 # Agregar utils al path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -47,9 +48,17 @@ def scrape_standings(season=None):
     try:
         logger.info(f"Scrapeando clasificaciones de Premier League desde: {url}")
         
-        res = requests.get(url, headers=HEADERS, timeout=30)
-        res.raise_for_status()
-        soup = BeautifulSoup(res.text, "lxml")
+        # Usar Playwright para contenido dinámico
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page()
+            page.goto(url, timeout=60000)
+            page.wait_for_timeout(4000)  # Espera a que cargue el JS
+            
+            html = page.content()
+            browser.close()
+        
+        soup = BeautifulSoup(html, "html.parser")
         
         # Extraer datos de clasificaciones
         standings_data = extract_standings_data(soup, season)
@@ -87,28 +96,62 @@ def extract_standings_data(soup, season=None):
             current_year = datetime.now().year
             season = str(current_year)
         
-        # Buscar tablas de clasificaciones
+        # Buscar tablas de clasificaciones - probar diferentes selectores
         tables = soup.find_all("table", class_="Table")
+        if not tables:
+            tables = soup.find_all("table")
         logger.info(f"Encontradas {len(tables)} tablas de standings")
         
         for table in tables:
             rows = table.find_all("tr")
+            logger.info(f"Procesando tabla con {len(rows)} filas")
             
             for row in rows:
+                # Saltar fila de encabezado
+                if row.find("th"):
+                    continue
+                    
                 cells = row.find_all("td")
-                if len(cells) < 8:
+                if len(cells) < 5:
                     continue
                 
                 try:
                     # Extraer datos de la fila
+                    # Buscar el nombre del equipo en un enlace o texto
+                    team_cell = cells[1] if len(cells) > 1 else cells[0]
+                    if team_cell:
+                        # Buscar enlace del equipo primero
+                        team_link = team_cell.find("a")
+                        if team_link:
+                            team_name = team_link.get_text(strip=True)
+                        else:
+                            # Buscar span o div con el nombre del equipo
+                            team_span = team_cell.find("span") or team_cell.find("div")
+                            if team_span:
+                                team_name = team_span.get_text(strip=True)
+                            else:
+                                team_name = team_cell.get_text(strip=True)
+                    else:
+                        continue
+                    
+                    # Limpiar nombre del equipo
+                    team_name = team_name.strip()
+                    
+                    # Validar que team_name no sea un número y tenga sentido
+                    if team_name.isdigit() or not team_name or len(team_name) < 3:
+                        continue
+                    
+                    # Validar que no sea un encabezado común
+                    if team_name.lower() in ['team', 'club', 'equipo', 'pos', 'position', 'gp', 'w', 'd', 'l']:
+                        continue
+                    
                     position = cells[0].get_text(strip=True)
-                    team_name = cells[1].get_text(strip=True)
-                    games_played = cells[2].get_text(strip=True)
-                    wins = cells[3].get_text(strip=True)
-                    draws = cells[4].get_text(strip=True)
-                    losses = cells[5].get_text(strip=True)
-                    goals_for = cells[6].get_text(strip=True)
-                    goals_against = cells[7].get_text(strip=True)
+                    games_played = cells[2].get_text(strip=True) if len(cells) > 2 else "0"
+                    wins = cells[3].get_text(strip=True) if len(cells) > 3 else "0"
+                    draws = cells[4].get_text(strip=True) if len(cells) > 4 else "0"
+                    losses = cells[5].get_text(strip=True) if len(cells) > 5 else "0"
+                    goals_for = cells[6].get_text(strip=True) if len(cells) > 6 else "0"
+                    goals_against = cells[7].get_text(strip=True) if len(cells) > 7 else "0"
                     goal_diff = cells[8].get_text(strip=True) if len(cells) > 8 else "0"
                     points = cells[9].get_text(strip=True) if len(cells) > 9 else "0"
                     

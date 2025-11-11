@@ -5,20 +5,20 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground shadow hover:bg-primary/90",
+          "bg-gradient-to-r from-[#00FF73] to-[#00D95F] text-[#0B132B] font-semibold shadow-lg hover:shadow-[0_0_20px_rgba(0,255,115,0.5)] hover:scale-105 active:scale-95",
         destructive:
-          "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
+          "bg-[#FF4C4C] text-white shadow-sm hover:bg-[#FF3333] hover:shadow-[0_0_15px_rgba(255,76,76,0.4)]",
         outline:
-          "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
+          "border border-[#1C2541] bg-transparent text-foreground shadow-sm hover:bg-[#1C2541] hover:border-[#00FF73] hover:text-[#00FF73]",
         secondary:
-          "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
+          "bg-[#1C2541] text-foreground shadow-sm hover:bg-[#25304A] hover:border-[#00FF73]/30 border border-transparent",
+        ghost: "hover:bg-[#1C2541] hover:text-[#00FF73] text-muted-foreground",
+        link: "text-[#00FF73] underline-offset-4 hover:underline hover:text-[#00D95F]",
       },
       size: {
         default: "h-9 px-4 py-2",

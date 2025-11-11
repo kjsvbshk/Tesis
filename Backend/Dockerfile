@@ -26,4 +26,4 @@ RUN mkdir -p ml/models data/raw data/processed
 EXPOSE 8000
 
 # Command to run the application
-CMD ["uvicorn", "app.main_fixed:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

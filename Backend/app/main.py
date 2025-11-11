@@ -12,8 +12,9 @@ from dotenv import load_dotenv
 
 from app.core.config import settings
 from app.api.v1.api import api_router
-from app.core.database import engine
-from app.models import Base
+from app.core.database import sys_engine, espn_engine, SysBase, EspnBase
+from app.models import user, bet, transaction  # Modelos app
+from app.models import team, game, team_stats  # Modelos espn
 
 # Load environment variables
 load_dotenv()
@@ -30,7 +31,16 @@ app = FastAPI(
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:5173"],  # React dev servers
+    allow_origins=[
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "http://localhost:5174",
+        "http://localhost:4173",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:5173",
+        "http://127.0.0.1:5174",
+        "http://127.0.0.1:4173",
+    ],  # React/Vite dev servers
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -43,11 +53,18 @@ app.include_router(api_router, prefix="/api/v1")
 async def startup_event():
     """Initialize database tables"""
     try:
-        # Create all tables
-        Base.metadata.create_all(bind=engine)
-        print("✅ Database tables created successfully")
+        # IMPORTANTE: Crear primero las tablas de espn porque app tiene referencias a espn
+        # Crear tablas en BD data (esquema espn)
+        EspnBase.metadata.create_all(bind=espn_engine)
+        print("✅ Database tables created in data.espn")
+        
+        # Crear tablas en BD data (esquema app) - después de espn
+        SysBase.metadata.create_all(bind=sys_engine)
+        print("✅ Database tables created in data.app")
     except Exception as e:
         print(f"❌ Error creating database tables: {e}")
+        import traceback
+        traceback.print_exc()
 
 @app.get("/")
 async def root():

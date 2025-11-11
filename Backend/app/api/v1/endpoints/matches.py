@@ -5,9 +5,9 @@ Matches API endpoints
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 
-from app.core.database import get_db
+from app.core.database import get_espn_db
 from app.models.game import Game
 from app.models.team import Team
 from app.schemas.match import MatchResponse, MatchCreate
@@ -23,7 +23,7 @@ async def get_matches(
     team_id: Optional[int] = Query(None, description="Filter by team ID"),
     limit: int = Query(50, description="Number of matches to return"),
     offset: int = Query(0, description="Number of matches to skip"),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_espn_db)
 ):
     """Get NBA matches with optional filters"""
     try:
@@ -41,7 +41,7 @@ async def get_matches(
         raise HTTPException(status_code=500, detail=f"Error fetching matches: {str(e)}")
 
 @router.get("/today", response_model=List[MatchResponse])
-async def get_today_matches(db: Session = Depends(get_db)):
+async def get_today_matches(db: Session = Depends(get_espn_db)):
     """Get today's NBA matches"""
     try:
         match_service = MatchService(db)
@@ -54,7 +54,7 @@ async def get_today_matches(db: Session = Depends(get_db)):
 @router.get("/upcoming", response_model=List[MatchResponse])
 async def get_upcoming_matches(
     days: int = Query(7, description="Number of days ahead to look"),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_espn_db)
 ):
     """Get upcoming NBA matches"""
     try:
@@ -71,7 +71,7 @@ async def get_upcoming_matches(
         raise HTTPException(status_code=500, detail=f"Error fetching upcoming matches: {str(e)}")
 
 @router.get("/{match_id}", response_model=MatchResponse)
-async def get_match(match_id: int, db: Session = Depends(get_db)):
+async def get_match(match_id: int, db: Session = Depends(get_espn_db)):
     """Get a specific match by ID"""
     try:
         match_service = MatchService(db)
@@ -85,7 +85,7 @@ async def get_match(match_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=f"Error fetching match: {str(e)}")
 
 @router.post("/", response_model=MatchResponse)
-async def create_match(match: MatchCreate, db: Session = Depends(get_db)):
+async def create_match(match: MatchCreate, db: Session = Depends(get_espn_db)):
     """Create a new match (admin only)"""
     try:
         match_service = MatchService(db)

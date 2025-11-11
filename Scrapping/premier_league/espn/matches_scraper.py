@@ -81,6 +81,28 @@ def fetch_team_results(team_id, team_name, season="2024"):
                 if len(cells) < 6:
                     continue
                 
+                # Extraer match_id desde el enlace del partido
+                match_id = None
+                # Buscar todos los enlaces en la fila
+                match_links = row.find_all("a", href=True)
+                for match_link in match_links:
+                    href = match_link.get("href", "")
+                    # Extraer ID del partido desde la URL (ej: /soccer/match/_/gameId/123456 o /match/_/id/123456)
+                    if "/gameId/" in href:
+                        match_id = href.split("/gameId/")[-1].split("/")[0]
+                        break
+                    elif "/match/_/id/" in href:
+                        match_id = href.split("/match/_/id/")[-1].split("/")[0]
+                        break
+                    elif "/match/" in href and "/id/" in href:
+                        # Intentar extraer desde diferentes formatos de URL
+                        parts = href.split("/")
+                        if "id" in parts:
+                            idx = parts.index("id")
+                            if idx + 1 < len(parts):
+                                match_id = parts[idx + 1].split("?")[0].split("#")[0]
+                                break
+                
                 # Extraer datos principales
                 date = cells[0].get_text(strip=True)
                 home_team = cells[1].get_text(strip=True)
@@ -143,6 +165,7 @@ def fetch_team_results(team_id, team_name, season="2024"):
                     "season": season,
                     "team_name": team_name,
                     "team_id": team_id,
+                    "match_id": match_id,  # ID real de ESPN
                     "date": date_iso,
                     "venue": venue,
                     "opponent": opponent,

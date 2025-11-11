@@ -33,19 +33,19 @@ export function MatchCard({ match, delay = 0 }: { match: Match; delay?: number }
       whileHover={{ scale: 1.02, y: -2 }}
       className="football-pattern"
     >
-      <Card className="bg-card/80 backdrop-blur border-border/50 overflow-hidden">
+      <Card className="bg-[#1C2541] border-[#1C2541]/50 overflow-hidden hover:border-[#00FF73]/30 transition-all duration-300">
         <CardHeader className="pb-3">
-        <CardTitle className="flex items-center justify-between text-lg">
+        <CardTitle className="flex items-center justify-between text-lg font-heading">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
+            <div className="w-10 h-10 bg-gradient-to-br from-[#00FF73] to-[#0B132B] rounded-full flex items-center justify-center text-white font-bold text-sm neon-glow-green shadow-lg">
               ⚽
             </div>
-            <span className="font-semibold">{match.home} vs {match.away}</span>
+            <span className="font-semibold text-white">{match.home} vs {match.away}</span>
           </div>
           {typeof match.aiHomeWinProb === 'number' && (
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              <span className="text-xs text-muted-foreground">
+            <div className="flex items-center gap-2 px-3 py-1 bg-[#00FF73]/10 rounded-full border border-[#00FF73]/30">
+              <div className="w-2 h-2 bg-[#00FF73] rounded-full animate-pulse neon-glow-green"></div>
+              <span className="text-xs text-[#B0B3C5] font-mono font-medium">
                 IA: {(match.aiHomeWinProb * 100).toFixed(0)}% {match.home}
               </span>
             </div>
@@ -71,11 +71,11 @@ function OddButton({ label, odd, onClick }: { label: string; odd: number; onClic
     >
       <Button 
         variant="secondary" 
-        className="justify-between rounded-lg h-12 bg-gradient-to-r from-green-500/10 to-blue-500/10 border-green-500/20 hover:from-green-500/20 hover:to-blue-500/20 hover:border-green-400/40 transition-all duration-200" 
+        className="justify-between rounded-lg h-14 bg-[#0B132B] border border-[#1C2541] hover:border-[#00FF73]/50 hover:bg-[#1C2541] transition-all duration-300 hover:shadow-[0_0_15px_rgba(0,255,115,0.3)]" 
         onClick={onClick}
       >
-        <span className="text-sm font-medium">{label}</span>
-        <span className="text-base font-bold text-green-400">{odd.toFixed(2)}</span>
+        <span className="text-sm font-medium text-white">{label}</span>
+        <span className="text-base font-mono font-bold text-neon-green">{odd.toFixed(2)}</span>
       </Button>
     </motion.div>
   )

@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import List, Optional
 
-from app.core.database import get_db
+from app.core.database import get_espn_db, get_sys_db
 from app.schemas.prediction import PredictionResponse, PredictionRequest
 from app.services.prediction_service import PredictionService
 from app.services.auth_service import get_current_user
@@ -18,7 +18,7 @@ router = APIRouter()
 async def get_prediction(
     prediction_request: PredictionRequest,
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_espn_db)
 ):
     """Get prediction for a specific game"""
     try:
@@ -35,7 +35,7 @@ async def get_prediction(
 async def get_game_prediction(
     game_id: int,
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_espn_db)
 ):
     """Get prediction for a specific game by ID"""
     try:
@@ -52,7 +52,7 @@ async def get_game_prediction(
 async def get_upcoming_predictions(
     days: int = Query(7, description="Number of days ahead to predict"),
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_espn_db)
 ):
     """Get predictions for upcoming games"""
     try:
@@ -78,7 +78,7 @@ async def get_model_status():
 @router.post("/retrain")
 async def retrain_model(
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_espn_db)
 ):
     """Retrain the ML model (admin only)"""
     try:

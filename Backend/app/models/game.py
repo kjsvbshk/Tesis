@@ -5,17 +5,18 @@ Game model for NBA games
 from sqlalchemy import Column, Integer, String, Float, DateTime, Boolean, ForeignKey
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
-from app.core.database import Base
+from app.core.database import EspnBase
 
-class Game(Base):
+class Game(EspnBase):
     """NBA Game model"""
     
     __tablename__ = "games"
+    __table_args__ = {'schema': 'espn'}
     
     id = Column(Integer, primary_key=True, index=True)
     espn_id = Column(String(50), unique=True, nullable=True)  # ESPN game ID
-    home_team_id = Column(Integer, ForeignKey("teams.id"), nullable=False)
-    away_team_id = Column(Integer, ForeignKey("teams.id"), nullable=False)
+    home_team_id = Column(Integer, ForeignKey("espn.teams.id"), nullable=False)
+    away_team_id = Column(Integer, ForeignKey("espn.teams.id"), nullable=False)
     game_date = Column(DateTime(timezone=True), nullable=False)
     season = Column(String(10), nullable=False)  # e.g., "2023-24"
     season_type = Column(String(20), nullable=False)  # "regular", "playoffs"
@@ -24,7 +25,7 @@ class Game(Base):
     # Game results (filled after game completion)
     home_score = Column(Integer, nullable=True)
     away_score = Column(Integer, nullable=True)
-    winner_id = Column(Integer, ForeignKey("teams.id"), nullable=True)
+    winner_id = Column(Integer, ForeignKey("espn.teams.id"), nullable=True)
     
     # Betting odds (if available)
     home_odds = Column(Float, nullable=True)  # Decimal odds

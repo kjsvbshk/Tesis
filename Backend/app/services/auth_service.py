@@ -11,12 +11,12 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
-from app.core.database import get_db
+from app.core.database import get_sys_db
 from app.models.user import User
 # from app.services.user_service import UserService  # Removed to avoid circular import
 
-# Password hashing
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Password hashing - usando argon2 que es más seguro y sin límite de longitud
+pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 
 # JWT token scheme
 security = HTTPBearer()
@@ -26,7 +26,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
 def get_password_hash(password: str) -> str:
-    """Hash a password"""
+    """Hash a password using argon2 (sin límite de longitud)"""
     return pwd_context.hash(password)
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
@@ -54,7 +54,7 @@ def verify_token(token: str) -> Optional[str]:
 
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_sys_db)
 ) -> User:
     """Get current authenticated user"""
     credentials_exception = HTTPException(

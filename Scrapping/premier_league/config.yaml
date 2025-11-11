@@ -1,7 +1,8 @@
-DATABASE_URL: postgresql://postgres:admin@localhost:5432/premier_league_data
+# Neon Database Connection
+DATABASE_URL: postgresql://neondb_owner:npg_91EsmqjivzBV@ep-gentle-mode-ahvx4l05-pooler.c-3.us-east-1.aws.neon.tech:5432/data?sslmode=require&channel_binding=require
 ESPN_BASE_URL: https://www.espn.com/soccer/
 SCRAPE_INTERVAL_DAYS: 1
 SAVE_PATH_RAW: data/raw/
 SAVE_PATH_PROCESSED: data/processed/
-DB_SCHEMA: espn
+DB_SCHEMA: premier_league
 

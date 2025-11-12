@@ -7,7 +7,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from app.core.config import settings
 
-# Engine para BD data (esquema app) - Sistema de usuarios/apuestas
+# Engine para Neon (esquema app) - Sistema de usuarios/apuestas
 # Neon no soporta search_path en conexiones pooled, se establece después de conectar
 sys_engine = create_engine(
     settings.DATABASE_URL,
@@ -17,7 +17,7 @@ sys_engine = create_engine(
     # No usar search_path en connect_args para Neon pooled connections
 )
 
-# Engine para BD data (esquema espn) - Datos de NBA
+# Engine para Neon (esquema espn) - Datos de NBA
 espn_engine = create_engine(
     settings.NBA_DATABASE_URL,
     pool_pre_ping=True,
@@ -36,7 +36,7 @@ EspnBase = declarative_base()
 
 # Dependencias para obtener sesiones
 def get_sys_db():
-    """Dependency para BD data (esquema app)"""
+    """Dependency para Neon (esquema app)"""
     db = SysSessionLocal()
     try:
         # Establecer search_path después de conectar (Neon no soporta en pooled)
@@ -49,7 +49,7 @@ def get_sys_db():
         db.close()
 
 def get_espn_db():
-    """Dependency para BD data (esquema espn)"""
+    """Dependency para Neon (esquema espn)"""
     db = EspnSessionLocal()
     try:
         # Establecer search_path después de conectar (Neon no soporta en pooled)

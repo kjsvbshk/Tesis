@@ -4,10 +4,14 @@ export type BetType = 'home' | 'away' | 'over' | 'under'
 
 export interface BetItem {
   id: string
-  matchId: string
+  matchId: string | number
   eventLabel: string
   type: BetType
   odd: number
+  gameId?: number
+  homeTeamId?: number
+  awayTeamId?: number
+  overUnderValue?: number
 }
 
 interface BetState {

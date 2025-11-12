@@ -2,20 +2,109 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
-import { useBetStore, potentialPayout, computeParlayOdd } from '@/store/bets'
+import { useBetStore, potentialPayout, computeParlayOdd, type BetItem } from '@/store/bets'
 import { formatCurrency, formatDecimal, parseLocaleNumber } from '@/lib/utils'
 import { useToast } from '@/hooks/use-toast'
+import { betsService, type BetCreate } from '@/services/bets.service'
+import { useState } from 'react'
+import { useAuth } from '@/contexts/AuthContext'
 
 export function BetSlip() {
   const { items, stake, removeBet, setStake, clear } = useBetStore()
   const { toast } = useToast()
+  const { refreshUser } = useAuth()
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const totalPayout = potentialPayout(stake, items)
   const parlayOdd = computeParlayOdd(items)
 
-  const confirm = () => {
-    toast({ title: 'Apuesta registrada', description: 'Tu boleta fue confirmada.' })
-    clear()
+  const mapBetTypeToBackend = (item: BetItem, individualStake: number): BetCreate => {
+    // Usar gameId si está disponible, sino usar matchId
+    const gameId = item.gameId || (typeof item.matchId === 'number' ? item.matchId : parseInt(item.matchId))
+    
+    // Calcular el payout individual para esta apuesta
+    const individualPayout = individualStake * item.odd
+    
+    // Mapear tipos de apuesta del frontend al backend
+    if (item.type === 'home' || item.type === 'away') {
+      // Moneyline bet
+      return {
+        game_id: gameId,
+        bet_type: 'moneyline',
+        bet_amount: individualStake,
+        odds: item.odd,
+        potential_payout: individualPayout,
+        selected_team_id: item.type === 'home' ? item.homeTeamId : item.awayTeamId,
+      }
+    } else {
+      // Over/Under bet
+      // Usar overUnderValue del match si está disponible, sino usar un valor por defecto
+      const overUnderValue = item.overUnderValue || 220.5
+      
+      return {
+        game_id: gameId,
+        bet_type: 'over_under',
+        bet_amount: individualStake,
+        odds: item.odd,
+        potential_payout: individualPayout,
+        over_under_value: overUnderValue,
+        is_over: item.type === 'over',
+      }
+    }
+  }
+
+  const confirm = async () => {
+    if (items.length === 0 || stake <= 0) return
+
+    // Validar que todas las apuestas tengan al menos un matchId válido
+    // Si no hay gameId, intentaremos usar matchId como gameId
+    const invalidBets = items.filter(item => {
+      const hasGameId = item.gameId || (typeof item.matchId === 'number' && item.matchId > 0) || (typeof item.matchId === 'string' && !isNaN(parseInt(item.matchId)))
+      return !hasGameId
+    })
+    
+    if (invalidBets.length > 0) {
+      toast({
+        title: 'Error',
+        description: 'Algunas apuestas no tienen información completa. Por favor, selecciona apuestas válidas.',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    try {
+      setIsSubmitting(true)
+
+      // Si hay múltiples apuestas, dividir el stake entre todas
+      // Por ahora, creamos una apuesta por cada item con el stake dividido
+      const individualStake = stake / items.length
+      
+      const betPromises = items.map(item => {
+        const betData = mapBetTypeToBackend(item, individualStake)
+        return betsService.placeBet(betData)
+      })
+
+      await Promise.all(betPromises)
+
+      toast({
+        title: 'Apuesta registrada',
+        description: `Se registraron ${items.length} apuesta(s) exitosamente.`,
+      })
+
+      // Refrescar datos del usuario (credits)
+      await refreshUser()
+
+      clear()
+    } catch (error: any) {
+      console.error('Error placing bet:', error)
+      toast({
+        title: 'Error',
+        description: error.message || 'Error al registrar la apuesta. Verifica tu saldo y los datos.',
+        variant: 'destructive',
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -66,8 +155,19 @@ export function BetSlip() {
           <span>Posible ganancia</span>
           <span className="font-mono font-semibold text-neon-yellow">{formatCurrency(totalPayout)}</span>
         </div>
-        <Button disabled={items.length === 0 || stake <= 0} onClick={confirm} className="w-full">
-          {stake > 0 ? `Confirmar apuesta ${formatCurrency(stake)}` : 'Confirmar apuesta'}
+        <Button 
+          disabled={items.length === 0 || stake <= 0 || isSubmitting} 
+          onClick={confirm} 
+          className="w-full"
+        >
+          {isSubmitting ? (
+            <>
+              <div className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-white border-r-transparent mr-2"></div>
+              Procesando...
+            </>
+          ) : (
+            stake > 0 ? `Confirmar apuesta ${formatCurrency(stake)}` : 'Confirmar apuesta'
+          )}
         </Button>
       </CardFooter>
     </Card>

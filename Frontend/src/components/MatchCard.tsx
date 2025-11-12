@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import { useBetStore, type BetType } from '@/store/bets'
 
 export interface Match {
-  id: string
+  id: string | number
   home: string
   away: string
   odds: {
@@ -14,6 +14,10 @@ export interface Match {
     under: number
   }
   aiHomeWinProb?: number // 0..1
+  gameId?: number
+  homeTeamId?: number
+  awayTeamId?: number
+  overUnderValue?: number
 }
 
 export function MatchCard({ match, delay = 0 }: { match: Match; delay?: number }) {
@@ -22,7 +26,17 @@ export function MatchCard({ match, delay = 0 }: { match: Match; delay?: number }
   const add = (type: BetType) => {
     const label = `${match.home} vs ${match.away} · ${type.toUpperCase()}`
     const odd = match.odds[type]
-    addBet({ id: `${match.id}-${type}`, matchId: match.id, eventLabel: label, type, odd })
+    addBet({ 
+      id: `${match.id}-${type}`, 
+      matchId: match.id, 
+      eventLabel: label, 
+      type, 
+      odd,
+      gameId: match.gameId,
+      homeTeamId: match.homeTeamId,
+      awayTeamId: match.awayTeamId,
+      overUnderValue: match.overUnderValue,
+    })
   }
 
   return (

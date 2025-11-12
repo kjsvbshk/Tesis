@@ -35,11 +35,51 @@ class Config:
     """Configuración del sistema de carga"""
     
     def __init__(self):
-        with open('config.yaml', 'r') as f:
-            config = yaml.safe_load(f)
+        from dotenv import load_dotenv
         
-        # Parsear DATABASE_URL (soporta URLs con parámetros de query)
-        db_url = config['DATABASE_URL']
+        # Cargar variables de entorno desde .env
+        if os.path.exists('.env'):
+            load_dotenv('.env')
+        else:
+            load_dotenv()
+        
+        config = {}
+        # Cargar desde archivo si existe (fallback)
+        if os.path.exists('config.yaml'):
+            with open('config.yaml', 'r') as f:
+                config = yaml.safe_load(f) or {}
+        
+        # Construir DATABASE_URL desde variables individuales o usar la completa
+        db_url = os.getenv("DATABASE_URL")
+        
+        # Si no hay DATABASE_URL completa, construir desde variables individuales
+        if not db_url:
+            db_host = os.getenv("NEON_DB_HOST") or config.get("DB_HOST")
+            db_port = os.getenv("NEON_DB_PORT") or config.get("DB_PORT", "5432")
+            db_name = os.getenv("NEON_DB_NAME") or config.get("DB_NAME")
+            db_user = os.getenv("NEON_DB_USER") or config.get("DB_USER")
+            db_password = os.getenv("NEON_DB_PASSWORD") or config.get("DB_PASSWORD")
+            sslmode = os.getenv("NEON_DB_SSLMODE") or config.get("DB_SSLMODE", "require")
+            channel_binding = os.getenv("NEON_DB_CHANNEL_BINDING") or config.get("DB_CHANNEL_BINDING", "require")
+            
+            if all([db_host, db_port, db_name, db_user, db_password]):
+                db_url = f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}?sslmode={sslmode}&channel_binding={channel_binding}"
+            else:
+                # Intentar desde config.yaml
+                db_url = config.get('DATABASE_URL')
+                # Reemplazar ${VAR} con variables de entorno si es necesario
+                if db_url and db_url.startswith("${") and db_url.endswith("}"):
+                    env_var = db_url[2:-1]
+                    db_url = os.getenv(env_var) or db_url
+        
+        if not db_url:
+            raise ValueError(
+                "DATABASE_URL no está configurada. "
+                "Configúrala usando:\n"
+                "  - Variables de entorno: DATABASE_URL o NEON_DB_* variables\n"
+                "  - Archivo .env (copiar desde .env.example)\n"
+                "  - Archivo config.yaml"
+            )
         # Remover parámetros de query si existen
         if '?' in db_url:
             db_url_base = db_url.split('?')[0]

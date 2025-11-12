@@ -5,7 +5,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { FileText, Search, Calendar } from 'lucide-react'
+import { FileText, Search, Calendar, RefreshCw } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -135,10 +135,22 @@ export function RequestsPage() {
       {/* Results */}
       <Card className="bg-[#1C2541]/50 border-[#1C2541]">
         <CardHeader>
-          <CardTitle className="text-white flex items-center gap-2">
-            <FileText size={20} />
-            Requests ({requests.length})
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-white flex items-center gap-2">
+              <FileText size={20} />
+              Requests ({requests.length})
+            </CardTitle>
+            <Button
+              onClick={loadRequests}
+              disabled={loading}
+              variant="outline"
+              size="sm"
+              className="border-[#1C2541] text-[#B0B3C5] hover:bg-[#1C2541]"
+            >
+              <RefreshCw size={16} className={`mr-2 ${loading ? 'animate-spin' : ''}`} />
+              Actualizar
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           {loading ? (

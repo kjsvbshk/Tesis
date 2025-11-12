@@ -140,10 +140,17 @@ async def get_request_by_key(
             raise HTTPException(status_code=404, detail="Request not found")
         
         # Verificar permisos: solo el propietario o admin
-        user_permissions = get_user_permissions(db, current_user.id)
-        is_admin = has_permission("admin:read", user_permissions)
+        try:
+            user_permissions = get_user_permissions(db, current_user.id)
+            is_admin = has_permission("admin:read", user_permissions)
+        except Exception as perm_error:
+            # Si hay error con permisos, solo verificar si es el propietario
+            is_admin = False
         
-        if request.user_id != current_user.id and not is_admin:
+        # Verificar si el usuario es el propietario o admin
+        is_owner = request.user_id is not None and request.user_id == current_user.id
+        
+        if not is_owner and not is_admin:
             raise HTTPException(
                 status_code=403,
                 detail="You don't have permission to view this request"
@@ -158,6 +165,9 @@ async def get_request_by_key(
             except:
                 request_metadata = request.request_metadata
         
+        # Manejar status como enum o string
+        status_value = request.status.value if hasattr(request.status, 'value') else str(request.status)
+        
         return {
             "id": request.id,
             "request_key": request.request_key,
@@ -165,7 +175,7 @@ async def get_request_by_key(
             "event_id": request.event_id,
             "organization_id": request.organization_id,
             "market_id": request.market_id,
-            "status": request.status.value,
+            "status": status_value,
             "request_metadata": request_metadata,
             "error_message": request.error_message,
             "created_at": request.created_at.isoformat() if request.created_at else None,
@@ -175,6 +185,8 @@ async def get_request_by_key(
     except HTTPException:
         raise
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Error fetching request: {str(e)}")
 
 @router.get("/", response_model=List[dict])

@@ -113,10 +113,21 @@ nba/
    ```
 
 2. **Configurar la base de datos:**
-   - Asegúrate de que PostgreSQL esté corriendo
-   - Edita el archivo `config.yaml` con tus credenciales de base de datos:
+   - Crea un archivo `.env` en el directorio `Scrapping/nba/` con las siguientes variables:
+     ```env
+     NEON_DB_HOST=tu-host.neon.tech
+     NEON_DB_PORT=5432
+     NEON_DB_NAME=tu-base-de-datos
+     NEON_DB_USER=tu-usuario
+     NEON_DB_PASSWORD=tu-contraseña
+     NEON_DB_SSLMODE=require
+     NEON_DB_CHANNEL_BINDING=require
+     DB_SCHEMA=espn
+     ```
+   - **IMPORTANTE:** El archivo `.env` contiene credenciales sensibles y NO debe subirse a Git. Ya está incluido en `.gitignore`.
+   - Alternativamente, puedes usar un archivo `config.yaml` (no recomendado para producción):
      ```yaml
-     DATABASE_URL: postgresql://usuario:contraseña@localhost:5432/nba_data
+     DATABASE_URL: ${DATABASE_URL}
      DB_SCHEMA: espn
      ```
 

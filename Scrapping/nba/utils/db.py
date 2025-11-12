@@ -3,15 +3,59 @@ import pandas as pd
 import yaml
 import os
 from loguru import logger
+from dotenv import load_dotenv
 
-# Cargar configuración
+# Cargar variables de entorno desde .env
+env_path = os.path.join(os.path.dirname(__file__), '..', '.env')
+if os.path.exists(env_path):
+    load_dotenv(env_path)
+else:
+    # Intentar cargar desde el directorio actual
+    load_dotenv()
+
+# Cargar configuración desde config.yaml (fallback)
 config_path = os.path.join(os.path.dirname(__file__), '..', 'config.yaml')
-with open(config_path, 'r') as f:
-    config = yaml.safe_load(f)
+config = {}
+if os.path.exists(config_path):
+    with open(config_path, 'r') as f:
+        config = yaml.safe_load(f) or {}
+
+# Construir DATABASE_URL desde variables individuales o usar la completa
+database_url = os.getenv("DATABASE_URL")
+
+# Si no hay DATABASE_URL completa, construir desde variables individuales
+if not database_url:
+    db_host = os.getenv("NEON_DB_HOST") or config.get("DB_HOST")
+    db_port = os.getenv("NEON_DB_PORT") or config.get("DB_PORT", "5432")
+    db_name = os.getenv("NEON_DB_NAME") or config.get("DB_NAME")
+    db_user = os.getenv("NEON_DB_USER") or config.get("DB_USER")
+    db_password = os.getenv("NEON_DB_PASSWORD") or config.get("DB_PASSWORD")
+    sslmode = os.getenv("NEON_DB_SSLMODE") or config.get("DB_SSLMODE", "require")
+    channel_binding = os.getenv("NEON_DB_CHANNEL_BINDING") or config.get("DB_CHANNEL_BINDING", "require")
+    
+    if all([db_host, db_port, db_name, db_user, db_password]):
+        database_url = f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}?sslmode={sslmode}&channel_binding={channel_binding}"
+    else:
+        # Intentar desde config.yaml
+        database_url = config.get("DATABASE_URL")
+        # Reemplazar ${VAR} con variables de entorno si es necesario
+        if database_url and database_url.startswith("${") and database_url.endswith("}"):
+            env_var = database_url[2:-1]
+            database_url = os.getenv(env_var) or database_url
+
+if not database_url:
+    raise ValueError(
+        "DATABASE_URL no está configurada. "
+        "Configúrala usando:\n"
+        "  - Variables de entorno: DATABASE_URL o NEON_DB_* variables\n"
+        "  - Archivo .env (copiar desde .env.example)\n"
+        "  - Archivo config.yaml"
+    )
+
+schema = os.getenv("DB_SCHEMA") or config.get("DB_SCHEMA", "espn")
 
 # Crear engine de conexión
-engine = create_engine(config["DATABASE_URL"])
-schema = config.get("DB_SCHEMA", "espn")
+engine = create_engine(database_url)
 
 def load_to_db(df, table_name):
     """

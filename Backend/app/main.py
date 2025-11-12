@@ -70,13 +70,13 @@ async def startup_event():
     """Initialize database tables and start background workers"""
     try:
         # IMPORTANTE: Crear primero las tablas de espn porque app tiene referencias a espn
-        # Crear tablas en BD data (esquema espn)
+        # Crear tablas en Neon (esquema espn)
         EspnBase.metadata.create_all(bind=espn_engine)
-        print("✅ Database tables created in data.espn")
+        print("✅ Database tables created in Neon (schema: espn)")
         
-        # Crear tablas en BD data (esquema app) - después de espn
+        # Crear tablas en Neon (esquema app) - después de espn
         SysBase.metadata.create_all(bind=sys_engine)
-        print("✅ Database tables created in data.app")
+        print("✅ Database tables created in Neon (schema: app)")
         
         # Iniciar worker del outbox (RF-08)
         try:
@@ -118,9 +118,16 @@ async def health_check():
 # Global exception handler
 @app.exception_handler(Exception)
 async def global_exception_handler(request, exc):
+    import traceback
+    traceback.print_exc()
     return JSONResponse(
         status_code=500,
-        content={"detail": "Internal server error", "error": str(exc)}
+        content={"detail": "Internal server error", "error": str(exc)},
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "*",
+            "Access-Control-Allow-Headers": "*",
+        }
     )
 
 if __name__ == "__main__":

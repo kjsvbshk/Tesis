@@ -1,5 +1,8 @@
 # Neon Database Connection
-DATABASE_URL: postgresql://neondb_owner:npg_91EsmqjivzBV@ep-gentle-mode-ahvx4l05-pooler.c-3.us-east-1.aws.neon.tech:5432/data?sslmode=require&channel_binding=require
+# IMPORTANT: This file contains sensitive credentials and should NOT be committed to version control
+# Use environment variables or a secure secret management system
+# For local development, copy config.yaml.example to config.yaml and fill in your credentials
+DATABASE_URL: ${DATABASE_URL}
 ESPN_BASE_URL: https://www.espn.com/soccer/
 SCRAPE_INTERVAL_DAYS: 1
 SAVE_PATH_RAW: data/raw/

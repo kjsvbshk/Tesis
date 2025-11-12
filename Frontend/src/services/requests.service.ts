@@ -39,7 +39,14 @@ class RequestsService {
     params.append('offset', offset.toString())
     if (status) params.append('status', status)
 
-    return apiRequest<RequestsResponse>(`/requests/?${params.toString()}`)
+    const results = await apiRequest<Request[]>(`/requests/me?${params.toString()}`)
+    // El backend devuelve un array, pero necesitamos un objeto RequestsResponse
+    return {
+      total: results.length,
+      limit,
+      offset,
+      results
+    }
   }
 
   /**

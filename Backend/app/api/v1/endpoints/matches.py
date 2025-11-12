@@ -36,19 +36,27 @@ async def get_matches(
             limit=limit,
             offset=offset
         )
-        return matches
+        # Convertir dicts a MatchResponse
+        return [MatchResponse(**match) for match in matches]
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Error fetching matches: {str(e)}")
 
 @router.get("/today", response_model=List[MatchResponse])
 async def get_today_matches(db: Session = Depends(get_espn_db)):
-    """Get today's NBA matches"""
+    """Get today's NBA matches (from 2023-2024 and 2024-2025 seasons)"""
     try:
         match_service = MatchService(db)
-        today = datetime.now().date()
-        matches = await match_service.get_matches(date_from=today, date_to=today)
-        return matches
+        # Buscar partidos de las temporadas 2023-2024 y 2024-2025
+        # Rango aproximado: Oct 2023 - Jun 2025
+        date_from = date(2023, 10, 1)
+        date_to = date(2025, 6, 30)
+        matches = await match_service.get_matches(date_from=date_from, date_to=date_to, limit=20)
+        return [MatchResponse(**match) for match in matches]
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Error fetching today's matches: {str(e)}")
 
 @router.get("/upcoming", response_model=List[MatchResponse])
@@ -56,18 +64,23 @@ async def get_upcoming_matches(
     days: int = Query(7, description="Number of days ahead to look"),
     db: Session = Depends(get_espn_db)
 ):
-    """Get upcoming NBA matches"""
+    """Get upcoming NBA matches (from 2023-2024 and 2024-2025 seasons)"""
     try:
         match_service = MatchService(db)
-        today = datetime.now().date()
-        future_date = datetime.now().date() + timedelta(days=days)
+        # Buscar partidos de las temporadas 2023-2024 y 2024-2025
+        # Rango aproximado: Oct 2023 - Jun 2025
+        date_from = date(2023, 10, 1)
+        date_to = date(2025, 6, 30)
         matches = await match_service.get_matches(
-            date_from=today,
-            date_to=future_date,
-            status="scheduled"
+            date_from=date_from,
+            date_to=date_to,
+            status="scheduled",
+            limit=50
         )
-        return matches
+        return [MatchResponse(**match) for match in matches]
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Error fetching upcoming matches: {str(e)}")
 
 @router.get("/{match_id}", response_model=MatchResponse)
@@ -78,10 +91,12 @@ async def get_match(match_id: int, db: Session = Depends(get_espn_db)):
         match = await match_service.get_match_by_id(match_id)
         if not match:
             raise HTTPException(status_code=404, detail="Match not found")
-        return match
+        return MatchResponse(**match)
     except HTTPException:
         raise
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Error fetching match: {str(e)}")
 
 @router.post("/", response_model=MatchResponse)

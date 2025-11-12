@@ -117,6 +117,34 @@ async def update_current_user(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error updating user: {str(e)}")
 
+@router.get("/me/permissions")
+async def get_my_permissions(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_sys_db)
+):
+    """Get current user's permissions"""
+    try:
+        from app.core.authorization import get_user_permissions, get_user_scopes
+        from app.services.role_service import RoleService
+        
+        # Obtener permisos y scopes del usuario
+        permissions = get_user_permissions(db, current_user.id)
+        scopes = get_user_scopes(db, current_user.id)
+        
+        # Obtener roles del usuario
+        role_service = RoleService(db)
+        roles = await role_service.get_user_roles(current_user.id)
+        
+        return {
+            "user_id": current_user.id,
+            "username": current_user.username,
+            "roles": [{"id": r.id, "code": r.code, "name": r.name} for r in roles],
+            "permissions": permissions,
+            "scopes": scopes
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching permissions: {str(e)}")
+
 @router.get("/credits")
 async def get_user_credits(current_user: User = Depends(get_current_user)):
     """Get current user's credit balance"""

@@ -1,6 +1,6 @@
 import { Outlet, NavLink } from 'react-router-dom'
 import { Toaster } from '@/components/ui/toaster'
-import { Home, Trophy, Ticket, History, User, Zap } from 'lucide-react'
+import { Home, Trophy, Ticket, History, User, Zap, FileText } from 'lucide-react'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { BetSlip } from '@/components/BetSlip'
 import { Button } from '@/components/ui/button'
@@ -25,8 +25,10 @@ export function SidebarLayout() {
         <nav className="px-2 space-y-1">
           <SideLink to="/" icon={<Home size={22} />}>Inicio</SideLink>
           <SideLink to="/partidos" icon={<Trophy size={22} />}>Partidos</SideLink>
+          <SideLink to="/predicciones" icon={<Zap size={22} />}>Predicciones</SideLink>
           <SideLink to="/apuestas" icon={<Ticket size={22} />}>Apuestas</SideLink>
           <SideLink to="/historial" icon={<History size={22} />}>Historial</SideLink>
+          <SideLink to="/requests" icon={<FileText size={22} />}>Mis Requests</SideLink>
           <SideLink to="/perfil" icon={<User size={22} />}>Perfil</SideLink>
         </nav>
       </aside>

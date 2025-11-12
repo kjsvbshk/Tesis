@@ -64,8 +64,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const register = async (username: string, email: string, password: string) => {
     try {
       await authService.register({ username, email, password })
-      // After registration, automatically log in
-      await login(username, password)
+      // After registration, redirect to login page (don't auto-login)
+      if (typeof window !== 'undefined') {
+        window.location.href = '/login'
+      }
     } catch (error) {
       throw error
     }

@@ -11,6 +11,8 @@ from app.core.database import get_sys_db
 from app.models.bet import Bet, BetType, BetStatus
 from app.schemas.bet import BetResponse, BetCreate, BetUpdate
 from app.services.bet_service import BetService
+from app.services.audit_service import AuditService
+from app.services.outbox_service import OutboxService
 from app.services.auth_service import get_current_user
 from app.models.user import User
 
@@ -62,6 +64,38 @@ async def place_bet(
             )
         
         new_bet = await bet_service.place_bet(bet, current_user.id)
+        
+        # Registrar en auditoría (RF-09)
+        audit_service = AuditService(db)
+        await audit_service.log_bet_action(
+            action="bet.placed",
+            actor_user_id=current_user.id,
+            bet_id=new_bet.id,
+            after={
+                "bet_id": new_bet.id,
+                "bet_type": new_bet.bet_type.value if hasattr(new_bet.bet_type, 'value') else str(new_bet.bet_type),
+                "bet_amount": new_bet.bet_amount,
+                "odds": new_bet.odds,
+                "game_id": new_bet.game_id
+            },
+            commit=True
+        )
+        
+        # Publicar evento en outbox (RF-08)
+        outbox_service = OutboxService(db)
+        await outbox_service.publish_bet_placed(
+            bet_id=new_bet.id,
+            user_id=current_user.id,
+            bet_data={
+                "bet_id": new_bet.id,
+                "bet_type": new_bet.bet_type.value if hasattr(new_bet.bet_type, 'value') else str(new_bet.bet_type),
+                "bet_amount": new_bet.bet_amount,
+                "odds": new_bet.odds,
+                "game_id": new_bet.game_id
+            },
+            commit=True
+        )
+        
         return new_bet
     except HTTPException:
         raise

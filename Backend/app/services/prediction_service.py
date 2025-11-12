@@ -5,40 +5,85 @@ Prediction service for ML model integration
 from sqlalchemy.orm import Session
 from typing import List, Optional, Dict, Any
 from datetime import datetime, timedelta
-import joblib
 import os
-import pandas as pd
-import numpy as np
+
+# Importar joblib de forma opcional
+try:
+    import joblib
+    JOBLIB_AVAILABLE = True
+except ImportError:
+    JOBLIB_AVAILABLE = False
+    print("⚠️  joblib no está instalado. Las predicciones usarán modo dummy.")
+
+try:
+    import pandas as pd
+    import numpy as np
+    PANDAS_AVAILABLE = True
+except ImportError:
+    PANDAS_AVAILABLE = False
+    print("⚠️  pandas/numpy no están instalados. Algunas funcionalidades pueden estar limitadas.")
 
 from app.models.game import Game
 from app.models.team import Team
+from app.models import ModelVersion, Prediction, Request
 from app.schemas.prediction import PredictionResponse
 from app.services.match_service import MatchService
+import time
 
 class PredictionService:
     def __init__(self, db: Session):
         self.db = db
         self.match_service = MatchService(db) if db else None
         self.model = None
-        self.model_version = "1.0.0"
+        self.model_version_obj: Optional[ModelVersion] = None
         self.load_model()
     
     def load_model(self):
-        """Load the trained ML model"""
+        """Load the trained ML model with versioning"""
+        # Obtener versión activa del modelo desde BD
+        self.model_version_obj = self.db.query(ModelVersion).filter(
+            ModelVersion.is_active == True
+        ).first()
+        
+        if not self.model_version_obj:
+            print("⚠️  No active model version found, using dummy predictions")
+            self.model = None
+            return
+        
+        if not JOBLIB_AVAILABLE:
+            print(f"⚠️  joblib no disponible, usando predicciones dummy (model version: {self.model_version_obj.version})")
+            self.model = None
+            return
+        
         try:
-            model_path = os.path.join("ml", "models", "nba_prediction_model.joblib")
+            # Intentar cargar modelo desde archivo
+            model_path = os.path.join("ml", "models", f"nba_prediction_model_{self.model_version_obj.version}.joblib")
+            if not os.path.exists(model_path):
+                # Fallback a nombre genérico
+                model_path = os.path.join("ml", "models", "nba_prediction_model.joblib")
+            
             if os.path.exists(model_path):
                 self.model = joblib.load(model_path)
-                print("✅ ML model loaded successfully")
+                print(f"✅ ML model loaded successfully (version: {self.model_version_obj.version})")
             else:
-                print("⚠️ ML model not found, using dummy predictions")
+                print(f"⚠️ ML model not found for version {self.model_version_obj.version}, using dummy predictions")
                 self.model = None
         except Exception as e:
             print(f"❌ Error loading ML model: {e}")
             self.model = None
     
-    async def get_game_prediction(self, game_id: int, user_id: int) -> PredictionResponse:
-        """Get prediction for a specific game"""
+    async def get_game_prediction(
+        self,
+        game_id: int,
+        user_id: int,
+        request_id: Optional[int] = None
+    ) -> PredictionResponse:
+        """
+        Get prediction for a specific game with telemetry
+        Si se proporciona request_id, se guarda la predicción en BD
+        """
+        start_time = time.time()
+        
         if not self.match_service:
             raise ValueError("Database connection required")
         
@@ -58,6 +103,14 @@ class PredictionService:
         else:
             prediction = await self._generate_dummy_prediction(game, home_team, away_team)
         
+        # Calcular latencia
+        latency_ms = int((time.time() - start_time) * 1000)
+        prediction["latency_ms"] = latency_ms
+        
+        # Si hay request_id, guardar predicción en BD
+        if request_id and self.model_version_obj:
+            await self._save_prediction(request_id, prediction, latency_ms)
+        
         return PredictionResponse(
             game_id=game.id,
             home_team_id=home_team.id,
@@ -67,6 +120,43 @@ class PredictionService:
             game_date=game.game_date,
             **prediction
         )
+    
+    async def _save_prediction(
+        self,
+        request_id: int,
+        prediction_data: Dict[str, Any],
+        latency_ms: int
+    ):
+        """Guardar predicción en BD con telemetría"""
+        try:
+            # Serializar score a JSON
+            import json
+            score_json = json.dumps(prediction_data)
+            
+            # Crear o actualizar predicción
+            existing_prediction = self.db.query(Prediction).filter(
+                Prediction.request_id == request_id
+            ).first()
+            
+            if existing_prediction:
+                # Actualizar predicción existente
+                existing_prediction.score = score_json
+                existing_prediction.latency_ms = latency_ms
+                existing_prediction.model_version_id = self.model_version_obj.id
+            else:
+                # Crear nueva predicción
+                prediction = Prediction(
+                    request_id=request_id,
+                    model_version_id=self.model_version_obj.id,
+                    score=score_json,
+                    latency_ms=latency_ms
+                )
+                self.db.add(prediction)
+            
+            self.db.commit()
+        except Exception as e:
+            print(f"⚠️  Error saving prediction: {e}")
+            self.db.rollback()
     
     async def get_upcoming_predictions(self, days: int, user_id: int) -> List[PredictionResponse]:
         """Get predictions for upcoming games"""
@@ -101,6 +191,8 @@ class PredictionService:
     
     async def _generate_dummy_prediction(self, game: Game, home_team: Team, away_team: Team) -> Dict[str, Any]:
         """Generate dummy prediction for testing"""
+        import random
+        
         # Simple home court advantage simulation
         home_advantage = 0.05  # 5% home court advantage
         
@@ -109,12 +201,17 @@ class PredictionService:
         base_away_prob = 0.5 - home_advantage
         
         # Add some randomness
-        home_win_probability = min(0.9, max(0.1, base_home_prob + np.random.normal(0, 0.1)))
-        away_win_probability = 1.0 - home_win_probability
+        if PANDAS_AVAILABLE:
+            home_win_probability = min(0.9, max(0.1, base_home_prob + np.random.normal(0, 0.1)))
+            predicted_home_score = 110 + np.random.normal(0, 10)
+            predicted_away_score = 108 + np.random.normal(0, 10)
+        else:
+            # Fallback sin numpy
+            home_win_probability = min(0.9, max(0.1, base_home_prob + random.uniform(-0.1, 0.1)))
+            predicted_home_score = 110 + random.uniform(-10, 10)
+            predicted_away_score = 108 + random.uniform(-10, 10)
         
-        # Predicted scores
-        predicted_home_score = 110 + np.random.normal(0, 10)
-        predicted_away_score = 108 + np.random.normal(0, 10)
+        away_win_probability = 1.0 - home_win_probability
         predicted_total = predicted_home_score + predicted_away_score
         
         # Betting recommendation

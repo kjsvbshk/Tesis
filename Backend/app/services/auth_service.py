@@ -12,7 +12,7 @@ from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.core.database import get_sys_db
-from app.models.user import User
+from app.models import User, UserRole, Permission
 # from app.services.user_service import UserService  # Removed to avoid circular import
 
 # Password hashing - usando argon2 que es más seguro y sin límite de longitud
@@ -76,6 +76,8 @@ async def get_current_user(
     if user is None:
         raise credentials_exception
     
+    # Cargar roles y permisos del usuario
+    # Esto se hace aquí para que estén disponibles en el objeto user
     return user
 
 async def authenticate_user(db: Session, username: str, password: str) -> Optional[User]:

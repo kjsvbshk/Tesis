@@ -22,6 +22,11 @@ export async function apiRequest<T>(
     headers['Authorization'] = `Bearer ${token}`
   }
 
+  // Support for idempotency key header
+  if (options.headers && 'X-Idempotency-Key' in options.headers) {
+    headers['X-Idempotency-Key'] = (options.headers as any)['X-Idempotency-Key']
+  }
+
   try {
     const response = await fetch(`${apiConfig.baseURL}${endpoint}`, {
       ...options,

@@ -13,8 +13,24 @@ from dotenv import load_dotenv
 from app.core.config import settings
 from app.api.v1.api import api_router
 from app.core.database import sys_engine, espn_engine, SysBase, EspnBase
-from app.models import user, bet, transaction  # Modelos app
-from app.models import team, game, team_stats  # Modelos espn
+# Importar todos los modelos para que SQLAlchemy los registre
+from app.models import (
+    # Core models
+    user, bet, transaction,
+    team, game, team_stats,
+    # RBAC models
+    Role, Permission, RolePermission, UserRole,
+    # Idempotency and requests
+    IdempotencyKey, Request,
+    # Predictions
+    ModelVersion, Prediction,
+    # Providers
+    Provider, ProviderEndpoint,
+    # Snapshots
+    OddsSnapshot, OddsLine,
+    # Audit and messaging
+    AuditLog, Outbox,
+)
 
 # Load environment variables
 load_dotenv()
@@ -51,7 +67,7 @@ app.include_router(api_router, prefix="/api/v1")
 
 @app.on_event("startup")
 async def startup_event():
-    """Initialize database tables"""
+    """Initialize database tables and start background workers"""
     try:
         # IMPORTANTE: Crear primero las tablas de espn porque app tiene referencias a espn
         # Crear tablas en BD data (esquema espn)
@@ -61,6 +77,14 @@ async def startup_event():
         # Crear tablas en BD data (esquema app) - después de espn
         SysBase.metadata.create_all(bind=sys_engine)
         print("✅ Database tables created in data.app")
+        
+        # Iniciar worker del outbox (RF-08)
+        try:
+            from app.workers.outbox_worker import start_outbox_worker
+            await start_outbox_worker()
+            print("✅ Outbox worker started")
+        except Exception as e:
+            print(f"⚠️  Warning: Could not start outbox worker: {e}")
     except Exception as e:
         print(f"❌ Error creating database tables: {e}")
         import traceback
@@ -76,9 +100,19 @@ async def root():
         "status": "running"
     }
 
+@app.on_event("shutdown")
+async def shutdown_event():
+    """Stop background workers"""
+    try:
+        from app.workers.outbox_worker import stop_outbox_worker
+        await stop_outbox_worker()
+        print("✅ Outbox worker stopped")
+    except Exception as e:
+        print(f"⚠️  Warning: Error stopping outbox worker: {e}")
+
 @app.get("/health")
 async def health_check():
-    """Health check endpoint"""
+    """Health check endpoint (legacy - use /api/v1/health/health)"""
     return {"status": "healthy", "service": "nba-bets-api"}
 
 # Global exception handler

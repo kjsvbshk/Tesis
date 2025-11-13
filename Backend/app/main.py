@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 
 from app.core.config import settings
 from app.api.v1.api import api_router
-from app.core.database import sys_engine, espn_engine, SysBase, EspnBase
+from app.core.database import app_engine, espn_engine, AppBase, EspnBase, sys_engine, SysBase  # sys_* son aliases para compatibilidad
 # Importar todos los modelos para que SQLAlchemy los registre
 from app.models import (
     # Core models
@@ -75,7 +75,7 @@ async def startup_event():
         print("✅ Database tables created in Neon (schema: espn)")
         
         # Crear tablas en Neon (esquema app) - después de espn
-        SysBase.metadata.create_all(bind=sys_engine)
+        AppBase.metadata.create_all(bind=app_engine)
         print("✅ Database tables created in Neon (schema: app)")
         
         # Iniciar worker del outbox (RF-08)

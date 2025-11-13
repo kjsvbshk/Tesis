@@ -91,11 +91,74 @@ class PredictionService:
         if not game:
             raise ValueError("Game not found")
         
-        home_team = await self.match_service.get_team_by_id(game.home_team_id)
-        away_team = await self.match_service.get_team_by_id(game.away_team_id)
+        # game es un diccionario, no un objeto Game
+        # Debug: mostrar qué claves tiene el diccionario
+        print(f"DEBUG prediction_service: Game dict keys: {list(game.keys()) if isinstance(game, dict) else 'Not a dict'}")
+        print(f"DEBUG prediction_service: Game dict: {game}")
         
-        if not home_team or not away_team:
-            raise ValueError("Team information not found")
+        # Obtener información de equipos directamente del diccionario game
+        home_team_id = game.get("home_team_id")
+        away_team_id = game.get("away_team_id")
+        home_team_name = None
+        away_team_name = None
+        
+        # Obtener nombres de equipos desde el objeto anidado home_team/away_team
+        if isinstance(game.get("home_team"), dict):
+            home_team_info = game.get("home_team", {})
+            home_team_id = home_team_id or home_team_info.get("id")
+            home_team_name = home_team_info.get("name")
+            print(f"DEBUG prediction_service: Found home_team from nested object: id={home_team_id}, name={home_team_name}")
+        
+        if isinstance(game.get("away_team"), dict):
+            away_team_info = game.get("away_team", {})
+            away_team_id = away_team_id or away_team_info.get("id")
+            away_team_name = away_team_info.get("name")
+            print(f"DEBUG prediction_service: Found away_team from nested object: id={away_team_id}, name={away_team_name}")
+        
+        # Si no tenemos nombres, intentar obtenerlos de otras fuentes
+        if not home_team_name:
+            # Buscar en todas las claves que puedan contener el nombre
+            for key in ['home_team_name', 'home_team']:
+                if key in game and game[key]:
+                    if isinstance(game[key], str):
+                        home_team_name = game[key]
+                    elif isinstance(game[key], dict) and 'name' in game[key]:
+                        home_team_name = game[key]['name']
+                    break
+        
+        if not away_team_name:
+            for key in ['away_team_name', 'away_team']:
+                if key in game and game[key]:
+                    if isinstance(game[key], str):
+                        away_team_name = game[key]
+                    elif isinstance(game[key], dict) and 'name' in game[key]:
+                        away_team_name = game[key]['name']
+                    break
+        
+        if not home_team_name or not away_team_name:
+            available_keys = list(game.keys()) if isinstance(game, dict) else []
+            team_related_keys = {k: v for k, v in game.items() if 'team' in k.lower() or 'home' in k.lower() or 'away' in k.lower()} if isinstance(game, dict) else {}
+            
+            error_msg = (
+                f"Team names not found in game data for game_id={game_id}. "
+                f"home_team_name={home_team_name}, away_team_name={away_team_name}. "
+                f"home_team_id={home_team_id}, away_team_id={away_team_id}. "
+                f"Available keys: {available_keys}. "
+                f"Team-related keys and values: {team_related_keys}."
+            )
+            print(f"ERROR prediction_service: {error_msg}")
+            raise ValueError(error_msg)
+        
+        # Crear objetos Team simples con la información disponible
+        # (para compatibilidad con _predict_with_model y _generate_dummy_prediction)
+        from app.models.team import Team
+        home_team = Team()
+        home_team.id = home_team_id or 0
+        home_team.name = home_team_name
+        
+        away_team = Team()
+        away_team.id = away_team_id or 0
+        away_team.name = away_team_name
         
         # Generate prediction (dummy for now)
         if self.model:
@@ -112,12 +175,12 @@ class PredictionService:
             await self._save_prediction(request_id, prediction, latency_ms)
         
         return PredictionResponse(
-            game_id=game.id,
+            game_id=game.get("id"),
             home_team_id=home_team.id,
             away_team_id=away_team.id,
             home_team_name=home_team.name,
             away_team_name=away_team.name,
-            game_date=game.game_date,
+            game_date=game.get("game_date"),
             **prediction
         )
     
@@ -175,21 +238,23 @@ class PredictionService:
         predictions = []
         for game in games:
             try:
-                prediction = await self.get_game_prediction(game.id, user_id)
+                game_id = game.get("id") if isinstance(game, dict) else game.id
+                prediction = await self.get_game_prediction(game_id, user_id)
                 predictions.append(prediction)
             except Exception as e:
-                print(f"Error generating prediction for game {game.id}: {e}")
+                game_id = game.get("id") if isinstance(game, dict) else getattr(game, "id", "unknown")
+                print(f"Error generating prediction for game {game_id}: {e}")
                 continue
         
         return predictions
     
-    async def _predict_with_model(self, game: Game, home_team: Team, away_team: Team) -> Dict[str, Any]:
+    async def _predict_with_model(self, game: Dict[str, Any], home_team: Team, away_team: Team) -> Dict[str, Any]:
         """Generate prediction using ML model"""
         # This would use the actual trained model
         # For now, return dummy data
         return await self._generate_dummy_prediction(game, home_team, away_team)
     
-    async def _generate_dummy_prediction(self, game: Game, home_team: Team, away_team: Team) -> Dict[str, Any]:
+    async def _generate_dummy_prediction(self, game: Dict[str, Any], home_team: Team, away_team: Team) -> Dict[str, Any]:
         """Generate dummy prediction for testing"""
         import random
         
@@ -236,7 +301,7 @@ class PredictionService:
             "recommended_bet": recommended_bet,
             "expected_value": round(expected_value, 3),
             "confidence_score": round(confidence_score, 3),
-            "model_version": self.model_version,
+            "model_version": self.model_version_obj.version if self.model_version_obj else None,
             "prediction_timestamp": datetime.utcnow(),
             "features_used": {
                 "home_team": home_team.name,
@@ -249,7 +314,7 @@ class PredictionService:
         """Get ML model status and information"""
         return {
             "model_loaded": self.model is not None,
-            "model_version": self.model_version,
+            "model_version": self.model_version_obj.version if self.model_version_obj else None,
             "model_type": "RandomForest + XGBoost Ensemble" if self.model else "Dummy Predictor",
             "last_trained": "2024-01-01",  # Would be actual timestamp
             "accuracy": 0.65 if self.model else 0.0,  # Would be actual accuracy

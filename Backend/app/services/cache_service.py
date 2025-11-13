@@ -16,6 +16,7 @@ class CacheService:
     
     def __init__(self):
         self._cache: Dict[str, Dict[str, Any]] = {}
+        self._prefix_index: Dict[str, set] = {}  # Índice de prefijos a claves
         self.default_ttl_seconds = 300  # 5 minutos por defecto
         self.default_stale_ttl_seconds = 600  # 10 minutos para stale
     
@@ -27,7 +28,14 @@ class CacheService:
             "kwargs": sorted(kwargs.items())
         }
         key_str = json.dumps(key_data, sort_keys=True, default=str)
-        return hashlib.md5(key_str.encode()).hexdigest()
+        key_hash = hashlib.md5(key_str.encode()).hexdigest()
+        
+        # Indexar la clave por prefijo para invalidación
+        if prefix not in self._prefix_index:
+            self._prefix_index[prefix] = set()
+        self._prefix_index[prefix].add(key_hash)
+        
+        return key_hash
     
     def get(
         self,
@@ -90,6 +98,9 @@ class CacheService:
         """Eliminar clave del caché"""
         if key in self._cache:
             del self._cache[key]
+            # Remover del índice de prefijos
+            for prefix, keys in self._prefix_index.items():
+                keys.discard(key)
             return True
         return False
     
@@ -97,6 +108,28 @@ class CacheService:
         """Limpiar todo el caché, retorna número de entradas eliminadas"""
         count = len(self._cache)
         self._cache.clear()
+        self._prefix_index.clear()
+        return count
+    
+    def invalidate_pattern(self, pattern: str) -> int:
+        """
+        Invalidar todas las claves que correspondan al prefijo
+        Retorna el número de entradas eliminadas
+        """
+        if pattern not in self._prefix_index:
+            return 0
+        
+        keys_to_delete = list(self._prefix_index[pattern])
+        count = 0
+        
+        for key in keys_to_delete:
+            if key in self._cache:
+                del self._cache[key]
+                count += 1
+        
+        # Limpiar el índice del prefijo
+        del self._prefix_index[pattern]
+        
         return count
     
     async def get_or_set(

@@ -11,6 +11,7 @@ import json
 
 from app.models import OddsSnapshot, OddsLine
 from app.core.database import espn_engine
+from app.services.db_schema_service import DBSchemaService
 
 
 class SnapshotService:
@@ -18,6 +19,7 @@ class SnapshotService:
     
     def __init__(self, db: Session):
         self.db = db
+        self.schema_service = DBSchemaService(db)
     
     async def create_snapshot_for_request(
         self,
@@ -65,45 +67,94 @@ class SnapshotService:
         odds_lines = []
         odds_dict = {}
         
+        # Inspeccionar estructura real de las tablas
+        games_columns = self.schema_service.get_table_columns('games', 'espn')
+        odds_columns = self.schema_service.get_table_columns('odds', 'espn')
+        
+        # Buscar columnas relevantes en games (basado en estructura real de Neon)
+        # En Neon: game_id (bigint), fecha (date), home_team (varchar), away_team (varchar)
+        games_id_col = self.schema_service.find_column('games', ['game_id', 'id'], 'espn')
+        games_date_col = self.schema_service.find_column('games', ['fecha', 'game_date', 'date'], 'espn')
+        
+        # Buscar columnas relevantes en odds (basado en estructura real de Neon)
+        # En Neon: game_id (varchar), commence_time (varchar), home_team (varchar), away_team (varchar)
+        odds_game_id_col = self.schema_service.find_column('odds', ['game_id'], 'espn')
+        odds_commence_time_col = self.schema_service.find_column('odds', ['commence_time'], 'espn')
+        
         with espn_engine.connect() as conn:
             conn.execute(text("SET search_path TO espn, public"))
             conn.commit()
             
             if game_id:
-                # Buscar odds por game_id (usando espn_id del game)
-                game_result = conn.execute(
-                    text("SELECT espn_id FROM games WHERE id = :game_id"),
-                    {"game_id": game_id}
-                ).fetchone()
+                # En Neon, games.game_id es bigint, pero odds.game_id es varchar
+                # Necesitamos convertir el game_id a string para buscar en odds
+                game_id_str = str(game_id)
                 
-                if game_result and game_result[0]:
-                    espn_game_id = game_result[0]
+                # Intentar buscar odds por game_id directamente (odds.game_id es varchar)
+                if odds_game_id_col and games_id_col:
+                    # Buscar en odds usando game_id como string
                     odds_result = conn.execute(
-                        text("SELECT * FROM odds WHERE game_id = :game_id ORDER BY commence_time DESC LIMIT 1"),
-                        {"game_id": espn_game_id}
+                        text(f"SELECT * FROM odds WHERE {odds_game_id_col} = :game_id ORDER BY {odds_commence_time_col or 'commence_time'} DESC LIMIT 1"),
+                        {"game_id": game_id_str}
                     ).fetchone()
-                else:
-                    # Si no hay espn_id, buscar por fecha del juego
-                    game_result = conn.execute(
-                        text("SELECT game_date FROM games WHERE id = :game_id"),
-                        {"game_id": game_id}
-                    ).fetchone()
-                    if game_result:
-                        # Buscar odds por fecha aproximada
-                        odds_result = conn.execute(
-                            text("SELECT * FROM odds WHERE commence_time::date = :game_date::date ORDER BY commence_time DESC LIMIT 1"),
-                            {"game_date": game_result[0]}
-                        ).fetchone()
+                    
+                    if odds_result:
+                        odds_dict = dict(odds_result._mapping)
                     else:
-                        odds_result = None
+                        # Si no hay coincidencia directa, buscar por fecha del juego
+                        if games_date_col:
+                            game_result = conn.execute(
+                                text(f"SELECT {games_date_col} FROM games WHERE {games_id_col} = :game_id"),
+                                {"game_id": game_id}
+                            ).fetchone()
+                            
+                            if game_result and game_result[0] and odds_commence_time_col:
+                                # Buscar odds por fecha aproximada
+                                # En Neon, commence_time es varchar, necesitamos parsearlo
+                                try:
+                                    game_date = game_result[0]
+                                    # Intentar buscar por fecha (commence_time es varchar, puede necesitar casting)
+                                    odds_result = conn.execute(
+                                        text(f"SELECT * FROM odds WHERE {odds_commence_time_col}::date = :game_date::date ORDER BY {odds_commence_time_col} DESC LIMIT 1"),
+                                        {"game_date": game_date}
+                                    ).fetchone()
+                                    if odds_result:
+                                        odds_dict = dict(odds_result._mapping)
+                                except Exception as e:
+                                    print(f"⚠️  Error searching odds by date: {e}")
+                                    # Si falla el casting, intentar búsqueda por coincidencia de texto
+                                    try:
+                                        date_str = str(game_date)
+                                        odds_result = conn.execute(
+                                            text(f"SELECT * FROM odds WHERE {odds_commence_time_col} LIKE :date_pattern ORDER BY {odds_commence_time_col} DESC LIMIT 1"),
+                                            {"date_pattern": f"{date_str}%"}
+                                        ).fetchone()
+                                        if odds_result:
+                                            odds_dict = dict(odds_result._mapping)
+                                    except Exception as e2:
+                                        print(f"⚠️  Error in text search: {e2}")
+                                    odds_result = None
+                        else:
+                            odds_result = None
+                else:
+                    # Si no podemos mapear las columnas, intentar obtener odds más recientes
+                    print(f"⚠️  Cannot map game_id to odds, using most recent odds")
+                    odds_result = None
             else:
                 # Obtener odds más recientes
-                odds_result = conn.execute(
-                    text("SELECT * FROM odds ORDER BY commence_time DESC LIMIT 1")
-                ).fetchone()
+                if odds_commence_time_col:
+                    odds_result = conn.execute(
+                        text(f"SELECT * FROM odds ORDER BY {odds_commence_time_col} DESC LIMIT 1")
+                    ).fetchone()
+                else:
+                    odds_result = conn.execute(
+                        text("SELECT * FROM odds ORDER BY id DESC LIMIT 1")
+                    ).fetchone()
             
-            if odds_result:
+            if not odds_dict and odds_result:
                 odds_dict = dict(odds_result._mapping)
+            
+            if odds_dict:
                 bookmakers = odds_dict.get("bookmakers", []) if isinstance(odds_dict.get("bookmakers"), list) else []
                 
                 # Procesar bookmakers y crear odds_lines

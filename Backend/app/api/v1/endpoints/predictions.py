@@ -13,9 +13,11 @@ from app.services.cache_service import cache_service
 from app.services.snapshot_service import SnapshotService
 from app.services.outbox_service import OutboxService
 from app.services.audit_service import AuditService
+from app.services.request_service import RequestService
 from app.services.auth_service import get_current_user
 from app.core.idempotency import check_idempotency_and_register
 from app.models.user import User
+import uuid
 
 router = APIRouter()
 
@@ -53,7 +55,13 @@ async def get_prediction(
         
         # Obtener del caché o generar nueva predicción
         async def fetch_prediction():
+            # PredictionService necesita sys_db para modelos, pero MatchService necesita espn_db
+            # Crear MatchService con espn_db para consultar espn.games
+            from app.services.match_service import MatchService
+            match_service_espn = MatchService(db)  # db es espn_db en este endpoint
             prediction_service = PredictionService(sys_db)
+            # Sobrescribir el match_service con uno que use espn_db
+            prediction_service.match_service = match_service_espn
             return await prediction_service.get_game_prediction(
                 game_id=prediction_request.game_id,
                 user_id=current_user.id,
@@ -79,9 +87,11 @@ async def get_prediction(
         # Almacenar respuesta para idempotencia
         if idempotency_data.get("x_idempotency_key"):
             idempotency_service = idempotency_data["idempotency_service"]
+            # Serializar correctamente los datetime a ISO format
+            prediction_dict = prediction.model_dump(mode='json') if hasattr(prediction, 'model_dump') else (prediction.dict() if hasattr(prediction, 'dict') else prediction)
             await idempotency_service.store_response(
                 request_key=idempotency_data["x_idempotency_key"],
-                response_data=prediction.dict() if hasattr(prediction, 'dict') else prediction
+                response_data=prediction_dict
             )
         
         # Marcar como completado
@@ -90,9 +100,11 @@ async def get_prediction(
         
         # Publicar evento en outbox (RF-08)
         outbox_service = OutboxService(sys_db)
+        # Serializar correctamente los datetime a ISO format
+        prediction_dict = prediction.model_dump(mode='json') if hasattr(prediction, 'model_dump') else (prediction.dict() if hasattr(prediction, 'dict') else prediction)
         await outbox_service.publish_prediction_completed(
             request_id=request_id,
-            prediction_data=prediction.dict() if hasattr(prediction, 'dict') else prediction,
+            prediction_data=prediction_dict,
             commit=True
         )
         
@@ -127,9 +139,28 @@ async def get_game_prediction(
 ):
     """
     Get prediction for a specific game by ID
+    Crea un Request y registra auditoría para tracking
     Usa caché con TTL para mejorar rendimiento
     """
+    request_id = None
+    request_service = RequestService(sys_db)
+    
     try:
+        # Generar un request_key único para esta solicitud
+        request_key = f"prediction-{game_id}-{current_user.id}-{uuid.uuid4().hex[:8]}"
+        
+        # Crear Request para tracking (RF-03)
+        request = await request_service.create_request(
+            request_key=request_key,
+            user_id=current_user.id,
+            event_id=game_id,
+            metadata={"source": "get_game_prediction", "game_id": game_id}
+        )
+        request_id = request.id
+        
+        # Marcar como procesando
+        await request_service.mark_request_processing(request_id)
+        
         # Generar clave de caché
         cache_key = cache_service._generate_key(
             "prediction",
@@ -139,10 +170,17 @@ async def get_game_prediction(
         
         # Obtener del caché o generar nueva predicción
         async def fetch_prediction():
+            # PredictionService necesita sys_db para modelos, pero MatchService necesita espn_db
+            # Crear MatchService con espn_db para consultar espn.games
+            from app.services.match_service import MatchService
+            match_service_espn = MatchService(db)  # db es espn_db en este endpoint
             prediction_service = PredictionService(sys_db)
+            # Sobrescribir el match_service con uno que use espn_db
+            prediction_service.match_service = match_service_espn
             return await prediction_service.get_game_prediction(
                 game_id=game_id,
-                user_id=current_user.id
+                user_id=current_user.id,
+                request_id=request_id
             )
         
         # Usar caché con stale-while-revalidate
@@ -154,8 +192,60 @@ async def get_game_prediction(
             allow_stale=True
         )
         
+        # Crear snapshot de odds (RF-07)
+        snapshot_service = SnapshotService(sys_db)
+        snapshot = await snapshot_service.create_snapshot_for_request(
+            request_id=request_id,
+            game_id=game_id
+        )
+        
+        # Marcar como completado
+        await request_service.mark_request_completed(request_id)
+        
+        # Publicar evento en outbox (RF-08)
+        outbox_service = OutboxService(sys_db)
+        # Serializar correctamente los datetime a ISO format
+        prediction_dict = prediction.model_dump(mode='json') if hasattr(prediction, 'model_dump') else (prediction.dict() if hasattr(prediction, 'dict') else prediction)
+        await outbox_service.publish_prediction_completed(
+            request_id=request_id,
+            prediction_data=prediction_dict,
+            commit=True
+        )
+        
+        # Registrar en auditoría (RF-09)
+        audit_service = AuditService(sys_db)
+        await audit_service.log_request_action(
+            action="prediction.requested",
+            actor_user_id=current_user.id,
+            request_id=request_id,
+            metadata={
+                "game_id": game_id,
+                "request_key": request_key,
+                "model_version": prediction.model_version if hasattr(prediction, 'model_version') else None,
+                "source": "get_game_prediction"
+            },
+            commit=True
+        )
+        
+        # También registrar como acción de predicción si hay un prediction_id
+        # (usamos request_id como referencia temporal)
+        await audit_service.log_prediction_action(
+            action="prediction.completed",
+            actor_user_id=current_user.id,
+            prediction_id=request_id,  # Usar request_id como prediction_id temporalmente
+            metadata={
+                "game_id": game_id,
+                "request_key": request_key,
+                "model_version": prediction.model_version if hasattr(prediction, 'model_version') else None
+            },
+            commit=True
+        )
+        
         return prediction
     except Exception as e:
+        # Marcar como fallido si hay un request_id
+        if request_id:
+            await request_service.mark_request_failed(request_id, str(e))
         raise HTTPException(status_code=500, detail=f"Error generating prediction: {str(e)}")
 
 @router.get("/upcoming", response_model=List[PredictionResponse])

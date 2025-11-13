@@ -117,6 +117,45 @@ async def update_current_user(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error updating user: {str(e)}")
 
+@router.put("/me/password")
+async def change_password(
+    password_data: dict,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_sys_db)
+):
+    """Change user password"""
+    try:
+        from app.services.auth_service import verify_password, get_password_hash
+        
+        current_password = password_data.get("current_password")
+        new_password = password_data.get("new_password")
+        
+        if not current_password or not new_password:
+            raise HTTPException(status_code=400, detail="current_password and new_password are required")
+        
+        if len(new_password) < 6:
+            raise HTTPException(status_code=400, detail="New password must be at least 6 characters long")
+        
+        # Verify current password
+        if not verify_password(current_password, current_user.hashed_password):
+            raise HTTPException(status_code=400, detail="Current password is incorrect")
+        
+        # Update password
+        user_service = UserService(db)
+        db_user = await user_service.get_user_by_id(current_user.id)
+        if not db_user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        db_user.hashed_password = get_password_hash(new_password)
+        db.commit()
+        db.refresh(db_user)
+        
+        return {"message": "Password changed successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error changing password: {str(e)}")
+
 @router.get("/me/permissions")
 async def get_my_permissions(
     current_user: User = Depends(get_current_user),

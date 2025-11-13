@@ -62,7 +62,8 @@ class AuditService:
         user_id: int,
         before: Optional[Dict[str, Any]] = None,
         after: Optional[Dict[str, Any]] = None,
-        metadata: Optional[Dict[str, Any]] = None
+        metadata: Optional[Dict[str, Any]] = None,
+        commit: bool = True
     ) -> AuditLog:
         """Registra una acción sobre un usuario"""
         return await self.log_action(
@@ -72,7 +73,8 @@ class AuditService:
             resource_id=user_id,
             before=before,
             after=after,
-            metadata=metadata
+            metadata=metadata,
+            commit=commit
         )
     
     async def log_bet_action(
@@ -82,7 +84,8 @@ class AuditService:
         bet_id: int,
         before: Optional[Dict[str, Any]] = None,
         after: Optional[Dict[str, Any]] = None,
-        metadata: Optional[Dict[str, Any]] = None
+        metadata: Optional[Dict[str, Any]] = None,
+        commit: bool = True
     ) -> AuditLog:
         """Registra una acción sobre una apuesta"""
         return await self.log_action(
@@ -92,7 +95,8 @@ class AuditService:
             resource_id=bet_id,
             before=before,
             after=after,
-            metadata=metadata
+            metadata=metadata,
+            commit=commit
         )
     
     async def log_prediction_action(
@@ -102,7 +106,8 @@ class AuditService:
         prediction_id: int,
         before: Optional[Dict[str, Any]] = None,
         after: Optional[Dict[str, Any]] = None,
-        metadata: Optional[Dict[str, Any]] = None
+        metadata: Optional[Dict[str, Any]] = None,
+        commit: bool = True
     ) -> AuditLog:
         """Registra una acción sobre una predicción"""
         return await self.log_action(
@@ -112,7 +117,8 @@ class AuditService:
             resource_id=prediction_id,
             before=before,
             after=after,
-            metadata=metadata
+            metadata=metadata,
+            commit=commit
         )
     
     async def log_request_action(
@@ -122,7 +128,8 @@ class AuditService:
         request_id: int,
         before: Optional[Dict[str, Any]] = None,
         after: Optional[Dict[str, Any]] = None,
-        metadata: Optional[Dict[str, Any]] = None
+        metadata: Optional[Dict[str, Any]] = None,
+        commit: bool = True
     ) -> AuditLog:
         """Registra una acción sobre un request"""
         return await self.log_action(
@@ -132,7 +139,8 @@ class AuditService:
             resource_id=request_id,
             before=before,
             after=after,
-            metadata=metadata
+            metadata=metadata,
+            commit=commit
         )
     
     async def get_audit_logs(

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -10,12 +10,116 @@ import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useToast } from '@/hooks/use-toast'
 import { useAuth } from '@/contexts/AuthContext'
+import { userService } from '@/services/user.service'
 import { User, Lock, Mail, Phone, MapPin, CreditCard, Bell, Shield, Palette, LogOut } from 'lucide-react'
 
 export function ProfilePage() {
   const { toast } = useToast()
-  const { logout } = useAuth()
+  const { logout, user, refreshUser } = useAuth()
   const [activeTab, setActiveTab] = useState('personal')
+  const [isLoading, setIsLoading] = useState(false)
+  
+  // Personal info state
+  const [personalInfo, setPersonalInfo] = useState({
+    username: '',
+    email: '',
+    first_name: '',
+    last_name: '',
+    phone: '',
+    address: '',
+    birth_date: '',
+  })
+
+  // Password change state
+  const [passwordData, setPasswordData] = useState({
+    current_password: '',
+    new_password: '',
+    confirm_password: '',
+  })
+
+  useEffect(() => {
+    if (user) {
+      setPersonalInfo({
+        username: user.username || '',
+        email: user.email || '',
+        first_name: '',
+        last_name: '',
+        phone: '',
+        address: '',
+        birth_date: '',
+      })
+    }
+  }, [user])
+
+  const handlePersonalInfoChange = (field: string, value: string) => {
+    setPersonalInfo(prev => ({ ...prev, [field]: value }))
+  }
+
+  const handlePasswordChange = (field: string, value: string) => {
+    setPasswordData(prev => ({ ...prev, [field]: value }))
+  }
+
+  const handleSavePersonalInfo = async () => {
+    try {
+      setIsLoading(true)
+      await userService.updateProfile(personalInfo)
+      await refreshUser()
+      toast({
+        title: 'Perfil actualizado',
+        description: 'Tu información personal ha sido actualizada exitosamente.',
+      })
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Error al actualizar el perfil',
+        variant: 'destructive',
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleChangePassword = async () => {
+    if (passwordData.new_password !== passwordData.confirm_password) {
+      toast({
+        title: 'Error',
+        description: 'Las contraseñas no coinciden',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    if (passwordData.new_password.length < 6) {
+      toast({
+        title: 'Error',
+        description: 'La nueva contraseña debe tener al menos 6 caracteres',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    try {
+      setIsLoading(true)
+      await userService.changePassword(passwordData)
+      setPasswordData({
+        current_password: '',
+        new_password: '',
+        confirm_password: '',
+      })
+      toast({
+        title: 'Contraseña actualizada',
+        description: 'Tu contraseña ha sido cambiada exitosamente.',
+      })
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Error al cambiar la contraseña. Verifica que la contraseña actual sea correcta.',
+        variant: 'destructive',
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   const handleSave = (section: string) => {
     toast({
@@ -86,38 +190,80 @@ export function ProfilePage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="firstName">Nombre</Label>
-                    <Input id="firstName" defaultValue="Juan" />
+                    <Input 
+                      id="firstName" 
+                      value={personalInfo.first_name}
+                      onChange={(e) => handlePersonalInfoChange('first_name', e.target.value)}
+                      className="bg-[#0B132B] border-[#1C2541] text-white"
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="lastName">Apellido</Label>
-                    <Input id="lastName" defaultValue="Díaz" />
+                    <Input 
+                      id="lastName" 
+                      value={personalInfo.last_name}
+                      onChange={(e) => handlePersonalInfoChange('last_name', e.target.value)}
+                      className="bg-[#0B132B] border-[#1C2541] text-white"
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="username">Nombre de Usuario</Label>
-                    <Input id="username" defaultValue="juan_diaz" />
+                    <Input 
+                      id="username" 
+                      value={personalInfo.username}
+                      onChange={(e) => handlePersonalInfoChange('username', e.target.value)}
+                      className="bg-[#0B132B] border-[#1C2541] text-white"
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" defaultValue="juan@email.com" />
+                    <Input 
+                      id="email" 
+                      type="email" 
+                      value={personalInfo.email}
+                      onChange={(e) => handlePersonalInfoChange('email', e.target.value)}
+                      className="bg-[#0B132B] border-[#1C2541] text-white"
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="phone">Teléfono</Label>
-                    <Input id="phone" type="tel" defaultValue="+34 600 123 456" />
+                    <Input 
+                      id="phone" 
+                      type="tel" 
+                      value={personalInfo.phone}
+                      onChange={(e) => handlePersonalInfoChange('phone', e.target.value)}
+                      className="bg-[#0B132B] border-[#1C2541] text-white"
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="birthDate">Fecha de Nacimiento</Label>
-                    <Input id="birthDate" type="date" defaultValue="1990-05-15" />
+                    <Input 
+                      id="birthDate" 
+                      type="date" 
+                      value={personalInfo.birth_date}
+                      onChange={(e) => handlePersonalInfoChange('birth_date', e.target.value)}
+                      className="bg-[#0B132B] border-[#1C2541] text-white"
+                    />
                   </div>
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="address">Dirección</Label>
-                  <Input id="address" defaultValue="Calle Mayor 123, Madrid" />
+                  <Input 
+                    id="address" 
+                    value={personalInfo.address}
+                    onChange={(e) => handlePersonalInfoChange('address', e.target.value)}
+                    className="bg-[#0B132B] border-[#1C2541] text-white"
+                  />
                 </div>
 
                 <Separator />
-                <Button onClick={() => handleSave('información personal')} className="w-full">
-                  Guardar Cambios
+                <Button 
+                  onClick={handleSavePersonalInfo} 
+                  disabled={isLoading}
+                  className="w-full"
+                >
+                  {isLoading ? 'Guardando...' : 'Guardar Cambios'}
                 </Button>
               </CardContent>
             </Card>
@@ -143,19 +289,41 @@ export function ProfilePage() {
                   <div className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="currentPassword">Contraseña Actual</Label>
-                      <Input id="currentPassword" type="password" />
+                      <Input 
+                        id="currentPassword" 
+                        type="password" 
+                        value={passwordData.current_password}
+                        onChange={(e) => handlePasswordChange('current_password', e.target.value)}
+                        className="bg-[#0B132B] border-[#1C2541] text-white"
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="newPassword">Nueva Contraseña</Label>
-                      <Input id="newPassword" type="password" />
+                      <Input 
+                        id="newPassword" 
+                        type="password" 
+                        value={passwordData.new_password}
+                        onChange={(e) => handlePasswordChange('new_password', e.target.value)}
+                        className="bg-[#0B132B] border-[#1C2541] text-white"
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="confirmPassword">Confirmar Nueva Contraseña</Label>
-                      <Input id="confirmPassword" type="password" />
+                      <Input 
+                        id="confirmPassword" 
+                        type="password" 
+                        value={passwordData.confirm_password}
+                        onChange={(e) => handlePasswordChange('confirm_password', e.target.value)}
+                        className="bg-[#0B132B] border-[#1C2541] text-white"
+                      />
                     </div>
                   </div>
-                  <Button onClick={() => handleSave('contraseña')} className="w-full">
-                    Cambiar Contraseña
+                  <Button 
+                    onClick={handleChangePassword} 
+                    disabled={isLoading || !passwordData.current_password || !passwordData.new_password || !passwordData.confirm_password}
+                    className="w-full"
+                  >
+                    {isLoading ? 'Cambiando...' : 'Cambiar Contraseña'}
                   </Button>
                 </div>
 

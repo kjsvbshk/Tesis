@@ -9,7 +9,7 @@ from app.core.config import settings
 
 # Engine para Neon (esquema app) - Sistema de usuarios/apuestas
 # Neon no soporta search_path en conexiones pooled, se establece después de conectar
-sys_engine = create_engine(
+app_engine = create_engine(
     settings.DATABASE_URL,
     pool_pre_ping=True,
     pool_recycle=300,
@@ -27,17 +27,17 @@ espn_engine = create_engine(
 )
 
 # Session factories
-SysSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=sys_engine)
+AppSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=app_engine)
 EspnSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=espn_engine)
 
 # Bases separadas para cada esquema
-SysBase = declarative_base()
+AppBase = declarative_base()
 EspnBase = declarative_base()
 
 # Dependencias para obtener sesiones
-def get_sys_db():
+def get_app_db():
     """Dependency para Neon (esquema app)"""
-    db = SysSessionLocal()
+    db = AppSessionLocal()
     try:
         # Establecer search_path después de conectar (Neon no soporta en pooled)
         # Usar execute con commit explícito
@@ -61,8 +61,14 @@ def get_espn_db():
     finally:
         db.close()
 
-# Para compatibilidad con código existente (usa sys por defecto)
-get_db = get_sys_db
-engine = sys_engine
-Base = SysBase
-SessionLocal = SysSessionLocal
+# Aliases para compatibilidad con código existente (mantener sys_* por compatibilidad)
+sys_engine = app_engine
+SysSessionLocal = AppSessionLocal
+SysBase = AppBase
+get_sys_db = get_app_db
+
+# Para compatibilidad con código existente (usa app por defecto)
+get_db = get_app_db
+engine = app_engine
+Base = AppBase
+SessionLocal = AppSessionLocal

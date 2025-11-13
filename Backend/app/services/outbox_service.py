@@ -27,9 +27,16 @@ class OutboxService:
         Publica un evento en el outbox dentro de la misma transacción
         El evento se marcará como publicado cuando el worker lo procese
         """
+        # Función helper para serializar datetime a ISO format
+        def json_serializer(obj):
+            """JSON serializer para objetos datetime"""
+            if isinstance(obj, datetime):
+                return obj.isoformat()
+            raise TypeError(f"Type {type(obj)} not serializable")
+        
         outbox_entry = Outbox(
             topic=topic,
-            payload=json.dumps(payload),
+            payload=json.dumps(payload, default=json_serializer),
             created_at=datetime.utcnow(),
             published_at=None  # Se actualiza cuando el worker lo procesa
         )

@@ -153,11 +153,11 @@ class PredictionService:
         # (para compatibilidad con _predict_with_model y _generate_dummy_prediction)
         from app.models.team import Team
         home_team = Team()
-        home_team.id = home_team_id or 0
+        home_team.team_id = home_team_id or 0
         home_team.name = home_team_name
         
         away_team = Team()
-        away_team.id = away_team_id or 0
+        away_team.team_id = away_team_id or 0
         away_team.name = away_team_name
         
         # Generate prediction (dummy for now)
@@ -175,9 +175,9 @@ class PredictionService:
             await self._save_prediction(request_id, prediction, latency_ms)
         
         return PredictionResponse(
-            game_id=game.get("id"),
-            home_team_id=home_team.id,
-            away_team_id=away_team.id,
+            game_id=game.get("id") or game.get("game_id"),
+            home_team_id=getattr(home_team, "team_id", getattr(home_team, "id", None)),
+            away_team_id=getattr(away_team, "team_id", getattr(away_team, "id", None)),
             home_team_name=home_team.name,
             away_team_name=away_team.name,
             game_date=game.get("game_date"),
@@ -238,11 +238,11 @@ class PredictionService:
         predictions = []
         for game in games:
             try:
-                game_id = game.get("id") if isinstance(game, dict) else game.id
+                game_id = game.get("id") or game.get("game_id") if isinstance(game, dict) else getattr(game, "game_id", getattr(game, "id", None))
                 prediction = await self.get_game_prediction(game_id, user_id)
                 predictions.append(prediction)
             except Exception as e:
-                game_id = game.get("id") if isinstance(game, dict) else getattr(game, "id", "unknown")
+                game_id = game.get("id") or game.get("game_id") if isinstance(game, dict) else getattr(game, "game_id", getattr(game, "id", "unknown"))
                 print(f"Error generating prediction for game {game_id}: {e}")
                 continue
         

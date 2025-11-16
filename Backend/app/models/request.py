@@ -24,7 +24,7 @@ class Request(SysBase):
     
     id = Column(Integer, primary_key=True, index=True)
     organization_id = Column(Integer, nullable=True)  # Para futuro uso con organizaciones
-    user_id = Column(Integer, ForeignKey("app.users.id", ondelete="SET NULL"), nullable=True, index=True)
+    user_id = Column(Integer, ForeignKey("app.user_accounts.id", ondelete="SET NULL"), nullable=True, index=True)
     event_id = Column(Integer, nullable=True)  # Referencia a espn.games.id (sin FK por esquema diferente)
     market_id = Column(Integer, nullable=True)  # Para futuro uso con markets
     request_key = Column(String(255), nullable=False, index=True)  # Referencia a idempotency_keys.request_key
@@ -36,7 +36,7 @@ class Request(SysBase):
     completed_at = Column(DateTime(timezone=True), nullable=True)
     
     # Relationships
-    user = relationship("User", foreign_keys=[user_id])
+    user = relationship("UserAccount", foreign_keys=[user_id])
     
     def __repr__(self):
         return f"<Request(id={self.id}, request_key='{self.request_key}', status='{self.status}')>"

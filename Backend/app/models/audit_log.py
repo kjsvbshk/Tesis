@@ -14,7 +14,7 @@ class AuditLog(SysBase):
     
     id = Column(Integer, primary_key=True, index=True)
     organization_id = Column(Integer, nullable=True)  # Para futuro uso con organizaciones
-    actor_user_id = Column(Integer, ForeignKey("app.users.id", ondelete="SET NULL"), nullable=True, index=True)
+    actor_user_id = Column(Integer, ForeignKey("app.user_accounts.id", ondelete="SET NULL"), nullable=True, index=True)
     action = Column(String(100), nullable=False, index=True)  # e.g., "create_user", "place_bet", "update_prediction"
     resource_type = Column(String(50), nullable=True)  # e.g., "user", "bet", "prediction"
     resource_id = Column(Integer, nullable=True)  # ID del recurso afectado

@@ -10,7 +10,7 @@ export interface User {
   username: string
   email: string
   rol: string
-  credits: number
+  credits: number | null  // Can be null for administrators and operators
   is_active: boolean
   created_at: string
   updated_at?: string

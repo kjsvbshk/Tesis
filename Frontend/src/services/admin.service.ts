@@ -101,6 +101,64 @@ class AdminService {
       method: 'DELETE',
     })
   }
+
+  /**
+   * Create a new role
+   */
+  async createRole(role: { code: string; name: string; description?: string }): Promise<Role> {
+    return apiRequest<Role>('/admin/roles', {
+      method: 'POST',
+      body: JSON.stringify(role),
+    })
+  }
+
+  /**
+   * Update a role
+   */
+  async updateRole(roleId: number, role: { name?: string; description?: string }): Promise<Role> {
+    return apiRequest<Role>(`/admin/roles/${roleId}`, {
+      method: 'PUT',
+      body: JSON.stringify(role),
+    })
+  }
+
+  /**
+   * Delete a role
+   */
+  async deleteRole(roleId: number): Promise<void> {
+    return apiRequest(`/admin/roles/${roleId}`, {
+      method: 'DELETE',
+    })
+  }
+
+  /**
+   * Create a new permission
+   */
+  async createPermission(permission: { code: string; name: string; description?: string; scope?: string }): Promise<Permission> {
+    return apiRequest<Permission>('/admin/permissions', {
+      method: 'POST',
+      body: JSON.stringify(permission),
+    })
+  }
+
+  /**
+   * Update a permission
+   */
+  async updatePermission(permissionId: number, permission: { name?: string; description?: string; scope?: string }): Promise<Permission> {
+    return apiRequest<Permission>(`/admin/permissions/${permissionId}`, {
+      method: 'PUT',
+      body: JSON.stringify(permission),
+    })
+  }
+
+  /**
+   * Delete a permission
+   */
+  async deletePermission(permissionId: number): Promise<void> {
+    return apiRequest(`/admin/permissions/${permissionId}`, {
+      method: 'DELETE',
+    })
+  }
 }
 
 export const adminService = new AdminService()

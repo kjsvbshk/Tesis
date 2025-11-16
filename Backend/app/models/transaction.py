@@ -23,8 +23,8 @@ class Transaction(SysBase):
     __table_args__ = {'schema': 'app'}
     
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("app.users.id"), nullable=False)
-    bet_id = Column(Integer, ForeignKey("app.bets.id"), nullable=True)  # Null for non-bet transactions
+    user_id = Column(Integer, ForeignKey("app.user_accounts.id"), nullable=False)
+    bet_id = Column(Integer, nullable=True)  # Reference to espn.bets.id (no FK constraint due to cross-schema)
     
     # Transaction details
     transaction_type = Column(Enum(TransactionType), nullable=False)
@@ -37,8 +37,9 @@ class Transaction(SysBase):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     
     # Relationships
-    user = relationship("User")
-    bet = relationship("Bet")
+    user = relationship("UserAccount")
+    # Note: bet_id references espn.bets.id, but we don't have a relationship
+    # because it's in a different schema and we can't have cross-schema relationships
     
     def __repr__(self):
         return f"<Transaction(id={self.id}, user_id={self.user_id}, type={self.transaction_type}, amount={self.amount})>"

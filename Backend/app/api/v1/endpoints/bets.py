@@ -9,19 +9,19 @@ from datetime import datetime
 import asyncio
 
 from app.core.database import get_sys_db, get_espn_db
-from app.models.bet import Bet, BetType, BetStatus
+from app.models.espn_bet import Bet as EspnBet, BetType, BetStatus
 from app.schemas.bet import BetResponse, BetCreate, BetUpdate
 from app.services.bet_service import BetService
 from app.services.audit_service import AuditService
 from app.services.outbox_service import OutboxService
 from app.services.auth_service import get_current_user
 from app.services.match_service import MatchService
-from app.models.user import User
+from app.models.user_accounts import UserAccount
 
 router = APIRouter()
 
-async def build_bet_response(bet: Bet, espn_db: Session) -> BetResponse:
-    """Construir BetResponse con información del juego"""
+async def build_bet_response(bet: EspnBet, espn_db: Session) -> BetResponse:
+    """Construir BetResponse con información del juego (usando modelo normalizado)"""
     # Obtener información del juego
     match_service = MatchService(espn_db)
     game_info = {}
@@ -50,51 +50,71 @@ async def build_bet_response(bet: Bet, espn_db: Session) -> BetResponse:
             "game_date": None
         }
     
-    # Obtener información del equipo seleccionado si existe
-    if bet.selected_team_id:
-        try:
-            team = await match_service.get_team_by_id(bet.selected_team_id)
-            if team:
-                selected_team_info = {
-                    "id": team.id,
-                    "name": team.name,
-                    "abbreviation": team.abbreviation,
-                    "city": team.city
-                }
-        except Exception as e:
-            import traceback
-            traceback.print_exc()
-            pass
+    # Obtener información de la selección de la apuesta
+    selected_team_id = None
+    spread_value = None
+    over_under_value = None
+    is_over = None
     
-    # Asegurar que game_info nunca sea None
-    if not game_info:
-        game_info = {
-            "id": bet.game_id,
-            "home_team": None,
-            "away_team": None,
-            "game_date": None
-        }
+    if bet.selection:
+        selected_team_id = bet.selection.selected_team_id
+        spread_value = float(bet.selection.spread_value) if bet.selection.spread_value else None
+        over_under_value = float(bet.selection.over_under_value) if bet.selection.over_under_value else None
+        is_over = bet.selection.is_over
+        
+        # Obtener información del equipo seleccionado si existe
+        if selected_team_id:
+            try:
+                team = await match_service.get_team_by_id(selected_team_id)
+                if team:
+                    selected_team_info = {
+                        "id": team.id,
+                        "name": team.name,
+                        "abbreviation": team.abbreviation,
+                        "city": team.city
+                    }
+            except Exception as e:
+                import traceback
+                traceback.print_exc()
+                pass
+    
+    # Obtener actual_payout de BetResult si existe
+    actual_payout = None
+    if bet.result:
+        actual_payout = float(bet.result.actual_payout) if bet.result.actual_payout else None
+    
+    # Convertir bet_type_code a enum si es necesario
+    from app.models.bet import BetType as LegacyBetType, BetStatus as LegacyBetStatus
+    try:
+        bet_type_enum = LegacyBetType(bet.bet_type_code)
+    except:
+        bet_type_enum = bet.bet_type_code
+    
+    try:
+        status_enum = LegacyBetStatus(bet.bet_status_code)
+    except:
+        status_enum = bet.bet_status_code
     
     # Construir la respuesta
     bet_dict = {
         "id": bet.id,
         "user_id": bet.user_id,
         "game_id": bet.game_id,
-        "bet_type": bet.bet_type,
-        "bet_amount": bet.bet_amount,
-        "odds": bet.odds,
-        "potential_payout": bet.potential_payout,
-        "selected_team_id": bet.selected_team_id,
-        "spread_value": bet.spread_value,
-        "over_under_value": bet.over_under_value,
-        "is_over": bet.is_over,
-        "status": bet.status,
-        "actual_payout": bet.actual_payout,
+        "bet_type": bet_type_enum,
+        "bet_amount": float(bet.bet_amount),
+        "odds": float(bet.odds_value),
+        "potential_payout": float(bet.potential_payout),
+        "selected_team_id": selected_team_id,
+        "spread_value": spread_value,
+        "over_under_value": over_under_value,
+        "is_over": is_over,
+        "status": status_enum,
+        "actual_payout": actual_payout,
         "placed_at": bet.placed_at,
         "settled_at": bet.settled_at,
         "created_at": bet.created_at,
         "updated_at": bet.updated_at,
-        "game": game_info,  # Ya aseguramos que nunca sea None
+        "game": game_info,
         "selected_team": selected_team_info
     }
     
@@ -107,16 +127,16 @@ async def build_bet_response(bet: Bet, espn_db: Session) -> BetResponse:
 
 @router.get("/", response_model=List[BetResponse])
 async def get_user_bets(
-    status: Optional[BetStatus] = Query(None, description="Filter by bet status"),
+    status: Optional[str] = Query(None, description="Filter by bet status (pending, won, lost, cancelled)"),
     limit: int = Query(50, description="Number of bets to return"),
     offset: int = Query(0, description="Number of bets to skip"),
-    current_user: User = Depends(get_current_user),
+    current_user: UserAccount = Depends(get_current_user),
     db: Session = Depends(get_sys_db),
     espn_db: Session = Depends(get_espn_db)
 ):
     """Get current user's bets"""
     try:
-        bet_service = BetService(db)
+        bet_service = BetService(db, espn_db)
         bets = await bet_service.get_user_bets(
             user_id=current_user.id,
             status=status,
@@ -131,16 +151,20 @@ async def get_user_bets(
 @router.post("/", response_model=BetResponse)
 async def place_bet(
     bet: BetCreate,
-    current_user: User = Depends(get_current_user),
+    current_user: UserAccount = Depends(get_current_user),
     db: Session = Depends(get_sys_db),
     espn_db: Session = Depends(get_espn_db)
 ):
     """Place a new bet"""
     try:
-        bet_service = BetService(db)
+        bet_service = BetService(db, espn_db)
         
         # Check if user has enough credits
-        if current_user.credits < bet.bet_amount:
+        from app.services.user_service import UserService
+        user_service = UserService(db)
+        user_credits = await user_service.get_user_credits(current_user.id)
+        
+        if user_credits is None or user_credits < bet.bet_amount:
             raise HTTPException(
                 status_code=400, 
                 detail="Insufficient credits for this bet"
@@ -163,9 +187,9 @@ async def place_bet(
             bet_id=new_bet.id,
             after={
                 "bet_id": new_bet.id,
-                "bet_type": new_bet.bet_type.value if hasattr(new_bet.bet_type, 'value') else str(new_bet.bet_type),
-                "bet_amount": new_bet.bet_amount,
-                "odds": new_bet.odds,
+                "bet_type": new_bet.bet_type_code,
+                "bet_amount": float(new_bet.bet_amount),
+                "odds": float(new_bet.odds_value),
                 "game_id": new_bet.game_id
             },
             commit=True
@@ -178,9 +202,9 @@ async def place_bet(
             user_id=current_user.id,
             bet_data={
                 "bet_id": new_bet.id,
-                "bet_type": new_bet.bet_type.value if hasattr(new_bet.bet_type, 'value') else str(new_bet.bet_type),
-                "bet_amount": new_bet.bet_amount,
-                "odds": new_bet.odds,
+                "bet_type": new_bet.bet_type_code,
+                "bet_amount": float(new_bet.bet_amount),
+                "odds": float(new_bet.odds_value),
                 "game_id": new_bet.game_id
             },
             commit=True
@@ -205,13 +229,13 @@ async def place_bet(
 @router.get("/{bet_id}", response_model=BetResponse)
 async def get_bet(
     bet_id: int,
-    current_user: User = Depends(get_current_user),
+    current_user: UserAccount = Depends(get_current_user),
     db: Session = Depends(get_sys_db),
     espn_db: Session = Depends(get_espn_db)
 ):
     """Get a specific bet by ID"""
     try:
-        bet_service = BetService(db)
+        bet_service = BetService(db, espn_db)
         bet = await bet_service.get_bet_by_id(bet_id, current_user.id)
         if not bet:
             raise HTTPException(status_code=404, detail="Bet not found")
@@ -225,13 +249,13 @@ async def get_bet(
 async def update_bet(
     bet_id: int,
     bet_update: BetUpdate,
-    current_user: User = Depends(get_current_user),
+    current_user: UserAccount = Depends(get_current_user),
     db: Session = Depends(get_sys_db),
     espn_db: Session = Depends(get_espn_db)
 ):
     """Update a bet (only if pending)"""
     try:
-        bet_service = BetService(db)
+        bet_service = BetService(db, espn_db)
         updated_bet = await bet_service.update_bet(bet_id, bet_update, current_user.id)
         if not updated_bet:
             raise HTTPException(status_code=404, detail="Bet not found or cannot be updated")
@@ -244,12 +268,13 @@ async def update_bet(
 @router.delete("/{bet_id}")
 async def cancel_bet(
     bet_id: int,
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_sys_db)
+    current_user: UserAccount = Depends(get_current_user),
+    db: Session = Depends(get_sys_db),
+    espn_db: Session = Depends(get_espn_db)
 ):
     """Cancel a pending bet"""
     try:
-        bet_service = BetService(db)
+        bet_service = BetService(db, espn_db)
         success = await bet_service.cancel_bet(bet_id, current_user.id)
         if not success:
             raise HTTPException(status_code=404, detail="Bet not found or cannot be cancelled")
@@ -261,13 +286,22 @@ async def cancel_bet(
 
 @router.get("/stats/summary")
 async def get_betting_stats(
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_sys_db)
+    current_user: UserAccount = Depends(get_current_user),
+    db: Session = Depends(get_sys_db),
+    espn_db: Session = Depends(get_espn_db)
 ):
     """Get user's betting statistics"""
     try:
-        bet_service = BetService(db)
+        bet_service = BetService(db, espn_db)
         stats = await bet_service.get_user_betting_stats(current_user.id)
         return stats
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error fetching betting stats: {str(e)}")
+        import traceback
+        error_detail = str(e)
+        traceback_str = traceback.format_exc()
+        print(f"Error in get_betting_stats: {error_detail}")
+        print(f"Traceback: {traceback_str}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error fetching betting stats: {error_detail}"
+        )

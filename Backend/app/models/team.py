@@ -12,7 +12,7 @@ class Team(EspnBase):
     __tablename__ = "teams"
     __table_args__ = {'schema': 'espn'}
     
-    id = Column(Integer, primary_key=True, index=True)
+    team_id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), unique=True, nullable=False)  # e.g., "Los Angeles Lakers"
     abbreviation = Column(String(10), unique=True, nullable=False)  # e.g., "LAL"
     city = Column(String(50), nullable=False)  # e.g., "Los Angeles"
@@ -23,4 +23,4 @@ class Team(EspnBase):
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     
     def __repr__(self):
-        return f"<Team(id={self.id}, name='{self.name}', abbreviation='{self.abbreviation}')>"
+        return f"<Team(team_id={self.team_id}, name='{self.name}', abbreviation='{self.abbreviation}')>"

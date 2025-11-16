@@ -12,7 +12,9 @@ from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.core.database import get_sys_db
-from app.models import User, UserRole, Permission
+from app.models.user_accounts import UserAccount, Client, Administrator, Operator
+from app.models.user_role import UserRole
+from app.models.permission import Permission
 # from app.services.user_service import UserService  # Removed to avoid circular import
 
 # Password hashing - usando argon2 que es más seguro y sin límite de longitud
@@ -55,8 +57,8 @@ def verify_token(token: str) -> Optional[str]:
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
     db: Session = Depends(get_sys_db)
-) -> User:
-    """Get current authenticated user"""
+) -> UserAccount:
+    """Get current authenticated user (UserAccount)"""
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -72,20 +74,24 @@ async def get_current_user(
         raise credentials_exception
     
     # Direct database query to avoid circular import
-    user = db.query(User).filter(User.username == username).first()
-    if user is None:
+    user_account = db.query(UserAccount).filter(UserAccount.username == username).first()
+    if user_account is None:
         raise credentials_exception
     
-    # Cargar roles y permisos del usuario
-    # Esto se hace aquí para que estén disponibles en el objeto user
-    return user
+    if not user_account.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="User account is inactive"
+        )
+    
+    return user_account
 
-async def authenticate_user(db: Session, username: str, password: str) -> Optional[User]:
+async def authenticate_user(db: Session, username: str, password: str) -> Optional[UserAccount]:
     """Authenticate user with username and password"""
     # Direct database query to avoid circular import
-    user = db.query(User).filter(User.username == username).first()
-    if not user:
+    user_account = db.query(UserAccount).filter(UserAccount.username == username).first()
+    if not user_account:
         return None
-    if not verify_password(password, user.hashed_password):
+    if not verify_password(password, user_account.hashed_password):
         return None
-    return user
+    return user_account

@@ -3,12 +3,23 @@ Database models for NBA Bets application
 """
 
 # Core models
-from .user import User
+from .user import User  # Legacy model (app schema)
+from .user_accounts import UserAccount, Client, Administrator, Operator  # Normalized user models
 from .team import Team
 from .game import Game
-from .bet import Bet
+from .bet import Bet  # Legacy model (app schema)
 from .transaction import Transaction
 from .team_stats import TeamStatsGame
+
+# Normalized ESPN models (3FN)
+from .espn_bet import (
+    BetType as EspnBetType,
+    BetStatus as EspnBetStatus,
+    Bet as EspnBet,
+    BetSelection,
+    BetResult,
+    GameOdds
+)
 
 # RBAC models (RF-01)
 from .role import Role
@@ -43,12 +54,23 @@ __all__ = [
     "SysBase",
     "EspnBase",
     # Core models
-    "User",
+    "User",  # Legacy (app schema)
+    "UserAccount",  # Normalized user account base
+    "Client",  # Normalized client (replaces "usuario")
+    "Administrator",  # Normalized administrator
+    "Operator",  # Normalized operator
     "Team", 
     "Game",
-    "Bet",
+    "Bet",  # Legacy (app schema)
     "Transaction",
     "TeamStatsGame",
+    # Normalized ESPN models (3FN)
+    "EspnBetType",
+    "EspnBetStatus",
+    "EspnBet",
+    "BetSelection",
+    "BetResult",
+    "GameOdds",
     # RBAC models
     "Role",
     "Permission",

@@ -14,21 +14,15 @@ class TeamStatsGame(EspnBase):
     __table_args__ = {'schema': 'espn'}
     
     id = Column(Integer, primary_key=True, index=True)
-    game_id = Column(Integer, ForeignKey("espn.games.id"), nullable=False)
-    team_id = Column(Integer, ForeignKey("espn.teams.id"), nullable=False)
+    game_id = Column(Integer, ForeignKey("espn.games.game_id"), nullable=False)
+    team_id = Column(Integer, ForeignKey("espn.teams.team_id"), nullable=False)
     is_home = Column(Boolean, nullable=False)  # True if home team, False if away
     
-    # Basic stats
+    # Basic stats (solo los datos disponibles en boxscores JSON)
     points = Column(Integer, nullable=True)
-    field_goals_made = Column(Integer, nullable=True)
-    field_goals_attempted = Column(Integer, nullable=True)
-    field_goal_percentage = Column(Float, nullable=True)
-    three_pointers_made = Column(Integer, nullable=True)
-    three_pointers_attempted = Column(Integer, nullable=True)
-    three_point_percentage = Column(Float, nullable=True)
-    free_throws_made = Column(Integer, nullable=True)
-    free_throws_attempted = Column(Integer, nullable=True)
-    free_throw_percentage = Column(Float, nullable=True)
+    field_goal_percentage = Column(Float, nullable=True)  # FG% del boxscore
+    three_point_percentage = Column(Float, nullable=True)  # 3P% del boxscore
+    free_throw_percentage = Column(Float, nullable=True)  # FT% del boxscore
     
     # Advanced stats
     rebounds = Column(Integer, nullable=True)
@@ -38,10 +32,7 @@ class TeamStatsGame(EspnBase):
     turnovers = Column(Integer, nullable=True)
     personal_fouls = Column(Integer, nullable=True)
     
-    # Team efficiency
-    offensive_rating = Column(Float, nullable=True)
-    defensive_rating = Column(Float, nullable=True)
-    net_rating = Column(Float, nullable=True)
+    # Team efficiency (no disponible en boxscores actuales - removido)
     
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())

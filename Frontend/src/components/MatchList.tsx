@@ -47,8 +47,8 @@ export function MatchList() {
 
     return {
       id: matchResponse.id,
-      home: matchResponse.home_team.name,
-      away: matchResponse.away_team.name,
+      home: matchResponse.home_team?.name || 'Equipo Local',
+      away: matchResponse.away_team?.name || 'Equipo Visitante',
       odds: {
         home: homeOdds,
         away: awayOdds,

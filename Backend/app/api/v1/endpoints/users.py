@@ -9,7 +9,7 @@ from datetime import timedelta
 
 from app.core.database import get_sys_db
 from app.core.config import settings
-from app.models.user import User
+from app.models.user_accounts import UserAccount, Client
 from app.schemas.user import UserResponse, UserCreate, UserUpdate, UserLogin, Token
 from app.services.user_service import UserService
 from app.services.auth_service import get_current_user, authenticate_user, create_access_token
@@ -22,30 +22,57 @@ async def login(
     db: Session = Depends(get_sys_db)
 ):
     """Login user and return JWT token"""
-    user = await authenticate_user(
-        db, 
-        user_credentials.username, 
-        user_credentials.password
-    )
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"},
+    try:
+        user = await authenticate_user(
+            db, 
+            user_credentials.username, 
+            user_credentials.password
         )
-    
-    if not user.is_active:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="User account is inactive"
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Incorrect username or password",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        
+        if not user.is_active:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="User account is inactive"
+            )
+        
+        access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+        access_token = create_access_token(
+            data={"sub": user.username}, 
+            expires_delta=access_token_expires
         )
-    
-    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": user.username}, 
-        expires_delta=access_token_expires
-    )
-    return {"access_token": access_token, "token_type": "bearer"}
+        
+        # Obtener el rol del usuario
+        user_service = UserService(db)
+        user_role = await user_service.get_user_role_code(user.id)
+        if not user_role:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="User role not found"
+            )
+        
+        return {
+            "access_token": access_token,
+            "token_type": "bearer",
+            "rol": user_role
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        import traceback
+        error_detail = str(e)
+        traceback_str = traceback.format_exc()
+        print(f"Error in login endpoint: {error_detail}")
+        print(f"Traceback: {traceback_str}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Internal server error during login: {error_detail}"
+        )
 
 @router.post("/register", response_model=UserResponse)
 async def register_user(user: UserCreate, db: Session = Depends(get_sys_db)):
@@ -63,10 +90,27 @@ async def register_user(user: UserCreate, db: Session = Depends(get_sys_db)):
         if existing_email:
             raise HTTPException(status_code=400, detail="Email already registered")
         
-        # Crear usuario - el servicio siempre asigna rol 'usuario' por defecto
+        # Crear usuario - el servicio siempre asigna rol 'client' por defecto
         # Ignoramos cualquier rol que venga en el request
-        new_user = await user_service.create_user(user)
-        return new_user
+        new_user_account = await user_service.create_user(user)
+        
+        # Obtener información del cliente y el rol para la respuesta
+        client = await user_service.get_client_by_user_id(new_user_account.id)
+        user_role = await user_service.get_user_role_code(new_user_account.id)
+        if not user_role:
+            raise HTTPException(status_code=500, detail="User role not found")
+        
+        user_dict = {
+            "id": new_user_account.id,
+            "username": new_user_account.username,
+            "email": new_user_account.email,
+            "is_active": new_user_account.is_active,
+            "credits": float(client.credits) if client else None,
+            "rol": user_role,
+            "created_at": new_user_account.created_at,
+            "updated_at": new_user_account.updated_at
+        }
+        return user_dict
     except HTTPException:
         raise
     except Exception as e:
@@ -78,7 +122,7 @@ async def register_user(user: UserCreate, db: Session = Depends(get_sys_db)):
         raise HTTPException(status_code=500, detail=f"Error creating user: {error_detail}")
 
 @router.post("/logout")
-async def logout(current_user: User = Depends(get_current_user)):
+async def logout(current_user: UserAccount = Depends(get_current_user)):
     """Logout user - invalida la sesión del lado del servidor"""
     # Con JWT stateless, técnicamente no hay nada que invalidar en el servidor
     # Pero este endpoint permite:
@@ -91,14 +135,34 @@ async def logout(current_user: User = Depends(get_current_user)):
     }
 
 @router.get("/me", response_model=UserResponse)
-async def get_current_user_info(current_user: User = Depends(get_current_user)):
+async def get_current_user_info(
+    current_user: UserAccount = Depends(get_current_user),
+    db: Session = Depends(get_sys_db)
+):
     """Get current user information"""
-    return current_user
+    # Obtener información adicional según el tipo de usuario
+    user_service = UserService(db)
+    client = await user_service.get_client_by_user_id(current_user.id)
+    user_role = await user_service.get_user_role_code(current_user.id)
+    if not user_role:
+        raise HTTPException(status_code=500, detail="User role not found")
+    
+    user_dict = {
+        "id": current_user.id,
+        "username": current_user.username,
+        "email": current_user.email,
+        "is_active": current_user.is_active,
+        "credits": float(client.credits) if client else None,
+        "rol": user_role,
+        "created_at": current_user.created_at,
+        "updated_at": current_user.updated_at
+    }
+    return user_dict
 
 @router.put("/me", response_model=UserResponse)
 async def update_current_user(
     user_update: UserUpdate,
-    current_user: User = Depends(get_current_user),
+    current_user: UserAccount = Depends(get_current_user),
     db: Session = Depends(get_sys_db)
 ):
     """Update current user information - no permite cambiar el rol"""
@@ -106,21 +170,38 @@ async def update_current_user(
         user_service = UserService(db)
         
         # Los usuarios no pueden cambiar su propio rol
-        if user_update.rol is not None:
+        if hasattr(user_update, 'rol') and user_update.rol is not None:
             # Remover el campo rol del update si viene en el request
             update_dict = user_update.dict(exclude_unset=True)
             update_dict.pop('rol', None)
             user_update = UserUpdate(**update_dict)
         
         updated_user = await user_service.update_user(current_user.id, user_update)
-        return updated_user
+        
+        # Obtener información del cliente y el rol para la respuesta
+        client = await user_service.get_client_by_user_id(updated_user.id)
+        user_role = await user_service.get_user_role_code(updated_user.id)
+        if not user_role:
+            raise HTTPException(status_code=500, detail="User role not found")
+        
+        user_dict = {
+            "id": updated_user.id,
+            "username": updated_user.username,
+            "email": updated_user.email,
+            "is_active": updated_user.is_active,
+            "credits": float(client.credits) if client else None,
+            "rol": user_role,
+            "created_at": updated_user.created_at,
+            "updated_at": updated_user.updated_at
+        }
+        return user_dict
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error updating user: {str(e)}")
 
 @router.put("/me/password")
 async def change_password(
     password_data: dict,
-    current_user: User = Depends(get_current_user),
+    current_user: UserAccount = Depends(get_current_user),
     db: Session = Depends(get_sys_db)
 ):
     """Change user password"""
@@ -158,7 +239,7 @@ async def change_password(
 
 @router.get("/me/permissions")
 async def get_my_permissions(
-    current_user: User = Depends(get_current_user),
+    current_user: UserAccount = Depends(get_current_user),
     db: Session = Depends(get_sys_db)
 ):
     """Get current user's permissions"""
@@ -185,18 +266,27 @@ async def get_my_permissions(
         raise HTTPException(status_code=500, detail=f"Error fetching permissions: {str(e)}")
 
 @router.get("/credits")
-async def get_user_credits(current_user: User = Depends(get_current_user)):
+async def get_user_credits(
+    current_user: UserAccount = Depends(get_current_user),
+    db: Session = Depends(get_sys_db)
+):
     """Get current user's credit balance"""
+    user_service = UserService(db)
+    credits = await user_service.get_user_credits(current_user.id)
+    
+    if credits is None:
+        raise HTTPException(status_code=404, detail="User is not a client or has no credits")
+    
     return {
         "user_id": current_user.id,
         "username": current_user.username,
-        "credits": current_user.credits
+        "credits": credits
     }
 
 @router.post("/credits/add")
 async def add_credits(
     amount: float,
-    current_user: User = Depends(get_current_user),
+    current_user: UserAccount = Depends(get_current_user),
     db: Session = Depends(get_sys_db)
 ):
     """Add credits to user account (for testing purposes)"""
@@ -205,11 +295,16 @@ async def add_credits(
             raise HTTPException(status_code=400, detail="Amount must be positive")
         
         user_service = UserService(db)
-        updated_user = await user_service.add_credits(current_user.id, amount)
+        success = await user_service.add_credits(current_user.id, amount)
+        
+        if not success:
+            raise HTTPException(status_code=404, detail="User is not a client")
+        
+        new_balance = await user_service.get_user_credits(current_user.id)
         
         return {
             "message": f"Added ${amount} credits to your account",
-            "new_balance": updated_user.credits
+            "new_balance": new_balance
         }
     except HTTPException:
         raise
@@ -226,6 +321,28 @@ async def get_all_users(
     try:
         user_service = UserService(db)
         users = await user_service.get_all_users(limit=limit, offset=offset)
-        return users
+        
+        # Construir respuestas con todos los campos requeridos
+        result = []
+        for user_account in users:
+            client = await user_service.get_client_by_user_id(user_account.id)
+            user_role = await user_service.get_user_role_code(user_account.id)
+            if not user_role:
+                # Si no tiene rol, saltar este usuario o usar un valor por defecto
+                continue
+            
+            user_dict = {
+                "id": user_account.id,
+                "username": user_account.username,
+                "email": user_account.email,
+                "is_active": user_account.is_active,
+                "credits": float(client.credits) if client else None,
+                "rol": user_role,
+                "created_at": user_account.created_at,
+                "updated_at": user_account.updated_at
+            }
+            result.append(user_dict)
+        
+        return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching users: {str(e)}")

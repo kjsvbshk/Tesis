@@ -156,6 +156,25 @@ async def search_audit_logs(
         date_from_dt = datetime.combine(date_from, datetime.min.time()) if date_from else None
         date_to_dt = datetime.combine(date_to, datetime.max.time()) if date_to else None
         
+        # Get total count before pagination
+        from app.models import AuditLog
+        count_query = db.query(AuditLog)
+        
+        if actor_user_id:
+            count_query = count_query.filter(AuditLog.actor_user_id == actor_user_id)
+        if action:
+            count_query = count_query.filter(AuditLog.action == action)
+        if resource_type:
+            count_query = count_query.filter(AuditLog.resource_type == resource_type)
+        if resource_id:
+            count_query = count_query.filter(AuditLog.resource_id == resource_id)
+        if date_from_dt:
+            count_query = count_query.filter(AuditLog.created_at >= date_from_dt)
+        if date_to_dt:
+            count_query = count_query.filter(AuditLog.created_at <= date_to_dt)
+        
+        total_count = count_query.count()
+        
         results = await audit_service.get_audit_logs(
             actor_user_id=actor_user_id,
             action=action,
@@ -168,7 +187,7 @@ async def search_audit_logs(
         )
         
         return {
-            "total": len(results),
+            "total": total_count,
             "limit": limit,
             "offset": offset,
             "results": [

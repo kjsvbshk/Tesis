@@ -9,7 +9,7 @@ from datetime import datetime
 class UserBase(BaseModel):
     username: str
     email: EmailStr
-    rol: str = "usuario"  # Rol por defecto: usuario (solo lectura en respuesta)
+    rol: str  # Rol obligatorio (client, administrator, operator)
 
 class UserCreate(BaseModel):
     """Schema para crear usuario - username, email y password son requeridos"""
@@ -26,7 +26,7 @@ class UserUpdate(BaseModel):
 
 class UserResponse(UserBase):
     id: int
-    credits: float
+    credits: Optional[float] = None  # Opcional, solo para clientes
     is_active: bool
     created_at: datetime
     updated_at: Optional[datetime] = None
@@ -46,3 +46,4 @@ class UserLogin(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+    rol: str  # Rol del usuario (client, administrator, operator)

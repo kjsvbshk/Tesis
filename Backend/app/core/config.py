@@ -4,6 +4,7 @@ Todas las configuraciones se leen desde el archivo .env
 """
 
 from pydantic_settings import BaseSettings
+from pydantic import field_validator
 from typing import Optional
 
 class Settings(BaseSettings):
@@ -105,6 +106,26 @@ class Settings(BaseSettings):
     API_HOST: str = "0.0.0.0"
     API_PORT: int = 8000
     DEBUG: bool = False
+    
+    @field_validator('DEBUG', mode='before')
+    @classmethod
+    def parse_debug(cls, v):
+        """Parse DEBUG value - handles string values like 'WARN', 'INFO', etc."""
+        if isinstance(v, bool):
+            return v
+        if isinstance(v, str):
+            # Convert string to lowercase for comparison
+            v_lower = v.lower().strip()
+            # Only 'true', '1', 'yes', 'on' are considered True
+            if v_lower in ('true', '1', 'yes', 'on', 'enabled'):
+                return True
+            # Everything else (including 'WARN', 'INFO', 'ERROR', etc.) is False
+            return False
+        # For other types, try to convert to bool
+        try:
+            return bool(v)
+        except:
+            return False
      
     # Virtual Credits Configuration (opcional)
     INITIAL_CREDITS: Optional[float] = 1000.0

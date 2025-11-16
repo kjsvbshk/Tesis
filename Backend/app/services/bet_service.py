@@ -48,100 +48,114 @@ class BetService:
     
     async def place_bet(self, bet: BetCreate, user_id: int) -> EspnBet:
         """Place a new bet using normalized schema"""
-        # Deduct credits from user
+        # Deduct credits from user first
         success = await self.user_service.deduct_credits(user_id, bet.bet_amount)
         if not success:
             raise ValueError("Insufficient credits")
         
-        # Convert bet_type enum to string code
-        bet_type_code = bet.bet_type.value if hasattr(bet.bet_type, 'value') else str(bet.bet_type)
-        
-        # Map selected_team_id if it's provided
-        # The frontend may send IDs that don't match our team_id (could be ESPN IDs or hash-generated IDs)
-        # We need to map them to the correct team_id from the game
-        mapped_team_id = None
-        if bet.selected_team_id:
-            # Get the game to find the correct team_id
-            from app.models.game import Game
-            from app.models.team import Team
-            game = self.espn_db.query(Game).filter(Game.game_id == bet.game_id).first()
-            if not game:
-                raise ValueError(f"Game {bet.game_id} not found")
+        credits_deducted = True
+        try:
+            # Convert bet_type enum to string code
+            bet_type_code = bet.bet_type.value if hasattr(bet.bet_type, 'value') else str(bet.bet_type)
             
-            # Check if the selected_team_id is already a valid team_id from our teams table
-            team = self.espn_db.query(Team).filter(Team.team_id == bet.selected_team_id).first()
-            if team:
-                # It's already a valid team_id, verify it belongs to this game
-                if bet.selected_team_id == game.home_team_id or bet.selected_team_id == game.away_team_id:
-                    mapped_team_id = bet.selected_team_id
+            # Map selected_team_id if it's provided
+            # The frontend may send IDs that don't match our team_id (could be ESPN IDs or hash-generated IDs)
+            # We need to map them to the correct team_id from the game
+            mapped_team_id = None
+            if bet.selected_team_id:
+                # Get the game to find the correct team_id
+                from app.models.game import Game
+                from app.models.team import Team
+                game = self.espn_db.query(Game).filter(Game.game_id == bet.game_id).first()
+                if not game:
+                    raise ValueError(f"Game {bet.game_id} not found")
+                
+                # Check if the selected_team_id is already a valid team_id from our teams table
+                team = self.espn_db.query(Team).filter(Team.team_id == bet.selected_team_id).first()
+                if team:
+                    # It's already a valid team_id, verify it belongs to this game
+                    if bet.selected_team_id == game.home_team_id or bet.selected_team_id == game.away_team_id:
+                        mapped_team_id = bet.selected_team_id
+                    else:
+                        raise ValueError(f"Team {bet.selected_team_id} is not part of game {bet.game_id}")
                 else:
-                    raise ValueError(f"Team {bet.selected_team_id} is not part of game {bet.game_id}")
-            else:
-                # The selected_team_id is not a valid team_id in our teams table
-                # It might be an ESPN ID or a hash-generated ID from the match service
-                # For moneyline bets, we need to determine if it's home or away
-                # Since we can't match ESPN IDs directly, we'll check if it matches the game's team_ids
-                # (which might have been returned as hash-generated IDs in the match response)
-                if bet.selected_team_id == game.home_team_id or bet.selected_team_id == game.away_team_id:
-                    # The ID matches one of the game's team_ids (even if it's a hash-generated ID)
-                    # But we need to use the actual team_id from the teams table
-                    # So we'll use the game's home_team_id or away_team_id directly
-                    mapped_team_id = game.home_team_id if bet.selected_team_id == game.home_team_id else game.away_team_id
-                else:
-                    # The ID doesn't match either team_id from the game
-                    # This shouldn't happen if the frontend is sending the correct IDs from the match response
-                    # But if it does, we'll try to determine based on the bet type
-                    # For moneyline bets, we can't determine home/away from an invalid ID
-                    # So we'll raise an error
-                    raise ValueError(
-                        f"Invalid team_id: {bet.selected_team_id}. "
-                        f"The team_id must match one of the game's teams. "
-                        f"Game {bet.game_id} has home_team_id={game.home_team_id} and away_team_id={game.away_team_id}."
-                    )
-        
-        # Create bet record in espn schema
-        db_bet = EspnBet(
-            user_id=user_id,
-            game_id=bet.game_id,
-            bet_type_code=bet_type_code,
-            bet_status_code='pending',
-            bet_amount=Decimal(str(bet.bet_amount)),
-            odds_value=Decimal(str(bet.odds)),
-            potential_payout=Decimal(str(bet.potential_payout)),
-            odds_id=None  # Puede ser None si no hay referencia a game_odds
-        )
-        self.espn_db.add(db_bet)
-        self.espn_db.flush()  # Para obtener el ID
-        
-        # Create bet selection if needed
-        if mapped_team_id or bet.spread_value or bet.over_under_value is not None:
-            bet_selection = BetSelection(
-                bet_id=db_bet.id,
-                selected_team_id=mapped_team_id,
-                spread_value=Decimal(str(bet.spread_value)) if bet.spread_value else None,
-                over_under_value=Decimal(str(bet.over_under_value)) if bet.over_under_value else None,
-                is_over=bet.is_over
+                    # The selected_team_id is not a valid team_id in our teams table
+                    # It might be an ESPN ID or a hash-generated ID from the match service
+                    # For moneyline bets, we need to determine if it's home or away
+                    # Since we can't match ESPN IDs directly, we'll check if it matches the game's team_ids
+                    # (which might have been returned as hash-generated IDs in the match response)
+                    if bet.selected_team_id == game.home_team_id or bet.selected_team_id == game.away_team_id:
+                        # The ID matches one of the game's team_ids (even if it's a hash-generated ID)
+                        # But we need to use the actual team_id from the teams table
+                        # So we'll use the game's home_team_id or away_team_id directly
+                        mapped_team_id = game.home_team_id if bet.selected_team_id == game.home_team_id else game.away_team_id
+                    else:
+                        # The ID doesn't match either team_id from the game
+                        # This shouldn't happen if the frontend is sending the correct IDs from the match response
+                        # But if it does, we'll try to determine based on the bet type
+                        # For moneyline bets, we can't determine home/away from an invalid ID
+                        # So we'll raise an error
+                        raise ValueError(
+                            f"Invalid team_id: {bet.selected_team_id}. "
+                            f"The team_id must match one of the game's teams. "
+                            f"Game {bet.game_id} has home_team_id={game.home_team_id} and away_team_id={game.away_team_id}."
+                        )
+            
+            # Create bet record in espn schema
+            db_bet = EspnBet(
+                user_id=user_id,
+                game_id=bet.game_id,
+                bet_type_code=bet_type_code,
+                bet_status_code='pending',
+                bet_amount=Decimal(str(bet.bet_amount)),
+                odds_value=Decimal(str(bet.odds)),
+                potential_payout=Decimal(str(bet.potential_payout)),
+                odds_id=None  # Puede ser None si no hay referencia a game_odds
             )
-            self.espn_db.add(bet_selection)
-        
-        self.espn_db.commit()
-        self.espn_db.refresh(db_bet)
-        
-        # Create transaction record in app schema
-        user_credits = await self.user_service.get_user_credits(user_id)
-        transaction = Transaction(
-            user_id=user_id,
-            bet_id=db_bet.id,
-            transaction_type=TransactionType.BET_PLACED,
-            amount=-bet.bet_amount,
-            balance_before=(user_credits or 0) + bet.bet_amount,
-            balance_after=user_credits or 0,
-            description=f"Bet placed: {bet_type_code} for ${bet.bet_amount}"
-        )
-        self.sys_db.add(transaction)
-        self.sys_db.commit()
-        
-        return db_bet
+            self.espn_db.add(db_bet)
+            self.espn_db.flush()  # Para obtener el ID
+            
+            # Create bet selection if needed
+            if mapped_team_id or bet.spread_value or bet.over_under_value is not None:
+                bet_selection = BetSelection(
+                    bet_id=db_bet.id,
+                    selected_team_id=mapped_team_id,
+                    spread_value=Decimal(str(bet.spread_value)) if bet.spread_value else None,
+                    over_under_value=Decimal(str(bet.over_under_value)) if bet.over_under_value else None,
+                    is_over=bet.is_over
+                )
+                self.espn_db.add(bet_selection)
+            
+            self.espn_db.commit()
+            self.espn_db.refresh(db_bet)
+            
+            # Create transaction record in app schema
+            user_credits = await self.user_service.get_user_credits(user_id)
+            transaction = Transaction(
+                user_id=user_id,
+                bet_id=db_bet.id,
+                transaction_type=TransactionType.BET_PLACED,
+                amount=-bet.bet_amount,
+                balance_before=(user_credits or 0) + bet.bet_amount,
+                balance_after=user_credits or 0,
+                description=f"Bet placed: {bet_type_code} for ${bet.bet_amount}"
+            )
+            self.sys_db.add(transaction)
+            self.sys_db.commit()
+            
+            credits_deducted = False  # Mark as successful, no need to refund
+            return db_bet
+        except Exception as e:
+            # If anything fails after deducting credits, refund them
+            if credits_deducted:
+                try:
+                    await self.user_service.add_credits(user_id, bet.bet_amount)
+                except Exception as refund_error:
+                    # Log the refund error but don't mask the original error
+                    import logging
+                    logging.error(f"Failed to refund credits after bet placement failure: {refund_error}")
+            # Re-raise the original error
+            raise
     
     async def update_bet(self, bet_id: int, bet_update: BetUpdate, user_id: int) -> Optional[EspnBet]:
         """Update a bet (only if pending)"""
@@ -170,32 +184,50 @@ class BetService:
         # Get current credits before refund
         user_credits_before = await self.user_service.get_user_credits(user_id) or 0
         
-        # Refund credits
+        # Refund credits first
         bet_amount = float(db_bet.bet_amount)
-        await self.user_service.add_credits(user_id, bet_amount)
-        
-        # Get credits after refund
-        user_credits_after = await self.user_service.get_user_credits(user_id) or 0
-        
-        # Update bet status
-        db_bet.bet_status_code = 'cancelled'
-        db_bet.settled_at = datetime.utcnow()
-        self.espn_db.commit()
-        
-        # Create refund transaction (using ADMIN_ADJUSTMENT for refunds since there's no specific refund type)
-        transaction = Transaction(
-            user_id=user_id,
-            bet_id=bet_id,
-            transaction_type=TransactionType.ADMIN_ADJUSTMENT,  # Using admin adjustment for refunds
-            amount=bet_amount,
-            balance_before=user_credits_before,
-            balance_after=user_credits_after,
-            description=f"Bet cancelled: refund of ${bet_amount}"
-        )
-        self.sys_db.add(transaction)
-        self.sys_db.commit()
-        
-        return True
+        credits_refunded = False
+        try:
+            success = await self.user_service.add_credits(user_id, bet_amount)
+            if not success:
+                raise ValueError("Failed to refund credits - user is not a client")
+            
+            credits_refunded = True
+            
+            # Get credits after refund
+            user_credits_after = await self.user_service.get_user_credits(user_id) or 0
+            
+            # Update bet status
+            db_bet.bet_status_code = 'cancelled'
+            db_bet.settled_at = datetime.utcnow()
+            self.espn_db.commit()
+            
+            # Create refund transaction (using ADMIN_ADJUSTMENT for refunds since there's no specific refund type)
+            transaction = Transaction(
+                user_id=user_id,
+                bet_id=bet_id,
+                transaction_type=TransactionType.ADMIN_ADJUSTMENT,  # Using admin adjustment for refunds
+                amount=bet_amount,
+                balance_before=user_credits_before,
+                balance_after=user_credits_after,
+                description=f"Bet cancelled: refund of ${bet_amount}"
+            )
+            self.sys_db.add(transaction)
+            self.sys_db.commit()
+            
+            credits_refunded = False  # Mark as successful, no need to reverse
+            return True
+        except Exception as e:
+            # If anything fails after refunding credits, try to reverse the refund
+            if credits_refunded:
+                try:
+                    await self.user_service.deduct_credits(user_id, bet_amount)
+                except Exception as reverse_error:
+                    # Log the reverse error but don't mask the original error
+                    import logging
+                    logging.error(f"Failed to reverse credit refund after bet cancellation failure: {reverse_error}")
+            # Re-raise the original error
+            raise
     
     async def settle_bet(self, bet_id: int, won: bool) -> bool:
         """Settle a bet (admin function)"""
@@ -206,61 +238,80 @@ class BetService:
         # Get current credits before settlement
         user_credits_before = await self.user_service.get_user_credits(db_bet.user_id) or 0
         
-        if won:
-            db_bet.bet_status_code = 'won'
-            payout = float(db_bet.potential_payout)
-            # Add winnings to user account
-            await self.user_service.add_credits(db_bet.user_id, payout)
-            
-            # Get credits after adding winnings
-            user_credits_after = await self.user_service.get_user_credits(db_bet.user_id) or 0
-            
-            # Create or update bet result
-            bet_result = self.espn_db.query(BetResult).filter(BetResult.bet_id == bet_id).first()
-            if not bet_result:
-                bet_result = BetResult(bet_id=bet_id, actual_payout=Decimal(str(payout)))
-                self.espn_db.add(bet_result)
+        credits_added = False
+        payout = 0.0
+        try:
+            if won:
+                db_bet.bet_status_code = 'won'
+                payout = float(db_bet.potential_payout)
+                # Add winnings to user account
+                success = await self.user_service.add_credits(db_bet.user_id, payout)
+                if not success:
+                    raise ValueError("Failed to add winnings - user is not a client")
+                
+                credits_added = True
+                
+                # Get credits after adding winnings
+                user_credits_after = await self.user_service.get_user_credits(db_bet.user_id) or 0
+                
+                # Create or update bet result
+                bet_result = self.espn_db.query(BetResult).filter(BetResult.bet_id == bet_id).first()
+                if not bet_result:
+                    bet_result = BetResult(bet_id=bet_id, actual_payout=Decimal(str(payout)))
+                    self.espn_db.add(bet_result)
+                else:
+                    bet_result.actual_payout = Decimal(str(payout))
+                
+                # Create transaction for bet won
+                transaction = Transaction(
+                    user_id=db_bet.user_id,
+                    bet_id=bet_id,
+                    transaction_type=TransactionType.BET_WON,
+                    amount=payout,
+                    balance_before=user_credits_before,
+                    balance_after=user_credits_after,
+                    description=f"Bet won: payout of ${payout}"
+                )
+                self.sys_db.add(transaction)
             else:
-                bet_result.actual_payout = Decimal(str(payout))
+                db_bet.bet_status_code = 'lost'
+                # Create or update bet result
+                bet_result = self.espn_db.query(BetResult).filter(BetResult.bet_id == bet_id).first()
+                if not bet_result:
+                    bet_result = BetResult(bet_id=bet_id, actual_payout=Decimal('0'))
+                    self.espn_db.add(bet_result)
+                else:
+                    bet_result.actual_payout = Decimal('0')
+                
+                # Create transaction for bet lost (no credits added, just record)
+                transaction = Transaction(
+                    user_id=db_bet.user_id,
+                    bet_id=bet_id,
+                    transaction_type=TransactionType.BET_LOST,
+                    amount=0.0,
+                    balance_before=user_credits_before,
+                    balance_after=user_credits_before,  # No change in balance
+                    description=f"Bet lost: no payout"
+                )
+                self.sys_db.add(transaction)
             
-            # Create transaction for bet won
-            transaction = Transaction(
-                user_id=db_bet.user_id,
-                bet_id=bet_id,
-                transaction_type=TransactionType.BET_WON,
-                amount=payout,
-                balance_before=user_credits_before,
-                balance_after=user_credits_after,
-                description=f"Bet won: payout of ${payout}"
-            )
-            self.sys_db.add(transaction)
-        else:
-            db_bet.bet_status_code = 'lost'
-            # Create or update bet result
-            bet_result = self.espn_db.query(BetResult).filter(BetResult.bet_id == bet_id).first()
-            if not bet_result:
-                bet_result = BetResult(bet_id=bet_id, actual_payout=Decimal('0'))
-                self.espn_db.add(bet_result)
-            else:
-                bet_result.actual_payout = Decimal('0')
+            db_bet.settled_at = datetime.utcnow()
+            self.espn_db.commit()
+            self.sys_db.commit()
             
-            # Create transaction for bet lost (no credits added, just record)
-            transaction = Transaction(
-                user_id=db_bet.user_id,
-                bet_id=bet_id,
-                transaction_type=TransactionType.BET_LOST,
-                amount=0.0,
-                balance_before=user_credits_before,
-                balance_after=user_credits_before,  # No change in balance
-                description=f"Bet lost: no payout"
-            )
-            self.sys_db.add(transaction)
-        
-        db_bet.settled_at = datetime.utcnow()
-        self.espn_db.commit()
-        self.sys_db.commit()
-        
-        return True
+            credits_added = False  # Mark as successful, no need to reverse
+            return True
+        except Exception as e:
+            # If anything fails after adding credits (for won bets), try to reverse the credit addition
+            if credits_added and won:
+                try:
+                    await self.user_service.deduct_credits(db_bet.user_id, payout)
+                except Exception as reverse_error:
+                    # Log the reverse error but don't mask the original error
+                    import logging
+                    logging.error(f"Failed to reverse credit addition after bet settlement failure: {reverse_error}")
+            # Re-raise the original error
+            raise
     
     async def get_user_betting_stats(self, user_id: int) -> Dict[str, Any]:
         """Get user's betting statistics"""

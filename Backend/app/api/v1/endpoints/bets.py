@@ -159,11 +159,18 @@ async def place_bet(
     try:
         bet_service = BetService(db, espn_db)
         
-        # Check if user has enough credits
+        # Validate that user is a client (only clients can place bets)
         from app.services.user_service import UserService
         user_service = UserService(db)
-        user_credits = await user_service.get_user_credits(current_user.id)
+        client = await user_service.get_client_by_user_id(current_user.id)
+        if not client:
+            raise HTTPException(
+                status_code=403,
+                detail="Only clients can place bets"
+            )
         
+        # Check if user has enough credits
+        user_credits = await user_service.get_user_credits(current_user.id)
         if user_credits is None or user_credits < bet.bet_amount:
             raise HTTPException(
                 status_code=400, 

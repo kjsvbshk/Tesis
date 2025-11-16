@@ -128,7 +128,7 @@ export function BetSlip() {
     }
 
     // Validar créditos disponibles
-    const availableCredits = user?.credits || 0
+    const availableCredits = (user?.credits !== null && user?.credits !== undefined) ? user.credits : 0
     if (stake > availableCredits) {
       toast({
         title: 'Créditos insuficientes',
@@ -239,7 +239,7 @@ export function BetSlip() {
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <div className="text-sm text-[#B0B3C5] font-medium">Monto</div>
-            {user && (
+            {user && user.credits !== null && user.credits !== undefined && (
               <div className="text-xs text-[#B0B3C5]">
                 Disponible: <span className="font-mono text-[#00FF73]">{formatCurrency(user.credits)}</span>
               </div>
@@ -254,7 +254,7 @@ export function BetSlip() {
             placeholder="0,00"
             className="bg-[#0B132B] border-[#1C2541] text-white focus:border-[#00FF73] focus:ring-[#00FF73]"
           />
-          {stake > 0 && user && stake > user.credits && (
+          {stake > 0 && user && user.credits !== null && user.credits !== undefined && stake > user.credits && (
             <p className="text-xs text-[#FF4C4C]">
               Créditos insuficientes. Disponibles: {formatCurrency(user.credits)}
             </p>
@@ -281,7 +281,7 @@ export function BetSlip() {
             stake < 1.0 || 
             stake > 100.0 ||
             isSubmitting || 
-            (user && typeof user.credits === 'number' && stake > user.credits) ||
+            (user && user.credits !== null && user.credits !== undefined && typeof user.credits === 'number' && stake > user.credits) ||
             isNaN(stake) ||
             !isFinite(stake)
           } 
@@ -297,7 +297,7 @@ export function BetSlip() {
             stake > 0 ? `Confirmar apuesta ${formatCurrency(stake)}` : 'Confirmar apuesta'
           )}
         </Button>
-        {user && stake > user.credits && (
+        {user && user.credits !== null && user.credits !== undefined && stake > user.credits && (
           <p className="text-xs text-center text-[#FF4C4C]">
             No tienes suficientes créditos para esta apuesta
           </p>

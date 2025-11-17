@@ -34,49 +34,73 @@ class MatchService:
                 self._table_columns = {col.name: str(col.type) for col in Game.__table__.columns}
         return self._table_columns
     
+    def _find_team_by_name(self, team_name: Optional[str]) -> Optional[Any]:
+        """Buscar equipo en la tabla teams por nombre"""
+        if not team_name:
+            return None
+        
+        from app.models.team import Team
+        
+        # Try exact match first
+        team = self.db.query(Team).filter(Team.name == team_name).first()
+        if team:
+            return team
+        
+        # Try case-insensitive match
+        team = self.db.query(Team).filter(Team.name.ilike(team_name)).first()
+        if team:
+            return team
+        
+        # Try partial match
+        team = self.db.query(Team).filter(Team.name.ilike(f"%{team_name}%")).first()
+        if team:
+            return team
+        
+        return None
+    
     def _game_to_dict(self, game: Game) -> Dict[str, Any]:
-        """Convertir Game a dict para MatchResponse"""
+        """Convertir Game a dict para MatchResponse - usando team_id reales de la tabla teams"""
+        # Buscar equipos en la tabla teams para obtener sus team_id reales
+        home_team_db = self._find_team_by_name(game.home_team) if game.home_team else None
+        away_team_db = self._find_team_by_name(game.away_team) if game.away_team else None
+        
+        home_team_id = home_team_db.team_id if home_team_db else None
+        away_team_id = away_team_db.team_id if away_team_db else None
+        
         return {
             "id": game.game_id,
-            "espn_id": game.espn_id,
-            "home_team_id": game.home_team_id,
-            "away_team_id": game.away_team_id,
-            "game_date": game.game_date,
-            "season": game.season,
-            "season_type": game.season_type,
-            "status": game.status,
-            "home_score": game.home_score,
-            "away_score": game.away_score,
-            "winner_id": game.winner_id,
-            "home_odds": game.home_odds,
-            "away_odds": game.away_odds,
-            "over_under": game.over_under,
-            "created_at": game.created_at,
-            "updated_at": game.updated_at,
+            "espn_id": None,  # Column doesn't exist in database
+            "home_team_id": home_team_id,
+            "away_team_id": away_team_id,
+            "game_date": game.fecha,  # Actual column name is 'fecha'
+            "season": None,  # Doesn't exist in actual structure
+            "season_type": None,  # Doesn't exist in actual structure
+            "status": None,  # Doesn't exist in actual structure
+            "home_score": int(game.home_score) if game.home_score is not None else None,
+            "away_score": int(game.away_score) if game.away_score is not None else None,
+            "winner_id": None,  # Doesn't exist, but we have home_win boolean
+            "home_odds": None,  # Doesn't exist in games table
+            "away_odds": None,  # Doesn't exist in games table
+            "over_under": None,  # Doesn't exist in games table
+            "created_at": None,  # Doesn't exist in actual structure
+            "updated_at": None,  # Doesn't exist in actual structure
             "home_team": {
-                "id": game.home_team.team_id,
-                "name": game.home_team.name,
-                "abbreviation": game.home_team.abbreviation,
-                "city": game.home_team.city,
-                "conference": game.home_team.conference,
-                "division": game.home_team.division,
+                "id": home_team_id or 0,
+                "name": home_team_db.name if home_team_db else (game.home_team or 'Unknown'),
+                "abbreviation": home_team_db.abbreviation if home_team_db else "",
+                "city": home_team_db.city if home_team_db else "",
+                "conference": home_team_db.conference if home_team_db else "",
+                "division": home_team_db.division if home_team_db else "",
             } if game.home_team else None,
             "away_team": {
-                "id": game.away_team.team_id,
-                "name": game.away_team.name,
-                "abbreviation": game.away_team.abbreviation,
-                "city": game.away_team.city,
-                "conference": game.away_team.conference,
-                "division": game.away_team.division,
+                "id": away_team_id or 0,
+                "name": away_team_db.name if away_team_db else (game.away_team or 'Unknown'),
+                "abbreviation": away_team_db.abbreviation if away_team_db else "",
+                "city": away_team_db.city if away_team_db else "",
+                "conference": away_team_db.conference if away_team_db else "",
+                "division": away_team_db.division if away_team_db else "",
             } if game.away_team else None,
-            "winner": {
-                "id": game.winner.team_id,
-                "name": game.winner.name,
-                "abbreviation": game.winner.abbreviation,
-                "city": game.winner.city,
-                "conference": game.winner.conference,
-                "division": game.winner.division,
-            } if game.winner else None,
+            "winner": None,  # Can't determine from current structure
         }
     
     async def get_matches(
@@ -187,25 +211,22 @@ class MatchService:
                 home_team_name = match_dict.get(home_team_col) if home_team_col else None
                 away_team_name = match_dict.get(away_team_col) if away_team_col else None
                 
-                # No hay tabla teams, así que generamos IDs basados en hash del nombre
-                def generate_team_id(team_name: Optional[str]) -> Optional[int]:
-                    """Generar un ID simple basado en el nombre del equipo"""
-                    if not team_name:
-                        return None
-                    return abs(hash(team_name)) % (10 ** 9)  # ID positivo de hasta 9 dígitos
+                # Buscar equipos en la tabla teams para obtener sus team_id reales
+                home_team_db = self._find_team_by_name(home_team_name) if home_team_name else None
+                away_team_db = self._find_team_by_name(away_team_name) if away_team_name else None
                 
-                home_team_id = generate_team_id(home_team_name) if home_team_name else None
-                away_team_id = generate_team_id(away_team_name) if away_team_name else None
+                home_team_id = home_team_db.team_id if home_team_db else None
+                away_team_id = away_team_db.team_id if away_team_db else None
                 
-                # No hay información adicional de equipos (abbreviation, city, etc.)
-                home_team_abbr = ''
-                home_team_city = ''
-                home_team_conf = ''
-                home_team_div = ''
-                away_team_abbr = ''
-                away_team_city = ''
-                away_team_conf = ''
-                away_team_div = ''
+                # Obtener información adicional de equipos desde la tabla teams
+                home_team_abbr = home_team_db.abbreviation if home_team_db else ''
+                home_team_city = home_team_db.city if home_team_db else ''
+                home_team_conf = home_team_db.conference if home_team_db else ''
+                home_team_div = home_team_db.division if home_team_db else ''
+                away_team_abbr = away_team_db.abbreviation if away_team_db else ''
+                away_team_city = away_team_db.city if away_team_db else ''
+                away_team_conf = away_team_db.conference if away_team_db else ''
+                away_team_div = away_team_db.division if away_team_db else ''
                 
                 # Construir objeto MatchResponse usando solo columnas que existen
                 match = {
@@ -227,7 +248,7 @@ class MatchService:
                     "updated_at": None,
                     "home_team": {
                         "id": int(home_team_id) if home_team_id else 0,
-                        "name": home_team_name or 'Unknown',
+                        "name": home_team_db.name if home_team_db else (home_team_name or 'Unknown'),
                         "abbreviation": home_team_abbr,
                         "city": home_team_city,
                         "conference": home_team_conf,
@@ -235,7 +256,7 @@ class MatchService:
                     } if home_team_name else None,
                     "away_team": {
                         "id": int(away_team_id) if away_team_id else 0,
-                        "name": away_team_name or 'Unknown',
+                        "name": away_team_db.name if away_team_db else (away_team_name or 'Unknown'),
                         "abbreviation": away_team_abbr,
                         "city": away_team_city,
                         "conference": away_team_conf,
@@ -247,30 +268,26 @@ class MatchService:
             
             return matches
         except Exception as e:
-            # Si falla, intentar con ORM como fallback
+            # Si falla, intentar con ORM como fallback (usando estructura real)
             try:
                 query = self.db.query(Game)
                 
                 if date_from:
-                    query = query.filter(Game.game_date >= date_from)
+                    query = query.filter(Game.fecha >= date_from)  # Use 'fecha' not 'game_date'
                 if date_to:
-                    query = query.filter(Game.game_date <= date_to)
-                if status:
-                    query = query.filter(Game.status == status)
+                    query = query.filter(Game.fecha <= date_to)  # Use 'fecha' not 'game_date'
+                # status doesn't exist in actual structure, skip it
                 if team_id:
-                    query = query.filter(
-                        (Game.home_team_id == team_id) | (Game.away_team_id == team_id)
-                    )
+                    # team_id is a hash, so we can't filter directly by it
+                    # We'd need to know the team name, which we don't have
+                    # Skip this filter in fallback
+                    pass
                 
                 games = query.offset(offset).limit(limit).all()
                 
                 result = []
                 for game in games:
-                    game.home_team = self.db.query(Team).filter(Team.team_id == game.home_team_id).first()
-                    game.away_team = self.db.query(Team).filter(Team.team_id == game.away_team_id).first()
-                    if game.winner_id:
-                        game.winner = self.db.query(Team).filter(Team.team_id == game.winner_id).first()
-                    
+                    # No need to query Team table - home_team and away_team are strings
                     result.append(self._game_to_dict(game))
                 
                 return result
@@ -431,17 +448,19 @@ class MatchService:
             
             print(f"DEBUG get_match_by_id: Final - home_team_name={home_team_name}, away_team_name={away_team_name}")
             
-            # Generar IDs simples basados en hash del nombre (para compatibilidad con el schema)
-            # O usar 0 si no hay nombres
-            def generate_team_id(team_name: Optional[str]) -> Optional[int]:
-                """Generar un ID simple basado en el nombre del equipo"""
-                if not team_name:
-                    return None
-                # Usar hash simple para generar un ID consistente
-                return abs(hash(team_name)) % (10 ** 9)  # ID positivo de hasta 9 dígitos
+            # Buscar equipos en la tabla teams para obtener sus team_id reales
+            from app.models.team import Team
             
-            home_team_id = generate_team_id(home_team_name) if home_team_name else None
-            away_team_id = generate_team_id(away_team_name) if away_team_name else None
+            home_team_db = None
+            away_team_db = None
+            
+            if home_team_name:
+                home_team_db = self._find_team_by_name(home_team_name)
+            if away_team_name:
+                away_team_db = self._find_team_by_name(away_team_name)
+            
+            home_team_id = home_team_db.team_id if home_team_db else None
+            away_team_id = away_team_db.team_id if away_team_db else None
             
             # Construir objeto MatchResponse
             # En Neon, game_id es bigint, lo mapeamos a 'id'
@@ -466,19 +485,19 @@ class MatchService:
                 "updated_at": None,  # No existe en la estructura real
                 "home_team": {
                     "id": home_team_id or 0,
-                    "name": home_team_name or 'Unknown',
-                    "abbreviation": "",  # No disponible sin tabla teams
-                    "city": "",  # No disponible sin tabla teams
-                    "conference": "",  # No disponible sin tabla teams
-                    "division": "",  # No disponible sin tabla teams
+                    "name": home_team_db.name if home_team_db else (home_team_name or 'Unknown'),
+                    "abbreviation": home_team_db.abbreviation if home_team_db else "",
+                    "city": home_team_db.city if home_team_db else "",
+                    "conference": home_team_db.conference if home_team_db else "",
+                    "division": home_team_db.division if home_team_db else "",
                 } if home_team_name else None,
                 "away_team": {
                     "id": away_team_id or 0,
-                    "name": away_team_name or 'Unknown',
-                    "abbreviation": "",  # No disponible sin tabla teams
-                    "city": "",  # No disponible sin tabla teams
-                    "conference": "",  # No disponible sin tabla teams
-                    "division": "",  # No disponible sin tabla teams
+                    "name": away_team_db.name if away_team_db else (away_team_name or 'Unknown'),
+                    "abbreviation": away_team_db.abbreviation if away_team_db else "",
+                    "city": away_team_db.city if away_team_db else "",
+                    "conference": away_team_db.conference if away_team_db else "",
+                    "division": away_team_db.division if away_team_db else "",
                 } if away_team_name else None,
                 "winner": None,
             }

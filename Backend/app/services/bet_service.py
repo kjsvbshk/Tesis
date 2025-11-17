@@ -59,47 +59,57 @@ class BetService:
             bet_type_code = bet.bet_type.value if hasattr(bet.bet_type, 'value') else str(bet.bet_type)
             
             # Map selected_team_id if it's provided
-            # The frontend may send IDs that don't match our team_id (could be ESPN IDs or hash-generated IDs)
-            # We need to map them to the correct team_id from the game
+            # The frontend now sends real team_id from the teams table (thanks to MatchService update)
+            # We just need to validate that the team exists and belongs to the game
             mapped_team_id = None
             if bet.selected_team_id:
-                # Get the game to find the correct team_id
+                # Validate that the game exists
                 from app.models.game import Game
                 from app.models.team import Team
                 game = self.espn_db.query(Game).filter(Game.game_id == bet.game_id).first()
                 if not game:
                     raise ValueError(f"Game {bet.game_id} not found")
                 
-                # Check if the selected_team_id is already a valid team_id from our teams table
+                # Validate that the team exists in the teams table
                 team = self.espn_db.query(Team).filter(Team.team_id == bet.selected_team_id).first()
-                if team:
-                    # It's already a valid team_id, verify it belongs to this game
-                    if bet.selected_team_id == game.home_team_id or bet.selected_team_id == game.away_team_id:
-                        mapped_team_id = bet.selected_team_id
-                    else:
-                        raise ValueError(f"Team {bet.selected_team_id} is not part of game {bet.game_id}")
+                if not team:
+                    raise ValueError(
+                        f"Team with team_id {bet.selected_team_id} not found in teams table. "
+                        f"Please ensure the team exists in the database."
+                    )
+                
+                # Verify that the team is part of this game
+                # Find both teams in the teams table to verify
+                home_team_db = None
+                away_team_db = None
+                
+                if game.home_team:
+                    home_team_db = self.espn_db.query(Team).filter(Team.name == game.home_team).first()
+                    if not home_team_db:
+                        home_team_db = self.espn_db.query(Team).filter(Team.name.ilike(game.home_team)).first()
+                    if not home_team_db:
+                        home_team_db = self.espn_db.query(Team).filter(
+                            Team.name.ilike(f"%{game.home_team}%")
+                        ).first()
+                
+                if game.away_team:
+                    away_team_db = self.espn_db.query(Team).filter(Team.name == game.away_team).first()
+                    if not away_team_db:
+                        away_team_db = self.espn_db.query(Team).filter(Team.name.ilike(game.away_team)).first()
+                    if not away_team_db:
+                        away_team_db = self.espn_db.query(Team).filter(
+                            Team.name.ilike(f"%{game.away_team}%")
+                        ).first()
+                
+                # Check if the selected team is one of the game's teams
+                if (home_team_db and bet.selected_team_id == home_team_db.team_id) or \
+                   (away_team_db and bet.selected_team_id == away_team_db.team_id):
+                    mapped_team_id = bet.selected_team_id
                 else:
-                    # The selected_team_id is not a valid team_id in our teams table
-                    # It might be an ESPN ID or a hash-generated ID from the match service
-                    # For moneyline bets, we need to determine if it's home or away
-                    # Since we can't match ESPN IDs directly, we'll check if it matches the game's team_ids
-                    # (which might have been returned as hash-generated IDs in the match response)
-                    if bet.selected_team_id == game.home_team_id or bet.selected_team_id == game.away_team_id:
-                        # The ID matches one of the game's team_ids (even if it's a hash-generated ID)
-                        # But we need to use the actual team_id from the teams table
-                        # So we'll use the game's home_team_id or away_team_id directly
-                        mapped_team_id = game.home_team_id if bet.selected_team_id == game.home_team_id else game.away_team_id
-                    else:
-                        # The ID doesn't match either team_id from the game
-                        # This shouldn't happen if the frontend is sending the correct IDs from the match response
-                        # But if it does, we'll try to determine based on the bet type
-                        # For moneyline bets, we can't determine home/away from an invalid ID
-                        # So we'll raise an error
-                        raise ValueError(
-                            f"Invalid team_id: {bet.selected_team_id}. "
-                            f"The team_id must match one of the game's teams. "
-                            f"Game {bet.game_id} has home_team_id={game.home_team_id} and away_team_id={game.away_team_id}."
-                        )
+                    raise ValueError(
+                        f"Team {bet.selected_team_id} ({team.name}) is not part of game {bet.game_id}. "
+                        f"Game has home_team='{game.home_team}' and away_team='{game.away_team}'."
+                    )
             
             # Create bet record in espn schema
             db_bet = EspnBet(

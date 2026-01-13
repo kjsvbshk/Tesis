@@ -5,12 +5,10 @@ Matches API endpoints
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from datetime import datetime, date, timedelta
+from datetime import date
 
 from app.core.database import get_espn_db
-from app.models.game import Game
-from app.models.team import Team
-from app.schemas.match import MatchResponse, MatchCreate
+from app.schemas.match import MatchResponse
 from app.services.match_service import MatchService
 from app.services.cache_service import cache_service
 
@@ -165,17 +163,3 @@ async def get_match(match_id: int, db: Session = Depends(get_espn_db)):
         import traceback
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Error fetching match: {str(e)}")
-
-@router.post("/", response_model=MatchResponse)
-async def create_match(match: MatchCreate, db: Session = Depends(get_espn_db)):
-    """Create a new match (admin only)"""
-    try:
-        match_service = MatchService(db)
-        new_match = await match_service.create_match(match)
-        
-        # Invalidar caché de partidos ya que se agregó uno nuevo
-        cache_service.invalidate_pattern("matches")
-        
-        return new_match
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error creating match: {str(e)}")

@@ -192,9 +192,29 @@ class PredictionService:
     ):
         """Guardar predicción en BD con telemetría"""
         try:
-            # Serializar score a JSON
+            # Serializar score a JSON - convertir datetime a string
             import json
-            score_json = json.dumps(prediction_data)
+            from datetime import datetime, date
+            
+            # Función helper para convertir datetime/date a string
+            def json_serial(obj):
+                """JSON serializer para objetos datetime/date"""
+                if isinstance(obj, (datetime, date)):
+                    return obj.isoformat()
+                raise TypeError(f"Type {type(obj)} not serializable")
+            
+            # Convertir prediction_data a dict serializable
+            serializable_data = {}
+            for key, value in prediction_data.items():
+                if isinstance(value, (datetime, date)):
+                    serializable_data[key] = value.isoformat()
+                elif isinstance(value, dict):
+                    # Recursivamente convertir dicts anidados
+                    serializable_data[key] = json.loads(json.dumps(value, default=json_serial))
+                else:
+                    serializable_data[key] = value
+            
+            score_json = json.dumps(serializable_data, default=json_serial)
             
             # Crear o actualizar predicción
             existing_prediction = self.db.query(Prediction).filter(

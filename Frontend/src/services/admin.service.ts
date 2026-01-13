@@ -59,10 +59,9 @@ class AdminService {
   async assignRoleToUser(
     userId: number,
     roleId: number
-  ): Promise<UserRole> {
-    return apiRequest<UserRole>(`/admin/users/${userId}/roles`, {
+  ): Promise<{ message: string }> {
+    return apiRequest<{ message: string }>(`/admin/users/${userId}/roles/${roleId}`, {
       method: 'POST',
-      body: JSON.stringify({ role_id: roleId }),
     })
   }
 

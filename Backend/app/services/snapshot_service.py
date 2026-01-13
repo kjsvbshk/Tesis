@@ -114,8 +114,9 @@ class SnapshotService:
                                 try:
                                     game_date = game_result[0]
                                     # Intentar buscar por fecha (commence_time es varchar, puede necesitar casting)
+                                    # Cast la columna a date y comparar con el parámetro (que ya es date)
                                     odds_result = conn.execute(
-                                        text(f"SELECT * FROM odds WHERE {odds_commence_time_col}::date = :game_date::date ORDER BY {odds_commence_time_col} DESC LIMIT 1"),
+                                        text(f"SELECT * FROM odds WHERE CAST({odds_commence_time_col} AS date) = CAST(:game_date AS date) ORDER BY {odds_commence_time_col} DESC LIMIT 1"),
                                         {"game_date": game_date}
                                     ).fetchone()
                                     if odds_result:

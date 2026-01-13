@@ -11,9 +11,11 @@ import { useEffect, useState } from 'react'
 import { metricsService, type SystemMetrics } from '@/services/metrics.service'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
+import { useToast } from '@/hooks/use-toast'
 
 export function AdminHomePage() {
   const { userRoles } = usePermissions()
+  const { toast } = useToast()
   const [metrics, setMetrics] = useState<SystemMetrics | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -25,8 +27,13 @@ export function AdminHomePage() {
     try {
       const data = await metricsService.getMetrics()
       setMetrics(data)
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error loading metrics:', error)
+      toast({
+        title: 'Error',
+        description: error.message || 'Error al cargar las métricas del sistema',
+        variant: 'destructive',
+      })
     } finally {
       setLoading(false)
     }

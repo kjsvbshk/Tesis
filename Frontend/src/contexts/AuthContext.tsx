@@ -52,9 +52,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(userData)
       authService.saveUser(userData)
       
-      // Use window.location for navigation since we're outside router context
+      // Marcar que el usuario acaba de iniciar sesión para mostrar mensaje de bienvenida
       if (typeof window !== 'undefined') {
-        window.location.href = '/'
+        sessionStorage.setItem('justLoggedIn', 'true')
+        // Pequeño delay para que el toast se muestre antes de redirigir
+        setTimeout(() => {
+          window.location.href = '/'
+        }, 100)
       }
     } catch (error) {
       throw error

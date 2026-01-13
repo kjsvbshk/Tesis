@@ -19,6 +19,9 @@ import { HistoryPage } from '@/pages/HistoryPage'
 import { ProfilePage } from '@/pages/ProfilePage'
 import { LoginPage } from '@/pages/LoginPage'
 import { RegisterPage } from '@/pages/RegisterPage'
+import { VerifyEmailPage } from '@/pages/VerifyEmailPage'
+import { ForgotPasswordPage } from '@/pages/ForgotPasswordPage'
+import { ResetPasswordPage } from '@/pages/ResetPasswordPage'
 import { PredictionsPage } from '@/pages/PredictionsPage'
 import { RequestsPage } from '@/pages/RequestsPage'
 import { AdminHomePage } from '@/pages/admin/AdminHomePage'
@@ -55,6 +58,30 @@ const routerWithAuth = createBrowserRouter([
         element: (
           <PublicRoute>
             <RegisterPage />
+          </PublicRoute>
+        ),
+      },
+      {
+        path: 'verify-email',
+        element: (
+          <PublicRoute>
+            <VerifyEmailPage />
+          </PublicRoute>
+        ),
+      },
+      {
+        path: 'recuperar-contraseña',
+        element: (
+          <PublicRoute>
+            <ForgotPasswordPage />
+          </PublicRoute>
+        ),
+      },
+      {
+        path: 'reset-password',
+        element: (
+          <PublicRoute>
+            <ResetPasswordPage />
           </PublicRoute>
         ),
       },

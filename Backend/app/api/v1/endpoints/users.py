@@ -10,9 +10,14 @@ from datetime import timedelta
 from app.core.database import get_sys_db
 from app.core.config import settings
 from app.models.user_accounts import UserAccount, Client
-from app.schemas.user import UserResponse, UserCreate, UserUpdate, UserLogin, Token
+from app.schemas.user import (
+    UserResponse, UserCreate, UserUpdate, UserLogin, Token,
+    SendVerificationCodeRequest, VerifyCodeRequest, RegisterWithVerificationRequest,
+    ForgotPasswordRequest, ResetPasswordRequest
+)
 from app.services.user_service import UserService
-from app.services.auth_service import get_current_user, authenticate_user, create_access_token
+from app.services.auth_service import get_current_user, authenticate_user, create_access_token, get_password_hash
+from app.services.email_service import EmailService
 
 router = APIRouter()
 
@@ -74,11 +79,120 @@ async def login(
             detail=f"Internal server error during login: {error_detail}"
         )
 
-@router.post("/register", response_model=UserResponse)
-async def register_user(user: UserCreate, db: Session = Depends(get_sys_db)):
-    """Register a new user - siempre con rol 'usuario' por defecto"""
+@router.post("/send-verification-code")
+async def send_verification_code(
+    request: SendVerificationCodeRequest,
+    db: Session = Depends(get_sys_db)
+):
+    """Send verification code to email"""
     try:
+        email_service = EmailService()
+        
+        # For password reset, verify email exists
+        if request.purpose == 'password_reset':
+            user_service = UserService(db)
+            existing_email = await user_service.get_user_by_email(request.email)
+            if not existing_email:
+                # Don't reveal if email exists for security
+                return {"message": "If the email exists, a verification code has been sent"}
+        
+        # Send verification code
+        code = await email_service.send_verification_code(
+            email=request.email,
+            purpose=request.purpose,
+            expires_minutes=15
+        )
+        
+        return {
+            "message": "Verification code sent to email",
+            "code": code  # Only in development - remove in production
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error sending verification code: {str(e)}")
+
+@router.post("/verify-code")
+async def verify_code(
+    request: VerifyCodeRequest,
+    db: Session = Depends(get_sys_db)
+):
+    """Verify the code"""
+    try:
+        email_service = EmailService()
         user_service = UserService(db)
+        
+        # Get email based on purpose
+        if request.purpose == 'password_reset':
+            if not request.username:
+                raise HTTPException(
+                    status_code=400,
+                    detail="Username is required for password reset"
+                )
+            # Find user by username and get email
+            user_account = await user_service.get_user_by_username(request.username)
+            if not user_account:
+                raise HTTPException(
+                    status_code=404,
+                    detail="User not found"
+                )
+            email = user_account.email
+        else:
+            # For registration, email is required
+            if not request.email:
+                raise HTTPException(
+                    status_code=400,
+                    detail="Email is required for registration"
+                )
+            email = request.email
+        
+        is_valid = await email_service.verify_code(
+            email=email,
+            code=request.code,
+            purpose=request.purpose
+        )
+        
+        if not is_valid:
+            raise HTTPException(
+                status_code=400,
+                detail="Invalid or expired verification code"
+            )
+        
+        return {"message": "Code verified successfully", "verified": True, "email": email}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error verifying code: {str(e)}")
+
+@router.post("/register", response_model=UserResponse)
+async def register_user(user: RegisterWithVerificationRequest, db: Session = Depends(get_sys_db)):
+    """Register a new user - requires email verification"""
+    try:
+        email_service = EmailService()
+        user_service = UserService(db)
+        
+        # Verify that email has been verified
+        is_verified = await email_service.is_code_verified(
+            email=user.email,
+            purpose='registration'
+        )
+        
+        if not is_verified:
+            # Also try to verify the code now if provided
+            if user.verification_code:
+                verified = await email_service.verify_code(
+                    email=user.email,
+                    code=user.verification_code,
+                    purpose='registration'
+                )
+                if not verified:
+                    raise HTTPException(
+                        status_code=400,
+                        detail="Email verification required. Please verify your email first."
+                    )
+            else:
+                raise HTTPException(
+                    status_code=400,
+                    detail="Email verification required. Please verify your email first."
+                )
         
         # Check if username already exists
         existing_user = await user_service.get_user_by_username(user.username)
@@ -90,9 +204,13 @@ async def register_user(user: UserCreate, db: Session = Depends(get_sys_db)):
         if existing_email:
             raise HTTPException(status_code=400, detail="Email already registered")
         
-        # Crear usuario - el servicio siempre asigna rol 'client' por defecto
-        # Ignoramos cualquier rol que venga en el request
-        new_user_account = await user_service.create_user(user)
+        # Create user with verified email
+        user_create = UserCreate(
+            username=user.username,
+            email=user.email,
+            password=user.password
+        )
+        new_user_account = await user_service.create_user(user_create)
         
         # Obtener información del cliente y el rol para la respuesta
         client = await user_service.get_client_by_user_id(new_user_account.id)
@@ -236,6 +354,89 @@ async def change_password(
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error changing password: {str(e)}")
+
+@router.post("/forgot-password")
+async def forgot_password(
+    request: ForgotPasswordRequest,
+    db: Session = Depends(get_sys_db)
+):
+    """Request password reset - sends verification code to email associated with username"""
+    try:
+        email_service = EmailService()
+        user_service = UserService(db)
+        
+        # Find user by username and get their email
+        user_account = await user_service.get_user_by_username(request.username)
+        if not user_account:
+            # Don't reveal if username exists for security
+            return {"message": "If the username exists, a verification code has been sent to the associated email"}
+        
+        email = user_account.email
+        
+        # Send verification code for password reset
+        code = await email_service.send_verification_code(
+            email=email,
+            purpose='password_reset',
+            expires_minutes=15
+        )
+        
+        return {
+            "message": "If the username exists, a verification code has been sent to the associated email",
+            "code": code,  # Only in development - remove in production
+            "email": email  # Only in development - remove in production
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error processing password reset request: {str(e)}")
+
+@router.post("/reset-password")
+async def reset_password(
+    request: ResetPasswordRequest,
+    db: Session = Depends(get_sys_db)
+):
+    """Reset password after code verification"""
+    try:
+        email_service = EmailService()
+        user_service = UserService(db)
+        
+        # Find user by username and get their email
+        user_account = await user_service.get_user_by_username(request.username)
+        if not user_account:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        email = user_account.email
+        
+        # Verify the code (allows re-verification if already verified with correct code)
+        is_verified = await email_service.verify_code(
+            email=email,
+            code=request.code,
+            purpose='password_reset'
+        )
+        
+        if not is_verified:
+            raise HTTPException(
+                status_code=400,
+                detail="Invalid or expired verification code"
+            )
+        
+        # Validate new password
+        if len(request.new_password) < 6:
+            raise HTTPException(
+                status_code=400,
+                detail="New password must be at least 6 characters long"
+            )
+        
+        # Update password
+        user_account.hashed_password = get_password_hash(request.new_password)
+        db.commit()
+        db.refresh(user_account)
+        
+        return {"message": "Password reset successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error resetting password: {str(e)}")
 
 @router.get("/me/permissions")
 async def get_my_permissions(

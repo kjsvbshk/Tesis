@@ -68,7 +68,7 @@ async def build_bet_response(bet: EspnBet, espn_db: Session) -> BetResponse:
                 team = await match_service.get_team_by_id(selected_team_id)
                 if team:
                     selected_team_info = {
-                        "id": team.id,
+                        "id": getattr(team, 'team_id', getattr(team, 'id', None)),
                         "name": team.name,
                         "abbreviation": team.abbreviation,
                         "city": team.city

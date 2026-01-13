@@ -16,22 +16,51 @@ export function HomePage() {
 
   useEffect(() => {
     loadData()
+    
+    // Mostrar mensaje de bienvenida si el usuario acaba de iniciar sesión
+    const justLoggedIn = sessionStorage.getItem('justLoggedIn')
+    if (justLoggedIn === 'true') {
+      sessionStorage.removeItem('justLoggedIn')
+      // Pequeño delay para asegurar que el componente esté completamente renderizado
+      setTimeout(() => {
+        toast({
+          title: '¡Bienvenido!',
+          description: 'Has iniciado sesión correctamente',
+        })
+      }, 100)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const loadData = async () => {
     try {
       setLoading(true)
       const [bettingStats, matches] = await Promise.all([
-        betsService.getBettingStats().catch(() => null),
-        matchesService.getTodayMatches().catch(() => [])
+        betsService.getBettingStats().catch((error) => {
+          console.error('Error loading betting stats:', error)
+          return null
+        }),
+        matchesService.getTodayMatches().catch((error) => {
+          console.error('Error loading matches:', error)
+          return []
+        })
       ])
       setStats(bettingStats)
       setTodayMatches(matches)
+      
+      // Mostrar advertencia si alguna carga falló
+      if (bettingStats === null && matches.length === 0) {
+        toast({
+          title: 'Advertencia',
+          description: 'No se pudieron cargar algunos datos. Intenta recargar la página.',
+          variant: 'destructive',
+        })
+      }
     } catch (error: any) {
       console.error('Error loading data:', error)
       toast({
         title: 'Error',
-        description: 'Error al cargar los datos',
+        description: error.message || 'Error al cargar los datos. Por favor, intenta nuevamente.',
         variant: 'destructive',
       })
     } finally {

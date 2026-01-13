@@ -13,9 +13,9 @@ export async function apiRequest<T>(
 ): Promise<T> {
   const token = localStorage.getItem('token')
   
-  const headers: HeadersInit = {
+  const headers: any = {
     'Content-Type': 'application/json',
-    ...options.headers,
+    ...(options.headers || {}),
   }
 
   if (token) {
@@ -42,12 +42,30 @@ export async function apiRequest<T>(
     const text = await response.text()
     
     if (!response.ok) {
+      // Handle 401 Unauthorized specifically
+      if (response.status === 401) {
+        if (!text || text.trim() === '') {
+          throw new Error('Usuario o contraseña incorrectos')
+        }
+        try {
+          const error = JSON.parse(text)
+          // Check for common 401 error messages
+          const errorMessage = error.detail || error.message || 'Usuario o contraseña incorrectos'
+          throw new Error(errorMessage.includes('Incorrect') || errorMessage.includes('invalid') || errorMessage.includes('401') 
+            ? 'Usuario o contraseña incorrectos' 
+            : errorMessage)
+        } catch (parseError) {
+          throw new Error('Usuario o contraseña incorrectos')
+        }
+      }
+      
+      // Handle other errors
       if (!text || text.trim() === '') {
         throw new Error(`Error HTTP ${response.status}: ${response.statusText}`)
       }
       try {
         const error = JSON.parse(text)
-        throw new Error(error.detail || `Error HTTP ${response.status}`)
+        throw new Error(error.detail || error.message || `Error HTTP ${response.status}`)
       } catch (parseError) {
         throw new Error(`Error HTTP ${response.status}: ${text || response.statusText}`)
       }

@@ -14,29 +14,6 @@ class TeamBase(BaseModel):
     conference: str
     division: str
 
-class MatchBase(BaseModel):
-    home_team_id: int
-    away_team_id: int
-    game_date: datetime
-    season: str
-    season_type: str
-    status: str
-
-class MatchCreate(MatchBase):
-    espn_id: Optional[str] = None
-    home_odds: Optional[float] = None
-    away_odds: Optional[float] = None
-    over_under: Optional[float] = None
-
-class MatchUpdate(BaseModel):
-    status: Optional[str] = None
-    home_score: Optional[int] = None
-    away_score: Optional[int] = None
-    winner_id: Optional[int] = None
-    home_odds: Optional[float] = None
-    away_odds: Optional[float] = None
-    over_under: Optional[float] = None
-
 class MatchResponse(BaseModel):
     id: int
     espn_id: Optional[str] = None

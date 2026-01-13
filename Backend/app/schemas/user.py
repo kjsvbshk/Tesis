@@ -47,3 +47,32 @@ class Token(BaseModel):
     access_token: str
     token_type: str
     rol: str  # Rol del usuario (client, administrator, operator)
+
+class SendVerificationCodeRequest(BaseModel):
+    """Request to send verification code"""
+    email: EmailStr
+    purpose: str = "registration"  # 'registration' or 'password_reset'
+
+class VerifyCodeRequest(BaseModel):
+    """Request to verify code"""
+    email: Optional[EmailStr] = None  # Required for registration, optional for password_reset
+    username: Optional[str] = None  # Required for password_reset, optional for registration
+    code: str
+    purpose: str = "registration"
+
+class RegisterWithVerificationRequest(BaseModel):
+    """Register user after email verification"""
+    username: str
+    email: EmailStr
+    password: str
+    verification_code: str
+
+class ForgotPasswordRequest(BaseModel):
+    """Request password reset - sends verification code to email associated with username"""
+    username: str
+
+class ResetPasswordRequest(BaseModel):
+    """Reset password after code verification"""
+    username: str
+    code: str
+    new_password: str

@@ -3,12 +3,12 @@ Match service for business logic
 """
 
 from sqlalchemy.orm import Session
-from sqlalchemy import text, inspect
+from sqlalchemy import text
 from typing import List, Optional, Dict, Any
-from datetime import date, datetime, timedelta
+from datetime import date
 from app.models.game import Game
 from app.models.team import Team
-from app.schemas.match import MatchCreate, MatchResponse, TeamBase
+from app.schemas.match import MatchResponse, TeamBase
 from app.services.db_schema_service import DBSchemaService
 
 class MatchService:
@@ -507,28 +507,6 @@ class MatchService:
             import traceback
             traceback.print_exc()
             raise Exception(f"Error fetching match: {str(e)}")
-    
-    async def create_match(self, match: MatchCreate) -> Game:
-        """Create a new match"""
-        db_match = Game(**match.dict())
-        self.db.add(db_match)
-        self.db.commit()
-        self.db.refresh(db_match)
-        return db_match
-    
-    async def update_match(self, match_id: int, match_update: dict) -> Optional[Game]:
-        """Update match information"""
-        db_match = await self.get_match_by_id(match_id)
-        if not db_match:
-            return None
-        
-        for field, value in match_update.items():
-            if hasattr(db_match, field):
-                setattr(db_match, field, value)
-        
-        self.db.commit()
-        self.db.refresh(db_match)
-        return db_match
     
     async def get_teams(self) -> List[Team]:
         """Get all teams - NO DISPONIBLE sin tabla espn.teams"""

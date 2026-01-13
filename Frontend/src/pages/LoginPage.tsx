@@ -44,17 +44,24 @@ export function LoginPage() {
     setIsLoading(true)
     try {
       await login(username.trim(), password)
-      toast({
-        title: '¡Bienvenido!',
-        description: 'Has iniciado sesión correctamente',
-      })
+      // El mensaje de éxito se mostrará en HomePage después de la redirección
     } catch (error: any) {
-      const errorMessage = error.message || 'Error al iniciar sesión'
+      console.error('Login error:', error)
+      const errorMessage = error?.message || 'Error al iniciar sesión'
+      
+      // Mensaje más específico para errores de autenticación
+      let displayMessage = errorMessage
+      if (errorMessage.includes('Incorrect') || 
+          errorMessage.includes('incorrect') || 
+          errorMessage.includes('invalid') ||
+          errorMessage.includes('401') ||
+          errorMessage.includes('Unauthorized')) {
+        displayMessage = 'Usuario o contraseña incorrectos'
+      }
+      
       toast({
-        title: 'Error',
-        description: errorMessage.includes('Incorrect') 
-          ? 'Usuario o contraseña incorrectos' 
-          : errorMessage,
+        title: 'Error de autenticación',
+        description: displayMessage,
         variant: 'destructive',
       })
     } finally {

@@ -95,5 +95,56 @@ export const authService = {
       return null
     }
   },
+
+  async sendVerificationCode(email: string, purpose: 'registration' | 'password_reset' = 'registration'): Promise<{ message: string; code?: string }> {
+    return apiRequest<{ message: string; code?: string }>('/users/send-verification-code', {
+      method: 'POST',
+      body: JSON.stringify({ email, purpose }),
+    })
+  },
+
+  async verifyCode(
+    email: string, 
+    code: string, 
+    purpose: 'registration' | 'password_reset' = 'registration',
+    username?: string
+  ): Promise<{ message: string; verified: boolean; email?: string }> {
+    const body: any = { code, purpose }
+    if (purpose === 'password_reset' && username) {
+      body.username = username
+    } else {
+      body.email = email
+    }
+    return apiRequest<{ message: string; verified: boolean; email?: string }>('/users/verify-code', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    })
+  },
+
+  async registerWithVerification(data: {
+    username: string
+    email: string
+    password: string
+    verification_code: string
+  }): Promise<UserResponse> {
+    return apiRequest<UserResponse>('/users/register', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+  },
+
+  async forgotPassword(username: string): Promise<{ message: string; code?: string; email?: string }> {
+    return apiRequest<{ message: string; code?: string; email?: string }>('/users/forgot-password', {
+      method: 'POST',
+      body: JSON.stringify({ username }),
+    })
+  },
+
+  async resetPassword(username: string, code: string, newPassword: string): Promise<{ message: string }> {
+    return apiRequest<{ message: string }>('/users/reset-password', {
+      method: 'POST',
+      body: JSON.stringify({ username, code, new_password: newPassword }),
+    })
+  },
 }
 

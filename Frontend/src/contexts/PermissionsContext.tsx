@@ -3,7 +3,7 @@
  * Manages user permissions and role-based access control
  */
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { createContext, useContext, useState, useEffect, type ReactNode } from 'react'
 import { useAuth } from './AuthContext'
 import { adminService, type Role, type Permission, type UserRole } from '@/services/admin.service'
 import { apiRequest } from '@/lib/api'
@@ -105,7 +105,7 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
   /**
    * Check if user has a specific permission
    */
-  const hasPermission = (permissionCode: string): boolean => {
+  const hasPermission = (_permissionCode: string): boolean => {
     if (!user || !userRoles.length) return false
 
     // For now, we'll check based on the user's role

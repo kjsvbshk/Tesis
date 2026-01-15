@@ -5,7 +5,6 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useToast } from '@/hooks/use-toast'
 import { motion } from 'framer-motion'
-import { useAuth } from '@/contexts/AuthContext'
 import { authService } from '@/services/auth.service'
 
 export function RegisterPage() {

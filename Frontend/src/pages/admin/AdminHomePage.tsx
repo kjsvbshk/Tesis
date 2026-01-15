@@ -10,11 +10,9 @@ import { usePermissions } from '@/contexts/PermissionsContext'
 import { useEffect, useState } from 'react'
 import { metricsService, type SystemMetrics } from '@/services/metrics.service'
 import { Link } from 'react-router-dom'
-import { Button } from '@/components/ui/button'
 import { useToast } from '@/hooks/use-toast'
 
 export function AdminHomePage() {
-  const { userRoles } = usePermissions()
   const { toast } = useToast()
   const [metrics, setMetrics] = useState<SystemMetrics | null>(null)
   const [loading, setLoading] = useState(true)

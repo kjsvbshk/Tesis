@@ -25,8 +25,6 @@ import { useToast } from '@/hooks/use-toast'
 
 export function AdvancedSearchPage() {
   const [activeTab, setActiveTab] = useState('requests')
-  const [loading, setLoading] = useState(false)
-  const { toast } = useToast()
 
   return (
     <div className="space-y-6">

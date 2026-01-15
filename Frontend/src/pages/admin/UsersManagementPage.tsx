@@ -28,7 +28,7 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet'
 import { usersService, type User, type UserCreate, type UserUpdate } from '@/services/users.service'
-import { adminService, type Role } from '@/services/admin.service'
+import { adminService, type Role, type UserRole } from '@/services/admin.service'
 import { useToast } from '@/hooks/use-toast'
 
 export function UsersManagementPage() {
@@ -39,7 +39,7 @@ export function UsersManagementPage() {
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [isRolesOpen, setIsRolesOpen] = useState(false)
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
-  const [userRoles, setUserRoles] = useState<Role[]>([])
+  const [userRoles, setUserRoles] = useState<UserRole[]>([])
   const [allRoles, setAllRoles] = useState<Role[]>([])
   const [loadingRoles, setLoadingRoles] = useState(false)
   const { toast } = useToast()
@@ -235,7 +235,7 @@ export function UsersManagementPage() {
   )
 
   const availableRoles = allRoles.filter(
-    (role) => !userRoles.some((ur) => ur.id === role.id)
+    (role) => !userRoles.some((ur) => ur.role_id === role.id)
   )
 
   return (
@@ -511,21 +511,21 @@ export function UsersManagementPage() {
                     <p className="text-[#B0B3C5] text-sm">No hay roles asignados</p>
                   ) : (
                     <div className="space-y-2">
-                      {userRoles.map((role) => (
+                      {userRoles.map((userRole) => (
                         <div
-                          key={role.id}
+                          key={userRole.id}
                           className="flex items-center justify-between p-3 bg-[#0B132B] border border-[#1C2541] rounded-lg"
                         >
                           <div>
                             <Badge variant="outline" className="border-[#00FF73] text-[#00FF73] mr-2">
-                              {role.code}
+                              {userRole.role?.code || 'N/A'}
                             </Badge>
-                            <span className="text-white">{role.name}</span>
+                            <span className="text-white">{userRole.role?.name || 'Sin nombre'}</span>
                           </div>
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => handleRemoveRole(role.id)}
+                            onClick={() => handleRemoveRole(userRole.role_id)}
                             className="text-red-500 hover:text-red-400"
                           >
                             <X size={16} />

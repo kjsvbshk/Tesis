@@ -4,7 +4,6 @@
  */
 
 import { Outlet, NavLink } from 'react-router-dom'
-import { Toaster } from '@/components/ui/toaster'
 import { Key, Activity, FileText, Home } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useAuth } from '@/contexts/AuthContext'

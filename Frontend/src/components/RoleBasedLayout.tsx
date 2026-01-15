@@ -3,8 +3,7 @@
  * Redirects to the appropriate layout based on user role
  */
 
-import { useEffect } from 'react'
-import { Navigate, Outlet } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import { usePermissions } from '@/contexts/PermissionsContext'
 import { SidebarLayout } from './layout/SidebarLayout'
@@ -15,7 +14,7 @@ interface RoleBasedLayoutProps {
   requiredRole?: 'admin' | 'operator' | 'user'
 }
 
-export function RoleBasedLayout({ requiredRole }: RoleBasedLayoutProps) {
+export function RoleBasedLayout({}: RoleBasedLayoutProps) {
   const { isAuthenticated, isLoading } = useAuth()
   const { hasRole, isLoading: permissionsLoading } = usePermissions()
 

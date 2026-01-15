@@ -11,7 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useToast } from '@/hooks/use-toast'
 import { useAuth } from '@/contexts/AuthContext'
 import { userService } from '@/services/user.service'
-import { User, Lock, Mail, Phone, MapPin, CreditCard, Bell, Shield, Palette, LogOut } from 'lucide-react'
+import { User, CreditCard, Bell, Shield, LogOut } from 'lucide-react'
 
 export function ProfilePage() {
   const { toast } = useToast()

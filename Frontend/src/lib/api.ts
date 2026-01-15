@@ -35,7 +35,7 @@ export async function apiRequest<T>(
 
     // Handle empty response (network error, CORS, etc.)
     if (!response || response.status === 0) {
-      throw new Error('No se pudo conectar con el servidor. Verifica que el backend esté corriendo en http://localhost:8000')
+      throw new Error('No se pudo conectar con el servidor. Verifica la configuración de la API.')
     }
 
     // Read response as text first to check if it's empty
@@ -86,7 +86,7 @@ export async function apiRequest<T>(
   } catch (error: any) {
     // Handle network errors
     if (error.name === 'TypeError' && error.message.includes('fetch')) {
-      throw new Error('Error de conexión: No se pudo conectar con el servidor. Verifica que el backend esté corriendo.')
+      throw new Error('Error de conexión: No se pudo conectar con el servidor. Verifica la configuración de la API y que el backend esté disponible.')
     }
     // Re-throw other errors
     throw error

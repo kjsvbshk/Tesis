@@ -44,19 +44,32 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
-# CORS middleware
+# CORS middleware - Definido directamente en el código
+# Incluye URLs de desarrollo local y producción (Vercel)
+cors_origins = [
+    # Desarrollo local
+    "http://localhost:3000",
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "http://localhost:4173",
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:5173",
+    "http://127.0.0.1:5174",
+    "http://127.0.0.1:4173",
+    # Producción Vercel - URL principal
+    "https://house-always-win.vercel.app",
+    # Producción Vercel - URLs de preview/deployment específicas
+    "https://house-always-win-git-main-kjsvbshks-projects.vercel.app",
+]
+
+# Regex para permitir cualquier subdominio de vercel.app (previews automáticos)
+# Esto cubre todos los deployments de preview que Vercel genera automáticamente
+cors_origin_regex = r"https://.*\.vercel\.app"
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://localhost:5173",
-        "http://localhost:5174",
-        "http://localhost:4173",
-        "http://127.0.0.1:3000",
-        "http://127.0.0.1:5173",
-        "http://127.0.0.1:5174",
-        "http://127.0.0.1:4173",
-    ],  # React/Vite dev servers
+    allow_origins=cors_origins,
+    allow_origin_regex=cors_origin_regex,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

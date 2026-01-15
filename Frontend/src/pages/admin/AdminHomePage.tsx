@@ -6,7 +6,6 @@
 import { motion } from 'framer-motion'
 import { Users, Shield, BarChart3, FileText, Activity } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { usePermissions } from '@/contexts/PermissionsContext'
 import { useEffect, useState } from 'react'
 import { metricsService, type SystemMetrics } from '@/services/metrics.service'
 import { Link } from 'react-router-dom'
@@ -15,7 +14,6 @@ import { useToast } from '@/hooks/use-toast'
 export function AdminHomePage() {
   const { toast } = useToast()
   const [metrics, setMetrics] = useState<SystemMetrics | null>(null)
-  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     loadMetrics()
@@ -32,8 +30,6 @@ export function AdminHomePage() {
         description: error.message || 'Error al cargar las métricas del sistema',
         variant: 'destructive',
       })
-    } finally {
-      setLoading(false)
     }
   }
 

@@ -14,7 +14,7 @@ interface RoleBasedLayoutProps {
   requiredRole?: 'admin' | 'operator' | 'user'
 }
 
-export function RoleBasedLayout({}: RoleBasedLayoutProps) {
+export function RoleBasedLayout(_props: RoleBasedLayoutProps) {
   const { isAuthenticated, isLoading } = useAuth()
   const { hasRole, isLoading: permissionsLoading } = usePermissions()
 

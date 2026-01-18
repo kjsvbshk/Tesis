@@ -54,16 +54,39 @@ export function VerifyEmailPage() {
       
       const verifiedEmail = response.email || email
       
-      toast({
-        title: 'Código verificado',
-        description: 'Tu correo ha sido verificado correctamente',
-      })
-      
       // Redirect based on purpose
       if (purpose === 'password_reset') {
         navigate('/reset-password', { state: { username, code } })
       } else {
-        navigate('/registro', { state: { email: verifiedEmail || email, verified: true } })
+        // For registration: verify code and then complete registration automatically
+        // Get saved registration data from sessionStorage
+        const savedData = sessionStorage.getItem('registrationData')
+        if (!savedData) {
+          throw new Error('No se encontraron datos de registro. Por favor, regístrate nuevamente.')
+        }
+        
+        const parsedData = JSON.parse(savedData)
+        
+        // Complete registration with verified code
+        await authService.registerWithVerification({
+          username: parsedData.username,
+          email: verifiedEmail || parsedData.email,
+          password: parsedData.password,
+          verification_code: code,
+        })
+        
+        // Clear saved data
+        sessionStorage.removeItem('registrationData')
+        
+        toast({
+          title: '¡Cuenta creada!',
+          description: 'Te has registrado correctamente',
+        })
+        
+        // Redirect to login after a brief delay
+        setTimeout(() => {
+          navigate('/login')
+        }, 1500)
       }
     } catch (error: any) {
       const errorMessage = error.message || 'Código inválido o expirado'

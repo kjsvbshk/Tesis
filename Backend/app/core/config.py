@@ -136,11 +136,11 @@ class Settings(BaseSettings):
     # Email Configuration - SMTP (Gmail)
     EMAIL_PROVIDER: str = "smtp"  # Options: "smtp" (production), "console" (development)
     SMTP_HOST: str = "smtp.gmail.com"
-    SMTP_PORT: int = 465
+    SMTP_PORT: int = 587  # Use 587 with STARTTLS (works better on Render/cloud) or 465 with SSL
     SMTP_USER: Optional[str] = None  # Gmail email address (ej: tu_email@gmail.com)
     SMTP_PASSWORD: Optional[str] = None  # Gmail App Password (no tu contraseña normal)
     SMTP_FROM_EMAIL: Optional[str] = None  # Same as SMTP_USER for Gmail
-    SMTP_USE_TLS: bool = False  # Gmail uses SSL (port 465), not STARTTLS
+    SMTP_USE_TLS: bool = True  # Use STARTTLS for port 587 (required for Gmail on port 587)
     
     # Redis Configuration
     REDIS_URL: Optional[str] = None  # Full Redis URL (e.g., redis://:password@host:port/db)

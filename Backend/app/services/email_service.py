@@ -79,8 +79,6 @@ class EmailService:
             await EmailService._send_via_smtp(email, code, purpose, expires_at)
         elif settings.EMAIL_PROVIDER == "sendgrid":
             await EmailService._send_via_sendgrid(email, code, purpose, expires_at)
-        elif settings.EMAIL_PROVIDER == "smtp":
-            await EmailService._send_via_smtp(email, code, purpose, expires_at)
         else:
             # Console mode (development)
             print(f"📧 Verification code for {email} ({purpose}): {code}")
@@ -338,8 +336,24 @@ Si no solicitaste este código, puedes ignorar este mensaje de forma segura."""
             msg.attach(MIMEText(text_content, 'plain'))
             msg.attach(MIMEText(html_content, 'html'))
             
-            # Gmail uses SMTP_SSL on port 465
-            server = smtplib.SMTP_SSL(settings.SMTP_HOST, settings.SMTP_PORT)
+            # Gmail: Try port 587 with STARTTLS first (works better on Render/cloud), fallback to 465 with SSL
+            timeout_seconds = 30
+            port = settings.SMTP_PORT
+            
+            # If port is 465, use SMTP_SSL. If 587, use SMTP with STARTTLS
+            if port == 465:
+                # Gmail uses SMTP_SSL on port 465
+                server = smtplib.SMTP_SSL(settings.SMTP_HOST, port, timeout=timeout_seconds)
+            elif port == 587:
+                # Gmail uses STARTTLS on port 587 (better for cloud platforms like Render)
+                server = smtplib.SMTP(settings.SMTP_HOST, port, timeout=timeout_seconds)
+                server.starttls()
+            else:
+                # Default to STARTTLS for other ports
+                server = smtplib.SMTP(settings.SMTP_HOST, port, timeout=timeout_seconds)
+                if settings.SMTP_USE_TLS:
+                    server.starttls()
+            
             try:
                 server.login(settings.SMTP_USER, settings.SMTP_PASSWORD)
                 server.sendmail(from_email, email, msg.as_string())

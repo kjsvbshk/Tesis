@@ -202,7 +202,7 @@ async def place_bet(
             commit=True
         )
         
-        # Publicar evento en outbox (RF-08)
+        # Publicar evento en outbox (RF-08) - Mantener en Outbox (transaccional)
         outbox_service = OutboxService(db)
         await outbox_service.publish_bet_placed(
             bet_id=new_bet.id,
@@ -216,6 +216,27 @@ async def place_bet(
             },
             commit=True
         )
+        
+        # Enviar email de confirmación en background (RQ) - No transaccional
+        try:
+            from app.services.queue_service import queue_service
+            from app.tasks.email_tasks import send_notification_email_task
+            from app.services.user_service import UserService
+            user_service = UserService(db)
+            user = await user_service.get_user_by_id(current_user.id)
+            if user and user.email:
+                # Queue email notification (non-blocking)
+                queue_service.enqueue(
+                    send_notification_email_task,
+                    user.email,
+                    f"Apuesta Confirmada - ${bet.bet_amount}",
+                    f"<p>Tu apuesta de ${bet.bet_amount} ha sido confirmada. ID: {new_bet.id}</p>",
+                    queue_name='default'
+                )
+        except Exception as e:
+            # Don't fail the bet placement if email fails
+            import logging
+            logging.warning(f"Failed to queue bet confirmation email: {e}")
         
         # Construir respuesta con información del juego
         bet_response = await build_bet_response(new_bet, espn_db)

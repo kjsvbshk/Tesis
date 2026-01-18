@@ -34,11 +34,9 @@ class UserService {
 
   /**
    * Change user password
-   * Note: This endpoint may need to be created in the backend
+   * Requires current password and new password (min 8 chars, complexity requirements)
    */
   async changePassword(passwordData: PasswordChange): Promise<void> {
-    // TODO: Backend needs to implement this endpoint
-    // For now, we'll use a placeholder
     return apiRequest('/users/me/password', {
       method: 'PUT',
       body: JSON.stringify({

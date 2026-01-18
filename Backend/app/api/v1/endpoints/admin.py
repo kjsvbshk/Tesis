@@ -7,12 +7,18 @@ from sqlalchemy.orm import Session
 from typing import List
 
 from app.core.database import get_sys_db
-from app.models import User
+from app.models import User, Provider, ProviderEndpoint
 from app.services.auth_service import get_current_user
 from app.services.role_service import RoleService
 from app.services.permission_service import PermissionService
+from app.services.provider_orchestrator import ProviderOrchestrator
 from app.schemas.role import RoleCreate, RoleUpdate, RoleResponse
 from app.schemas.permission import PermissionCreate, PermissionUpdate, PermissionResponse
+from app.schemas.provider import (
+    ProviderCreate, ProviderUpdate, ProviderResponse,
+    ProviderEndpointCreate, ProviderEndpointUpdate, ProviderEndpointResponse,
+    ProviderStatusResponse
+)
 from app.core.authorization import get_user_permissions, has_permission
 
 router = APIRouter()
@@ -363,4 +369,276 @@ async def get_user_roles(
         return roles
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching user roles: {str(e)}")
+
+# ========== Providers ==========
+
+@router.post("/providers", response_model=ProviderResponse, status_code=status.HTTP_201_CREATED)
+async def create_provider(
+    provider: ProviderCreate,
+    admin_user: User = Depends(require_admin_permission),
+    db: Session = Depends(get_sys_db)
+):
+    """Create a new provider (admin/operator only)"""
+    try:
+        # Check if code already exists
+        existing = db.query(Provider).filter(Provider.code == provider.code).first()
+        if existing:
+            raise HTTPException(status_code=400, detail=f"Provider with code '{provider.code}' already exists")
+        
+        new_provider = Provider(
+            code=provider.code,
+            name=provider.name,
+            timeout_seconds=provider.timeout_seconds,
+            max_retries=provider.max_retries,
+            circuit_breaker_threshold=provider.circuit_breaker_threshold,
+            provider_metadata=provider.provider_metadata
+        )
+        db.add(new_provider)
+        db.commit()
+        db.refresh(new_provider)
+        return new_provider
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error creating provider: {str(e)}")
+
+@router.get("/providers", response_model=List[ProviderResponse])
+async def get_all_providers(
+    admin_user: User = Depends(require_admin_permission),
+    db: Session = Depends(get_sys_db)
+):
+    """Get all providers (admin/operator only)"""
+    try:
+        providers = db.query(Provider).all()
+        return providers
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching providers: {str(e)}")
+
+@router.get("/providers/{provider_id}", response_model=ProviderResponse)
+async def get_provider(
+    provider_id: int,
+    admin_user: User = Depends(require_admin_permission),
+    db: Session = Depends(get_sys_db)
+):
+    """Get a specific provider (admin/operator only)"""
+    try:
+        provider = db.query(Provider).filter(Provider.id == provider_id).first()
+        if not provider:
+            raise HTTPException(status_code=404, detail="Provider not found")
+        return provider
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching provider: {str(e)}")
+
+@router.put("/providers/{provider_id}", response_model=ProviderResponse)
+async def update_provider(
+    provider_id: int,
+    provider_update: ProviderUpdate,
+    admin_user: User = Depends(require_admin_permission),
+    db: Session = Depends(get_sys_db)
+):
+    """Update a provider (admin/operator only)"""
+    try:
+        provider = db.query(Provider).filter(Provider.id == provider_id).first()
+        if not provider:
+            raise HTTPException(status_code=404, detail="Provider not found")
+        
+        update_data = provider_update.dict(exclude_unset=True)
+        for key, value in update_data.items():
+            setattr(provider, key, value)
+        
+        db.commit()
+        db.refresh(provider)
+        return provider
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error updating provider: {str(e)}")
+
+@router.delete("/providers/{provider_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_provider(
+    provider_id: int,
+    admin_user: User = Depends(require_admin_permission),
+    db: Session = Depends(get_sys_db)
+):
+    """Delete a provider (admin/operator only)"""
+    try:
+        provider = db.query(Provider).filter(Provider.id == provider_id).first()
+        if not provider:
+            raise HTTPException(status_code=404, detail="Provider not found")
+        
+        db.delete(provider)
+        db.commit()
+        return None
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error deleting provider: {str(e)}")
+
+@router.get("/providers/{provider_id}/endpoints", response_model=List[ProviderEndpointResponse])
+async def get_provider_endpoints(
+    provider_id: int,
+    admin_user: User = Depends(require_admin_permission),
+    db: Session = Depends(get_sys_db)
+):
+    """Get all endpoints for a provider (admin/operator only)"""
+    try:
+        provider = db.query(Provider).filter(Provider.id == provider_id).first()
+        if not provider:
+            raise HTTPException(status_code=404, detail="Provider not found")
+        
+        endpoints = db.query(ProviderEndpoint).filter(ProviderEndpoint.provider_id == provider_id).all()
+        return endpoints
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching provider endpoints: {str(e)}")
+
+@router.post("/providers/{provider_id}/endpoints", response_model=ProviderEndpointResponse, status_code=status.HTTP_201_CREATED)
+async def create_provider_endpoint(
+    provider_id: int,
+    endpoint: ProviderEndpointCreate,
+    admin_user: User = Depends(require_admin_permission),
+    db: Session = Depends(get_sys_db)
+):
+    """Create a new endpoint for a provider (admin/operator only)"""
+    try:
+        provider = db.query(Provider).filter(Provider.id == provider_id).first()
+        if not provider:
+            raise HTTPException(status_code=404, detail="Provider not found")
+        
+        new_endpoint = ProviderEndpoint(
+            provider_id=provider_id,
+            purpose=endpoint.purpose,
+            url=endpoint.url,
+            method=endpoint.method,
+            headers=endpoint.headers
+        )
+        db.add(new_endpoint)
+        db.commit()
+        db.refresh(new_endpoint)
+        return new_endpoint
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error creating provider endpoint: {str(e)}")
+
+@router.put("/providers/{provider_id}/endpoints/{endpoint_id}", response_model=ProviderEndpointResponse)
+async def update_provider_endpoint(
+    provider_id: int,
+    endpoint_id: int,
+    endpoint_update: ProviderEndpointUpdate,
+    admin_user: User = Depends(require_admin_permission),
+    db: Session = Depends(get_sys_db)
+):
+    """Update a provider endpoint (admin/operator only)"""
+    try:
+        endpoint = db.query(ProviderEndpoint).filter(
+            ProviderEndpoint.id == endpoint_id,
+            ProviderEndpoint.provider_id == provider_id
+        ).first()
+        if not endpoint:
+            raise HTTPException(status_code=404, detail="Provider endpoint not found")
+        
+        update_data = endpoint_update.dict(exclude_unset=True)
+        for key, value in update_data.items():
+            setattr(endpoint, key, value)
+        
+        db.commit()
+        db.refresh(endpoint)
+        return endpoint
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error updating provider endpoint: {str(e)}")
+
+@router.delete("/providers/{provider_id}/endpoints/{endpoint_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_provider_endpoint(
+    provider_id: int,
+    endpoint_id: int,
+    admin_user: User = Depends(require_admin_permission),
+    db: Session = Depends(get_sys_db)
+):
+    """Delete a provider endpoint (admin/operator only)"""
+    try:
+        endpoint = db.query(ProviderEndpoint).filter(
+            ProviderEndpoint.id == endpoint_id,
+            ProviderEndpoint.provider_id == provider_id
+        ).first()
+        if not endpoint:
+            raise HTTPException(status_code=404, detail="Provider endpoint not found")
+        
+        db.delete(endpoint)
+        db.commit()
+        return None
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error deleting provider endpoint: {str(e)}")
+
+@router.get("/providers/{provider_code}/status", response_model=ProviderStatusResponse)
+async def get_provider_status(
+    provider_code: str,
+    admin_user: User = Depends(require_admin_permission),
+    db: Session = Depends(get_sys_db)
+):
+    """Get provider status including circuit breaker state (admin/operator only)"""
+    try:
+        orchestrator = ProviderOrchestrator(db)
+        status = orchestrator.get_provider_status(provider_code)
+        if "error" in status:
+            raise HTTPException(status_code=404, detail=status["error"])
+        return status
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching provider status: {str(e)}")
+
+@router.post("/providers/{provider_code}/test")
+async def test_provider_endpoint(
+    provider_code: str,
+    test_request: dict,
+    admin_user: User = Depends(require_admin_permission),
+    db: Session = Depends(get_sys_db)
+):
+    """Test a provider endpoint (admin/operator only)"""
+    try:
+        purpose = test_request.get("purpose")
+        if not purpose:
+            raise HTTPException(status_code=400, detail="purpose is required")
+        
+        orchestrator = ProviderOrchestrator(db)
+        result = await orchestrator.call_provider(provider_code, purpose)
+        return result
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error testing provider: {str(e)}")
+
+# ========== Permission Checking ==========
+
+@router.get("/permissions/check")
+async def check_permission(
+    permission_code: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_sys_db)
+):
+    """Check if current user has a specific permission"""
+    try:
+        user_permissions = get_user_permissions(db, current_user.id)
+        has_perm = has_permission(permission_code, user_permissions)
+        return {
+            "has_permission": has_perm,
+            "permission_code": permission_code,
+            "user_id": current_user.id
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error checking permission: {str(e)}")
 

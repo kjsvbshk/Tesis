@@ -51,20 +51,73 @@ async def readiness_check(db: Session = Depends(get_sys_db)):
     """
     Readiness probe endpoint
     RF-14: Verifica que la aplicación esté lista para recibir tráfico
+    Checks: Database, Cache (Redis if configured), Providers
     """
     try:
+        checks = {}
+        all_ready = True
+        
         # Verificar conexión a BD app
-        db.execute(text("SELECT 1"))
+        try:
+            db.execute(text("SELECT 1"))
+            checks["database_app"] = "ok"
+        except Exception as e:
+            checks["database_app"] = f"error: {str(e)}"
+            all_ready = False
         
         # Verificar conexión a BD espn
-        with espn_engine.connect() as conn:
-            conn.execute(text("SELECT 1"))
+        try:
+            with espn_engine.connect() as conn:
+                conn.execute(text("SELECT 1"))
+            checks["database_espn"] = "ok"
+        except Exception as e:
+            checks["database_espn"] = f"error: {str(e)}"
+            all_ready = False
+        
+        # Verificar cache (Redis si está configurado)
+        try:
+            cache_status = await cache_service.get_status()
+            if hasattr(cache_service, '_connected') and cache_service._connected:
+                checks["cache"] = "ok (Redis)"
+            else:
+                checks["cache"] = "ok (in-memory)"
+        except Exception as e:
+            checks["cache"] = f"warning: {str(e)}"
+            # Cache failure doesn't make service unready
+        
+        # Verificar colas RQ (si Redis está configurado)
+        try:
+            from app.services.queue_service import queue_service
+            if queue_service.is_available():
+                queue_stats = queue_service.get_queue_stats()
+                total_jobs = sum(q.get("count", 0) for q in queue_stats.get("queues", {}).values())
+                checks["queues"] = f"ok (Redis + RQ, {total_jobs} jobs)"
+            else:
+                checks["queues"] = "ok (fallback sync)"
+        except Exception as e:
+            checks["queues"] = f"warning: {str(e)}"
+        
+        # Verificar proveedores activos (opcional)
+        try:
+            from app.models import Provider
+            active_providers = db.query(Provider).filter(Provider.is_active == True).count()
+            checks["providers"] = f"ok ({active_providers} active)"
+        except Exception as e:
+            checks["providers"] = f"warning: {str(e)}"
+        
+        if not all_ready:
+            raise HTTPException(
+                status_code=503,
+                detail=f"Service not ready: {checks}"
+            )
         
         return {
             "status": "ready",
-            "database": "connected",
+            "checks": checks,
             "timestamp": datetime.utcnow().isoformat()
         }
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=503, detail=f"Service not ready: {str(e)}")
 
@@ -95,6 +148,14 @@ async def get_metrics(db: Session = Depends(get_sys_db)):
         # Métricas de caché
         cache_status = await cache_service.get_status()
         
+        # Métricas de colas RQ
+        queue_stats = {"available": False, "queues": {}}
+        try:
+            from app.services.queue_service import queue_service
+            queue_stats = queue_service.get_queue_stats()
+        except:
+            pass
+        
         # Calcular tasas de éxito
         success_rate = (completed_requests / total_requests * 100) if total_requests > 0 else 0
         failure_rate = (failed_requests / total_requests * 100) if total_requests > 0 else 0
@@ -120,7 +181,8 @@ async def get_metrics(db: Session = Depends(get_sys_db)):
             "predictions": {
                 "total": total_predictions
             },
-            "cache": cache_status
+            "cache": cache_status,
+            "queues": queue_stats
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error getting metrics: {str(e)}")

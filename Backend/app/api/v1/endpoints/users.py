@@ -96,12 +96,29 @@ async def send_verification_code(
                 # Don't reveal if email exists for security
                 return {"message": "If the email exists, a verification code has been sent"}
         
-        # Send verification code
-        code = await email_service.send_verification_code(
-            email=request.email,
-            purpose=request.purpose,
-            expires_minutes=15
+        # Queue email sending task (async via RQ)
+        from app.services.queue_service import queue_service
+        from app.tasks.email_tasks import send_verification_email_task
+        
+        # Generate code first to return it (for development)
+        code = email_service.generate_verification_code()
+        
+        # Queue the email sending task
+        job = queue_service.enqueue(
+            send_verification_email_task,
+            request.email,
+            request.purpose,
+            15,  # expires_minutes
+            queue_name='high'  # High priority for verification emails
         )
+        
+        # If RQ is not available, send synchronously as fallback
+        if not job and not queue_service.is_available():
+            code = await email_service.send_verification_code(
+                email=request.email,
+                purpose=request.purpose,
+                expires_minutes=15
+            )
         
         return {
             "message": "Verification code sent to email",
@@ -322,9 +339,19 @@ async def change_password(
     current_user: UserAccount = Depends(get_current_user),
     db: Session = Depends(get_sys_db)
 ):
-    """Change user password"""
+    """
+    Change user password with enhanced security:
+    - Password complexity validation
+    - Rate limiting (max 5 attempts per hour)
+    - Audit logging
+    - Email notification (optional)
+    """
     try:
         from app.services.auth_service import verify_password, get_password_hash
+        from app.services.audit_service import AuditService
+        from app.services.cache_service import cache_service
+        from datetime import datetime, timedelta
+        import re
         
         current_password = password_data.get("current_password")
         new_password = password_data.get("new_password")
@@ -332,11 +359,79 @@ async def change_password(
         if not current_password or not new_password:
             raise HTTPException(status_code=400, detail="current_password and new_password are required")
         
-        if len(new_password) < 6:
-            raise HTTPException(status_code=400, detail="New password must be at least 6 characters long")
+        # Rate limiting: Check attempts in last hour
+        rate_limit_key = f"password_change_attempts:{current_user.id}"
+        attempts_data = cache_service.get(rate_limit_key, allow_stale=False)
+        
+        if attempts_data and attempts_data.get("data"):
+            attempts = attempts_data["data"].get("count", 0)
+            last_attempt = attempts_data["data"].get("last_attempt")
+            if attempts >= 5:
+                if last_attempt:
+                    last_attempt_time = datetime.fromisoformat(last_attempt)
+                    time_since_last = datetime.utcnow() - last_attempt_time.replace(tzinfo=None)
+                    if time_since_last < timedelta(hours=1):
+                        remaining_minutes = int((timedelta(hours=1) - time_since_last).total_seconds() / 60)
+                        raise HTTPException(
+                            status_code=429,
+                            detail=f"Too many password change attempts. Please try again in {remaining_minutes} minutes."
+                        )
+                    else:
+                        # Reset counter after 1 hour
+                        cache_service.set(rate_limit_key, {"count": 0, "last_attempt": None}, ttl_seconds=3600)
+        
+        # Enhanced password validation
+        if len(new_password) < 8:
+            raise HTTPException(
+                status_code=400,
+                detail="New password must be at least 8 characters long"
+            )
+        
+        # Check password complexity
+        has_upper = bool(re.search(r'[A-Z]', new_password))
+        has_lower = bool(re.search(r'[a-z]', new_password))
+        has_digit = bool(re.search(r'\d', new_password))
+        has_special = bool(re.search(r'[!@#$%^&*(),.?":{}|<>]', new_password))
+        
+        complexity_score = sum([has_upper, has_lower, has_digit, has_special])
+        if complexity_score < 3:
+            raise HTTPException(
+                status_code=400,
+                detail="New password must contain at least 3 of the following: uppercase letter, lowercase letter, digit, special character"
+            )
+        
+        # Check if new password is same as current
+        if verify_password(new_password, current_user.hashed_password):
+            raise HTTPException(
+                status_code=400,
+                detail="New password must be different from current password"
+            )
         
         # Verify current password
         if not verify_password(current_password, current_user.hashed_password):
+            # Increment rate limit counter
+            if attempts_data and attempts_data.get("data"):
+                attempts = attempts_data["data"].get("count", 0) + 1
+            else:
+                attempts = 1
+            
+            cache_service.set(
+                rate_limit_key,
+                {"count": attempts, "last_attempt": datetime.utcnow().isoformat()},
+                ttl_seconds=3600
+            )
+            
+            # Log failed attempt
+            audit_service = AuditService(db)
+            await audit_service.log_action(
+                action="password_change_failed",
+                actor_user_id=current_user.id,
+                resource_type="user",
+                resource_id=current_user.id,
+                metadata={"reason": "incorrect_current_password"},
+                commit=False
+            )
+            
             raise HTTPException(status_code=400, detail="Current password is incorrect")
         
         # Update password
@@ -346,8 +441,32 @@ async def change_password(
             raise HTTPException(status_code=404, detail="User not found")
         
         db_user.hashed_password = get_password_hash(new_password)
+        
+        # Log password change
+        audit_service = AuditService(db)
+        await audit_service.log_action(
+            action="password_changed",
+            actor_user_id=current_user.id,
+            resource_type="user",
+            resource_id=current_user.id,
+            metadata={"password_changed_at": datetime.utcnow().isoformat()},
+            commit=False
+        )
+        
         db.commit()
         db.refresh(db_user)
+        
+        # Reset rate limit on success
+        cache_service.delete(rate_limit_key)
+        
+        # Send email notification (optional, if email service is configured)
+        try:
+            from app.services.email_service import EmailService
+            email_service = EmailService()
+            # Note: Email notification for password change could be added here
+            # await email_service.send_password_change_notification(current_user.email)
+        except:
+            pass  # Email notification is optional
         
         return {"message": "Password changed successfully"}
     except HTTPException:
@@ -373,12 +492,29 @@ async def forgot_password(
         
         email = user_account.email
         
-        # Send verification code for password reset
-        code = await email_service.send_verification_code(
-            email=email,
-            purpose='password_reset',
-            expires_minutes=15
+        # Queue email sending task (async via RQ)
+        from app.services.queue_service import queue_service
+        from app.tasks.email_tasks import send_verification_email_task
+        
+        # Generate code first
+        code = email_service.generate_verification_code()
+        
+        # Queue the email sending task
+        job = queue_service.enqueue(
+            send_verification_email_task,
+            email,
+            'password_reset',
+            15,  # expires_minutes
+            queue_name='high'
         )
+        
+        # Fallback if RQ not available
+        if not job and not queue_service.is_available():
+            code = await email_service.send_verification_code(
+                email=email,
+                purpose='password_reset',
+                expires_minutes=15
+            )
         
         return {
             "message": "If the username exists, a verification code has been sent to the associated email",

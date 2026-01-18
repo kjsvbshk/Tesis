@@ -13,7 +13,8 @@ interface PermissionsContextType {
   permissions: Permission[]
   userRoles: UserRole[]
   isLoading: boolean
-  hasPermission: (permissionCode: string) => boolean
+  hasPermission: (permissionCode: string) => Promise<boolean>
+  hasPermissionSync: (permissionCode: string) => boolean
   hasScope: (scope: string) => boolean
   hasRole: (roleCode: string) => boolean
   refreshPermissions: () => Promise<void>
@@ -26,7 +27,11 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
   const [roles, setRoles] = useState<Role[]>([])
   const [permissions, setPermissions] = useState<Permission[]>([])
   const [userRoles, setUserRoles] = useState<UserRole[]>([])
+  const [userPermissions, setUserPermissions] = useState<string[]>([]) // Store user's permission codes
   const [isLoading, setIsLoading] = useState(true)
+  // Cache for permission checks to reduce API calls
+  const permissionCache = new Map<string, { hasPermission: boolean; timestamp: number }>()
+  const CACHE_TTL = 5 * 60 * 1000 // 5 minutes
 
   useEffect(() => {
     if (isAuthenticated && user) {
@@ -71,6 +76,16 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
           },
         }))
         setUserRoles(userRolesData)
+        // Store permissions for fast local checking
+        setUserPermissions(permissionsData.permissions)
+        
+        // Pre-populate cache with known permissions
+        permissionsData.permissions.forEach(perm => {
+          permissionCache.set(perm, {
+            hasPermission: true,
+            timestamp: Date.now(),
+          })
+        })
 
         // Get all roles and permissions (for admin view) - only if user is admin
         if (permissionsData.roles.some(r => r.code === 'admin')) {
@@ -104,20 +119,66 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
 
   /**
    * Check if user has a specific permission
+   * Uses backend API with caching to reduce calls
    */
-  const hasPermission = (_permissionCode: string): boolean => {
+  const hasPermission = async (permissionCode: string): Promise<boolean> => {
     if (!user || !userRoles.length) return false
 
-    // For now, we'll check based on the user's role
-    // In a full implementation, we'd check the permissions associated with the user's roles
-    // This is a simplified version - the backend should handle permission checks
-    
-    // Check if user has admin role (has all permissions)
+    // Check if user has admin role (has all permissions) - fast path
     const hasAdminRole = userRoles.some(ur => ur.role?.code === 'admin')
     if (hasAdminRole) return true
 
-    // TODO: Implement full permission checking based on role-permission associations
-    // For now, return false for specific permission checks
+    // Check local permissions list first (from /users/me/permissions)
+    if (userPermissions.includes(permissionCode)) {
+      return true
+    }
+
+    // Check cache
+    const cached = permissionCache.get(permissionCode)
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+      return cached.hasPermission
+    }
+
+    // Call backend to check permission (for permissions not in local list)
+    try {
+      const hasPerm = await adminService.checkPermission(permissionCode)
+      // Update cache
+      permissionCache.set(permissionCode, {
+        hasPermission: hasPerm,
+        timestamp: Date.now(),
+      })
+      return hasPerm
+    } catch (error) {
+      console.error('Error checking permission:', error)
+      return false
+    }
+  }
+
+  /**
+   * Synchronous version of hasPermission for use in components
+   * Returns cached value or checks local permissions list
+   */
+  const hasPermissionSync = (permissionCode: string): boolean => {
+    if (!user || !userRoles.length) return false
+
+    // Check if user has admin role (has all permissions) - fast path
+    const hasAdminRole = userRoles.some(ur => ur.role?.code === 'admin')
+    if (hasAdminRole) return true
+
+    // Check local permissions list (from /users/me/permissions)
+    if (userPermissions.includes(permissionCode)) {
+      return true
+    }
+
+    // Check cache
+    const cached = permissionCache.get(permissionCode)
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+      return cached.hasPermission
+    }
+
+    // If not cached, trigger async check and return false for now
+    // Component should use useEffect to handle async permission checks
+    hasPermission(permissionCode).catch(console.error)
     return false
   }
 
@@ -161,6 +222,7 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
         userRoles,
         isLoading,
         hasPermission,
+        hasPermissionSync,
         hasScope,
         hasRole,
         refreshPermissions,

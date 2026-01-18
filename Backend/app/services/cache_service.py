@@ -206,5 +206,23 @@ class CacheService:
         }
 
 # Instancia global del servicio de caché
-cache_service = CacheService()
+# Use Redis if configured, otherwise use in-memory cache
+def get_cache_service():
+    """Get cache service instance (Redis or in-memory)"""
+    from app.core.config import settings
+    
+    if settings.USE_REDIS:
+        try:
+            from app.services.redis_cache_service import RedisCacheService
+            redis_cache = RedisCacheService()
+            if redis_cache._connected:
+                return redis_cache
+            else:
+                print("⚠️  Redis not connected, falling back to in-memory cache")
+        except Exception as e:
+            print(f"⚠️  Error initializing Redis cache: {e}, falling back to in-memory cache")
+    
+    return CacheService()
+
+cache_service = get_cache_service()
 

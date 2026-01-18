@@ -3,11 +3,13 @@ NBA Bets Backend - FastAPI Application
 Main application entry point
 """
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.exceptions import RequestValidationError
 import uvicorn
 import os
+import logging
 from dotenv import load_dotenv
 
 from app.core.config import settings
@@ -75,8 +77,45 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Configure structured logging
+logging.basicConfig(
+    level=logging.INFO if not settings.DEBUG else logging.DEBUG,
+    format='%(asctime)s | %(levelname)s | %(name)s | %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
+
+# Create structured logger
+structured_logger = logging.getLogger("nba_bets_api")
+structured_logger.setLevel(logging.INFO)
+
 # Include API routes
 app.include_router(api_router, prefix="/api/v1")
+
+# Initialize queue service (will connect to Redis if configured)
+from app.services.queue_service import queue_service
+if queue_service.is_available():
+    print("✅ Queue service initialized (Redis + RQ)")
+else:
+    print("⚠️  Queue service using fallback (tasks will execute synchronously)")
+
+# Validation error handler
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    """Handle validation errors with user-friendly messages"""
+    errors = exc.errors()
+    error_messages = []
+    for error in errors:
+        field = ".".join(str(loc) for loc in error.get("loc", []))
+        message = error.get("msg", "Invalid value")
+        error_messages.append(f"{field}: {message}")
+    
+    return JSONResponse(
+        status_code=422,
+        content={
+            "detail": "Validation error",
+            "errors": error_messages
+        }
+    )
 
 @app.on_event("startup")
 async def startup_event():
@@ -128,14 +167,36 @@ async def health_check():
     """Health check endpoint (legacy - use /api/v1/health/health)"""
     return {"status": "healthy", "service": "nba-bets-api"}
 
-# Global exception handler
+# Global exception handler with structured logging
 @app.exception_handler(Exception)
 async def global_exception_handler(request, exc):
     import traceback
-    traceback.print_exc()
+    import logging
+    
+    # Configure structured logging
+    logger = logging.getLogger("nba_bets_api")
+    logger.setLevel(logging.ERROR)
+    
+    # Log error with context
+    error_context = {
+        "path": str(request.url.path),
+        "method": request.method,
+        "error_type": type(exc).__name__,
+        "error_message": str(exc),
+        "traceback": traceback.format_exc()
+    }
+    
+    # Log to console (in production, this would go to a log aggregation service)
+    logger.error(f"Unhandled exception: {error_context}")
+    
+    # Don't expose internal errors in production
+    error_message = "Internal server error"
+    if settings.DEBUG:
+        error_message = f"Internal server error: {str(exc)}"
+    
     return JSONResponse(
         status_code=500,
-        content={"detail": "Internal server error", "error": str(exc)},
+        content={"detail": error_message, "error_type": type(exc).__name__},
         headers={
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Methods": "*",

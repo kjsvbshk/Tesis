@@ -133,6 +133,19 @@ class Settings(BaseSettings):
     MIN_BET_AMOUNT: Optional[float] = 1.0
     MAX_BET_AMOUNT: Optional[float] = 100.0
     
+    # Email Configuration - Resend
+    EMAIL_PROVIDER: str = "resend"  # Options: "resend" (production), "console" (development)
+    RESEND_API_KEY: Optional[str] = None
+    RESEND_FROM_EMAIL: str = "onboarding@resend.dev"  # Default Resend email
+    
+    # Redis Configuration
+    REDIS_URL: Optional[str] = None  # Full Redis URL (e.g., redis://:password@host:port/db)
+    REDIS_HOST: str = "localhost"
+    REDIS_PORT: int = 6379
+    REDIS_PASSWORD: Optional[str] = None
+    REDIS_DB: int = 0
+    USE_REDIS: bool = False  # Set to True to use Redis instead of in-memory cache
+    
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"

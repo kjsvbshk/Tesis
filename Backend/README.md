@@ -359,6 +359,56 @@ docker-compose down
 
 - **Créditos virtuales**: Todo el sistema usa créditos virtuales, no dinero real. Es solo para fines educativos y de entretenimiento.
 
+## Deployment en Render
+
+### Configuración Requerida
+
+1. **Root Directory**: `Backend` (sin espacios)
+2. **Dockerfile Path**: `Backend/Dockerfile`
+3. **Environment Variables**:
+   - Variables de base de datos (Neon)
+   - `SECRET_KEY`: Clave secreta para JWT
+   - `CORS_ORIGINS`: URLs permitidas (ej: `http://localhost:5173,https://tu-frontend.vercel.app`)
+   - **Email (Resend)**: `EMAIL_PROVIDER=resend`, `RESEND_API_KEY`, `RESEND_FROM_EMAIL`
+   - **Redis (Opcional)**: `USE_REDIS=true`, `REDIS_URL` (ver `REDIS_SETUP.md` para más detalles)
+
+### Servicios de Producción
+
+#### Email Service - Resend
+Configuración requerida:
+- `EMAIL_PROVIDER=resend`
+- `RESEND_API_KEY=re_SoipKPBL_NrDhAPEmPeiMp5NjgdcG4pUF`
+- `RESEND_FROM_EMAIL=onboarding@resend.dev`
+
+Para desarrollo local, usa `EMAIL_PROVIDER=console` para ver códigos en los logs.
+
+#### Redis + RQ (Opcional)
+Redis es **completamente opcional**. El sistema funciona sin Redis:
+- **Caché**: Usa memoria (suficiente para una instancia)
+- **Colas**: Usa Outbox Pattern (eventos transaccionales) + RQ con fallback síncrono
+
+**Arquitectura Híbrida:**
+- **Outbox Pattern**: Para eventos transaccionales críticos (`bet.placed`, `prediction.completed`)
+- **Redis + RQ**: Para tareas asíncronas (emails, sincronización de proveedores, limpieza)
+
+Redis es útil solo si:
+- Quieres optimizar colas (más eficiente que polling de BD)
+- Tienes múltiples instancias del backend
+- Necesitas caché persistente entre reinicios
+
+**Para usar Redis + RQ:**
+1. Configurar Redis (ver `REDIS_SETUP.md`)
+2. Ejecutar worker: `python -m app.workers.rq_worker` (en proceso separado)
+3. Las tareas se encolarán automáticamente
+
+Ver `env.example` y `REDIS_SETUP.md` para más detalles.
+
+## Documentación Adicional
+
+- `API_DOCUMENTATION.md`: Documentación completa de endpoints
+- `OPTIMIZATION_NOTES.md`: Notas sobre optimizaciones y mejoras recomendadas
+- `REDIS_SETUP.md`: Guía completa para configurar Redis (opcional, solo para producción escalable)
+
 - **Predicciones educativas**: Las predicciones son generadas por modelos de IA entrenados con datos históricos. No son garantía de resultados reales.
 
 - **Autenticación**: El sistema usa JWT (tokens) para autenticar usuarios. Cada petición que requiere autenticación necesita incluir el token en los headers.

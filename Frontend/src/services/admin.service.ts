@@ -158,6 +158,21 @@ class AdminService {
       method: 'DELETE',
     })
   }
+
+  /**
+   * Check if current user has a specific permission
+   */
+  async checkPermission(permissionCode: string): Promise<boolean> {
+    try {
+      const result = await apiRequest<{ has_permission: boolean }>(
+        `/admin/permissions/check?permission_code=${encodeURIComponent(permissionCode)}`
+      )
+      return result.has_permission
+    } catch (error: any) {
+      console.error('Error checking permission:', error)
+      return false
+    }
+  }
 }
 
 export const adminService = new AdminService()

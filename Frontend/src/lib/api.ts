@@ -88,7 +88,13 @@ export async function apiRequest<T>(
     if (error.name === 'TypeError' && error.message.includes('fetch')) {
       throw new Error('Error de conexión: No se pudo conectar con el servidor. Verifica la configuración de la API y que el backend esté disponible.')
     }
-    // Re-throw other errors
+    
+    // Handle timeout errors
+    if (error.name === 'AbortError' || error.message.includes('timeout')) {
+      throw new Error('La solicitud tardó demasiado. Por favor, intenta nuevamente.')
+    }
+    
+    // Re-throw other errors (they should already have user-friendly messages)
     throw error
   }
 }

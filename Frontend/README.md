@@ -285,6 +285,30 @@ El código está organizado de forma clara:
 
 - **Créditos Virtuales**: Todo el sistema usa créditos virtuales, no dinero real. Es solo para fines educativos y de entretenimiento.
 
+## Deployment en Vercel
+
+### Configuración Requerida
+
+1. **Framework Preset**: Vite
+2. **Root Directory**: `Frontend`
+3. **Build Command**: `npm run build`
+4. **Output Directory**: `dist`
+5. **Install Command**: `npm install`
+
+### Environment Variables
+
+Configurar en Vercel → Settings → Environment Variables:
+
+- `VITE_API_BASE_URL`: URL del backend (ej: `https://tesis-waun.onrender.com/api/v1`)
+
+### Archivo vercel.json
+
+El proyecto incluye `vercel.json` para configurar el routing de SPA (Single Page Application), permitiendo que todas las rutas redirijan a `index.html` para que React Router funcione correctamente.
+
+## Documentación Adicional
+
+- `COMPONENT_DOCUMENTATION.md`: Documentación de componentes y arquitectura
+
 - **Predicciones Educativas**: Las predicciones son generadas por modelos de IA. No son garantía de resultados reales.
 
 - **Desarrollo Local**: Esta aplicación está diseñada para conectarse con el backend local. En producción, necesitarías configurar las URLs correctas.

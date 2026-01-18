@@ -35,7 +35,7 @@ export function RequestsPage() {
     try {
       setLoading(true)
       const response = await requestsService.getMyRequests(50, 0)
-      setRequests(response.results || [])
+      setRequests(response.items || [])
     } catch (error: any) {
       toast({
         title: 'Error',

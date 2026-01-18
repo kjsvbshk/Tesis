@@ -1,14 +1,41 @@
 """
 Email service for sending verification codes
+Supports Resend, SendGrid, SMTP, and console (development) modes
 """
 import random
 import string
+import os
 from datetime import datetime, timedelta
 from typing import Optional
 from app.services.cache_service import cache_service
+from app.core.config import settings
+
+# Try to import Resend
+try:
+    import resend
+    RESEND_AVAILABLE = True
+except ImportError:
+    RESEND_AVAILABLE = False
+
+# Try to import SendGrid
+try:
+    from sendgrid import SendGridAPIClient
+    from sendgrid.helpers.mail import Mail
+    SENDGRID_AVAILABLE = True
+except ImportError:
+    SENDGRID_AVAILABLE = False
+
+# Try to import SMTP
+try:
+    import smtplib
+    from email.mime.text import MIMEText
+    from email.mime.multipart import MIMEMultipart
+    SMTP_AVAILABLE = True
+except ImportError:
+    SMTP_AVAILABLE = False
 
 class EmailService:
-    """Service for sending emails (mock implementation)"""
+    """Service for sending emails with multiple provider support"""
     
     @staticmethod
     def generate_verification_code() -> str:
@@ -52,14 +79,368 @@ class EmailService:
             ttl_seconds=expires_minutes * 60
         )
         
-        # In production, send email here using SMTP or email service (SendGrid, AWS SES, etc.)
-        # For now, print to console (in development)
+        # Send email based on configured provider
         expires_at = datetime.utcnow() + timedelta(minutes=expires_minutes)
-        print(f"📧 Verification code for {email} ({purpose}): {code}")
-        print(f"   Expires at: {expires_at}")
-        print(f"   ⚠️  In production, this would be sent via email")
+        
+        if settings.EMAIL_PROVIDER == "resend":
+            await EmailService._send_via_resend(email, code, purpose, expires_at)
+        elif settings.EMAIL_PROVIDER == "sendgrid":
+            await EmailService._send_via_sendgrid(email, code, purpose, expires_at)
+        elif settings.EMAIL_PROVIDER == "smtp":
+            await EmailService._send_via_smtp(email, code, purpose, expires_at)
+        else:
+            # Console mode (development)
+            print(f"📧 Verification code for {email} ({purpose}): {code}")
+            print(f"   Expires at: {expires_at}")
+            if settings.EMAIL_PROVIDER != "console":
+                print(f"   ⚠️  Email provider '{settings.EMAIL_PROVIDER}' not configured, using console mode")
         
         return code
+    
+    @staticmethod
+    def _get_notification_html_template(subject: str, content: str) -> str:
+        """Generate professional HTML email template for notifications"""
+        return f"""
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{subject}</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f5f5f5;">
+    <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #f5f5f5;">
+        <tr>
+            <td align="center" style="padding: 40px 20px;">
+                <table role="presentation" style="max-width: 600px; width: 100%; border-collapse: collapse; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    <!-- Header -->
+                    <tr>
+                        <td style="padding: 40px 40px 20px; text-align: center; background: linear-gradient(135deg, #0B132B 0%, #1C2541 100%); border-radius: 8px 8px 0 0;">
+                            <h1 style="margin: 0; color: #00FF73; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;">
+                                House Always Win
+                            </h1>
+                        </td>
+                    </tr>
+                    
+                    <!-- Content -->
+                    <tr>
+                        <td style="padding: 40px;">
+                            <h2 style="margin: 0 0 20px; color: #1a1a1a; font-size: 24px; font-weight: 600;">
+                                {subject}
+                            </h2>
+                            
+                            <div style="color: #4a4a4a; font-size: 16px; line-height: 1.6;">
+                                {content}
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <!-- Footer -->
+                    <tr>
+                        <td style="padding: 24px 40px; text-align: center; background-color: #f9f9f9; border-radius: 0 0 8px 8px; border-top: 1px solid #e0e0e0;">
+                            <p style="margin: 0 0 8px; color: #999999; font-size: 12px; line-height: 1.5;">
+                                Este es un mensaje automático, por favor no respondas a este correo.
+                            </p>
+                            <p style="margin: 0; color: #999999; font-size: 12px; line-height: 1.5;">
+                                © {datetime.utcnow().year} House Always Win. Todos los derechos reservados.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+        """
+    
+    @staticmethod
+    def _get_email_html_template(code: str, purpose: str, expires_at: datetime) -> str:
+        """Generate professional HTML email template"""
+        purpose_text = "registro" if purpose == "registration" else "restablecimiento de contraseña"
+        purpose_title = "Registro de Cuenta" if purpose == "registration" else "Restablecimiento de Contraseña"
+        
+        return f"""
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Código de Verificación</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f5f5f5;">
+    <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #f5f5f5;">
+        <tr>
+            <td align="center" style="padding: 40px 20px;">
+                <table role="presentation" style="max-width: 600px; width: 100%; border-collapse: collapse; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    <!-- Header -->
+                    <tr>
+                        <td style="padding: 40px 40px 20px; text-align: center; background: linear-gradient(135deg, #0B132B 0%, #1C2541 100%); border-radius: 8px 8px 0 0;">
+                            <h1 style="margin: 0; color: #00FF73; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;">
+                                House Always Win
+                            </h1>
+                        </td>
+                    </tr>
+                    
+                    <!-- Content -->
+                    <tr>
+                        <td style="padding: 40px;">
+                            <h2 style="margin: 0 0 20px; color: #1a1a1a; font-size: 24px; font-weight: 600;">
+                                Código de Verificación
+                            </h2>
+                            
+                            <p style="margin: 0 0 24px; color: #4a4a4a; font-size: 16px; line-height: 1.6;">
+                                Hola,
+                            </p>
+                            
+                            <p style="margin: 0 0 32px; color: #4a4a4a; font-size: 16px; line-height: 1.6;">
+                                Has solicitado un código de verificación para el <strong>{purpose_text}</strong> en House Always Win. 
+                                Utiliza el siguiente código para completar el proceso:
+                            </p>
+                            
+                            <!-- Code Box -->
+                            <table role="presentation" style="width: 100%; margin: 32px 0;">
+                                <tr>
+                                    <td align="center" style="padding: 24px; background: linear-gradient(135deg, #0B132B 0%, #1C2541 100%); border-radius: 8px; border: 2px solid #00FF73;">
+                                        <div style="font-size: 36px; font-weight: 700; letter-spacing: 8px; color: #00FF73; font-family: 'Courier New', monospace;">
+                                            {code}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                            <p style="margin: 24px 0 0; color: #666666; font-size: 14px; line-height: 1.5;">
+                                <strong>⏰ Este código expira el:</strong><br>
+                                {expires_at.strftime('%d de %B de %Y a las %H:%M')} UTC
+                            </p>
+                            
+                            <p style="margin: 32px 0 0; color: #666666; font-size: 14px; line-height: 1.6;">
+                                Si no solicitaste este código, puedes ignorar este mensaje de forma segura. 
+                                Tu cuenta permanecerá sin cambios.
+                            </p>
+                        </td>
+                    </tr>
+                    
+                    <!-- Footer -->
+                    <tr>
+                        <td style="padding: 24px 40px; text-align: center; background-color: #f9f9f9; border-radius: 0 0 8px 8px; border-top: 1px solid #e0e0e0;">
+                            <p style="margin: 0 0 8px; color: #999999; font-size: 12px; line-height: 1.5;">
+                                Este es un mensaje automático, por favor no respondas a este correo.
+                            </p>
+                            <p style="margin: 0; color: #999999; font-size: 12px; line-height: 1.5;">
+                                © {datetime.utcnow().year} House Always Win. Todos los derechos reservados.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+        """
+    
+    @staticmethod
+    async def _send_via_resend(email: str, code: str, purpose: str, expires_at: datetime):
+        """Send email via Resend"""
+        if not RESEND_AVAILABLE:
+            print(f"⚠️  Resend not available (package not installed), falling back to console")
+            return
+        
+        if not settings.RESEND_API_KEY:
+            print(f"⚠️  Resend API key not configured, falling back to console")
+            return
+        
+        try:
+            import logging
+            logger = logging.getLogger(__name__)
+            
+            # Configure Resend API key
+            resend.api_key = settings.RESEND_API_KEY
+            
+            purpose_text = "registro" if purpose == "registration" else "restablecimiento de contraseña"
+            subject = f"Código de Verificación - {purpose_text.capitalize()}"
+            
+            # Generate HTML content
+            html_content = EmailService._get_email_html_template(code, purpose, expires_at)
+            
+            # Generate plain text content
+            text_content = f"""Código de Verificación - {purpose_text.capitalize()}
+
+Hola,
+
+Has solicitado un código de verificación para el {purpose_text} en House Always Win.
+
+Tu código de verificación es: {code}
+
+Este código expira el: {expires_at.strftime('%d de %B de %Y a las %H:%M')} UTC
+
+Si no solicitaste este código, puedes ignorar este mensaje de forma segura."""
+            
+            # Ensure 'from' format is correct (can be "Name <email>" or just "email")
+            from_email = settings.RESEND_FROM_EMAIL
+            if "<" not in from_email and ">" not in from_email:
+                # If it's just an email, use default format
+                from_email = f"House Always Win <{from_email}>"
+            
+            # Prepare email payload
+            email_payload = {
+                "from": from_email,
+                "to": [email],  # Resend expects a list
+                "subject": subject,
+                "html": html_content,
+                "text": text_content
+            }
+            
+            logger.debug(f"📧 Sending email via Resend to {email} with payload: {email_payload}")
+            
+            # Send email via Resend
+            response = resend.Emails.send(email_payload)
+            
+            logger.debug(f"📧 Resend response: {response}")
+            
+            # Resend returns a dict with 'id' on success
+            if response and isinstance(response, dict):
+                email_id = response.get('id')
+                if email_id:
+                    logger.info(f"✅ Email sent via Resend to {email} (ID: {email_id})")
+                    print(f"✅ Email sent via Resend to {email} (ID: {email_id})")
+                else:
+                    error = response.get('error') or response.get('message') or "Unknown error"
+                    logger.error(f"❌ Resend returned response without ID: {response}")
+                    print(f"❌ Resend error: {error}")
+                    print(f"   Full response: {response}")
+            else:
+                logger.error(f"❌ Unexpected Resend response type: {type(response)} - {response}")
+                print(f"⚠️  Unexpected Resend response: {response}")
+        except Exception as e:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"❌ Error sending email via Resend: {e}", exc_info=True)
+            print(f"❌ Error sending email via Resend: {e}")
+            print(f"   Exception type: {type(e).__name__}")
+            import traceback
+            traceback.print_exc()
+    
+    @staticmethod
+    async def _send_via_sendgrid(email: str, code: str, purpose: str, expires_at: datetime):
+        """Send email via SendGrid"""
+        if not SENDGRID_AVAILABLE:
+            print(f"⚠️  SendGrid not available (package not installed), falling back to console")
+            return
+        
+        if not settings.SENDGRID_API_KEY or not settings.SENDGRID_FROM_EMAIL:
+            print(f"⚠️  SendGrid API key or from email not configured, falling back to console")
+            return
+        
+        try:
+            sg = SendGridAPIClient(settings.SENDGRID_API_KEY)
+            
+            purpose_text = "registro" if purpose == "registration" else "restablecimiento de contraseña"
+            subject = f"Código de verificación - {purpose_text.capitalize()}"
+            
+            html_content = f"""
+            <html>
+            <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+                <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+                    <h2 style="color: #00FF73;">Código de Verificación</h2>
+                    <p>Tu código de verificación para {purpose_text} es:</p>
+                    <div style="background-color: #f4f4f4; padding: 20px; text-align: center; font-size: 32px; font-weight: bold; letter-spacing: 5px; margin: 20px 0;">
+                        {code}
+                    </div>
+                    <p>Este código expira en {expires_at.strftime('%Y-%m-%d %H:%M:%S')} UTC.</p>
+                    <p style="color: #666; font-size: 12px;">Si no solicitaste este código, puedes ignorar este mensaje.</p>
+                </div>
+            </body>
+            </html>
+            """
+            
+            text_content = f"""
+            Código de Verificación
+            
+            Tu código de verificación para {purpose_text} es: {code}
+            
+            Este código expira en {expires_at.strftime('%Y-%m-%d %H:%M:%S')} UTC.
+            
+            Si no solicitaste este código, puedes ignorar este mensaje.
+            """
+            
+            message = Mail(
+                from_email=settings.SENDGRID_FROM_EMAIL,
+                to_emails=email,
+                subject=subject,
+                html_content=html_content,
+                plain_text_content=text_content
+            )
+            
+            response = sg.send(message)
+            if response.status_code in [200, 201, 202]:
+                print(f"✅ Email sent via SendGrid to {email}")
+            else:
+                print(f"⚠️  SendGrid returned status {response.status_code}, email may not have been sent")
+        except Exception as e:
+            print(f"❌ Error sending email via SendGrid: {e}")
+            print(f"   Falling back to console mode")
+    
+    @staticmethod
+    async def _send_via_smtp(email: str, code: str, purpose: str, expires_at: datetime):
+        """Send email via SMTP"""
+        if not SMTP_AVAILABLE:
+            print(f"⚠️  SMTP not available, falling back to console")
+            return
+        
+        if not all([settings.SMTP_HOST, settings.SMTP_USER, settings.SMTP_PASSWORD, settings.SMTP_FROM_EMAIL]):
+            print(f"⚠️  SMTP configuration incomplete, falling back to console")
+            return
+        
+        try:
+            purpose_text = "registro" if purpose == "registration" else "restablecimiento de contraseña"
+            subject = f"Código de verificación - {purpose_text.capitalize()}"
+            
+            html_content = f"""
+            <html>
+            <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+                <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+                    <h2 style="color: #00FF73;">Código de Verificación</h2>
+                    <p>Tu código de verificación para {purpose_text} es:</p>
+                    <div style="background-color: #f4f4f4; padding: 20px; text-align: center; font-size: 32px; font-weight: bold; letter-spacing: 5px; margin: 20px 0;">
+                        {code}
+                    </div>
+                    <p>Este código expira en {expires_at.strftime('%Y-%m-%d %H:%M:%S')} UTC.</p>
+                    <p style="color: #666; font-size: 12px;">Si no solicitaste este código, puedes ignorar este mensaje.</p>
+                </div>
+            </body>
+            </html>
+            """
+            
+            text_content = f"""
+            Código de Verificación
+            
+            Tu código de verificación para {purpose_text} es: {code}
+            
+            Este código expira en {expires_at.strftime('%Y-%m-%d %H:%M:%S')} UTC.
+            
+            Si no solicitaste este código, puedes ignorar este mensaje.
+            """
+            
+            msg = MIMEMultipart('alternative')
+            msg['Subject'] = subject
+            msg['From'] = settings.SMTP_FROM_EMAIL
+            msg['To'] = email
+            
+            msg.attach(MIMEText(text_content, 'plain'))
+            msg.attach(MIMEText(html_content, 'html'))
+            
+            with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT) as server:
+                if settings.SMTP_USE_TLS:
+                    server.starttls()
+                server.login(settings.SMTP_USER, settings.SMTP_PASSWORD)
+                server.send_message(msg)
+            
+            print(f"✅ Email sent via SMTP to {email}")
+        except Exception as e:
+            print(f"❌ Error sending email via SMTP: {e}")
+            print(f"   Falling back to console mode")
     
     @staticmethod
     async def verify_code(

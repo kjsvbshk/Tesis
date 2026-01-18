@@ -10,6 +10,11 @@ from .match import MatchResponse
 from .prediction import PredictionResponse, PredictionRequest
 from .role import RoleResponse, RoleCreate, RoleUpdate, RoleWithPermissions
 from .permission import PermissionResponse, PermissionCreate, PermissionUpdate
+from .provider import (
+    ProviderResponse, ProviderCreate, ProviderUpdate,
+    ProviderEndpointResponse, ProviderEndpointCreate, ProviderEndpointUpdate,
+    ProviderStatusResponse
+)
 
 __all__ = [
     "UserResponse", "UserCreate", "UserUpdate", "UserLogin", "Token",
@@ -20,4 +25,7 @@ __all__ = [
     "PredictionResponse", "PredictionRequest",
     "RoleResponse", "RoleCreate", "RoleUpdate", "RoleWithPermissions",
     "PermissionResponse", "PermissionCreate", "PermissionUpdate",
+    "ProviderResponse", "ProviderCreate", "ProviderUpdate",
+    "ProviderEndpointResponse", "ProviderEndpointCreate", "ProviderEndpointUpdate",
+    "ProviderStatusResponse",
 ]

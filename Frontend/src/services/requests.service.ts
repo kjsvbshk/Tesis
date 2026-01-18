@@ -19,10 +19,11 @@ export interface Request {
 }
 
 export interface RequestsResponse {
+  items: any[]
   total: number
-  limit: number
-  offset: number
-  results: Request[]
+  page: number
+  size: number
+  pages: number
 }
 
 class RequestsService {
@@ -41,11 +42,14 @@ class RequestsService {
 
     const results = await apiRequest<Request[]>(`/requests/me?${params.toString()}`)
     // El backend devuelve un array, pero necesitamos un objeto RequestsResponse
+    const page = Math.floor(offset / limit) + 1
+    const pages = Math.ceil(results.length / limit)
     return {
+      items: results,
       total: results.length,
-      limit,
-      offset,
-      results
+      page: page,
+      size: limit,
+      pages: pages
     }
   }
 

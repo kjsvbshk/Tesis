@@ -133,10 +133,14 @@ class Settings(BaseSettings):
     MIN_BET_AMOUNT: Optional[float] = 1.0
     MAX_BET_AMOUNT: Optional[float] = 100.0
     
-    # Email Configuration - Resend
-    EMAIL_PROVIDER: str = "resend"  # Options: "resend" (production), "console" (development)
-    RESEND_API_KEY: Optional[str] = None
-    RESEND_FROM_EMAIL: str = "onboarding@resend.dev"  # Default Resend email
+    # Email Configuration - SMTP (Gmail)
+    EMAIL_PROVIDER: str = "smtp"  # Options: "smtp" (production), "console" (development)
+    SMTP_HOST: str = "smtp.gmail.com"
+    SMTP_PORT: int = 465
+    SMTP_USER: Optional[str] = None  # Gmail email address (ej: tu_email@gmail.com)
+    SMTP_PASSWORD: Optional[str] = None  # Gmail App Password (no tu contraseña normal)
+    SMTP_FROM_EMAIL: Optional[str] = None  # Same as SMTP_USER for Gmail
+    SMTP_USE_TLS: bool = False  # Gmail uses SSL (port 465), not STARTTLS
     
     # Redis Configuration
     REDIS_URL: Optional[str] = None  # Full Redis URL (e.g., redis://:password@host:port/db)

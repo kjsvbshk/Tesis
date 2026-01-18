@@ -1,6 +1,6 @@
 """
 Email service for sending verification codes
-Supports Resend, SendGrid, SMTP, and console (development) modes
+Supports SMTP (Gmail), SendGrid, and console (development) modes
 """
 import random
 import string
@@ -10,14 +10,7 @@ from typing import Optional
 from app.services.cache_service import cache_service
 from app.core.config import settings
 
-# Try to import Resend
-try:
-    import resend
-    RESEND_AVAILABLE = True
-except ImportError:
-    RESEND_AVAILABLE = False
-
-# Try to import SendGrid
+# Try to import SendGrid (optional) (optional)
 try:
     from sendgrid import SendGridAPIClient
     from sendgrid.helpers.mail import Mail
@@ -82,8 +75,8 @@ class EmailService:
         # Send email based on configured provider
         expires_at = datetime.utcnow() + timedelta(minutes=expires_minutes)
         
-        if settings.EMAIL_PROVIDER == "resend":
-            await EmailService._send_via_resend(email, code, purpose, expires_at)
+        if settings.EMAIL_PROVIDER == "smtp":
+            await EmailService._send_via_smtp(email, code, purpose, expires_at)
         elif settings.EMAIL_PROVIDER == "sendgrid":
             await EmailService._send_via_sendgrid(email, code, purpose, expires_at)
         elif settings.EMAIL_PROVIDER == "smtp":
@@ -241,88 +234,6 @@ class EmailService:
         """
     
     @staticmethod
-    async def _send_via_resend(email: str, code: str, purpose: str, expires_at: datetime):
-        """Send email via Resend"""
-        if not RESEND_AVAILABLE:
-            print(f"⚠️  Resend not available (package not installed), falling back to console")
-            return
-        
-        if not settings.RESEND_API_KEY:
-            print(f"⚠️  Resend API key not configured, falling back to console")
-            return
-        
-        try:
-            import logging
-            logger = logging.getLogger(__name__)
-            
-            # Configure Resend API key
-            resend.api_key = settings.RESEND_API_KEY
-            
-            purpose_text = "registro" if purpose == "registration" else "restablecimiento de contraseña"
-            subject = f"Código de Verificación - {purpose_text.capitalize()}"
-            
-            # Generate HTML content
-            html_content = EmailService._get_email_html_template(code, purpose, expires_at)
-            
-            # Generate plain text content
-            text_content = f"""Código de Verificación - {purpose_text.capitalize()}
-
-Hola,
-
-Has solicitado un código de verificación para el {purpose_text} en House Always Win.
-
-Tu código de verificación es: {code}
-
-Este código expira el: {expires_at.strftime('%d de %B de %Y a las %H:%M')} UTC
-
-Si no solicitaste este código, puedes ignorar este mensaje de forma segura."""
-            
-            # Ensure 'from' format is correct (can be "Name <email>" or just "email")
-            from_email = settings.RESEND_FROM_EMAIL
-            if "<" not in from_email and ">" not in from_email:
-                # If it's just an email, use default format
-                from_email = f"House Always Win <{from_email}>"
-            
-            # Prepare email payload
-            email_payload = {
-                "from": from_email,
-                "to": [email],  # Resend expects a list
-                "subject": subject,
-                "html": html_content,
-                "text": text_content
-            }
-            
-            logger.debug(f"📧 Sending email via Resend to {email} with payload: {email_payload}")
-            
-            # Send email via Resend
-            response = resend.Emails.send(email_payload)
-            
-            logger.debug(f"📧 Resend response: {response}")
-            
-            # Resend returns a dict with 'id' on success
-            if response and isinstance(response, dict):
-                email_id = response.get('id')
-                if email_id:
-                    logger.info(f"✅ Email sent via Resend to {email} (ID: {email_id})")
-                    print(f"✅ Email sent via Resend to {email} (ID: {email_id})")
-                else:
-                    error = response.get('error') or response.get('message') or "Unknown error"
-                    logger.error(f"❌ Resend returned response without ID: {response}")
-                    print(f"❌ Resend error: {error}")
-                    print(f"   Full response: {response}")
-            else:
-                logger.error(f"❌ Unexpected Resend response type: {type(response)} - {response}")
-                print(f"⚠️  Unexpected Resend response: {response}")
-        except Exception as e:
-            import logging
-            logger = logging.getLogger(__name__)
-            logger.error(f"❌ Error sending email via Resend: {e}", exc_info=True)
-            print(f"❌ Error sending email via Resend: {e}")
-            print(f"   Exception type: {type(e).__name__}")
-            import traceback
-            traceback.print_exc()
-    
-    @staticmethod
     async def _send_via_sendgrid(email: str, code: str, purpose: str, expires_at: datetime):
         """Send email via SendGrid"""
         if not SENDGRID_AVAILABLE:
@@ -384,61 +295,62 @@ Si no solicitaste este código, puedes ignorar este mensaje de forma segura."""
     
     @staticmethod
     async def _send_via_smtp(email: str, code: str, purpose: str, expires_at: datetime):
-        """Send email via SMTP"""
+        """Send email via SMTP (Gmail)"""
         if not SMTP_AVAILABLE:
             print(f"⚠️  SMTP not available, falling back to console")
             return
         
-        if not all([settings.SMTP_HOST, settings.SMTP_USER, settings.SMTP_PASSWORD, settings.SMTP_FROM_EMAIL]):
-            print(f"⚠️  SMTP configuration incomplete, falling back to console")
+        # Use SMTP_FROM_EMAIL if set, otherwise use SMTP_USER
+        from_email = settings.SMTP_FROM_EMAIL or settings.SMTP_USER
+        
+        if not all([settings.SMTP_HOST, settings.SMTP_USER, settings.SMTP_PASSWORD]):
+            print(f"⚠️  SMTP configuration incomplete (missing SMTP_USER or SMTP_PASSWORD), falling back to console")
             return
         
         try:
+            import logging
+            logger = logging.getLogger(__name__)
+            
             purpose_text = "registro" if purpose == "registration" else "restablecimiento de contraseña"
-            subject = f"Código de verificación - {purpose_text.capitalize()}"
+            subject = f"Código de Verificación - {purpose_text.capitalize()}"
             
-            html_content = f"""
-            <html>
-            <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-                <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-                    <h2 style="color: #00FF73;">Código de Verificación</h2>
-                    <p>Tu código de verificación para {purpose_text} es:</p>
-                    <div style="background-color: #f4f4f4; padding: 20px; text-align: center; font-size: 32px; font-weight: bold; letter-spacing: 5px; margin: 20px 0;">
-                        {code}
-                    </div>
-                    <p>Este código expira en {expires_at.strftime('%Y-%m-%d %H:%M:%S')} UTC.</p>
-                    <p style="color: #666; font-size: 12px;">Si no solicitaste este código, puedes ignorar este mensaje.</p>
-                </div>
-            </body>
-            </html>
-            """
+            # Use professional HTML template
+            html_content = EmailService._get_email_html_template(code, purpose, expires_at)
             
-            text_content = f"""
-            Código de Verificación
-            
-            Tu código de verificación para {purpose_text} es: {code}
-            
-            Este código expira en {expires_at.strftime('%Y-%m-%d %H:%M:%S')} UTC.
-            
-            Si no solicitaste este código, puedes ignorar este mensaje.
-            """
+            # Generate plain text content
+            text_content = f"""Código de Verificación - {purpose_text.capitalize()}
+
+Hola,
+
+Has solicitado un código de verificación para el {purpose_text} en House Always Win.
+
+Tu código de verificación es: {code}
+
+Este código expira el: {expires_at.strftime('%d de %B de %Y a las %H:%M')} UTC
+
+Si no solicitaste este código, puedes ignorar este mensaje de forma segura."""
             
             msg = MIMEMultipart('alternative')
             msg['Subject'] = subject
-            msg['From'] = settings.SMTP_FROM_EMAIL
+            msg['From'] = from_email
             msg['To'] = email
             
             msg.attach(MIMEText(text_content, 'plain'))
             msg.attach(MIMEText(html_content, 'html'))
             
-            with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT) as server:
-                if settings.SMTP_USE_TLS:
-                    server.starttls()
+            # Gmail uses SMTP_SSL on port 465
+            server = smtplib.SMTP_SSL(settings.SMTP_HOST, settings.SMTP_PORT)
+            try:
                 server.login(settings.SMTP_USER, settings.SMTP_PASSWORD)
-                server.send_message(msg)
-            
-            print(f"✅ Email sent via SMTP to {email}")
+                server.sendmail(from_email, email, msg.as_string())
+                logger.info(f"✅ Email sent via SMTP (Gmail) to {email}")
+                print(f"✅ Email sent via SMTP (Gmail) to {email}")
+            finally:
+                server.close()
         except Exception as e:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"❌ Error sending email via SMTP: {e}", exc_info=True)
             print(f"❌ Error sending email via SMTP: {e}")
             print(f"   Falling back to console mode")
     

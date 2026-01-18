@@ -369,16 +369,26 @@ docker-compose down
    - Variables de base de datos (Neon)
    - `SECRET_KEY`: Clave secreta para JWT
    - `CORS_ORIGINS`: URLs permitidas (ej: `http://localhost:5173,https://tu-frontend.vercel.app`)
-   - **Email (Resend)**: `EMAIL_PROVIDER=resend`, `RESEND_API_KEY`, `RESEND_FROM_EMAIL`
-   - **Redis (Opcional)**: `USE_REDIS=true`, `REDIS_URL` (ver `REDIS_SETUP.md` para más detalles)
+   - **Email (SMTP Gmail)**: `EMAIL_PROVIDER=smtp`, `SMTP_USER`, `SMTP_PASSWORD`, etc.
+   - **Redis (Opcional)**: `USE_REDIS=true`, `REDIS_URL`
 
 ### Servicios de Producción
 
-#### Email Service - Resend
+#### Email Service - SMTP (Gmail)
 Configuración requerida:
-- `EMAIL_PROVIDER=resend`
-- `RESEND_API_KEY=<tu-api-key-de-resend>` (obtener de https://resend.com/api-keys)
-- `RESEND_FROM_EMAIL=onboarding@resend.dev` (o tu email verificado)
+- `EMAIL_PROVIDER=smtp`
+- `SMTP_HOST=smtp.gmail.com`
+- `SMTP_PORT=465`
+- `SMTP_USER=tu_email@gmail.com`
+- `SMTP_PASSWORD=tu_app_password` (ver abajo)
+- `SMTP_FROM_EMAIL=tu_email@gmail.com`
+
+**Cómo obtener una App Password de Google:**
+1. Ve a https://myaccount.google.com/security
+2. Habilita la **verificación en 2 pasos** (si no está habilitada)
+3. Ve a **"Contraseñas de aplicaciones"** (App Passwords)
+4. Genera una nueva contraseña para **"Correo"**
+5. Usa esa contraseña en `SMTP_PASSWORD` (NO uses tu contraseña normal de Gmail)
 
 Para desarrollo local, usa `EMAIL_PROVIDER=console` para ver códigos en los logs.
 

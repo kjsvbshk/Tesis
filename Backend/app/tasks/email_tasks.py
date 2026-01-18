@@ -12,12 +12,7 @@ from app.core.config import settings
 
 logger = logging.getLogger(__name__)
 
-# Check if Resend is available
-try:
-    import resend
-    RESEND_AVAILABLE = True
-except ImportError:
-    RESEND_AVAILABLE = False
+# Email tasks now use SMTP (Gmail) or console mode
 
 
 def send_verification_email_task(email: str, purpose: str = 'registration', expires_minutes: int = 15):
@@ -69,8 +64,8 @@ def send_verification_email_task(email: str, purpose: str = 'registration', expi
                 new_loop = asyncio.new_event_loop()
                 asyncio.set_event_loop(new_loop)
                 try:
-                    if settings.EMAIL_PROVIDER == "resend":
-                        new_loop.run_until_complete(EmailService._send_via_resend(email, code, purpose, expires_at))
+                    if settings.EMAIL_PROVIDER == "smtp":
+                        new_loop.run_until_complete(EmailService._send_via_smtp(email, code, purpose, expires_at))
                     elif settings.EMAIL_PROVIDER == "sendgrid":
                         new_loop.run_until_complete(EmailService._send_via_sendgrid(email, code, purpose, expires_at))
                     elif settings.EMAIL_PROVIDER == "smtp":
@@ -92,9 +87,9 @@ def send_verification_email_task(email: str, purpose: str = 'registration', expi
             asyncio.set_event_loop(loop)
             try:
                 # Send email based on provider
-                if settings.EMAIL_PROVIDER == "resend":
+                if settings.EMAIL_PROVIDER == "smtp":
                     loop.run_until_complete(
-                        EmailService._send_via_resend(email, code, purpose, expires_at)
+                        EmailService._send_via_smtp(email, code, purpose, expires_at)
                     )
                 elif settings.EMAIL_PROVIDER == "sendgrid":
                     loop.run_until_complete(
@@ -120,7 +115,7 @@ def send_verification_email_task(email: str, purpose: str = 'registration', expi
 
 def send_notification_email_task(email: str, subject: str, html_content: str):
     """
-    Background task to send notification email
+    Background task to send notification email via SMTP
     This function is executed by RQ worker
     
     Args:
@@ -131,45 +126,60 @@ def send_notification_email_task(email: str, subject: str, html_content: str):
     try:
         from app.services.email_service import EmailService
         import asyncio
+        import smtplib
+        from email.mime.text import MIMEText
+        from email.mime.multipart import MIMEMultipart
         
-        email_service = EmailService()
+        # Generate full HTML email
+        full_html = EmailService._get_notification_html_template(subject, html_content)
         
-        # Send email via Resend (async function in sync context)
+        # Send email via SMTP (async function in sync context)
         try:
-            loop = asyncio.get_event_loop()
+            loop = asyncio.get_running_loop()
+            # If we get here, we're inside an async context (FastAPI)
+            # Use a separate thread with its own event loop
+            import concurrent.futures
+            def send_email_sync():
+                from_email = settings.SMTP_FROM_EMAIL or settings.SMTP_USER
+                
+                msg = MIMEMultipart('alternative')
+                msg['Subject'] = subject
+                msg['From'] = from_email
+                msg['To'] = email
+                
+                msg.attach(MIMEText(html_content, 'html'))
+                
+                server = smtplib.SMTP_SSL(settings.SMTP_HOST, settings.SMTP_PORT)
+                try:
+                    server.login(settings.SMTP_USER, settings.SMTP_PASSWORD)
+                    server.sendmail(from_email, email, msg.as_string())
+                    logger.info(f"✅ Notification email sent to {email} via SMTP")
+                finally:
+                    server.close()
+            
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                future = executor.submit(send_email_sync)
+                future.result()
         except RuntimeError:
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-        
-        if settings.EMAIL_PROVIDER == "resend" and RESEND_AVAILABLE and settings.RESEND_API_KEY:
-            import resend
-            resend.api_key = settings.RESEND_API_KEY
+            # No running loop, we're in a sync context (RQ worker) - this is the normal case
+            from_email = settings.SMTP_FROM_EMAIL or settings.SMTP_USER
             
-            # Ensure 'from' format is correct
-            from_email = settings.RESEND_FROM_EMAIL
-            if "<" not in from_email and ">" not in from_email:
-                from_email = f"House Always Win <{from_email}>"
+            msg = MIMEMultipart('alternative')
+            msg['Subject'] = subject
+            msg['From'] = from_email
+            msg['To'] = email
             
-            # Generate full HTML email
-            full_html = EmailService._get_notification_html_template(subject, html_content)
+            msg.attach(MIMEText(full_html, 'html'))
             
-            response = resend.Emails.send({
-                "from": from_email,
-                "to": [email],  # Use list format for consistency
-                "subject": subject,
-                "html": full_html
-            })
-            
-            if response and isinstance(response, dict) and response.get('id'):
-                logger.info(f"✅ Notification email sent to {email} via RQ (ID: {response.get('id')})")
-            else:
-                error = response.get('error') if isinstance(response, dict) else "Unknown error"
-                logger.warning(f"⚠️  Notification email may not have been sent to {email}: {error}")
-                logger.debug(f"   Resend response: {response}")
-        else:
-            # Console mode or fallback
-            logger.info(f"📧 Notification email (console mode): {email} - {subject}")
-            logger.info(f"   Content: {html_content[:100]}...")
+            server = smtplib.SMTP_SSL(settings.SMTP_HOST, settings.SMTP_PORT)
+            try:
+                server.login(settings.SMTP_USER, settings.SMTP_PASSWORD)
+                server.sendmail(from_email, email, msg.as_string())
+                logger.info(f"✅ Notification email sent to {email} via SMTP")
+            finally:
+                server.close()
     except Exception as e:
         logger.error(f"❌ Error sending notification email to {email}: {e}", exc_info=True)
-        raise
+        # Fallback to console
+        logger.info(f"📧 Notification email (console mode): {email} - {subject}")
+        logger.info(f"   Content: {html_content[:100]}...")

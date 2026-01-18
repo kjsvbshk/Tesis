@@ -32,7 +32,6 @@ httpx>=0.25.2
 
 # Email
 sendgrid>=6.11.0
-resend>=2.0.0
 
 # Cache and Queues
 redis>=5.0.1

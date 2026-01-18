@@ -377,8 +377,8 @@ docker-compose down
 #### Email Service - Resend
 Configuración requerida:
 - `EMAIL_PROVIDER=resend`
-- `RESEND_API_KEY=re_SoipKPBL_NrDhAPEmPeiMp5NjgdcG4pUF`
-- `RESEND_FROM_EMAIL=onboarding@resend.dev`
+- `RESEND_API_KEY=<tu-api-key-de-resend>` (obtener de https://resend.com/api-keys)
+- `RESEND_FROM_EMAIL=onboarding@resend.dev` (o tu email verificado)
 
 Para desarrollo local, usa `EMAIL_PROVIDER=console` para ver códigos en los logs.
 

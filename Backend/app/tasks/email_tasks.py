@@ -56,30 +56,60 @@ def send_verification_email_task(email: str, purpose: str = 'registration', expi
         # Send email (async, but we run it in sync context)
         expires_at = datetime.utcnow() + timedelta(minutes=expires_minutes)
         
-        # Create event loop for async email sending
+        # Handle async email sending in sync context
+        # Check if we're in an async context (FastAPI) or standalone (RQ worker)
         try:
-            loop = asyncio.get_event_loop()
+            # Try to get the running loop - this will raise RuntimeError if no loop is running
+            asyncio.get_running_loop()
+            # If we get here, we're inside an async context (FastAPI)
+            # This shouldn't happen in RQ worker, but if called from FastAPI fallback, handle it
+            # Use a separate thread with its own event loop
+            import concurrent.futures
+            def run_async_in_thread():
+                new_loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(new_loop)
+                try:
+                    if settings.EMAIL_PROVIDER == "resend":
+                        new_loop.run_until_complete(EmailService._send_via_resend(email, code, purpose, expires_at))
+                    elif settings.EMAIL_PROVIDER == "sendgrid":
+                        new_loop.run_until_complete(EmailService._send_via_sendgrid(email, code, purpose, expires_at))
+                    elif settings.EMAIL_PROVIDER == "smtp":
+                        new_loop.run_until_complete(EmailService._send_via_smtp(email, code, purpose, expires_at))
+                    else:
+                        # Console mode
+                        logger.info(f"📧 Verification code for {email} ({purpose}): {code}")
+                        logger.info(f"   Expires at: {expires_at}")
+                finally:
+                    new_loop.close()
+            
+            # Run in a separate thread with its own event loop
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                future = executor.submit(run_async_in_thread)
+                future.result()  # Wait for completion
         except RuntimeError:
+            # No running loop, we're in a sync context (RQ worker) - this is the normal case
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
-        
-        # Send email based on provider
-        if settings.EMAIL_PROVIDER == "resend":
-            loop.run_until_complete(
-                EmailService._send_via_resend(email, code, purpose, expires_at)
-            )
-        elif settings.EMAIL_PROVIDER == "sendgrid":
-            loop.run_until_complete(
-                EmailService._send_via_sendgrid(email, code, purpose, expires_at)
-            )
-        elif settings.EMAIL_PROVIDER == "smtp":
-            loop.run_until_complete(
-                EmailService._send_via_smtp(email, code, purpose, expires_at)
-            )
-        else:
-            # Console mode
-            logger.info(f"📧 Verification code for {email} ({purpose}): {code}")
-            logger.info(f"   Expires at: {expires_at}")
+            try:
+                # Send email based on provider
+                if settings.EMAIL_PROVIDER == "resend":
+                    loop.run_until_complete(
+                        EmailService._send_via_resend(email, code, purpose, expires_at)
+                    )
+                elif settings.EMAIL_PROVIDER == "sendgrid":
+                    loop.run_until_complete(
+                        EmailService._send_via_sendgrid(email, code, purpose, expires_at)
+                    )
+                elif settings.EMAIL_PROVIDER == "smtp":
+                    loop.run_until_complete(
+                        EmailService._send_via_smtp(email, code, purpose, expires_at)
+                    )
+                else:
+                    # Console mode
+                    logger.info(f"📧 Verification code for {email} ({purpose}): {code}")
+                    logger.info(f"   Expires at: {expires_at}")
+            finally:
+                loop.close()
         
         logger.info(f"✅ Verification email sent to {email} via RQ")
         return code

@@ -96,28 +96,29 @@ async def send_verification_code(
                 # Don't reveal if email exists for security
                 return {"message": "If the email exists, a verification code has been sent"}
         
-        # Queue email sending task (async via RQ)
+        # Queue email sending task (async via RQ) or use direct async method if RQ unavailable
         from app.services.queue_service import queue_service
         from app.tasks.email_tasks import send_verification_email_task
         
-        # Generate code first to return it (for development)
-        code = email_service.generate_verification_code()
-        
-        # Queue the email sending task
-        job = queue_service.enqueue(
-            send_verification_email_task,
-            request.email,
-            request.purpose,
-            15,  # expires_minutes
-            queue_name='high'  # High priority for verification emails
-        )
-        
-        # If RQ is not available, send synchronously as fallback
-        if not job and not queue_service.is_available():
+        # If RQ is not available, use direct async method (avoid sync fallback issues)
+        if not queue_service.is_available():
+            # Use async method directly (no RQ, no sync fallback)
             code = await email_service.send_verification_code(
                 email=request.email,
                 purpose=request.purpose,
                 expires_minutes=15
+            )
+        else:
+            # Generate code first to return it (for development)
+            code = email_service.generate_verification_code()
+            
+            # Queue the email sending task
+            job = queue_service.enqueue(
+                send_verification_email_task,
+                request.email,
+                request.purpose,
+                15,  # expires_minutes
+                queue_name='high'  # High priority for verification emails
             )
         
         return {
@@ -492,28 +493,29 @@ async def forgot_password(
         
         email = user_account.email
         
-        # Queue email sending task (async via RQ)
+        # Queue email sending task (async via RQ) or use direct async method if RQ unavailable
         from app.services.queue_service import queue_service
         from app.tasks.email_tasks import send_verification_email_task
         
-        # Generate code first
-        code = email_service.generate_verification_code()
-        
-        # Queue the email sending task
-        job = queue_service.enqueue(
-            send_verification_email_task,
-            email,
-            'password_reset',
-            15,  # expires_minutes
-            queue_name='high'
-        )
-        
-        # Fallback if RQ not available
-        if not job and not queue_service.is_available():
+        # If RQ is not available, use direct async method (avoid sync fallback issues)
+        if not queue_service.is_available():
+            # Use async method directly (no RQ, no sync fallback)
             code = await email_service.send_verification_code(
                 email=email,
                 purpose='password_reset',
                 expires_minutes=15
+            )
+        else:
+            # Generate code first
+            code = email_service.generate_verification_code()
+            
+            # Queue the email sending task
+            job = queue_service.enqueue(
+                send_verification_email_task,
+                email,
+                'password_reset',
+                15,  # expires_minutes
+                queue_name='high'
             )
         
         return {

@@ -77,6 +77,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["X-Requires-2FA"],  # Expose custom headers for 2FA flow
 )
 
 # Configure structured logging

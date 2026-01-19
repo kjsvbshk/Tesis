@@ -39,6 +39,7 @@ export function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
+    // Validate username and password (always required)
     if (!validateForm()) {
       return
     }
@@ -53,18 +54,36 @@ export function LoginPage() {
 
     setIsLoading(true)
     try {
+      // Always send username, password, and 2FA code (if required) in the same request
+      // The backend will verify credentials first, then 2FA code if enabled
       await login(username.trim(), password, requires2FA ? twoFactorCode : undefined)
       // El mensaje de éxito se mostrará en HomePage después de la redirección
     } catch (error: any) {
       console.error('Login error:', error)
       
-      // Check if 2FA is required
-      if (error?.requires2FA) {
+      // Check if 2FA is required - this happens on first login attempt when 2FA is enabled
+      // Credentials are correct, but 2FA code is missing
+      if (error?.requires2FA || error?.message?.includes('2FA code is required')) {
         setRequires2FA(true)
+        setErrors({}) // Clear previous errors (credentials were correct)
         toast({
           title: 'Código 2FA requerido',
-          description: 'Por favor ingresa el código de tu aplicación de autenticación',
+          description: 'Las credenciales son correctas. Por favor ingresa el código de 6 dígitos de tu aplicación de autenticación',
         })
+        setIsLoading(false)
+        return
+      }
+      
+      // Check if 2FA code was invalid (credentials were correct, but 2FA code was wrong)
+      if (requires2FA && error?.message?.includes('Invalid 2FA')) {
+        setErrors({ ...errors, twoFactorCode: 'Código 2FA inválido. Por favor intenta nuevamente.' })
+        setTwoFactorCode('') // Clear the code field
+        toast({
+          title: 'Código 2FA inválido',
+          description: 'El código ingresado no es válido. Por favor verifica e intenta nuevamente.',
+          variant: 'destructive',
+        })
+        setIsLoading(false)
         return
       }
       
@@ -77,7 +96,10 @@ export function LoginPage() {
           errorMessage.includes('invalid') ||
           errorMessage.includes('401') ||
           errorMessage.includes('Unauthorized')) {
-        displayMessage = 'Usuario o contraseña incorrectos'
+        // Only show "incorrect password" if 2FA is not required
+        if (!errorMessage.includes('2FA')) {
+          displayMessage = 'Usuario o contraseña incorrectos'
+        }
       }
       
       toast({
@@ -193,7 +215,17 @@ export function LoginPage() {
           </div>
 
           {requires2FA && (
-            <div>
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="mb-2 rounded-lg bg-[#00FF73]/10 border border-[#00FF73]/30 p-3">
+                <p className="text-sm text-[#00FF73] text-center">
+                  ✓ Credenciales verificadas. Ingresa tu código 2FA para completar el inicio de sesión.
+                </p>
+              </div>
               <Label htmlFor="twoFactorCode" className="block text-sm font-medium text-white">
                 Código de Autenticación (2FA)
               </Label>
@@ -218,6 +250,7 @@ export function LoginPage() {
                     errors.twoFactorCode ? 'border-[#FF4C4C]' : ''
                   }`}
                   placeholder="000000"
+                  autoFocus
                 />
                 {errors.twoFactorCode && (
                   <p className="mt-1 text-sm text-[#FF4C4C]">{errors.twoFactorCode}</p>
@@ -226,7 +259,7 @@ export function LoginPage() {
                   Ingresa el código de 6 dígitos de tu aplicación de autenticación
                 </p>
               </div>
-            </div>
+            </motion.div>
           )}
 
           <div>

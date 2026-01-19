@@ -38,6 +38,7 @@ async def login(
 ):
     """Login user and return JWT token"""
     try:
+        # First authenticate user with username and password
         user = await authenticate_user(
             db, 
             user_credentials.username, 
@@ -56,20 +57,26 @@ async def login(
                 detail="User account is inactive"
             )
         
-        # Check if 2FA is enabled
+        # Check if 2FA is enabled for this user
         two_factor_service = TwoFactorService(db)
         is_2fa_enabled = await two_factor_service.is_2fa_enabled(user.id)
         
         if is_2fa_enabled:
+            # 2FA is enabled, require code
+            # At this point, username and password have been verified successfully
             if not user_credentials.two_factor_code:
                 # Return 401 with special header to indicate 2FA is required
+                # Credentials are correct, but 2FA code is missing
+                # This tells the frontend to show the 2FA code input screen
+                # The frontend should keep username and password and only ask for 2FA code
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
                     detail="2FA code is required",
                     headers={"X-Requires-2FA": "true"}
                 )
             
-            # Verify 2FA code
+            # Verify 2FA code (TOTP or backup code)
+            # Both username/password AND 2FA code must be correct to proceed
             if not await two_factor_service.verify_2fa_code(user.id, user_credentials.two_factor_code):
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
@@ -564,26 +571,30 @@ async def forgot_password(
         from app.services.queue_service import queue_service
         from app.tasks.email_tasks import send_verification_email_task
         
-        # If RQ is not available, use direct async method (avoid sync fallback issues)
-        if not queue_service.is_available():
-            # Use async method directly (no RQ, no sync fallback)
-            code = await email_service.send_verification_code(
-                email=email,
-                purpose='password_reset',
-                expires_minutes=15
-            )
-        else:
-            # Generate code first
-            code = email_service.generate_verification_code()
-            
-            # Queue the email sending task
-            job = queue_service.enqueue(
-                send_verification_email_task,
-                email,
-                'password_reset',
-                15,  # expires_minutes
-                queue_name='high'
-            )
+        # Always use async method directly to ensure email is sent
+        # RQ can be unreliable in some environments, so we'll use direct async method
+        code = await email_service.send_verification_code(
+            email=email,
+            purpose='password_reset',
+            expires_minutes=15
+        )
+        
+        # Optionally also queue it for background processing if RQ is available
+        # This ensures the email is sent even if RQ fails
+        if queue_service.is_available():
+            try:
+                queue_service.enqueue(
+                    send_verification_email_task,
+                    email,
+                    'password_reset',
+                    15,  # expires_minutes
+                    queue_name='high'
+                )
+            except Exception as e:
+                # If queuing fails, that's okay - we already sent it directly
+                import logging
+                logger = logging.getLogger(__name__)
+                logger.warning(f"Failed to queue email task, but email was sent directly: {e}")
         
         return {
             "message": "If the username exists, a verification code has been sent to the associated email",

@@ -12,7 +12,13 @@ from app.core.config import settings
 
 logger = logging.getLogger(__name__)
 
-# Email tasks now use SMTP (Gmail) or console mode
+# Check if SendGrid is available
+try:
+    from sendgrid import SendGridAPIClient
+    from sendgrid.helpers.mail import Mail
+    SENDGRID_AVAILABLE = True
+except ImportError:
+    SENDGRID_AVAILABLE = False
 
 
 def send_verification_email_task(email: str, purpose: str = 'registration', expires_minutes: int = 15):
@@ -64,9 +70,7 @@ def send_verification_email_task(email: str, purpose: str = 'registration', expi
                 new_loop = asyncio.new_event_loop()
                 asyncio.set_event_loop(new_loop)
                 try:
-                    if settings.EMAIL_PROVIDER == "smtp":
-                        new_loop.run_until_complete(EmailService._send_via_smtp(email, code, purpose, expires_at))
-                    elif settings.EMAIL_PROVIDER == "sendgrid":
+                    if settings.EMAIL_PROVIDER == "sendgrid":
                         new_loop.run_until_complete(EmailService._send_via_sendgrid(email, code, purpose, expires_at))
                     elif settings.EMAIL_PROVIDER == "smtp":
                         new_loop.run_until_complete(EmailService._send_via_smtp(email, code, purpose, expires_at))
@@ -86,12 +90,8 @@ def send_verification_email_task(email: str, purpose: str = 'registration', expi
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
             try:
-                # Send email based on provider
-                if settings.EMAIL_PROVIDER == "smtp":
-                    loop.run_until_complete(
-                        EmailService._send_via_smtp(email, code, purpose, expires_at)
-                    )
-                elif settings.EMAIL_PROVIDER == "sendgrid":
+                # Send email based on provider (prioritize SendGrid)
+                if settings.EMAIL_PROVIDER == "sendgrid":
                     loop.run_until_complete(
                         EmailService._send_via_sendgrid(email, code, purpose, expires_at)
                     )
@@ -115,7 +115,7 @@ def send_verification_email_task(email: str, purpose: str = 'registration', expi
 
 def send_notification_email_task(email: str, subject: str, html_content: str):
     """
-    Background task to send notification email via SMTP
+    Background task to send notification email via SendGrid or SMTP
     This function is executed by RQ worker
     
     Args:
@@ -126,58 +126,95 @@ def send_notification_email_task(email: str, subject: str, html_content: str):
     try:
         from app.services.email_service import EmailService
         import asyncio
-        import smtplib
-        from email.mime.text import MIMEText
-        from email.mime.multipart import MIMEMultipart
         
         # Generate full HTML email
         full_html = EmailService._get_notification_html_template(subject, html_content)
         
-        # Send email via SMTP (async function in sync context)
-        try:
-            loop = asyncio.get_running_loop()
-            # If we get here, we're inside an async context (FastAPI)
-            # Use a separate thread with its own event loop
-            import concurrent.futures
-            def send_email_sync():
-                from_email = settings.SMTP_FROM_EMAIL or settings.SMTP_USER
+        # Send via SendGrid (recommended for production/Render)
+        if settings.EMAIL_PROVIDER == "sendgrid" and SENDGRID_AVAILABLE and settings.SENDGRID_API_KEY and settings.SENDGRID_FROM_EMAIL:
+            try:
+                sg = SendGridAPIClient(settings.SENDGRID_API_KEY)
+                message = Mail(
+                    from_email=settings.SENDGRID_FROM_EMAIL,
+                    to_emails=email,
+                    subject=subject,
+                    html_content=full_html
+                )
+                response = sg.send(message)
+                if response.status_code in [200, 201, 202]:
+                    logger.info(f"✅ Notification email sent to {email} via SendGrid (status: {response.status_code})")
+                else:
+                    logger.warning(f"⚠️  SendGrid returned status {response.status_code}")
+            except Exception as e:
+                logger.error(f"❌ Error sending notification email via SendGrid: {e}", exc_info=True)
+                # Fallback to console
+                logger.info(f"📧 Notification email (console mode): {email} - {subject}")
+        
+        # Send via SMTP (local only)
+        elif settings.EMAIL_PROVIDER == "smtp" and settings.SMTP_USER and settings.SMTP_PASSWORD:
+            try:
+                import smtplib
+                from email.mime.text import MIMEText
+                from email.mime.multipart import MIMEMultipart
                 
+                from_email = settings.SMTP_FROM_EMAIL or settings.SMTP_USER
                 msg = MIMEMultipart('alternative')
                 msg['Subject'] = subject
                 msg['From'] = from_email
                 msg['To'] = email
+                msg.attach(MIMEText(full_html, 'html'))
                 
-                msg.attach(MIMEText(html_content, 'html'))
-                
-                server = smtplib.SMTP_SSL(settings.SMTP_HOST, settings.SMTP_PORT)
+                # Handle async in sync context
                 try:
-                    server.login(settings.SMTP_USER, settings.SMTP_PASSWORD)
-                    server.sendmail(from_email, email, msg.as_string())
-                    logger.info(f"✅ Notification email sent to {email} via SMTP")
-                finally:
-                    server.close()
-            
-            with concurrent.futures.ThreadPoolExecutor() as executor:
-                future = executor.submit(send_email_sync)
-                future.result()
-        except RuntimeError:
-            # No running loop, we're in a sync context (RQ worker) - this is the normal case
-            from_email = settings.SMTP_FROM_EMAIL or settings.SMTP_USER
-            
-            msg = MIMEMultipart('alternative')
-            msg['Subject'] = subject
-            msg['From'] = from_email
-            msg['To'] = email
-            
-            msg.attach(MIMEText(full_html, 'html'))
-            
-            server = smtplib.SMTP_SSL(settings.SMTP_HOST, settings.SMTP_PORT)
-            try:
-                server.login(settings.SMTP_USER, settings.SMTP_PASSWORD)
-                server.sendmail(from_email, email, msg.as_string())
-                logger.info(f"✅ Notification email sent to {email} via SMTP")
-            finally:
-                server.close()
+                    loop = asyncio.get_running_loop()
+                    # If we get here, we're inside an async context - use thread
+                    import concurrent.futures
+                    def send_smtp_sync():
+                        port = settings.SMTP_PORT
+                        if port == 465:
+                            server = smtplib.SMTP_SSL(settings.SMTP_HOST, port, timeout=30)
+                        elif port == 587:
+                            server = smtplib.SMTP(settings.SMTP_HOST, port, timeout=30)
+                            server.starttls()
+                        else:
+                            server = smtplib.SMTP(settings.SMTP_HOST, port, timeout=30)
+                            if settings.SMTP_USE_TLS:
+                                server.starttls()
+                        try:
+                            server.login(settings.SMTP_USER, settings.SMTP_PASSWORD)
+                            server.sendmail(from_email, email, msg.as_string())
+                            logger.info(f"✅ Notification email sent to {email} via SMTP")
+                        finally:
+                            server.close()
+                    
+                    with concurrent.futures.ThreadPoolExecutor() as executor:
+                        future = executor.submit(send_smtp_sync)
+                        future.result()
+                except RuntimeError:
+                    # No running loop - sync context
+                    port = settings.SMTP_PORT
+                    if port == 465:
+                        server = smtplib.SMTP_SSL(settings.SMTP_HOST, port, timeout=30)
+                    elif port == 587:
+                        server = smtplib.SMTP(settings.SMTP_HOST, port, timeout=30)
+                        server.starttls()
+                    else:
+                        server = smtplib.SMTP(settings.SMTP_HOST, port, timeout=30)
+                        if settings.SMTP_USE_TLS:
+                            server.starttls()
+                    try:
+                        server.login(settings.SMTP_USER, settings.SMTP_PASSWORD)
+                        server.sendmail(from_email, email, msg.as_string())
+                        logger.info(f"✅ Notification email sent to {email} via SMTP")
+                    finally:
+                        server.close()
+            except Exception as e:
+                logger.error(f"❌ Error sending notification email via SMTP: {e}", exc_info=True)
+                logger.info(f"📧 Notification email (console mode): {email} - {subject}")
+        else:
+            # Console mode or fallback
+            logger.info(f"📧 Notification email (console mode): {email} - {subject}")
+            logger.info(f"   Content: {html_content[:100]}...")
     except Exception as e:
         logger.error(f"❌ Error sending notification email to {email}: {e}", exc_info=True)
         # Fallback to console

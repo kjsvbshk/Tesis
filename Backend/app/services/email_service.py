@@ -1,6 +1,6 @@
 """
 Email service for sending verification codes
-Supports SMTP (Gmail), SendGrid, and console (development) modes
+Supports SendGrid (production), SMTP (local only), and console (development) modes
 """
 import random
 import string
@@ -10,7 +10,7 @@ from typing import Optional
 from app.services.cache_service import cache_service
 from app.core.config import settings
 
-# Try to import SendGrid (optional) (optional)
+# Try to import SendGrid
 try:
     from sendgrid import SendGridAPIClient
     from sendgrid.helpers.mail import Mail
@@ -72,13 +72,13 @@ class EmailService:
             ttl_seconds=expires_minutes * 60
         )
         
-        # Send email based on configured provider
+        # Send email based on configured provider (prioritize SendGrid)
         expires_at = datetime.utcnow() + timedelta(minutes=expires_minutes)
         
-        if settings.EMAIL_PROVIDER == "smtp":
-            await EmailService._send_via_smtp(email, code, purpose, expires_at)
-        elif settings.EMAIL_PROVIDER == "sendgrid":
+        if settings.EMAIL_PROVIDER == "sendgrid":
             await EmailService._send_via_sendgrid(email, code, purpose, expires_at)
+        elif settings.EMAIL_PROVIDER == "smtp":
+            await EmailService._send_via_smtp(email, code, purpose, expires_at)
         else:
             # Console mode (development)
             print(f"📧 Verification code for {email} ({purpose}): {code}")
@@ -233,7 +233,7 @@ class EmailService:
     
     @staticmethod
     async def _send_via_sendgrid(email: str, code: str, purpose: str, expires_at: datetime):
-        """Send email via SendGrid"""
+        """Send email via SendGrid (Recommended for Render/production)"""
         if not SENDGRID_AVAILABLE:
             print(f"⚠️  SendGrid not available (package not installed), falling back to console")
             return
@@ -243,36 +243,29 @@ class EmailService:
             return
         
         try:
+            import logging
+            logger = logging.getLogger(__name__)
+            
             sg = SendGridAPIClient(settings.SENDGRID_API_KEY)
             
             purpose_text = "registro" if purpose == "registration" else "restablecimiento de contraseña"
-            subject = f"Código de verificación - {purpose_text.capitalize()}"
+            subject = f"Código de Verificación - {purpose_text.capitalize()}"
             
-            html_content = f"""
-            <html>
-            <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-                <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-                    <h2 style="color: #00FF73;">Código de Verificación</h2>
-                    <p>Tu código de verificación para {purpose_text} es:</p>
-                    <div style="background-color: #f4f4f4; padding: 20px; text-align: center; font-size: 32px; font-weight: bold; letter-spacing: 5px; margin: 20px 0;">
-                        {code}
-                    </div>
-                    <p>Este código expira en {expires_at.strftime('%Y-%m-%d %H:%M:%S')} UTC.</p>
-                    <p style="color: #666; font-size: 12px;">Si no solicitaste este código, puedes ignorar este mensaje.</p>
-                </div>
-            </body>
-            </html>
-            """
+            # Use professional HTML template
+            html_content = EmailService._get_email_html_template(code, purpose, expires_at)
             
-            text_content = f"""
-            Código de Verificación
-            
-            Tu código de verificación para {purpose_text} es: {code}
-            
-            Este código expira en {expires_at.strftime('%Y-%m-%d %H:%M:%S')} UTC.
-            
-            Si no solicitaste este código, puedes ignorar este mensaje.
-            """
+            # Generate plain text content
+            text_content = f"""Código de Verificación - {purpose_text.capitalize()}
+
+Hola,
+
+Has solicitado un código de verificación para el {purpose_text} en House Always Win.
+
+Tu código de verificación es: {code}
+
+Este código expira el: {expires_at.strftime('%d de %B de %Y a las %H:%M')} UTC
+
+Si no solicitaste este código, puedes ignorar este mensaje de forma segura."""
             
             message = Mail(
                 from_email=settings.SENDGRID_FROM_EMAIL,
@@ -284,16 +277,21 @@ class EmailService:
             
             response = sg.send(message)
             if response.status_code in [200, 201, 202]:
+                logger.info(f"✅ Email sent via SendGrid to {email} (status: {response.status_code})")
                 print(f"✅ Email sent via SendGrid to {email}")
             else:
+                logger.warning(f"⚠️  SendGrid returned status {response.status_code}, email may not have been sent")
                 print(f"⚠️  SendGrid returned status {response.status_code}, email may not have been sent")
         except Exception as e:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"❌ Error sending email via SendGrid: {e}", exc_info=True)
             print(f"❌ Error sending email via SendGrid: {e}")
             print(f"   Falling back to console mode")
     
     @staticmethod
     async def _send_via_smtp(email: str, code: str, purpose: str, expires_at: datetime):
-        """Send email via SMTP (Gmail)"""
+        """Send email via SMTP (Gmail - Only works locally, NOT on Render)"""
         if not SMTP_AVAILABLE:
             print(f"⚠️  SMTP not available, falling back to console")
             return

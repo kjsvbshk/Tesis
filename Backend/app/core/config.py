@@ -68,7 +68,7 @@ class Settings(BaseSettings):
             self.NBA_DB_HOST = self.NEON_DB_HOST
         if self.NEON_DB_PORT:
             self.NBA_DB_PORT = self.NEON_DB_PORT
-        if self.NEON_DB_NAME:
+        if self.NBA_DB_NAME:
             self.NBA_DB_NAME = self.NEON_DB_NAME
         if self.NEON_DB_USER:
             self.NBA_DB_USER = self.NEON_DB_USER
@@ -133,14 +133,21 @@ class Settings(BaseSettings):
     MIN_BET_AMOUNT: Optional[float] = 1.0
     MAX_BET_AMOUNT: Optional[float] = 100.0
     
-    # Email Configuration - SMTP (Gmail)
-    EMAIL_PROVIDER: str = "smtp"  # Options: "smtp" (production), "console" (development)
+    # Email Configuration
+    # IMPORTANTE: Render bloquea puertos SMTP (25, 465, 587). Usa SendGrid para producción.
+    EMAIL_PROVIDER: str = "sendgrid"  # Options: "sendgrid" (production), "smtp" (local only), "console" (development)
+    
+    # SendGrid Configuration (Recomendado para Render/producción)
+    SENDGRID_API_KEY: Optional[str] = None
+    SENDGRID_FROM_EMAIL: Optional[str] = None  # ej: noreply@tudominio.com o un email verificado
+    
+    # SMTP Configuration (Solo funciona localmente, NO en Render)
     SMTP_HOST: str = "smtp.gmail.com"
-    SMTP_PORT: int = 587  # Use 587 with STARTTLS (works better on Render/cloud) or 465 with SSL
-    SMTP_USER: Optional[str] = None  # Gmail email address (ej: tu_email@gmail.com)
-    SMTP_PASSWORD: Optional[str] = None  # Gmail App Password (no tu contraseña normal)
-    SMTP_FROM_EMAIL: Optional[str] = None  # Same as SMTP_USER for Gmail
-    SMTP_USE_TLS: bool = True  # Use STARTTLS for port 587 (required for Gmail on port 587)
+    SMTP_PORT: int = 587
+    SMTP_USER: Optional[str] = None
+    SMTP_PASSWORD: Optional[str] = None
+    SMTP_FROM_EMAIL: Optional[str] = None
+    SMTP_USE_TLS: bool = True
     
     # Redis Configuration
     REDIS_URL: Optional[str] = None  # Full Redis URL (e.g., redis://:password@host:port/db)
@@ -149,6 +156,11 @@ class Settings(BaseSettings):
     REDIS_PASSWORD: Optional[str] = None
     REDIS_DB: int = 0
     USE_REDIS: bool = False  # Set to True to use Redis instead of in-memory cache
+    
+    # Outbox Worker Configuration
+    OUTBOX_POLL_INTERVAL: int = 5  # Segundos entre polls cuando hay eventos (default: 5)
+    OUTBOX_POLL_INTERVAL_EMPTY: int = 30  # Segundos entre polls cuando no hay eventos (default: 30)
+    OUTBOX_BATCH_SIZE: int = 10  # Cantidad de eventos a procesar por batch
     
     class Config:
         env_file = ".env"

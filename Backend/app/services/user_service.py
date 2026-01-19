@@ -82,10 +82,33 @@ class UserService:
         if not user_account:
             return None
         
-        update_data = user_update.dict(exclude_unset=True, exclude={'password'})
+        # Separate UserAccount fields from Client fields
+        user_account_fields = {'username', 'email', 'rol', 'credits'}
+        client_fields = {'first_name', 'last_name', 'phone', 'date_of_birth'}
+        
+        update_data = user_update.dict(exclude_unset=True, exclude={'password', 'birth_date'})
+        
+        # Handle birth_date mapping (frontend sends birth_date, backend uses date_of_birth)
+        if user_update.birth_date:
+            from datetime import datetime
+            try:
+                # Parse the date string from frontend
+                date_obj = datetime.strptime(user_update.birth_date, '%Y-%m-%d').date()
+                update_data['date_of_birth'] = date_obj
+            except (ValueError, TypeError):
+                pass  # Invalid date format, skip
+        
+        # Update UserAccount fields
         for field, value in update_data.items():
-            if hasattr(user_account, field):
+            if field in user_account_fields and hasattr(user_account, field):
                 setattr(user_account, field, value)
+        
+        # Update Client fields if user is a client
+        client = await self.get_client_by_user_id(user_id)
+        if client:
+            for field, value in update_data.items():
+                if field in client_fields and hasattr(client, field):
+                    setattr(client, field, value)
         
         # Si hay password, actualizarlo
         if user_update.password:

@@ -7,9 +7,11 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
+from fastapi.staticfiles import StaticFiles
 import uvicorn
 import os
 import logging
+from pathlib import Path
 from dotenv import load_dotenv
 
 from app.core.config import settings
@@ -90,6 +92,11 @@ structured_logger.setLevel(logging.INFO)
 
 # Include API routes
 app.include_router(api_router, prefix="/api/v1")
+
+# Mount static files for avatars
+uploads_dir = Path("Backend/uploads")
+uploads_dir.mkdir(parents=True, exist_ok=True)
+app.mount("/uploads", StaticFiles(directory=str(uploads_dir)), name="uploads")
 
 # Initialize queue service (will connect to Redis if configured)
 from app.services.queue_service import queue_service

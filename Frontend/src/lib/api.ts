@@ -13,9 +13,16 @@ export async function apiRequest<T>(
 ): Promise<T> {
   const token = localStorage.getItem('token')
   
+  // Check if body is FormData - don't set Content-Type for FormData
+  const isFormData = options.body instanceof FormData
+  
   const headers: any = {
-    'Content-Type': 'application/json',
     ...(options.headers || {}),
+  }
+
+  // Only set Content-Type for non-FormData requests
+  if (!isFormData && !headers['Content-Type']) {
+    headers['Content-Type'] = 'application/json'
   }
 
   if (token) {

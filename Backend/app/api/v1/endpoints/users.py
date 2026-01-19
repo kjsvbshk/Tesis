@@ -2,10 +2,14 @@
 Users API endpoints
 """
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Request
 from sqlalchemy.orm import Session
 from typing import List
 from datetime import timedelta
+import os
+import shutil
+import uuid
+from pathlib import Path
 
 from app.core.database import get_sys_db
 from app.core.config import settings
@@ -13,18 +17,24 @@ from app.models.user_accounts import UserAccount, Client
 from app.schemas.user import (
     UserResponse, UserCreate, UserUpdate, UserLogin, Token,
     SendVerificationCodeRequest, VerifyCodeRequest, RegisterWithVerificationRequest,
-    ForgotPasswordRequest, ResetPasswordRequest
+    ForgotPasswordRequest, ResetPasswordRequest,
+    TwoFactorSetupResponse, TwoFactorVerifyRequest, TwoFactorEnableRequest,
+    TwoFactorDisableRequest, TwoFactorStatusResponse,
+    AvatarUploadResponse, UserSessionResponse, SessionRevokeRequest
 )
 from app.services.user_service import UserService
-from app.services.auth_service import get_current_user, authenticate_user, create_access_token, get_password_hash
+from app.services.auth_service import get_current_user, authenticate_user, create_access_token, get_password_hash, verify_password
 from app.services.email_service import EmailService
+from app.services.two_factor_service import TwoFactorService
+from app.services.session_service import SessionService
 
 router = APIRouter()
 
 @router.post("/login", response_model=Token)
 async def login(
     user_credentials: UserLogin,
-    db: Session = Depends(get_sys_db)
+    db: Session = Depends(get_sys_db),
+    request: Request = None
 ):
     """Login user and return JWT token"""
     try:
@@ -46,10 +56,52 @@ async def login(
                 detail="User account is inactive"
             )
         
+        # Check if 2FA is enabled
+        two_factor_service = TwoFactorService(db)
+        is_2fa_enabled = await two_factor_service.is_2fa_enabled(user.id)
+        
+        if is_2fa_enabled:
+            if not user_credentials.two_factor_code:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="2FA code is required"
+                )
+            
+            # Verify 2FA code
+            if not await two_factor_service.verify_2fa_code(user.id, user_credentials.two_factor_code):
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="Invalid 2FA code"
+                )
+        
         access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
         access_token = create_access_token(
             data={"sub": user.username}, 
             expires_delta=access_token_expires
+        )
+        
+        # Create session
+        session_service = SessionService(db)
+        
+        # Extract device info and IP
+        device_info = None
+        ip_address = None
+        user_agent = None
+        location = None
+        
+        if request:
+            user_agent = request.headers.get("User-Agent")
+            ip_address = request.client.host if request.client else None
+            device_info = session_service.extract_device_info(user_agent)
+            # Location could be determined from IP using a geolocation service
+        
+        await session_service.create_session(
+            user_id=user.id,
+            token=access_token,
+            device_info=device_info,
+            ip_address=ip_address,
+            user_agent=user_agent,
+            location=location
         )
         
         # Obtener el rol del usuario
@@ -244,7 +296,8 @@ async def register_user(user: RegisterWithVerificationRequest, db: Session = Dep
             "credits": float(client.credits) if client else None,
             "rol": user_role,
             "created_at": new_user_account.created_at,
-            "updated_at": new_user_account.updated_at
+            "updated_at": new_user_account.updated_at,
+            "avatar_url": new_user_account.avatar_url,
         }
         return user_dict
     except HTTPException:
@@ -283,17 +336,23 @@ async def get_current_user_info(
     if not user_role:
         raise HTTPException(status_code=500, detail="User role not found")
     
-    user_dict = {
-        "id": current_user.id,
-        "username": current_user.username,
-        "email": current_user.email,
-        "is_active": current_user.is_active,
-        "credits": float(client.credits) if client else None,
-        "rol": user_role,
-        "created_at": current_user.created_at,
-        "updated_at": current_user.updated_at
-    }
-    return user_dict
+        user_dict = {
+            "id": current_user.id,
+            "username": current_user.username,
+            "email": current_user.email,
+            "is_active": current_user.is_active,
+            "credits": float(client.credits) if client else None,
+            "rol": user_role,
+            "created_at": current_user.created_at,
+            "updated_at": current_user.updated_at,
+            "avatar_url": current_user.avatar_url,
+            # Include Client profile fields if user is a client
+            "first_name": client.first_name if client else None,
+            "last_name": client.last_name if client else None,
+            "phone": client.phone if client else None,
+            "date_of_birth": client.date_of_birth if client else None,
+        }
+        return user_dict
 
 @router.put("/me", response_model=UserResponse)
 async def update_current_user(
@@ -328,7 +387,13 @@ async def update_current_user(
             "credits": float(client.credits) if client else None,
             "rol": user_role,
             "created_at": updated_user.created_at,
-            "updated_at": updated_user.updated_at
+            "updated_at": updated_user.updated_at,
+            "avatar_url": updated_user.avatar_url,
+            # Include Client profile fields if user is a client
+            "first_name": client.first_name if client else None,
+            "last_name": client.last_name if client else None,
+            "phone": client.phone if client else None,
+            "date_of_birth": client.date_of_birth if client else None,
         }
         return user_dict
     except Exception as e:
@@ -678,10 +743,299 @@ async def get_all_users(
                 "credits": float(client.credits) if client else None,
                 "rol": user_role,
                 "created_at": user_account.created_at,
-                "updated_at": user_account.updated_at
+                "updated_at": user_account.updated_at,
+                "avatar_url": user_account.avatar_url,
             }
             result.append(user_dict)
         
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching users: {str(e)}")
+
+# ============================================================================
+# Two-Factor Authentication Endpoints
+# ============================================================================
+
+@router.post("/me/2fa/setup", response_model=TwoFactorSetupResponse)
+async def setup_2fa(
+    current_user: UserAccount = Depends(get_current_user),
+    db: Session = Depends(get_sys_db)
+):
+    """Setup 2FA for the current user - generates secret and QR code"""
+    try:
+        two_factor_service = TwoFactorService(db)
+        secret, qr_code_url, backup_codes = await two_factor_service.setup_2fa(
+            current_user.id,
+            current_user.email
+        )
+        
+        return {
+            "secret": secret,
+            "qr_code_url": qr_code_url,
+            "backup_codes": backup_codes
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error setting up 2FA: {str(e)}")
+
+@router.post("/me/2fa/verify")
+async def verify_2fa_setup(
+    request: TwoFactorVerifyRequest,
+    current_user: UserAccount = Depends(get_current_user),
+    db: Session = Depends(get_sys_db)
+):
+    """Verify 2FA code during setup"""
+    try:
+        two_factor_service = TwoFactorService(db)
+        two_factor = await two_factor_service.get_user_2fa(current_user.id)
+        
+        if not two_factor:
+            raise HTTPException(status_code=400, detail="2FA not set up. Please setup first.")
+        
+        if two_factor.is_enabled:
+            raise HTTPException(status_code=400, detail="2FA is already enabled")
+        
+        # Verify the code
+        if not two_factor_service.verify_totp(two_factor.secret, request.code):
+            raise HTTPException(status_code=400, detail="Invalid verification code")
+        
+        return {"message": "Code verified successfully", "verified": True}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error verifying 2FA: {str(e)}")
+
+@router.post("/me/2fa/enable")
+async def enable_2fa(
+    request: TwoFactorEnableRequest,
+    current_user: UserAccount = Depends(get_current_user),
+    db: Session = Depends(get_sys_db)
+):
+    """Enable 2FA after verification"""
+    try:
+        two_factor_service = TwoFactorService(db)
+        success = await two_factor_service.verify_and_enable_2fa(current_user.id, request.code)
+        
+        if not success:
+            raise HTTPException(status_code=400, detail="Invalid verification code")
+        
+        return {"message": "2FA enabled successfully", "enabled": True}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error enabling 2FA: {str(e)}")
+
+@router.post("/me/2fa/disable")
+async def disable_2fa(
+    request: TwoFactorDisableRequest,
+    current_user: UserAccount = Depends(get_current_user),
+    db: Session = Depends(get_sys_db)
+):
+    """Disable 2FA - requires password confirmation"""
+    try:
+        # Verify password
+        if not verify_password(request.password, current_user.hashed_password):
+            raise HTTPException(status_code=400, detail="Invalid password")
+        
+        two_factor_service = TwoFactorService(db)
+        success = await two_factor_service.disable_2fa(current_user.id)
+        
+        if not success:
+            raise HTTPException(status_code=400, detail="2FA is not enabled")
+        
+        return {"message": "2FA disabled successfully", "disabled": True}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error disabling 2FA: {str(e)}")
+
+@router.get("/me/2fa/status", response_model=TwoFactorStatusResponse)
+async def get_2fa_status(
+    current_user: UserAccount = Depends(get_current_user),
+    db: Session = Depends(get_sys_db)
+):
+    """Get 2FA status for the current user"""
+    try:
+        two_factor_service = TwoFactorService(db)
+        is_setup, is_enabled = await two_factor_service.get_2fa_status(current_user.id)
+        
+        return {
+            "is_setup": is_setup,
+            "is_enabled": is_enabled
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching 2FA status: {str(e)}")
+
+# ============================================================================
+# Avatar Endpoints
+# ============================================================================
+
+@router.post("/me/avatar", response_model=AvatarUploadResponse)
+async def upload_avatar(
+    file: UploadFile = File(...),
+    current_user: UserAccount = Depends(get_current_user),
+    db: Session = Depends(get_sys_db)
+):
+    """Upload avatar image for the current user"""
+    try:
+        # Validate file type
+        allowed_types = ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp"]
+        if file.content_type not in allowed_types:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Invalid file type. Allowed types: {', '.join(allowed_types)}"
+            )
+        
+        # Validate file size (max 2MB)
+        file_size = 0
+        content = await file.read()
+        file_size = len(content)
+        if file_size > 2 * 1024 * 1024:  # 2MB
+            raise HTTPException(status_code=400, detail="File size exceeds 2MB limit")
+        
+        # Create uploads directory if it doesn't exist
+        upload_dir = Path("Backend/uploads/avatars")
+        upload_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Generate unique filename
+        file_ext = file.filename.split('.')[-1] if '.' in file.filename else 'jpg'
+        unique_filename = f"{current_user.id}_{uuid.uuid4().hex[:8]}.{file_ext}"
+        file_path = upload_dir / unique_filename
+        
+        # Save file
+        with open(file_path, "wb") as buffer:
+            buffer.write(content)
+        
+        # Update user avatar URL
+        # Use relative path for serving
+        avatar_url = f"/uploads/avatars/{unique_filename}"
+        current_user.avatar_url = avatar_url
+        db.commit()
+        db.refresh(current_user)
+        
+        # Delete old avatar if exists
+        if current_user.avatar_url and current_user.avatar_url != avatar_url:
+            old_path = Path(f"Backend{current_user.avatar_url}")
+            if old_path.exists():
+                old_path.unlink()
+        
+        return {
+            "avatar_url": avatar_url,
+            "message": "Avatar uploaded successfully"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error uploading avatar: {str(e)}")
+
+@router.delete("/me/avatar")
+async def delete_avatar(
+    current_user: UserAccount = Depends(get_current_user),
+    db: Session = Depends(get_sys_db)
+):
+    """Delete avatar for the current user"""
+    try:
+        if current_user.avatar_url:
+            # Delete file
+            file_path = Path(f"Backend{current_user.avatar_url}")
+            if file_path.exists():
+                file_path.unlink()
+            
+            # Clear avatar URL
+            current_user.avatar_url = None
+            db.commit()
+        
+        return {"message": "Avatar deleted successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error deleting avatar: {str(e)}")
+
+# ============================================================================
+# Session Management Endpoints
+# ============================================================================
+
+@router.get("/me/sessions", response_model=List[UserSessionResponse])
+async def get_user_sessions(
+    current_user: UserAccount = Depends(get_current_user),
+    db: Session = Depends(get_sys_db),
+    request: Request = None
+):
+    """Get all active sessions for the current user"""
+    try:
+        session_service = SessionService(db)
+        sessions = await session_service.get_user_sessions(current_user.id, include_revoked=False)
+        
+        # Get current session token hash
+        current_token_hash = None
+        if request:
+            auth_header = request.headers.get("Authorization")
+            if auth_header and auth_header.startswith("Bearer "):
+                token = auth_header.split(" ")[1]
+                current_token_hash = session_service.hash_token(token)
+        
+        result = []
+        for session in sessions:
+            result.append({
+                "id": session.id,
+                "device_info": session.device_info,
+                "ip_address": session.ip_address,
+                "location": session.location,
+                "last_activity": session.last_activity,
+                "created_at": session.created_at,
+                "is_current": session.token_hash == current_token_hash if current_token_hash else False
+            })
+        
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching sessions: {str(e)}")
+
+@router.post("/me/sessions/{session_id}/revoke")
+async def revoke_session(
+    session_id: int,
+    current_user: UserAccount = Depends(get_current_user),
+    db: Session = Depends(get_sys_db)
+):
+    """Revoke a specific session"""
+    try:
+        session_service = SessionService(db)
+        success = await session_service.revoke_session(session_id, current_user.id)
+        
+        if not success:
+            raise HTTPException(status_code=404, detail="Session not found")
+        
+        return {"message": "Session revoked successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error revoking session: {str(e)}")
+
+@router.post("/me/sessions/revoke-all")
+async def revoke_all_sessions(
+    current_user: UserAccount = Depends(get_current_user),
+    db: Session = Depends(get_sys_db),
+    request: Request = None
+):
+    """Revoke all sessions except the current one"""
+    try:
+        session_service = SessionService(db)
+        
+        # Get current token to exclude it
+        current_token = None
+        if request:
+            auth_header = request.headers.get("Authorization")
+            if auth_header and auth_header.startswith("Bearer "):
+                current_token = auth_header.split(" ")[1]
+        
+        revoked_count = await session_service.revoke_all_sessions(
+            current_user.id,
+            exclude_token=current_token
+        )
+        
+        return {
+            "message": f"Revoked {revoked_count} session(s)",
+            "revoked_count": revoked_count
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error revoking sessions: {str(e)}")

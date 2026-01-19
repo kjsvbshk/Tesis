@@ -42,6 +42,8 @@ from app.models import (
     OddsSnapshot, OddsLine,
     # Audit and messaging
     AuditLog, Outbox,
+    # 2FA and Sessions
+    UserTwoFactor, UserSession,
 )
 
 def create_tables():
@@ -92,7 +94,9 @@ def create_tables():
                 'providers', 'provider_endpoints',
                 'odds_snapshots', 'odds_lines',
                 'audit_log', 'outbox',
-                'users', 'bets', 'transactions'
+                'users', 'bets', 'transactions',
+                'user_accounts', 'clients', 'administrators', 'operators',
+                'user_two_factor', 'user_sessions'
             ]
             
             print(f"\n📋 Tablas en esquema '{DB_SCHEMA}':")

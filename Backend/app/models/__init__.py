@@ -5,6 +5,8 @@ Database models for NBA Bets application
 # Core models
 from .user import User  # Legacy model (app schema)
 from .user_accounts import UserAccount, Client, Administrator, Operator  # Normalized user models
+from .two_factor import UserTwoFactor  # Two-Factor Authentication
+from .user_session import UserSession  # User sessions tracking
 from .team import Team
 from .game import Game
 from .bet import Bet  # Legacy model (app schema)
@@ -59,6 +61,8 @@ __all__ = [
     "Client",  # Normalized client (replaces "usuario")
     "Administrator",  # Normalized administrator
     "Operator",  # Normalized operator
+    "UserTwoFactor",  # Two-Factor Authentication
+    "UserSession",  # User sessions tracking
     "Team", 
     "Game",
     "Bet",  # Legacy (app schema)

@@ -3,8 +3,8 @@ User Pydantic schemas
 """
 
 from pydantic import BaseModel, EmailStr
-from typing import Optional
-from datetime import datetime
+from typing import Optional, List
+from datetime import datetime, date
 
 class UserBase(BaseModel):
     username: str
@@ -23,6 +23,13 @@ class UserUpdate(BaseModel):
     email: Optional[EmailStr] = None
     rol: Optional[str] = None
     credits: Optional[float] = None
+    # Client profile fields
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    phone: Optional[str] = None
+    date_of_birth: Optional[date] = None
+    # Frontend sends 'birth_date', we'll handle mapping in the endpoint
+    birth_date: Optional[str] = None
 
 class UserResponse(UserBase):
     id: int
@@ -30,6 +37,12 @@ class UserResponse(UserBase):
     is_active: bool
     created_at: datetime
     updated_at: Optional[datetime] = None
+    avatar_url: Optional[str] = None  # Avatar URL
+    # Client profile fields (optional)
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    phone: Optional[str] = None
+    date_of_birth: Optional[date] = None
     
     class Config:
         from_attributes = True
@@ -42,6 +55,7 @@ class UserCreateWithRol(UserBase):
 class UserLogin(BaseModel):
     username: str
     password: str
+    two_factor_code: Optional[str] = None  # Required if 2FA is enabled
 
 class Token(BaseModel):
     access_token: str
@@ -76,3 +90,60 @@ class ResetPasswordRequest(BaseModel):
     username: str
     code: str
     new_password: str
+
+# ============================================================================
+# Two-Factor Authentication Schemas
+# ============================================================================
+
+class TwoFactorSetupResponse(BaseModel):
+    """Response for 2FA setup - contains QR code data and backup codes"""
+    secret: str
+    qr_code_url: str  # Data URL for QR code image
+    backup_codes: List[str]  # List of backup codes (only shown once)
+    
+class TwoFactorVerifyRequest(BaseModel):
+    """Request to verify 2FA code during setup"""
+    code: str
+    
+class TwoFactorEnableRequest(BaseModel):
+    """Request to enable 2FA after verification"""
+    code: str
+    
+class TwoFactorDisableRequest(BaseModel):
+    """Request to disable 2FA"""
+    password: str  # Require password confirmation
+    
+class TwoFactorStatusResponse(BaseModel):
+    """Response with 2FA status"""
+    is_enabled: bool
+    is_setup: bool  # True if secret exists but not enabled yet
+    
+# ============================================================================
+# Avatar Schemas
+# ============================================================================
+
+class AvatarUploadResponse(BaseModel):
+    """Response after avatar upload"""
+    avatar_url: str
+    message: str
+
+# ============================================================================
+# Session Schemas
+# ============================================================================
+
+class UserSessionResponse(BaseModel):
+    """Response for user session information"""
+    id: int
+    device_info: Optional[str] = None
+    ip_address: Optional[str] = None
+    location: Optional[str] = None
+    last_activity: datetime
+    created_at: datetime
+    is_current: bool = False  # True if this is the current session
+    
+    class Config:
+        from_attributes = True
+
+class SessionRevokeRequest(BaseModel):
+    """Request to revoke a session"""
+    session_id: int

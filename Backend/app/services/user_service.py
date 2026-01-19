@@ -83,10 +83,10 @@ class UserService:
             return None
         
         # Separate UserAccount fields from Client fields
-        user_account_fields = {'username', 'email', 'rol', 'credits'}
+        user_account_fields = {'username', 'email', 'is_active'}  # is_active can be updated by admin
         client_fields = {'first_name', 'last_name', 'phone', 'date_of_birth'}
         
-        update_data = user_update.dict(exclude_unset=True, exclude={'password', 'birth_date'})
+        update_data = user_update.dict(exclude_unset=True, exclude={'password', 'birth_date', 'rol', 'credits'})
         
         # Handle birth_date mapping (frontend sends birth_date, backend uses date_of_birth)
         if user_update.birth_date:
@@ -102,6 +102,13 @@ class UserService:
         for field, value in update_data.items():
             if field in user_account_fields and hasattr(user_account, field):
                 setattr(user_account, field, value)
+        
+        # Handle credits update (for clients)
+        if user_update.credits is not None:
+            client = await self.get_client_by_user_id(user_id)
+            if client:
+                from decimal import Decimal
+                client.credits = Decimal(str(user_update.credits))
         
         # Update Client fields if user is a client
         client = await self.get_client_by_user_id(user_id)

@@ -13,7 +13,8 @@ from pathlib import Path
 
 from app.core.database import get_sys_db
 from app.core.config import settings
-from app.models.user_accounts import UserAccount, Client
+from app.models.user_accounts import UserAccount, Client, Administrator, Operator
+from app.models.role import Role
 from app.schemas.user import (
     UserResponse, UserCreate, UserUpdate, UserLogin, Token,
     SendVerificationCodeRequest, VerifyCodeRequest, RegisterWithVerificationRequest,
@@ -764,6 +765,293 @@ async def get_all_users(
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching users: {str(e)}")
+
+@router.get("/{user_id}", response_model=UserResponse)
+async def get_user_by_id(
+    user_id: int,
+    current_user: UserAccount = Depends(get_current_user),
+    db: Session = Depends(get_sys_db)
+):
+    """Get user by ID (admin only)"""
+    try:
+        # Check if user has admin permission
+        from app.core.authorization import get_user_permissions, has_permission
+        user_permissions = get_user_permissions(db, current_user.id)
+        if not has_permission("admin:write", user_permissions):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Admin permission required"
+            )
+        
+        user_service = UserService(db)
+        user_account = await user_service.get_user_by_id(user_id)
+        if not user_account:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found"
+            )
+        
+        # Get client and role info
+        client = await user_service.get_client_by_user_id(user_account.id)
+        user_role = await user_service.get_user_role_code(user_account.id)
+        if not user_role:
+            raise HTTPException(status_code=500, detail="User role not found")
+        
+        user_dict = {
+            "id": user_account.id,
+            "username": user_account.username,
+            "email": user_account.email,
+            "is_active": user_account.is_active,
+            "credits": float(client.credits) if client else None,
+            "rol": user_role,
+            "created_at": user_account.created_at,
+            "updated_at": user_account.updated_at,
+            "avatar_url": user_account.avatar_url,
+            # Include Client profile fields if user is a client
+            "first_name": client.first_name if client else None,
+            "last_name": client.last_name if client else None,
+            "phone": client.phone if client else None,
+            "date_of_birth": client.date_of_birth if client else None,
+        }
+        return user_dict
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching user: {str(e)}")
+
+@router.post("/", response_model=UserResponse)
+async def create_user_admin(
+    user: UserCreate,
+    current_user: UserAccount = Depends(get_current_user),
+    db: Session = Depends(get_sys_db)
+):
+    """Create a new user (admin only - no email verification required)"""
+    try:
+        # Check if user has admin permission
+        from app.core.authorization import get_user_permissions, has_permission
+        user_permissions = get_user_permissions(db, current_user.id)
+        if not has_permission("admin:write", user_permissions):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Admin permission required"
+            )
+        
+        user_service = UserService(db)
+        
+        # Check if username already exists
+        existing_user = await user_service.get_user_by_username(user.username)
+        if existing_user:
+            raise HTTPException(status_code=400, detail="Username already registered")
+        
+        # Check if email already exists
+        existing_email = await user_service.get_user_by_email(user.email)
+        if existing_email:
+            raise HTTPException(status_code=400, detail="Email already registered")
+        
+        # Create user (no email verification required for admin-created users)
+        new_user_account = await user_service.create_user(user)
+        
+        # Get client and role info for response
+        client = await user_service.get_client_by_user_id(new_user_account.id)
+        user_role = await user_service.get_user_role_code(new_user_account.id)
+        if not user_role:
+            raise HTTPException(status_code=500, detail="User role not found")
+        
+        user_dict = {
+            "id": new_user_account.id,
+            "username": new_user_account.username,
+            "email": new_user_account.email,
+            "is_active": new_user_account.is_active,
+            "credits": float(client.credits) if client else None,
+            "rol": user_role,
+            "created_at": new_user_account.created_at,
+            "updated_at": new_user_account.updated_at,
+            "avatar_url": new_user_account.avatar_url,
+        }
+        return user_dict
+    except HTTPException:
+        raise
+    except Exception as e:
+        import traceback
+        error_detail = str(e)
+        traceback_str = traceback.format_exc()
+        print(f"Error creating user: {error_detail}")
+        print(f"Traceback: {traceback_str}")
+        raise HTTPException(status_code=500, detail=f"Error creating user: {error_detail}")
+
+@router.put("/{user_id}", response_model=UserResponse)
+async def update_user_admin(
+    user_id: int,
+    user_update: UserUpdate,
+    current_user: UserAccount = Depends(get_current_user),
+    db: Session = Depends(get_sys_db)
+):
+    """Update user account information (admin only)"""
+    try:
+        # Check if user has admin permission
+        from app.core.authorization import get_user_permissions, has_permission
+        user_permissions = get_user_permissions(db, current_user.id)
+        if not has_permission("admin:write", user_permissions):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Admin permission required"
+            )
+        
+        user_service = UserService(db)
+        
+        # Check if user exists
+        user_account = await user_service.get_user_by_id(user_id)
+        if not user_account:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found"
+            )
+        
+        # Update is_active if provided (admin can activate/deactivate users)
+        if user_update.is_active is not None:
+            user_account.is_active = user_update.is_active
+        
+        # Handle role change if provided
+        # Note: Role changes should be done through /admin/users/{user_id}/roles endpoints
+        # But we can handle it here for convenience
+        if user_update.rol:
+            from app.models import Role, Client, Administrator, Operator
+            from app.services.role_service import RoleService
+            
+            # Get the role
+            role = db.query(Role).filter(Role.code == user_update.rol).first()
+            if not role:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Role '{user_update.rol}' not found"
+                )
+            
+            # Get current user type
+            current_client = await user_service.get_client_by_user_id(user_id)
+            current_admin = db.query(Administrator).filter(Administrator.user_account_id == user_id).first()
+            current_operator = db.query(Operator).filter(Operator.user_account_id == user_id).first()
+            
+            # Remove from current type and add to new type
+            if user_update.rol == 'client':
+                # Remove from admin/operator if exists
+                if current_admin:
+                    db.delete(current_admin)
+                if current_operator:
+                    db.delete(current_operator)
+                
+                # Create or update client
+                if not current_client:
+                    client = Client(
+                        user_account_id=user_id,
+                        role_id=role.id,
+                        credits=1000.0
+                    )
+                    db.add(client)
+                else:
+                    current_client.role_id = role.id
+                    
+            elif user_update.rol == 'admin':
+                # Remove from client/operator if exists
+                if current_client:
+                    db.delete(current_client)
+                if current_operator:
+                    db.delete(current_operator)
+                
+                # Create or update administrator
+                if not current_admin:
+                    admin = Administrator(
+                        user_account_id=user_id,
+                        role_id=role.id,
+                        first_name='Admin',
+                        last_name='User'
+                    )
+                    db.add(admin)
+                else:
+                    current_admin.role_id = role.id
+                    
+            elif user_update.rol == 'operator':
+                # Remove from client/admin if exists
+                if current_client:
+                    db.delete(current_client)
+                if current_admin:
+                    db.delete(current_admin)
+                
+                # Create or update operator
+                if not current_operator:
+                    operator = Operator(
+                        user_account_id=user_id,
+                        role_id=role.id,
+                        first_name='Operator',
+                        last_name='User'
+                    )
+                    db.add(operator)
+                else:
+                    current_operator.role_id = role.id
+            
+            db.flush()  # Flush to ensure changes are applied
+        
+        # Update other fields using the service
+        updated_user = await user_service.update_user(user_id, user_update)
+        
+        # Commit all changes
+        db.commit()
+        db.refresh(updated_user)
+        
+        # Get client and role info for response
+        client = await user_service.get_client_by_user_id(updated_user.id)
+        administrator = db.query(Administrator).filter(Administrator.user_account_id == updated_user.id).first()
+        operator = db.query(Operator).filter(Operator.user_account_id == updated_user.id).first()
+        user_role = await user_service.get_user_role_code(updated_user.id)
+        if not user_role:
+            raise HTTPException(status_code=500, detail="User role not found")
+        
+        # Get profile fields based on user type
+        profile_data = {}
+        if client:
+            profile_data = {
+                "first_name": client.first_name,
+                "last_name": client.last_name,
+                "phone": client.phone,
+                "date_of_birth": client.date_of_birth,
+            }
+        elif administrator:
+            profile_data = {
+                "first_name": administrator.first_name,
+                "last_name": administrator.last_name,
+                "phone": administrator.phone,
+                "date_of_birth": None,
+            }
+        elif operator:
+            profile_data = {
+                "first_name": operator.first_name,
+                "last_name": operator.last_name,
+                "phone": operator.phone,
+                "date_of_birth": None,
+            }
+        
+        user_dict = {
+            "id": updated_user.id,
+            "username": updated_user.username,
+            "email": updated_user.email,
+            "is_active": updated_user.is_active,
+            "credits": float(client.credits) if client else None,
+            "rol": user_role,
+            "created_at": updated_user.created_at,
+            "updated_at": updated_user.updated_at,
+            "avatar_url": updated_user.avatar_url,
+            **profile_data
+        }
+        return user_dict
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        import traceback
+        error_detail = str(e)
+        traceback_str = traceback.format_exc()
+        print(f"Error updating user: {error_detail}")
+        print(f"Traceback: {traceback_str}")
+        raise HTTPException(status_code=500, detail=f"Error updating user: {error_detail}")
 
 @router.delete("/{user_id}")
 async def delete_user(

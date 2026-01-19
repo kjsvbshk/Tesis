@@ -23,6 +23,7 @@ class UserUpdate(BaseModel):
     email: Optional[EmailStr] = None
     rol: Optional[str] = None
     credits: Optional[float] = None
+    is_active: Optional[bool] = None  # For admin to activate/deactivate users
     # Client profile fields
     first_name: Optional[str] = None
     last_name: Optional[str] = None

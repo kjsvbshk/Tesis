@@ -46,10 +46,10 @@ class UsersService {
   }
 
   /**
-   * Create user (admin only - if endpoint exists)
+   * Create user (admin only - no email verification required)
    */
   async createUser(user: UserCreate): Promise<User> {
-    return apiRequest<User>('/users/register', {
+    return apiRequest<User>('/users/', {
       method: 'POST',
       body: JSON.stringify(user),
     })

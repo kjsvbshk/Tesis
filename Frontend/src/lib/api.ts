@@ -86,8 +86,12 @@ export async function apiRequest<T>(
       }
     }
 
-    // Handle empty response body
+    // Handle empty response body (204 No Content is a valid success response)
     if (!text || text.trim() === '') {
+      // 204 No Content is a valid success response with no body
+      if (response.status === 204) {
+        return undefined as unknown as T
+      }
       throw new Error('Respuesta vacía del servidor')
     }
 

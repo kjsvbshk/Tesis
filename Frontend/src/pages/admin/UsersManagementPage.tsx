@@ -153,19 +153,19 @@ export function UsersManagementPage() {
   }
 
   const handleDeleteUser = async (userId: number) => {
-    if (!confirm('¿Estás seguro de eliminar este usuario?')) return
+    if (!confirm('¿Estás seguro de desactivar este usuario?')) return
 
     try {
-      await usersService.deleteUser(userId)
+      const response = await usersService.deleteUser(userId)
       toast({
         title: 'Éxito',
-        description: 'Usuario eliminado correctamente',
+        description: response.message || 'Usuario desactivado correctamente',
       })
       loadUsers()
     } catch (error: any) {
       toast({
         title: 'Error',
-        description: error.message || 'Error al eliminar usuario',
+        description: error.message || 'Error al desactivar usuario',
         variant: 'destructive',
       })
     }

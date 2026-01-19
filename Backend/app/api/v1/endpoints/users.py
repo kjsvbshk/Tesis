@@ -765,7 +765,7 @@ async def get_all_users(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching users: {str(e)}")
 
-@router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{user_id}")
 async def delete_user(
     user_id: int,
     current_user: UserAccount = Depends(get_current_user),
@@ -789,16 +789,32 @@ async def delete_user(
                 detail="Cannot deactivate your own account"
             )
         
+        # Get user info before deactivation for the response
         user_service = UserService(db)
-        success = await user_service.delete_user(user_id)
-        
-        if not success:
+        user_account = await user_service.get_user_by_id(user_id)
+        if not user_account:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="User not found"
             )
         
-        return None
+        username = user_account.username
+        
+        # Deactivate user
+        success = await user_service.delete_user(user_id)
+        
+        if not success:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Error deactivating user"
+            )
+        
+        return {
+            "message": f"Usuario '{username}' desactivado correctamente",
+            "user_id": user_id,
+            "username": username,
+            "is_active": False
+        }
     except HTTPException:
         raise
     except Exception as e:

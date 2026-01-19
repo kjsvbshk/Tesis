@@ -66,10 +66,10 @@ class UsersService {
   }
 
   /**
-   * Delete user (admin only - if endpoint exists)
+   * Delete user (admin only - deactivates user, sets is_active to false)
    */
-  async deleteUser(userId: number): Promise<void> {
-    return apiRequest(`/users/${userId}`, {
+  async deleteUser(userId: number): Promise<{ message: string; user_id: number; username: string; is_active: boolean }> {
+    return apiRequest<{ message: string; user_id: number; username: string; is_active: boolean }>(`/users/${userId}`, {
       method: 'DELETE',
     })
   }

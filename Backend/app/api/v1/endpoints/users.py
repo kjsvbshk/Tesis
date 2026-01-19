@@ -888,8 +888,17 @@ async def update_user_admin(
 ):
     """Update user account information (admin only)"""
     try:
-        # Check if user has admin permission
+        # Import models at the beginning to avoid scope issues
+        # Import here explicitly to ensure they're available in the function scope
+        # (even though they're imported at module level, Python may treat them as local
+        # if there are assignments within conditional blocks)
+        from app.models.role import Role
         from app.core.authorization import get_user_permissions, has_permission
+        # Explicitly reference Administrator and Operator to ensure they're in local scope
+        AdminModel = Administrator
+        OperatorModel = Operator
+        
+        # Check if user has admin permission
         user_permissions = get_user_permissions(db, current_user.id)
         if not has_permission("admin:write", user_permissions):
             raise HTTPException(
@@ -915,8 +924,6 @@ async def update_user_admin(
         # Note: Role changes should be done through /admin/users/{user_id}/roles endpoints
         # But we can handle it here for convenience
         if user_update.rol:
-            from app.models import Role, Client, Administrator, Operator
-            from app.services.role_service import RoleService
             
             # Get the role
             role = db.query(Role).filter(Role.code == user_update.rol).first()
@@ -928,8 +935,8 @@ async def update_user_admin(
             
             # Get current user type
             current_client = await user_service.get_client_by_user_id(user_id)
-            current_admin = db.query(Administrator).filter(Administrator.user_account_id == user_id).first()
-            current_operator = db.query(Operator).filter(Operator.user_account_id == user_id).first()
+            current_admin = db.query(AdminModel).filter(AdminModel.user_account_id == user_id).first()
+            current_operator = db.query(OperatorModel).filter(OperatorModel.user_account_id == user_id).first()
             
             # Remove from current type and add to new type
             if user_update.rol == 'client':
@@ -959,7 +966,7 @@ async def update_user_admin(
                 
                 # Create or update administrator
                 if not current_admin:
-                    admin = Administrator(
+                    admin = AdminModel(
                         user_account_id=user_id,
                         role_id=role.id,
                         first_name='Admin',
@@ -978,7 +985,7 @@ async def update_user_admin(
                 
                 # Create or update operator
                 if not current_operator:
-                    operator = Operator(
+                    operator = OperatorModel(
                         user_account_id=user_id,
                         role_id=role.id,
                         first_name='Operator',
@@ -999,8 +1006,8 @@ async def update_user_admin(
         
         # Get client and role info for response
         client = await user_service.get_client_by_user_id(updated_user.id)
-        administrator = db.query(Administrator).filter(Administrator.user_account_id == updated_user.id).first()
-        operator = db.query(Operator).filter(Operator.user_account_id == updated_user.id).first()
+        administrator = db.query(AdminModel).filter(AdminModel.user_account_id == updated_user.id).first()
+        operator = db.query(OperatorModel).filter(OperatorModel.user_account_id == updated_user.id).first()
         user_role = await user_service.get_user_role_code(updated_user.id)
         if not user_role:
             raise HTTPException(status_code=500, detail="User role not found")

@@ -336,23 +336,23 @@ async def get_current_user_info(
     if not user_role:
         raise HTTPException(status_code=500, detail="User role not found")
     
-        user_dict = {
-            "id": current_user.id,
-            "username": current_user.username,
-            "email": current_user.email,
-            "is_active": current_user.is_active,
-            "credits": float(client.credits) if client else None,
-            "rol": user_role,
-            "created_at": current_user.created_at,
-            "updated_at": current_user.updated_at,
-            "avatar_url": current_user.avatar_url,
-            # Include Client profile fields if user is a client
-            "first_name": client.first_name if client else None,
-            "last_name": client.last_name if client else None,
-            "phone": client.phone if client else None,
-            "date_of_birth": client.date_of_birth if client else None,
-        }
-        return user_dict
+    user_dict = {
+        "id": current_user.id,
+        "username": current_user.username,
+        "email": current_user.email,
+        "is_active": current_user.is_active,
+        "credits": float(client.credits) if client else None,
+        "rol": user_role,
+        "created_at": current_user.created_at,
+        "updated_at": current_user.updated_at,
+        "avatar_url": current_user.avatar_url,
+        # Include Client profile fields if user is a client
+        "first_name": client.first_name if client else None,
+        "last_name": client.last_name if client else None,
+        "phone": client.phone if client else None,
+        "date_of_birth": client.date_of_birth if client else None,
+    }
+    return user_dict
 
 @router.put("/me", response_model=UserResponse)
 async def update_current_user(

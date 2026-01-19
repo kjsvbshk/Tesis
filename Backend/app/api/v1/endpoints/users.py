@@ -765,6 +765,45 @@ async def get_all_users(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching users: {str(e)}")
 
+@router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_user(
+    user_id: int,
+    current_user: UserAccount = Depends(get_current_user),
+    db: Session = Depends(get_sys_db)
+):
+    """Deactivate a user account (soft delete - admin only)"""
+    try:
+        # Check if user has admin permission
+        from app.core.authorization import get_user_permissions, has_permission
+        user_permissions = get_user_permissions(db, current_user.id)
+        if not has_permission("admin:write", user_permissions):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Admin permission required"
+            )
+        
+        # Prevent self-deactivation
+        if current_user.id == user_id:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Cannot deactivate your own account"
+            )
+        
+        user_service = UserService(db)
+        success = await user_service.delete_user(user_id)
+        
+        if not success:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found"
+            )
+        
+        return None
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error deactivating user: {str(e)}")
+
 # ============================================================================
 # Two-Factor Authentication Endpoints
 # ============================================================================

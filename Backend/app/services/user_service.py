@@ -169,3 +169,17 @@ class UserService:
             return operator.role.code
         
         return None
+    
+    async def delete_user(self, user_id: int) -> bool:
+        """Deactivate a user account (soft delete - logical deletion)"""
+        user_account = await self.get_user_by_id(user_id)
+        if not user_account:
+            return False
+        
+        # Soft delete: set is_active to False instead of deleting the record
+        # This preserves data integrity and allows for potential reactivation
+        user_account.is_active = False
+        self.db.commit()
+        self.db.refresh(user_account)
+        
+        return True

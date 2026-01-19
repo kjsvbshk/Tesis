@@ -5,7 +5,7 @@ interface AuthContextType {
   user: UserResponse | null
   isAuthenticated: boolean
   isLoading: boolean
-  login: (username: string, password: string) => Promise<void>
+  login: (username: string, password: string, twoFactorCode?: string) => Promise<void>
   register: (username: string, email: string, password: string) => Promise<void>
   logout: () => Promise<void>
   refreshUser: () => Promise<void>
@@ -43,9 +43,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  const login = async (username: string, password: string) => {
+  const login = async (username: string, password: string, twoFactorCode?: string) => {
     try {
-      const tokenResponse = await authService.login({ username, password })
+      const tokenResponse = await authService.login({ username, password, two_factor_code: twoFactorCode })
       authService.saveToken(tokenResponse.access_token)
       
       const userData = await authService.getCurrentUser()

@@ -3,6 +3,7 @@ import { apiRequest } from '@/lib/api'
 export interface LoginCredentials {
   username: string
   password: string
+  two_factor_code?: string
 }
 
 export interface RegisterData {

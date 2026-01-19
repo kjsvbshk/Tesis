@@ -51,6 +51,14 @@ export async function apiRequest<T>(
     if (!response.ok) {
       // Handle 401 Unauthorized specifically
       if (response.status === 401) {
+        // Check if 2FA is required
+        const requires2FA = response.headers.get('X-Requires-2FA') === 'true'
+        if (requires2FA) {
+          const error = new Error('2FA code is required')
+          ;(error as any).requires2FA = true
+          throw error
+        }
+        
         if (!text || text.trim() === '') {
           throw new Error('Usuario o contraseña incorrectos')
         }

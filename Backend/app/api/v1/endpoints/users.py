@@ -62,9 +62,11 @@ async def login(
         
         if is_2fa_enabled:
             if not user_credentials.two_factor_code:
+                # Return 401 with special header to indicate 2FA is required
                 raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="2FA code is required"
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="2FA code is required",
+                    headers={"X-Requires-2FA": "true"}
                 )
             
             # Verify 2FA code

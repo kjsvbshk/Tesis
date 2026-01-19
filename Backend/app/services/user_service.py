@@ -110,9 +110,8 @@ class UserService:
                 if field in client_fields and hasattr(client, field):
                     setattr(client, field, value)
         
-        # Si hay password, actualizarlo
-        if user_update.password:
-            user_account.hashed_password = get_password_hash(user_update.password)
+        # Note: Password changes are handled in a separate endpoint (/users/me/password)
+        # Do not update password here
         
         self.db.commit()
         self.db.refresh(user_account)

@@ -12,8 +12,10 @@ export function LoginPage() {
   const { login } = useAuth()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [twoFactorCode, setTwoFactorCode] = useState('')
+  const [requires2FA, setRequires2FA] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [errors, setErrors] = useState<{ username?: string; password?: string }>({})
+  const [errors, setErrors] = useState<{ username?: string; password?: string; twoFactorCode?: string }>({})
 
   const validateForm = () => {
     const newErrors: { username?: string; password?: string } = {}
@@ -41,12 +43,31 @@ export function LoginPage() {
       return
     }
 
+    // If 2FA is required, validate the code
+    if (requires2FA) {
+      if (!twoFactorCode || twoFactorCode.length !== 6) {
+        setErrors({ ...errors, twoFactorCode: 'El código de 2FA debe tener 6 dígitos' })
+        return
+      }
+    }
+
     setIsLoading(true)
     try {
-      await login(username.trim(), password)
+      await login(username.trim(), password, requires2FA ? twoFactorCode : undefined)
       // El mensaje de éxito se mostrará en HomePage después de la redirección
     } catch (error: any) {
       console.error('Login error:', error)
+      
+      // Check if 2FA is required
+      if (error?.requires2FA) {
+        setRequires2FA(true)
+        toast({
+          title: 'Código 2FA requerido',
+          description: 'Por favor ingresa el código de tu aplicación de autenticación',
+        })
+        return
+      }
+      
       const errorMessage = error?.message || 'Error al iniciar sesión'
       
       // Mensaje más específico para errores de autenticación
@@ -171,13 +192,50 @@ export function LoginPage() {
             </div>
           </div>
 
+          {requires2FA && (
+            <div>
+              <Label htmlFor="twoFactorCode" className="block text-sm font-medium text-white">
+                Código de Autenticación (2FA)
+              </Label>
+              <div className="mt-2">
+                <Input
+                  id="twoFactorCode"
+                  name="twoFactorCode"
+                  type="text"
+                  autoComplete="one-time-code"
+                  required
+                  maxLength={6}
+                  value={twoFactorCode}
+                  onChange={(e) => {
+                    // Solo permitir números
+                    const value = e.target.value.replace(/\D/g, '')
+                    setTwoFactorCode(value)
+                    if (errors.twoFactorCode) {
+                      setErrors({ ...errors, twoFactorCode: undefined })
+                    }
+                  }}
+                  className={`block w-full rounded-lg bg-white/5 px-3 py-2.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-[#B0B3C5] focus:outline-2 focus:-outline-offset-2 focus:outline-[#00FF73] sm:text-sm/6 text-center text-2xl tracking-widest ${
+                    errors.twoFactorCode ? 'border-[#FF4C4C]' : ''
+                  }`}
+                  placeholder="000000"
+                />
+                {errors.twoFactorCode && (
+                  <p className="mt-1 text-sm text-[#FF4C4C]">{errors.twoFactorCode}</p>
+                )}
+                <p className="mt-2 text-xs text-[#B0B3C5] text-center">
+                  Ingresa el código de 6 dígitos de tu aplicación de autenticación
+                </p>
+              </div>
+            </div>
+          )}
+
           <div>
             <Button
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || (requires2FA && twoFactorCode.length !== 6)}
               className="flex w-full justify-center rounded-lg bg-gradient-to-r from-[#00FF73] to-[#00D95F] px-3 py-2.5 text-sm font-semibold text-[#0B132B] hover:from-[#00D95F] hover:to-[#00FF73] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00FF73] transition-all duration-300 shadow-[0_0_20px_rgba(0,255,115,0.3)] hover:shadow-[0_0_25px_rgba(0,255,115,0.5)] disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}
+              {isLoading ? (requires2FA ? 'Verificando código...' : 'Iniciando sesión...') : (requires2FA ? 'Verificar y continuar' : 'Iniciar sesión')}
             </Button>
           </div>
         </form>

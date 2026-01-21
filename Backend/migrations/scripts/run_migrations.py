@@ -93,7 +93,7 @@ def main():
         sys.exit(1)
     
     # Obtener ruta del directorio de migraciones
-    migrations_dir = Path(__file__).parent / "migrations"
+    migrations_dir = Path(__file__).parent.parent
     
     # Definir orden de migraciones
     migration_files = [

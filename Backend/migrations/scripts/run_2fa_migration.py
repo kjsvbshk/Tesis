@@ -22,7 +22,7 @@ def run_migration():
     print("🚀 MIGRACIÓN: 2FA, Avatar y Sesiones")
     print("=" * 60)
     
-    migration_file = os.path.join(os.path.dirname(__file__), 'migrations', 'add_2fa_avatar_sessions.sql')
+    migration_file = os.path.join(os.path.dirname(__file__), '..', 'add_2fa_avatar_sessions.sql')
     
     if not os.path.exists(migration_file):
         print(f"❌ Error: No se encontró el archivo de migración: {migration_file}")

@@ -108,6 +108,20 @@ class Settings(BaseSettings):
     DEBUG: bool = False
     CORS_ORIGINS: str = "http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173,http://127.0.0.1:3000"
     
+    # Security Configuration
+    FORCE_HTTPS: bool = True  # Force HTTPS redirects in production (default: True)
+    ALLOWED_HOSTS: Optional[str] = None  # Comma-separated list of allowed hosts (e.g., "example.com,*.example.com")
+    SECURITY_MAX_LOGIN_ATTEMPTS: int = 5  # Max failed login attempts before blocking
+    SECURITY_LOGIN_WINDOW_MINUTES: int = 15  # Time window for tracking failed attempts
+    SECURITY_BLOCK_DURATION_MINUTES: int = 30  # Duration to block IP after max attempts
+    
+    @property
+    def allowed_hosts_list(self) -> list:
+        """Parse ALLOWED_HOSTS string into a list"""
+        if not self.ALLOWED_HOSTS:
+            return []
+        return [host.strip() for host in self.ALLOWED_HOSTS.split(",") if host.strip()]
+    
     @field_validator('DEBUG', mode='before')
     @classmethod
     def parse_debug(cls, v):

@@ -115,7 +115,7 @@ def create_tables():
         print("\n" + "=" * 60)
         print("✅ Proceso completado")
         print("=" * 60)
-        print("\n💡 Próximo paso: Ejecutar 'python init_rbac_data.py' para inicializar roles y permisos")
+        print("\n💡 Próximo paso: Ejecutar 'python migrations/init/init_rbac_data.py' para inicializar roles y permisos")
         
     except Exception as e:
         print(f"\n❌ Error: {e}")

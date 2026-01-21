@@ -12,7 +12,7 @@ from typing import Dict, List, Optional
 import json
 
 # Agregar el directorio Backend al path
-sys.path.insert(0, str(Path(__file__).parent))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from app.core.database import get_espn_db
 from app.models.team import Team
@@ -116,7 +116,7 @@ def load_teams(db: Session) -> Dict[str, int]:
     print("Cargando equipos...")
     
     # Obtener equipos únicos desde team_stats CSV
-    scrapping_dir = Path(__file__).parent.parent / 'Scrapping' / 'nba' / 'data' / 'raw'
+    scrapping_dir = Path(__file__).parent.parent.parent / 'Scrapping' / 'nba' / 'data' / 'raw'
     team_stats_dir = scrapping_dir / 'team_stats'
     
     teams_data = {}
@@ -253,7 +253,7 @@ def load_team_stats_game_from_boxscores(db: Session, team_id_map: Dict[str, int]
     """
     print("Cargando estadisticas de equipos por juego desde boxscores...")
     
-    scrapping_dir = Path(__file__).parent.parent / 'Scrapping' / 'nba' / 'data' / 'raw'
+    scrapping_dir = Path(__file__).parent.parent.parent / 'Scrapping' / 'nba' / 'data' / 'raw'
     boxscores_dir = scrapping_dir / 'boxscores'
     
     if not boxscores_dir.exists():

@@ -53,7 +53,7 @@ def run_migration():
         print("❌ Error: Faltan variables de entorno requeridas")
         sys.exit(1)
     
-    migration_file = Path(__file__).parent / "migrations" / "add_performance_indexes.sql"
+    migration_file = Path(__file__).parent.parent / "add_performance_indexes.sql"
     
     if not migration_file.exists():
         print(f"❌ Archivo no encontrado: {migration_file}")

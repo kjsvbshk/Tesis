@@ -28,8 +28,12 @@ from app.services.auth_service import get_current_user, authenticate_user, creat
 from app.services.email_service import EmailService
 from app.services.two_factor_service import TwoFactorService
 from app.services.session_service import SessionService
+from app.core.security import sanitize_for_logging, safe_log_request
+from app.middleware.security_monitoring import security_monitoring
+import logging
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 @router.post("/login", response_model=Token)
 async def login(
@@ -39,6 +43,25 @@ async def login(
 ):
     """Login user and return JWT token"""
     try:
+        # Get IP address for security monitoring
+        ip_address = request.client.host if request and request.client else None
+        
+        # Check rate limiting before attempting authentication
+        if ip_address:
+            is_blocked, remaining_minutes = security_monitoring.check_rate_limit(ip_address)
+            if is_blocked:
+                logger.warning(
+                    f"Login attempt blocked for IP {ip_address} "
+                    f"(blocked for {remaining_minutes} more minutes)"
+                )
+                raise HTTPException(
+                    status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                    detail=f"Too many failed login attempts. Please try again in {remaining_minutes} minutes.",
+                )
+        
+        # Log login attempt (sanitized - no password)
+        logger.info(f"Login attempt for user: {user_credentials.username} from IP: {ip_address}")
+        
         # First authenticate user with username and password
         user = await authenticate_user(
             db, 
@@ -46,6 +69,13 @@ async def login(
             user_credentials.password
         )
         if not user:
+            # Track failed login attempt
+            if ip_address:
+                security_monitoring.track_failed_login(user_credentials.username, ip_address)
+            
+            logger.warning(
+                f"Failed login attempt for user: {user_credentials.username} from IP: {ip_address}"
+            )
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Incorrect username or password",
@@ -79,10 +109,23 @@ async def login(
             # Verify 2FA code (TOTP or backup code)
             # Both username/password AND 2FA code must be correct to proceed
             if not await two_factor_service.verify_2fa_code(user.id, user_credentials.two_factor_code):
+                # Track failed login attempt (invalid 2FA)
+                if ip_address:
+                    security_monitoring.track_failed_login(user.username, ip_address)
+                
+                logger.warning(
+                    f"Invalid 2FA code for user: {user.username} from IP: {ip_address}"
+                )
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
                     detail="Invalid 2FA code"
                 )
+        
+        # Successful login - reset failed attempts for this IP
+        if ip_address:
+            security_monitoring.reset_attempts(ip_address)
+        
+        logger.info(f"Successful login for user: {user.username} from IP: {ip_address}")
         
         access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
         access_token = create_access_token(
@@ -93,15 +136,14 @@ async def login(
         # Create session
         session_service = SessionService(db)
         
-        # Extract device info and IP
+        # Extract device info and IP (reuse ip_address already captured)
         device_info = None
-        ip_address = None
         user_agent = None
         location = None
         
         if request:
             user_agent = request.headers.get("User-Agent")
-            ip_address = request.client.host if request.client else None
+            # ip_address already captured at line 47, reuse it
             device_info = session_service.extract_device_info(user_agent)
             # Location could be determined from IP using a geolocation service
         
@@ -243,9 +285,19 @@ async def verify_code(
         raise HTTPException(status_code=500, detail=f"Error verifying code: {str(e)}")
 
 @router.post("/register", response_model=UserResponse)
-async def register_user(user: RegisterWithVerificationRequest, db: Session = Depends(get_sys_db)):
+async def register_user(
+    user: RegisterWithVerificationRequest, 
+    db: Session = Depends(get_sys_db),
+    request: Request = None
+):
     """Register a new user - requires email verification"""
     try:
+        # Get IP address for logging
+        ip_address = request.client.host if request and request.client else None
+        
+        # Log registration attempt (sanitized - no password)
+        logger.info(f"Registration attempt for username: {user.username}, email: {user.email} from IP: {ip_address}")
+        
         email_service = EmailService()
         user_service = UserService(db)
         
@@ -277,11 +329,13 @@ async def register_user(user: RegisterWithVerificationRequest, db: Session = Dep
         # Check if username already exists
         existing_user = await user_service.get_user_by_username(user.username)
         if existing_user:
+            logger.warning(f"Registration failed: Username already exists - {user.username} from IP: {ip_address}")
             raise HTTPException(status_code=400, detail="Username already registered")
         
         # Check if email already exists
         existing_email = await user_service.get_user_by_email(user.email)
         if existing_email:
+            logger.warning(f"Registration failed: Email already exists - {user.email} from IP: {ip_address}")
             raise HTTPException(status_code=400, detail="Email already registered")
         
         # Create user with verified email
@@ -413,7 +467,8 @@ async def update_current_user(
 async def change_password(
     password_data: dict,
     current_user: UserAccount = Depends(get_current_user),
-    db: Session = Depends(get_sys_db)
+    db: Session = Depends(get_sys_db),
+    request: Request = None
 ):
     """
     Change user password with enhanced security:
@@ -428,6 +483,12 @@ async def change_password(
         from app.services.cache_service import cache_service
         from datetime import datetime, timedelta
         import re
+        
+        # Get IP address for logging
+        ip_address = request.client.host if request and request.client else None
+        
+        # Log password change attempt (sanitized - no passwords)
+        logger.info(f"Password change attempt for user: {current_user.username} from IP: {ip_address}")
         
         current_password = password_data.get("current_password")
         new_password = password_data.get("new_password")
@@ -497,7 +558,12 @@ async def change_password(
                 ttl_seconds=3600
             )
             
-            # Log failed attempt
+            # Log failed attempt (sanitized)
+            logger.warning(
+                f"Password change failed: Incorrect current password for user: {current_user.username} "
+                f"from IP: {ip_address} (attempt {attempts}/5)"
+            )
+            
             audit_service = AuditService(db)
             await audit_service.log_action(
                 action="password_change_failed",
@@ -535,6 +601,9 @@ async def change_password(
         # Reset rate limit on success
         cache_service.delete(rate_limit_key)
         
+        # Log successful password change
+        logger.info(f"Password changed successfully for user: {current_user.username} from IP: {ip_address}")
+        
         # Send email notification (optional, if email service is configured)
         try:
             from app.services.email_service import EmailService
@@ -553,10 +622,17 @@ async def change_password(
 @router.post("/forgot-password")
 async def forgot_password(
     request: ForgotPasswordRequest,
-    db: Session = Depends(get_sys_db)
+    db: Session = Depends(get_sys_db),
+    http_request: Request = None
 ):
     """Request password reset - sends verification code to email associated with username"""
     try:
+        # Get IP address for logging
+        ip_address = http_request.client.host if http_request and http_request.client else None
+        
+        # Log password reset request (sanitized - no sensitive data)
+        logger.info(f"Password reset request for username: {request.username} from IP: {ip_address}")
+        
         email_service = EmailService()
         user_service = UserService(db)
         
@@ -610,10 +686,14 @@ async def forgot_password(
 @router.post("/reset-password")
 async def reset_password(
     request: ResetPasswordRequest,
-    db: Session = Depends(get_sys_db)
+    db: Session = Depends(get_sys_db),
+    http_request: Request = None
 ):
     """Reset password after code verification"""
     try:
+        # Get IP address for logging
+        ip_address = http_request.client.host if http_request and http_request.client else None
+        
         email_service = EmailService()
         user_service = UserService(db)
         
@@ -648,6 +728,8 @@ async def reset_password(
         user_account.hashed_password = get_password_hash(request.new_password)
         db.commit()
         db.refresh(user_account)
+        
+        logger.info(f"Password reset successfully for user: {user_account.username} from IP: {ip_address}")
         
         return {"message": "Password reset successfully"}
     except HTTPException:

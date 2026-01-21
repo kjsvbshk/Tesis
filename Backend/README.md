@@ -59,14 +59,16 @@ Backend/
 
 5. **Crear tablas de base de datos**:
    ```bash
-   python create_tables_neon.py
+   python migrations/scripts/create_tables_neon.py
    ```
 
 6. **Inicializar datos básicos** (opcional):
    ```bash
-   python init_basic_data.py
-   python init_rbac_data.py
+   python migrations/init/init_basic_data.py
+   python migrations/init/init_rbac_data.py
    ```
+   
+   📖 Ver `migrations/README.md` para más detalles sobre migraciones e inicialización.
 
 7. **Ejecutar servidor**:
    ```bash
@@ -221,7 +223,7 @@ Configura estas variables en Render Dashboard:
 
 1. **Ejecutar migraciones** (si aplica):
    ```bash
-   python run_migrations.py
+   python migrations/scripts/run_migrations.py
    ```
 
 2. **Verificar health check**:

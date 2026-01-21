@@ -17,6 +17,11 @@ from dotenv import load_dotenv
 from app.core.config import settings
 from app.api.v1.api import api_router
 from app.core.database import app_engine, espn_engine, AppBase, EspnBase, sys_engine, SysBase  # sys_* son aliases para compatibilidad
+from app.middleware.security_middleware import (
+    SecurityHeadersMiddleware,
+    HTTPSRedirectMiddleware,
+    TrustedHostMiddleware
+)
 # Importar todos los modelos para que SQLAlchemy los registre
 from app.models import (
     # Core models
@@ -79,6 +84,26 @@ app.add_middleware(
     allow_headers=["*"],
     expose_headers=["X-Requires-2FA"],  # Expose custom headers for 2FA flow
 )
+
+# Security Middlewares
+# Order matters: HTTPS redirect first, then trusted host, then security headers
+# HTTPS redirect should be early to catch HTTP requests before processing
+if settings.FORCE_HTTPS:
+    app.add_middleware(
+        HTTPSRedirectMiddleware,
+        force_https=settings.FORCE_HTTPS,
+        allowed_hosts=settings.allowed_hosts_list
+    )
+
+# Trusted host validation
+if settings.allowed_hosts_list:
+    app.add_middleware(
+        TrustedHostMiddleware,
+        allowed_hosts=settings.allowed_hosts_list
+    )
+
+# Security headers (always enabled)
+app.add_middleware(SecurityHeadersMiddleware)
 
 # Configure structured logging
 logging.basicConfig(

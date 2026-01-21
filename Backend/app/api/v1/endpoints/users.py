@@ -1359,9 +1359,17 @@ async def upload_avatar(
         if file_size > 2 * 1024 * 1024:  # 2MB
             raise HTTPException(status_code=400, detail="File size exceeds 2MB limit")
         
-        # Create uploads directory if it doesn't exist
-        upload_dir = Path("Backend/uploads/avatars")
+        # Use absolute path for uploads directory (same as main.py)
+        # This ensures it works regardless of the current working directory
+        # From Backend/app/api/v1/endpoints/users.py:
+        # - .parent.parent.parent.parent -> Backend/app/
+        # - .parent.parent.parent.parent.parent -> Backend/
+        base_dir = Path(__file__).resolve().parent.parent.parent.parent.parent  # Backend/
+        upload_dir = base_dir / "uploads" / "avatars"
         upload_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Save old avatar URL before updating (to delete old file)
+        old_avatar_url = current_user.avatar_url
         
         # Generate unique filename
         file_ext = file.filename.split('.')[-1] if '.' in file.filename else 'jpg'
@@ -1373,17 +1381,24 @@ async def upload_avatar(
             buffer.write(content)
         
         # Update user avatar URL
-        # Use relative path for serving
+        # Use relative path for serving (matches the mount point in main.py: /uploads)
         avatar_url = f"/uploads/avatars/{unique_filename}"
         current_user.avatar_url = avatar_url
         db.commit()
         db.refresh(current_user)
         
-        # Delete old avatar if exists
-        if current_user.avatar_url and current_user.avatar_url != avatar_url:
-            old_path = Path(f"Backend{current_user.avatar_url}")
-            if old_path.exists():
-                old_path.unlink()
+        # Delete old avatar file if it exists and is different from the new one
+        if old_avatar_url and old_avatar_url != avatar_url:
+            # Construct absolute path to old file
+            old_path = base_dir / old_avatar_url.lstrip("/")
+            if old_path.exists() and old_path.is_file():
+                try:
+                    old_path.unlink()
+                except Exception as e:
+                    # Log error but don't fail the request if deletion fails
+                    import logging
+                    logger = logging.getLogger(__name__)
+                    logger.warning(f"Failed to delete old avatar file {old_path}: {e}")
         
         return {
             "avatar_url": avatar_url,
@@ -1402,10 +1417,22 @@ async def delete_avatar(
     """Delete avatar for the current user"""
     try:
         if current_user.avatar_url:
-            # Delete file
-            file_path = Path(f"Backend{current_user.avatar_url}")
-            if file_path.exists():
-                file_path.unlink()
+            # Use absolute path (same as upload_avatar)
+            # From Backend/app/api/v1/endpoints/users.py:
+            # - .parent.parent.parent.parent -> Backend/app/
+            # - .parent.parent.parent.parent.parent -> Backend/
+            base_dir = Path(__file__).resolve().parent.parent.parent.parent.parent  # Backend/
+            file_path = base_dir / current_user.avatar_url.lstrip("/")
+            
+            # Delete file if it exists
+            if file_path.exists() and file_path.is_file():
+                try:
+                    file_path.unlink()
+                except Exception as e:
+                    # Log error but don't fail the request if deletion fails
+                    import logging
+                    logger = logging.getLogger(__name__)
+                    logger.warning(f"Failed to delete avatar file {file_path}: {e}")
             
             # Clear avatar URL
             current_user.avatar_url = None

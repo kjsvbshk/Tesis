@@ -18,6 +18,14 @@ export function ProfilePage() {
   const { logout, user, refreshUser } = useAuth()
   const [activeTab, setActiveTab] = useState('personal')
   const [isLoading, setIsLoading] = useState(false)
+
+  // Helper function to construct avatar URL
+  const getAvatarUrl = (avatarPath: string | null | undefined): string | null => {
+    if (!avatarPath) return null
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1'
+    const baseUrl = apiBaseUrl.replace(/\/api\/v1\/?$/, '')
+    return `${baseUrl}${avatarPath}`
+  }
   
   // Personal info state
   const [personalInfo, setPersonalInfo] = useState({
@@ -76,11 +84,8 @@ export function ProfilePage() {
           birth_date: birthDate,
         })
 
-        // Load avatar
-        if (profileData.avatar_url) {
-          const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1'
-          setAvatarUrl(`${apiBaseUrl.replace('/api/v1', '')}${profileData.avatar_url}`)
-        }
+        // Load avatar - construct full URL
+        setAvatarUrl(getAvatarUrl(profileData.avatar_url))
 
         // Load 2FA status
         try {
@@ -334,9 +339,30 @@ export function ProfilePage() {
     try {
       setAvatarUploading(true)
       const result = await userService.uploadAvatar(file)
-      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1'
-      setAvatarUrl(`${apiBaseUrl.replace('/api/v1', '')}${result.avatar_url}`)
-      await refreshUser()
+      
+      // Update avatar URL immediately with the response
+      // This ensures the UI updates even if subsequent calls fail
+      setAvatarUrl(getAvatarUrl(result.avatar_url))
+      
+      // Refresh user data to ensure consistency (non-critical)
+      // If this fails, we don't want to fail the entire operation
+      try {
+        await refreshUser()
+      } catch (refreshError) {
+        // Log but don't show error - avatar upload succeeded
+        console.warn('Failed to refresh user after avatar upload:', refreshError)
+      }
+      
+      // Reload profile data to get updated avatar_url from server (non-critical)
+      // If this fails, we don't want to fail the entire operation
+      try {
+        const profileData = await userService.getCurrentUser()
+        setAvatarUrl(getAvatarUrl(profileData.avatar_url))
+      } catch (profileError) {
+        // Log but don't show error - avatar upload succeeded and URL is already set
+        console.warn('Failed to reload profile data after avatar upload:', profileError)
+      }
+      
       toast({
         title: 'Avatar actualizado',
         description: 'Tu foto de perfil ha sido actualizada exitosamente.',
@@ -358,8 +384,31 @@ export function ProfilePage() {
     try {
       setIsLoading(true)
       await userService.deleteAvatar()
+      
+      // Update UI immediately - avatar deletion succeeded
       setAvatarUrl(null)
-      await refreshUser()
+      
+      // Refresh user data to ensure consistency (non-critical)
+      // If this fails, we don't want to fail the entire operation
+      try {
+        await refreshUser()
+      } catch (refreshError) {
+        // Log but don't show error - avatar deletion succeeded
+        console.warn('Failed to refresh user after avatar deletion:', refreshError)
+      }
+      
+      // Reload profile data to confirm avatar was deleted (non-critical)
+      // If this fails, we don't want to fail the entire operation
+      try {
+        const profileData = await userService.getCurrentUser()
+        if (!profileData.avatar_url) {
+          setAvatarUrl(null)
+        }
+      } catch (profileError) {
+        // Log but don't show error - avatar deletion succeeded and URL is already cleared
+        console.warn('Failed to reload profile data after avatar deletion:', profileError)
+      }
+      
       toast({
         title: 'Avatar eliminado',
         description: 'Tu foto de perfil ha sido eliminada.',

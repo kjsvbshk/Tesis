@@ -120,7 +120,8 @@ structured_logger.setLevel(logging.INFO)
 app.include_router(api_router, prefix="/api/v1")
 
 # Mount static files for avatars
-uploads_dir = Path("Backend/uploads")
+# NOTE: use an absolute path so it works no matter the CWD (e.g. running from Backend/).
+uploads_dir = (Path(__file__).resolve().parent.parent / "uploads")
 uploads_dir.mkdir(parents=True, exist_ok=True)
 app.mount("/uploads", StaticFiles(directory=str(uploads_dir)), name="uploads")
 

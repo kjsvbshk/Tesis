@@ -35,16 +35,34 @@ import logging
 router = APIRouter()
 logger = logging.getLogger(__name__)
 
+
+def get_client_ip(request: Request) -> str | None:
+    """
+    Best-effort client IP extraction.
+    - If behind a proxy/load balancer, prefer X-Forwarded-For / X-Real-IP.
+    - Fallback to request.client.host.
+    """
+    if not request:
+        return None
+    xff = request.headers.get("x-forwarded-for")
+    if xff:
+        # XFF can be a list: "client, proxy1, proxy2"
+        return xff.split(",")[0].strip() or None
+    x_real_ip = request.headers.get("x-real-ip")
+    if x_real_ip:
+        return x_real_ip.strip() or None
+    return request.client.host if request.client else None
+
 @router.post("/login", response_model=Token)
 async def login(
     user_credentials: UserLogin,
+    request: Request,
     db: Session = Depends(get_sys_db),
-    request: Request = None
 ):
     """Login user and return JWT token"""
     try:
         # Get IP address for security monitoring
-        ip_address = request.client.host if request and request.client else None
+        ip_address = get_client_ip(request)
         
         # Check rate limiting before attempting authentication
         if ip_address:
@@ -143,7 +161,7 @@ async def login(
         
         if request:
             user_agent = request.headers.get("User-Agent")
-            # ip_address already captured at line 47, reuse it
+            # ip_address already captured above, reuse it
             device_info = session_service.extract_device_info(user_agent)
             # Location could be determined from IP using a geolocation service
         
@@ -287,13 +305,13 @@ async def verify_code(
 @router.post("/register", response_model=UserResponse)
 async def register_user(
     user: RegisterWithVerificationRequest, 
+    request: Request,
     db: Session = Depends(get_sys_db),
-    request: Request = None
 ):
     """Register a new user - requires email verification"""
     try:
         # Get IP address for logging
-        ip_address = request.client.host if request and request.client else None
+        ip_address = get_client_ip(request)
         
         # Log registration attempt (sanitized - no password)
         logger.info(f"Registration attempt for username: {user.username}, email: {user.email} from IP: {ip_address}")
@@ -466,9 +484,9 @@ async def update_current_user(
 @router.put("/me/password")
 async def change_password(
     password_data: dict,
+    request: Request,
     current_user: UserAccount = Depends(get_current_user),
     db: Session = Depends(get_sys_db),
-    request: Request = None
 ):
     """
     Change user password with enhanced security:
@@ -485,7 +503,7 @@ async def change_password(
         import re
         
         # Get IP address for logging
-        ip_address = request.client.host if request and request.client else None
+        ip_address = get_client_ip(request)
         
         # Log password change attempt (sanitized - no passwords)
         logger.info(f"Password change attempt for user: {current_user.username} from IP: {ip_address}")

@@ -5,7 +5,7 @@ Handles tracking and management of active JWT sessions
 
 import hashlib
 from typing import List, Optional
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from sqlalchemy.orm import Session
 from app.models.user_session import UserSession
 from app.models.user_accounts import UserAccount
@@ -28,12 +28,54 @@ class SessionService:
         user_agent: Optional[str] = None,
         location: Optional[str] = None
     ) -> UserSession:
-        """Create a new session record"""
+        """
+        Create a session record.
+
+        Current behavior: if the same user logs in again from the same browser/device
+        (same `user_agent` + `device_info`) and there is an active session, we update
+        that existing row instead of creating a new one. This avoids duplicates in
+        \"Sesiones Activas\" for the same device.
+        """
         token_hash = self.hash_token(token)
         
         # Calculate expiration time
-        expires_at = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-        
+        now_utc = datetime.now(timezone.utc)
+        expires_at = now_utc + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+
+        # Reuse existing active session for same device (best-effort).
+        # NOTE:
+        # - IP is NOT reliable (can change), so we key primarily by user_agent/device_info.
+        # - If User-Agent is missing, we DO NOT reuse sessions because multiple different
+        #   clients could share device_info="Unknown" and user_agent=None, causing collisions.
+        # - Bug 1 fix: Use row-level locking with SKIP LOCKED to prevent race conditions.
+        #   If a session is locked by another concurrent request, skip it and create a new one.
+        #   This ensures both requests get valid tokens instead of one overwriting the other.
+        # - Bug 2 fix: Only reuse sessions that are not expired (expires_at > now_utc).
+        existing = None
+        if user_agent:
+            q = self.db.query(UserSession).filter(
+                UserSession.user_account_id == user_id,
+                UserSession.is_active == True,
+                UserSession.expires_at > now_utc,  # Bug 2: Don't reuse expired sessions
+            )
+            # Require an exact match on both user_agent and device_info.
+            q = q.filter(UserSession.user_agent == user_agent)
+            q = q.filter(UserSession.device_info == device_info)
+            # Bug 1: Lock with SKIP LOCKED - if row is locked by concurrent request,
+            # skip it (returns None) and we'll create a new session instead.
+            # This prevents the second request from overwriting the first request's token.
+            existing = q.order_by(UserSession.created_at.desc()).with_for_update(skip_locked=True).first()
+
+        if existing:
+            existing.token_hash = token_hash
+            existing.ip_address = ip_address
+            existing.location = location
+            existing.expires_at = expires_at
+            existing.last_activity = now_utc
+            self.db.commit()
+            self.db.refresh(existing)
+            return existing
+
         session = UserSession(
             user_account_id=user_id,
             token_hash=token_hash,
@@ -43,13 +85,13 @@ class SessionService:
             location=location,
             is_active=True,
             expires_at=expires_at,
-            last_activity=datetime.utcnow()
+            last_activity=now_utc
         )
-        
+
         self.db.add(session)
         self.db.commit()
         self.db.refresh(session)
-        
+
         return session
     
     async def get_session_by_token(self, token: str) -> Optional[UserSession]:
@@ -82,7 +124,7 @@ class SessionService:
             return False
         
         session.is_active = False
-        session.revoked_at = datetime.utcnow()
+        session.revoked_at = datetime.now(timezone.utc)
         self.db.commit()
         
         return True
@@ -101,7 +143,7 @@ class SessionService:
                 continue
             
             session.is_active = False
-            session.revoked_at = datetime.utcnow()
+            session.revoked_at = datetime.now(timezone.utc)
             revoked_count += 1
         
         self.db.commit()
@@ -113,7 +155,7 @@ class SessionService:
         if not session:
             return False
         
-        session.last_activity = datetime.utcnow()
+        session.last_activity = datetime.now(timezone.utc)
         self.db.commit()
         
         return True
@@ -121,7 +163,7 @@ class SessionService:
     async def cleanup_expired_sessions(self) -> int:
         """Remove expired sessions (optional cleanup task)"""
         expired_sessions = self.db.query(UserSession).filter(
-            UserSession.expires_at < datetime.utcnow(),
+            UserSession.expires_at < datetime.now(timezone.utc),
             UserSession.is_active == True
         ).all()
         

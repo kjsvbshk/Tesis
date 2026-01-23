@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session, joinedload
 from typing import List, Optional, Dict, Any
 from datetime import datetime
 from decimal import Decimal
-from app.models.espn_bet import Bet as EspnBet, BetType, BetStatus, BetSelection, BetResult
+from app.models.espn_bet import Bet as EspnBet, BetSelection, BetResult
 from app.models.transaction import Transaction, TransactionType
 from app.schemas.bet import BetCreate, BetUpdate
 from app.services.user_service import UserService

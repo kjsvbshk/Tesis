@@ -5,7 +5,21 @@ Bet Pydantic schemas
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
-from app.models.espn_bet import BetType, BetStatus
+import enum
+
+# Enums para Pydantic schemas (valores válidos de la base de datos)
+class BetType(str, enum.Enum):
+    """Bet type enum"""
+    MONEYLINE = "moneyline"
+    SPREAD = "spread"
+    OVER_UNDER = "over_under"
+
+class BetStatus(str, enum.Enum):
+    """Bet status enum"""
+    PENDING = "pending"
+    WON = "won"
+    LOST = "lost"
+    CANCELLED = "cancelled"
 
 class BetBase(BaseModel):
     game_id: int

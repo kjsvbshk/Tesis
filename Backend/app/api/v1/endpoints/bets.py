@@ -9,8 +9,8 @@ from datetime import datetime
 import asyncio
 
 from app.core.database import get_sys_db, get_espn_db
-from app.models.espn_bet import Bet as EspnBet, BetType, BetStatus
-from app.schemas.bet import BetResponse, BetCreate, BetUpdate
+from app.models.espn_bet import Bet as EspnBet
+from app.schemas.bet import BetResponse, BetCreate, BetUpdate, BetType, BetStatus
 from app.services.bet_service import BetService
 from app.services.audit_service import AuditService
 from app.services.outbox_service import OutboxService

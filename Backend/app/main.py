@@ -5,11 +5,12 @@ Main application entry point
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse, RedirectResponse
 from fastapi.exceptions import RequestValidationError
-from fastapi.staticfiles import StaticFiles
 import uvicorn
 import os
+import mimetypes
+import re
 import logging
 from pathlib import Path
 from dotenv import load_dotenv
@@ -124,11 +125,33 @@ structured_logger.setLevel(logging.INFO)
 # Include API routes
 app.include_router(api_router, prefix="/api/v1")
 
-# Mount static files for avatars
-# NOTE: use an absolute path so it works no matter the CWD (e.g. running from Backend/).
-uploads_dir = (Path(__file__).resolve().parent.parent / "uploads")
+# Uploads directory (avatars). Same path as users.upload_avatar / delete_avatar.
+uploads_dir = Path(__file__).resolve().parent.parent / "uploads"
+avatars_dir = uploads_dir / "avatars"
 uploads_dir.mkdir(parents=True, exist_ok=True)
-app.mount("/uploads", StaticFiles(directory=str(uploads_dir)), name="uploads")
+avatars_dir.mkdir(parents=True, exist_ok=True)
+
+# When avatar file is missing (e.g. ephemeral fs on Render), redirect to a placeholder.
+# Uses ui-avatars.com; colors match app theme (background #0B132B, accent #00FF73).
+_DEFAULT_AVATAR_URL = "https://ui-avatars.com/api/?name=User&size=128&background=0B132B&color=00FF73"
+
+def _safe_avatar_filename(name: str) -> str:
+    """Allow only alphanumeric, underscore, hyphen, dot (e.g. 6_1bfc18e4.png)."""
+    safe = re.sub(r"[^a-zA-Z0-9_.\-]", "", name)
+    return safe or "default"
+
+@app.get("/uploads/avatars/{filename:path}")
+async def serve_avatar(filename: str):
+    """
+    Serve user avatar by filename. If the file does not exist (e.g. ephemeral fs on Render),
+    return a default placeholder so /uploads/avatars/* never 404s when the DB has a URL.
+    """
+    safe = _safe_avatar_filename(Path(filename).name)
+    path = avatars_dir / safe
+    if path.exists() and path.is_file():
+        media_type, _ = mimetypes.guess_type(str(path))
+        return FileResponse(path, media_type=media_type or "image/png")
+    return RedirectResponse(url=_DEFAULT_AVATAR_URL, status_code=302)
 
 # Initialize queue service (will connect to Redis if configured)
 from app.services.queue_service import queue_service

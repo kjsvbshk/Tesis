@@ -25,8 +25,13 @@ from app.middleware.security_middleware import (
 # Importar todos los modelos para que SQLAlchemy los registre
 from app.models import (
     # Core models
-    user, bet, transaction,
-    team, game, team_stats,
+    UserAccount, Client, Administrator, Operator,  # Normalized user models (replaces 'user')
+    UserTwoFactor,  # Two-Factor Authentication
+    UserSession,  # User sessions tracking
+    Team, Game, TeamStatsGame,
+    Transaction,
+    # Normalized ESPN models (replaces 'bet')
+    EspnBet, EspnBetType, EspnBetStatus, BetSelection, BetResult, GameOdds,
     # RBAC models
     Role, Permission, RolePermission, UserRole,
     # Idempotency and requests

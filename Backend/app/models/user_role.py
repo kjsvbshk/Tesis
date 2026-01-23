@@ -13,7 +13,7 @@ class UserRole(SysBase):
     __table_args__ = {'schema': 'app'}
     
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("app.users.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = Column(Integer, ForeignKey("app.user_accounts.id", ondelete="CASCADE"), nullable=False, index=True)
     role_id = Column(Integer, ForeignKey("app.roles.id", ondelete="CASCADE"), nullable=False, index=True)
     is_active = Column(Boolean, default=True, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())

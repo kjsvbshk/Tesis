@@ -10,7 +10,7 @@ from app.core.database import get_sys_db
 from app.services.idempotency_service import IdempotencyService
 from app.services.request_service import RequestService
 from app.services.auth_service import get_current_user
-from app.models import User, RequestStatus
+from app.models import UserAccount, RequestStatus
 
 async def get_idempotency_key(
     x_idempotency_key: Optional[str] = Header(None, alias="X-Idempotency-Key")
@@ -23,7 +23,7 @@ async def get_idempotency_key(
 
 async def check_idempotency_and_register(
     x_idempotency_key: Optional[str] = Depends(get_idempotency_key),
-    current_user: Optional[User] = Depends(get_current_user),
+    current_user: Optional[UserAccount] = Depends(get_current_user),
     db: Session = Depends(get_sys_db)
 ):
     """

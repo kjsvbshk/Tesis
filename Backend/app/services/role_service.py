@@ -4,7 +4,7 @@ Role service for RBAC management
 
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from app.models import Role, Permission, RolePermission, UserRole, User
+from app.models import Role, Permission, RolePermission, UserRole
 
 class RoleService:
     def __init__(self, db: Session):
@@ -112,44 +112,3 @@ class RoleService:
         
         return [self.db.query(Role).filter(Role.id == ur.role_id).first() for ur in user_roles if ur.role_id]
     
-    def sync_legacy_rol(self, user_id: int):
-        """
-        Sincroniza el campo legacy 'rol' en users con el rol principal del usuario desde user_roles.
-        Prioridad: admin > operator > user
-        Si no tiene roles activos, se establece 'usuario' por defecto.
-        """
-        user = self.db.query(User).filter(User.id == user_id).first()
-        if not user:
-            return
-        
-        # Obtener roles activos del usuario
-        user_roles = self.db.query(UserRole).filter(
-            UserRole.user_id == user_id,
-            UserRole.is_active == True
-        ).all()
-        
-        if not user_roles:
-            # Si no tiene roles activos, establecer 'usuario' por defecto
-            user.rol = "usuario"
-            self.db.commit()
-            return
-        
-        # Obtener los códigos de los roles
-        role_codes = []
-        for ur in user_roles:
-            role = self.db.query(Role).filter(Role.id == ur.role_id).first()
-            if role:
-                role_codes.append(role.code)
-        
-        # Prioridad: admin > operator > user
-        if "admin" in role_codes:
-            user.rol = "admin"
-        elif "operator" in role_codes:
-            user.rol = "operator"
-        elif "user" in role_codes:
-            user.rol = "usuario"
-        else:
-            # Si tiene otros roles, usar el primero
-            user.rol = role_codes[0] if role_codes else "usuario"
-        
-        self.db.commit()

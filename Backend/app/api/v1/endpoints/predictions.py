@@ -16,7 +16,7 @@ from app.services.audit_service import AuditService
 from app.services.request_service import RequestService
 from app.services.auth_service import get_current_user
 from app.core.idempotency import check_idempotency_and_register
-from app.models.user import User
+from app.models.user_accounts import UserAccount
 import uuid
 
 router = APIRouter()
@@ -25,7 +25,7 @@ router = APIRouter()
 async def get_prediction(
     prediction_request: PredictionRequest,
     idempotency_data: dict = Depends(check_idempotency_and_register),
-    current_user: User = Depends(get_current_user),
+    current_user: UserAccount = Depends(get_current_user),
     db: Session = Depends(get_espn_db),
     sys_db: Session = Depends(get_sys_db)
 ):
@@ -133,7 +133,7 @@ async def get_prediction(
 @router.get("/game/{game_id}", response_model=PredictionResponse)
 async def get_game_prediction(
     game_id: int,
-    current_user: User = Depends(get_current_user),
+    current_user: UserAccount = Depends(get_current_user),
     db: Session = Depends(get_espn_db),
     sys_db: Session = Depends(get_sys_db)
 ):
@@ -251,7 +251,7 @@ async def get_game_prediction(
 @router.get("/upcoming", response_model=List[PredictionResponse])
 async def get_upcoming_predictions(
     days: int = Query(7, description="Number of days ahead to predict"),
-    current_user: User = Depends(get_current_user),
+    current_user: UserAccount = Depends(get_current_user),
     db: Session = Depends(get_espn_db)
 ):
     """Get predictions for upcoming games"""
@@ -277,7 +277,7 @@ async def get_model_status():
 
 @router.post("/retrain")
 async def retrain_model(
-    current_user: User = Depends(get_current_user),
+    current_user: UserAccount = Depends(get_current_user),
     db: Session = Depends(get_espn_db)
 ):
     """Retrain the ML model (admin only)"""

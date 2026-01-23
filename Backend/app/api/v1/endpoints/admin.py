@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from typing import List
 
 from app.core.database import get_sys_db
-from app.models import User, Provider, ProviderEndpoint
+from app.models import UserAccount, Provider, ProviderEndpoint
 from app.services.auth_service import get_current_user
 from app.services.role_service import RoleService
 from app.services.permission_service import PermissionService
@@ -23,7 +23,7 @@ from app.core.authorization import get_user_permissions, has_permission
 
 router = APIRouter()
 
-def require_admin_permission(current_user: User = Depends(get_current_user), db: Session = Depends(get_sys_db)):
+def require_admin_permission(current_user: UserAccount = Depends(get_current_user), db: Session = Depends(get_sys_db)):
     """Dependency to require admin permission"""
     user_permissions = get_user_permissions(db, current_user.id)
     if not has_permission("admin:write", user_permissions):
@@ -280,7 +280,7 @@ async def assign_role_to_user(
         from app.models import UserRole
         
         # Verificar si el usuario existe
-        user = db.query(User).filter(User.id == user_id).first()
+        user = db.query(UserAccount).filter(UserAccount.id == user_id).first()
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
         
@@ -301,8 +301,6 @@ async def assign_role_to_user(
             if not existing.is_active:
                 existing.is_active = True
                 db.commit()
-                # Sincronizar campo legacy
-                role_service.sync_legacy_rol(user_id)
                 return {"message": "Role activated for user"}
             raise HTTPException(status_code=400, detail="Role already assigned to user")
         
@@ -311,9 +309,6 @@ async def assign_role_to_user(
         db.add(user_role)
         db.commit()
         db.refresh(user_role)
-        
-        # Sincronizar campo legacy
-        role_service.sync_legacy_rol(user_id)
         
         return {"message": "Role assigned to user successfully"}
     except HTTPException:
@@ -344,10 +339,6 @@ async def remove_role_from_user(
         # Desactivar en lugar de eliminar (soft delete)
         user_role.is_active = False
         db.commit()
-        
-        # Sincronizar campo legacy
-        role_service = RoleService(db)
-        role_service.sync_legacy_rol(user_id)
         
         return None
     except HTTPException:

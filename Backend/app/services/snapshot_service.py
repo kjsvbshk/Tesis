@@ -77,70 +77,147 @@ class SnapshotService:
         games_date_col = self.schema_service.find_column('games', ['fecha', 'game_date', 'date'], 'espn')
         
         # Buscar columnas relevantes en odds (basado en estructura real de Neon)
-        # En Neon: game_id (varchar), commence_time (varchar), home_team (varchar), away_team (varchar)
-        odds_game_id_col = self.schema_service.find_column('odds', ['game_id'], 'espn')
+        # En Neon: external_event_id (varchar - ID de The Odds API), commence_time (varchar), home_team (varchar), away_team (varchar)
+        odds_external_event_id_col = self.schema_service.find_column('odds', ['external_event_id', 'game_id'], 'espn')
         odds_commence_time_col = self.schema_service.find_column('odds', ['commence_time'], 'espn')
+        odds_home_team_col = self.schema_service.find_column('odds', ['home_team'], 'espn')
+        odds_away_team_col = self.schema_service.find_column('odds', ['away_team'], 'espn')
         
         with espn_engine.connect() as conn:
             conn.execute(text("SET search_path TO espn, public"))
             conn.commit()
             
             if game_id:
-                # En Neon, games.game_id es bigint, pero odds.game_id es varchar
-                # Necesitamos convertir el game_id a string para buscar en odds
-                game_id_str = str(game_id)
+                # PASO 1: Buscar mapeo en odds_event_game_map
+                mapping_result = conn.execute(
+                    text("""
+                        SELECT external_event_id, resolution_confidence
+                        FROM espn.odds_event_game_map
+                        WHERE game_id = :game_id
+                        ORDER BY last_verified_at DESC NULLS LAST, created_at DESC
+                        LIMIT 1
+                    """),
+                    {"game_id": game_id}
+                ).fetchone()
                 
-                # Intentar buscar odds por game_id directamente (odds.game_id es varchar)
-                if odds_game_id_col and games_id_col:
-                    # Buscar en odds usando game_id como string
+                external_event_id = None
+                if mapping_result:
+                    external_event_id = mapping_result[0]
+                    resolution_confidence = mapping_result[1] if len(mapping_result) > 1 else None
+                    print(f"✅ Mapeo encontrado: game_id={game_id} → external_event_id={external_event_id} (confianza: {resolution_confidence})")
+                
+                # PASO 2: Si hay mapeo, buscar odds usando external_event_id
+                if external_event_id and odds_external_event_id_col:
                     odds_result = conn.execute(
-                        text(f"SELECT * FROM odds WHERE {odds_game_id_col} = :game_id ORDER BY {odds_commence_time_col or 'commence_time'} DESC LIMIT 1"),
-                        {"game_id": game_id_str}
+                        text(f"SELECT * FROM odds WHERE {odds_external_event_id_col} = :external_event_id ORDER BY {odds_commence_time_col or 'commence_time'} DESC LIMIT 1"),
+                        {"external_event_id": external_event_id}
                     ).fetchone()
                     
                     if odds_result:
                         odds_dict = dict(odds_result._mapping)
-                    else:
-                        # Si no hay coincidencia directa, buscar por fecha del juego
-                        if games_date_col:
-                            game_result = conn.execute(
-                                text(f"SELECT {games_date_col} FROM games WHERE {games_id_col} = :game_id"),
-                                {"game_id": game_id}
-                            ).fetchone()
-                            
-                            if game_result and game_result[0] and odds_commence_time_col:
-                                # Buscar odds por fecha aproximada
-                                # En Neon, commence_time es varchar, necesitamos parsearlo
+                
+                # PASO 3: Si no hay mapeo o no se encontraron odds, intentar resolver por fecha/equipos
+                if not odds_dict and games_date_col:
+                    # Obtener información del juego
+                    game_result = conn.execute(
+                        text(f"SELECT {games_date_col}, home_team, away_team FROM games WHERE {games_id_col} = :game_id"),
+                        {"game_id": game_id}
+                    ).fetchone()
+                    
+                    if game_result:
+                        game_date = game_result[0]
+                        game_home_team = game_result[1] if len(game_result) > 1 else None
+                        game_away_team = game_result[2] if len(game_result) > 2 else None
+                        
+                        # Buscar odds por fecha y equipos
+                        if odds_commence_time_col:
+                            try:
+                                # Construir query de búsqueda por fecha
+                                date_query = f"CAST({odds_commence_time_col} AS date) = CAST(:game_date AS date)"
+                                
+                                # Si tenemos equipos, agregar filtro por equipos
+                                if game_home_team and game_away_team and odds_home_team_col and odds_away_team_col:
+                                    team_query = f"(({odds_home_team_col} ILIKE :home_team AND {odds_away_team_col} ILIKE :away_team) OR ({odds_home_team_col} ILIKE :away_team AND {odds_away_team_col} ILIKE :home_team))"
+                                    full_query = f"{date_query} AND {team_query}"
+                                    params = {
+                                        "game_date": game_date,
+                                        "home_team": f"%{game_home_team}%",
+                                        "away_team": f"%{game_away_team}%"
+                                    }
+                                else:
+                                    full_query = date_query
+                                    params = {"game_date": game_date}
+                                
+                                odds_result = conn.execute(
+                                    text(f"SELECT * FROM odds WHERE {full_query} ORDER BY {odds_commence_time_col} DESC LIMIT 1"),
+                                    params
+                                ).fetchone()
+                                
+                                if odds_result:
+                                    odds_dict = dict(odds_result._mapping)
+                                    
+                                    # Crear mapeo para futuras búsquedas (FASE 4.1: NO actualizar automáticamente)
+                                    external_event_id_from_odds = odds_dict.get(odds_external_event_id_col or 'external_event_id')
+                                    if external_event_id_from_odds:
+                                        try:
+                                            # Verificar si ya existe mapping
+                                            existing_mapping = conn.execute(
+                                                text("""
+                                                    SELECT id, game_id, resolution_confidence, needs_review
+                                                    FROM espn.odds_event_game_map
+                                                    WHERE external_event_id = :external_event_id
+                                                """),
+                                                {"external_event_id": external_event_id_from_odds}
+                                            ).fetchone()
+                                            
+                                            if existing_mapping:
+                                                # Mapping existe: NO actualizar automáticamente (política FASE 4.1)
+                                                existing_game_id = existing_mapping[1]
+                                                if existing_game_id != game_id:
+                                                    print(f"⚠️  Mapping existente con game_id diferente: {existing_game_id} vs {game_id}. NO se actualiza automáticamente.")
+                                                else:
+                                                    print(f"ℹ️  Mapping ya existe: external_event_id={external_event_id_from_odds} → game_id={game_id}")
+                                            else:
+                                                # Mapping no existe: crear nuevo
+                                                # Calcular confianza basada en método de resolución
+                                                has_teams = game_home_team and game_away_team
+                                                resolution_method = "auto_date_team" if has_teams else "auto_date_only"
+                                                # Confianza: alta si tiene equipos, media si solo fecha
+                                                resolution_confidence = "high" if has_teams else "medium"
+                                                
+                                                conn.execute(
+                                                    text("""
+                                                        INSERT INTO espn.odds_event_game_map 
+                                                        (external_event_id, game_id, resolved_by, resolution_method, resolution_confidence, resolution_metadata)
+                                                        VALUES (:external_event_id, :game_id, :resolved_by, :resolution_method, :confidence, :metadata)
+                                                    """),
+                                                    {
+                                                        "external_event_id": external_event_id_from_odds,
+                                                        "game_id": game_id,
+                                                        "resolved_by": "date_teams" if has_teams else "date",
+                                                        "resolution_method": resolution_method,
+                                                        "confidence": resolution_confidence,
+                                                        "metadata": f'{{"game_date": "{game_date}", "home_team": "{game_home_team}", "away_team": "{game_away_team}"}}'
+                                                    }
+                                                )
+                                                conn.commit()
+                                                print(f"✅ Mapeo creado: external_event_id={external_event_id_from_odds} → game_id={game_id} (método: {resolution_method}, confianza: {resolution_confidence})")
+                                        except Exception as e:
+                                            print(f"⚠️  Error creando mapeo: {e}")
+                                            conn.rollback()
+                            except Exception as e:
+                                print(f"⚠️  Error searching odds by date/teams: {e}")
+                                # Fallback: buscar solo por fecha con LIKE
                                 try:
-                                    game_date = game_result[0]
-                                    # Intentar buscar por fecha (commence_time es varchar, puede necesitar casting)
-                                    # Cast la columna a date y comparar con el parámetro (que ya es date)
+                                    date_str = str(game_date)
                                     odds_result = conn.execute(
-                                        text(f"SELECT * FROM odds WHERE CAST({odds_commence_time_col} AS date) = CAST(:game_date AS date) ORDER BY {odds_commence_time_col} DESC LIMIT 1"),
-                                        {"game_date": game_date}
+                                        text(f"SELECT * FROM odds WHERE {odds_commence_time_col} LIKE :date_pattern ORDER BY {odds_commence_time_col} DESC LIMIT 1"),
+                                        {"date_pattern": f"{date_str}%"}
                                     ).fetchone()
                                     if odds_result:
                                         odds_dict = dict(odds_result._mapping)
-                                except Exception as e:
-                                    print(f"⚠️  Error searching odds by date: {e}")
-                                    # Si falla el casting, intentar búsqueda por coincidencia de texto
-                                    try:
-                                        date_str = str(game_date)
-                                        odds_result = conn.execute(
-                                            text(f"SELECT * FROM odds WHERE {odds_commence_time_col} LIKE :date_pattern ORDER BY {odds_commence_time_col} DESC LIMIT 1"),
-                                            {"date_pattern": f"{date_str}%"}
-                                        ).fetchone()
-                                        if odds_result:
-                                            odds_dict = dict(odds_result._mapping)
-                                    except Exception as e2:
-                                        print(f"⚠️  Error in text search: {e2}")
-                                    odds_result = None
-                        else:
-                            odds_result = None
-                else:
-                    # Si no podemos mapear las columnas, intentar obtener odds más recientes
-                    print(f"⚠️  Cannot map game_id to odds, using most recent odds")
-                    odds_result = None
+                                except Exception as e2:
+                                    print(f"⚠️  Error in text search: {e2}")
             else:
                 # Obtener odds más recientes
                 if odds_commence_time_col:
@@ -209,7 +286,7 @@ class SnapshotService:
                                         "market": market_key,
                                         "outcome_name": outcome_name,
                                         "point": outcome_point,
-                                        "game_id": odds_dict.get("game_id"),
+                                        "external_event_id": odds_dict.get("external_event_id"),
                                         "commence_time": odds_dict.get("commence_time")
                                     }
                                 })

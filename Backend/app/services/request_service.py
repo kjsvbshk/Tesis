@@ -7,7 +7,6 @@ from sqlalchemy.orm import Session
 from typing import Optional, Dict, Any
 from datetime import datetime
 from app.models import Request, RequestStatus
-from app.models.user import User
 
 class RequestService:
     def __init__(self, db: Session):

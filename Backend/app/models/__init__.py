@@ -3,13 +3,13 @@ Database models for NBA Bets application
 """
 
 # Core models
-from .user import User  # Legacy model (app schema)
+# User legacy model removed - use UserAccount instead
 from .user_accounts import UserAccount, Client, Administrator, Operator  # Normalized user models
 from .two_factor import UserTwoFactor  # Two-Factor Authentication
 from .user_session import UserSession  # User sessions tracking
 from .team import Team
 from .game import Game
-from .bet import Bet  # Legacy model (app schema)
+# Bet legacy model removed - use EspnBet from espn_bet instead
 from .transaction import Transaction
 from .team_stats import TeamStatsGame
 
@@ -56,7 +56,7 @@ __all__ = [
     "SysBase",
     "EspnBase",
     # Core models
-    "User",  # Legacy (app schema)
+    # "User" legacy removed - use "UserAccount" instead
     "UserAccount",  # Normalized user account base
     "Client",  # Normalized client (replaces "usuario")
     "Administrator",  # Normalized administrator
@@ -65,7 +65,7 @@ __all__ = [
     "UserSession",  # User sessions tracking
     "Team", 
     "Game",
-    "Bet",  # Legacy (app schema)
+    # "Bet" legacy removed - use "EspnBet" instead
     "Transaction",
     "TeamStatsGame",
     # Normalized ESPN models (3FN)

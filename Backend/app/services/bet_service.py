@@ -48,6 +48,11 @@ class BetService:
     
     async def place_bet(self, bet: BetCreate, user_id: int) -> EspnBet:
         """Place a new bet using normalized schema"""
+        # Validar que user_account existe explícitamente antes de insertar en espn.bets
+        user_account = await self.user_service.get_user_by_id(user_id)
+        if not user_account:
+            raise ValueError(f"User {user_id} not found in user_accounts")
+        
         # Deduct credits from user first
         success = await self.user_service.deduct_credits(user_id, bet.bet_amount)
         if not success:

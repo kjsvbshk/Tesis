@@ -9,7 +9,7 @@ from typing import Optional, List
 from datetime import datetime
 
 from app.core.database import get_sys_db
-from app.models import User, Request, RequestStatus
+from app.models import UserAccount, Request, RequestStatus
 from app.services.auth_service import get_current_user
 from app.services.request_service import RequestService
 from app.core.authorization import get_user_permissions, has_permission
@@ -21,7 +21,7 @@ async def get_my_requests(
     limit: int = Query(50, ge=1, le=100),
     offset: int = Query(0, ge=0),
     status_filter: Optional[str] = Query(None, alias="status"),
-    current_user: User = Depends(get_current_user),
+    current_user: UserAccount = Depends(get_current_user),
     db: Session = Depends(get_sys_db)
 ):
     """
@@ -70,7 +70,7 @@ async def get_my_requests(
 @router.get("/{request_id}", response_model=dict)
 async def get_request(
     request_id: int,
-    current_user: User = Depends(get_current_user),
+    current_user: UserAccount = Depends(get_current_user),
     db: Session = Depends(get_sys_db)
 ):
     """
@@ -125,7 +125,7 @@ async def get_request(
 @router.get("/key/{request_key}", response_model=dict)
 async def get_request_by_key(
     request_key: str,
-    current_user: User = Depends(get_current_user),
+    current_user: UserAccount = Depends(get_current_user),
     db: Session = Depends(get_sys_db)
 ):
     """
@@ -198,7 +198,7 @@ async def search_requests(
     date_to: Optional[str] = Query(None),
     limit: int = Query(50, ge=1, le=100),
     offset: int = Query(0, ge=0),
-    current_user: User = Depends(get_current_user),
+    current_user: UserAccount = Depends(get_current_user),
     db: Session = Depends(get_sys_db)
 ):
     """

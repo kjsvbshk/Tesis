@@ -84,14 +84,14 @@ async def build_bet_response(bet: EspnBet, espn_db: Session) -> BetResponse:
         actual_payout = float(bet.result.actual_payout) if bet.result.actual_payout else None
     
     # Convertir bet_type_code a enum si es necesario
-    from app.models.bet import BetType as LegacyBetType, BetStatus as LegacyBetStatus
+    # Usar tipos de espn_bet (normalizados)
     try:
-        bet_type_enum = LegacyBetType(bet.bet_type_code)
+        bet_type_enum = BetType(bet.bet_type_code)
     except:
         bet_type_enum = bet.bet_type_code
     
     try:
-        status_enum = LegacyBetStatus(bet.bet_status_code)
+        status_enum = BetStatus(bet.bet_status_code)
     except:
         status_enum = bet.bet_status_code
     

@@ -8,7 +8,7 @@ from fastapi import Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.core.database import get_sys_db
-from app.models import User, UserRole, Permission, Role
+from app.models import UserAccount, UserRole, Permission, Role
 from app.services.auth_service import get_current_user
 
 def get_user_permissions(db: Session, user_id: int) -> List[str]:
@@ -58,9 +58,9 @@ def has_scope(scope: str, user_scopes: List[str]) -> bool:
 def require_permission(permission_code: str):
     """Dependency factory to require a specific permission"""
     async def permission_checker(
-        current_user: User = Depends(get_current_user),
+        current_user: UserAccount = Depends(get_current_user),
         db: Session = Depends(get_sys_db)
-    ) -> User:
+    ) -> UserAccount:
         """Check if user has required permission"""
         user_permissions = get_user_permissions(db, current_user.id)
         
@@ -94,9 +94,9 @@ def require_scope(scope: str):
     return scope_checker
 
 async def get_current_user_with_permissions(
-    current_user: User = Depends(get_current_user),
+    current_user: UserAccount = Depends(get_current_user),
     db: Session = Depends(get_sys_db)
-) -> User:
+) -> UserAccount:
     """Get current user with permissions loaded"""
     # Los permisos se cargan bajo demanda cuando se necesitan
     # Esto evita cargar datos innecesarios en cada request

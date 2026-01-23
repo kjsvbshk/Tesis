@@ -11,7 +11,7 @@ from datetime import datetime, date
 from app.core.database import get_sys_db
 from app.models import Request, IdempotencyKey, AuditLog, Outbox
 from app.services.auth_service import get_current_user
-from app.models.user import User
+from app.models.user_accounts import UserAccount
 
 router = APIRouter()
 
@@ -27,7 +27,7 @@ async def search_requests(
     user_id: Optional[int] = Query(None, description="Filtrar por usuario"),
     limit: int = Query(50, description="Número de resultados"),
     offset: int = Query(0, description="Offset para paginación"),
-    current_user: User = Depends(get_current_user),
+    current_user: UserAccount = Depends(get_current_user),
     db: Session = Depends(get_sys_db)
 ):
     """
@@ -90,7 +90,7 @@ async def search_idempotency_keys(
     date_to: Optional[date] = Query(None, description="Fecha hasta"),
     limit: int = Query(50, description="Número de resultados"),
     offset: int = Query(0, description="Offset para paginación"),
-    current_user: User = Depends(get_current_user),
+    current_user: UserAccount = Depends(get_current_user),
     db: Session = Depends(get_sys_db)
 ):
     """
@@ -141,7 +141,7 @@ async def search_audit_logs(
     date_to: Optional[date] = Query(None, description="Fecha hasta"),
     limit: int = Query(50, description="Número de resultados"),
     offset: int = Query(0, description="Offset para paginación"),
-    current_user: User = Depends(get_current_user),
+    current_user: UserAccount = Depends(get_current_user),
     db: Session = Depends(get_sys_db)
 ):
     """
@@ -216,7 +216,7 @@ async def search_events(
     date_to: Optional[date] = Query(None, description="Fecha hasta"),
     limit: int = Query(50, description="Número de resultados"),
     offset: int = Query(0, description="Offset para paginación"),
-    current_user: User = Depends(get_current_user),
+    current_user: UserAccount = Depends(get_current_user),
     db: Session = Depends(get_sys_db)
 ):
     """

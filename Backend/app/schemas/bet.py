@@ -5,7 +5,7 @@ Bet Pydantic schemas
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
-from app.models.bet import BetType, BetStatus
+from app.models.espn_bet import BetType, BetStatus
 
 class BetBase(BaseModel):
     game_id: int

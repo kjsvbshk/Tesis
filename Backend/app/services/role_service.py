@@ -4,7 +4,7 @@ Role service for RBAC management
 
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from app.models import Role, Permission, RolePermission, UserRole
+from app.models import Role, Permission, RolePermission, UserRole, UserAccount
 
 class RoleService:
     def __init__(self, db: Session):
@@ -100,7 +100,7 @@ class RoleService:
     
     async def get_user_roles(self, user_id: int) -> List[Role]:
         """Get all roles for a user"""
-        user = self.db.query(User).filter(User.id == user_id).first()
+        user = self.db.query(UserAccount).filter(UserAccount.id == user_id).first()
         if not user:
             return []
         

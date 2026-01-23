@@ -21,7 +21,7 @@ class Role(SysBase):
     
     # Relationships
     permissions = relationship("Permission", secondary="app.role_permissions", back_populates="roles")
-    users = relationship("User", secondary="app.user_roles", back_populates="roles")
+    users = relationship("UserAccount", secondary="app.user_roles", back_populates="roles")
     
     def __repr__(self):
         return f"<Role(id={self.id}, code='{self.code}', name='{self.name}')>"

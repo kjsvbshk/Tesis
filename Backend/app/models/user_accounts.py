@@ -30,6 +30,7 @@ class UserAccount(SysBase):
     client = relationship("Client", back_populates="user_account", uselist=False)
     administrator = relationship("Administrator", back_populates="user_account", uselist=False)
     operator = relationship("Operator", back_populates="user_account", uselist=False)
+    roles = relationship("Role", secondary="app.user_roles", back_populates="users")
     
     def __repr__(self):
         return f"<UserAccount(id={self.id}, username='{self.username}', email='{self.email}')>"

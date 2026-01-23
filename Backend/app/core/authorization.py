@@ -77,9 +77,9 @@ def require_permission(permission_code: str):
 def require_scope(scope: str):
     """Dependency factory to require access to a scope"""
     async def scope_checker(
-        current_user: User = Depends(get_current_user),
+        current_user: UserAccount = Depends(get_current_user),
         db: Session = Depends(get_sys_db)
-    ) -> User:
+    ) -> UserAccount:
         """Check if user has access to required scope"""
         user_scopes = get_user_scopes(db, current_user.id)
         

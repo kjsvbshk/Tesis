@@ -314,6 +314,13 @@ async def assign_role_to_user(
     try:
         from app.models import UserRole
         
+        # Prevenir que un administrador cambie su propio rol
+        if user_id == admin_user.id:
+            raise HTTPException(
+                status_code=403,
+                detail="Administrators cannot modify their own role. Please contact another administrator."
+            )
+        
         # Verificar si el usuario existe
         user = db.query(UserAccount).filter(UserAccount.id == user_id).first()
         if not user:
@@ -460,6 +467,13 @@ async def remove_role_from_user(
     try:
         from app.models import UserRole
         
+        # Prevenir que un administrador elimine su propio rol
+        if user_id == admin_user.id:
+            raise HTTPException(
+                status_code=403,
+                detail="Administrators cannot remove their own role. Please contact another administrator."
+            )
+        
         # Verificar que el usuario existe
         user = db.query(UserAccount).filter(UserAccount.id == user_id).first()
         if not user:
@@ -494,6 +508,236 @@ async def remove_role_from_user(
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Error removing role: {str(e)}")
+
+@router.get("/users", response_model=List[dict])
+async def get_all_users(
+    limit: int = 50,
+    offset: int = 0,
+    admin_user: UserAccount = Depends(require_admin_permission),
+    db: Session = Depends(get_sys_db)
+):
+    """Get all users excluding the current administrator (admin only)"""
+    try:
+        from app.models.user_accounts import Client, Administrator, Operator
+        from app.models.role import Role
+        from app.models.user_role import UserRole
+        
+        # Optimized query: Get all users excluding admin, with pagination
+        # This avoids N+1 query problem by using batch queries
+        users = db.query(UserAccount).filter(
+            UserAccount.id != admin_user.id
+        ).offset(offset).limit(limit).all()
+        
+        # Get all user IDs for batch queries
+        user_ids = [user.id for user in users]
+        
+        if not user_ids:
+            return []
+        
+        # Batch query: Get all clients for these users
+        clients = {c.user_account_id: c for c in db.query(Client).filter(
+            Client.user_account_id.in_(user_ids)
+        ).all()}
+        
+        # Batch query: Get all administrators for these users
+        administrators = {a.user_account_id: a for a in db.query(Administrator).filter(
+            Administrator.user_account_id.in_(user_ids)
+        ).all()}
+        
+        # Batch query: Get all operators for these users
+        operators = {o.user_account_id: o for o in db.query(Operator).filter(
+            Operator.user_account_id.in_(user_ids)
+        ).all()}
+        
+        # Batch query: Get all active user roles for these users
+        user_roles_map = {}
+        user_roles_list = db.query(UserRole).filter(
+            UserRole.user_id.in_(user_ids),
+            UserRole.is_active == True
+        ).all()
+        
+        for ur in user_roles_list:
+            if ur.user_id not in user_roles_map:
+                user_roles_map[ur.user_id] = []
+            user_roles_map[ur.user_id].append(ur.role_id)
+        
+        # Collect all role IDs: from user_roles and from type tables (administrator, operator, client)
+        role_ids = set()
+        for role_ids_list in user_roles_map.values():
+            role_ids.update(role_ids_list)
+        
+        # Add role_ids from type tables
+        for admin in administrators.values():
+            if admin.role_id:
+                role_ids.add(admin.role_id)
+        for operator in operators.values():
+            if operator.role_id:
+                role_ids.add(operator.role_id)
+        for client in clients.values():
+            if client.role_id:
+                role_ids.add(client.role_id)
+        
+        # Batch query: Get all roles referenced
+        roles_map = {}
+        if role_ids:
+            roles_list = db.query(Role).filter(Role.id.in_(role_ids)).all()
+            roles_map = {r.id: r for r in roles_list}
+        
+        # Get default client role for users without roles
+        client_role = db.query(Role).filter(Role.code == 'client').first()
+        
+        result = []
+        
+        for user in users:
+            user_id = user.id
+            
+            # Determine current table and get type-specific data
+            user_data = {
+                "id": user.id,
+                "username": user.username,
+                "email": user.email,
+                "is_active": user.is_active,
+                "role_code": None,
+                "role_name": None,
+                "created_at": user.created_at,
+                "updated_at": user.updated_at,
+                "credits": None,
+                "first_name": None,
+                "last_name": None,
+                "avatar_url": None
+            }
+            
+            # Determine which table the user is in (priority: admin > operator > client)
+            primary_role = None
+            if user_id in administrators:
+                admin = administrators[user_id]
+                user_data["first_name"] = admin.first_name
+                user_data["last_name"] = admin.last_name
+                user_data["avatar_url"] = admin.avatar_url
+                # Get role from administrator record
+                if admin.role_id and admin.role_id in roles_map:
+                    primary_role = roles_map[admin.role_id]
+            elif user_id in operators:
+                operator = operators[user_id]
+                user_data["first_name"] = operator.first_name
+                user_data["last_name"] = operator.last_name
+                user_data["avatar_url"] = operator.avatar_url
+                # Get role from operator record
+                if operator.role_id and operator.role_id in roles_map:
+                    primary_role = roles_map[operator.role_id]
+            elif user_id in clients:
+                client = clients[user_id]
+                user_data["credits"] = float(client.credits) if client.credits else None
+                user_data["first_name"] = client.first_name
+                user_data["last_name"] = client.last_name
+                user_data["avatar_url"] = client.avatar_url
+                # Get role from client record
+                if client.role_id and client.role_id in roles_map:
+                    primary_role = roles_map[client.role_id]
+            
+            # If no role from type table, check user_roles with priority
+            if not primary_role and user_id in user_roles_map:
+                role_ids_for_user = user_roles_map[user_id]
+                # Priority: admin > operator > client
+                for priority_code in ['admin', 'operator', 'client']:
+                    for role_id in role_ids_for_user:
+                        if role_id in roles_map:
+                            role = roles_map[role_id]
+                            if role.code == priority_code:
+                                primary_role = role
+                                break
+                    if primary_role:
+                        break
+                # If no priority match, use first role
+                if not primary_role and role_ids_for_user:
+                    first_role_id = role_ids_for_user[0]
+                    if first_role_id in roles_map:
+                        primary_role = roles_map[first_role_id]
+            
+            # Fallback to client role if no role found
+            if not primary_role:
+                primary_role = client_role
+            
+            if primary_role:
+                user_data["role_code"] = primary_role.code
+                user_data["role_name"] = primary_role.name
+            
+            result.append(user_data)
+        
+        return result
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching users: {str(e)}")
+
+@router.put("/users/{user_id}/deactivate", status_code=status.HTTP_200_OK)
+async def deactivate_user_account(
+    user_id: int,
+    admin_user: UserAccount = Depends(require_admin_permission),
+    db: Session = Depends(get_sys_db)
+):
+    """Deactivate a user account (admin only) - only clients can be deactivated"""
+    try:
+        from app.models.user_accounts import Client
+        from app.services.email_service import EmailService
+        
+        # Prevenir que un administrador desactive su propia cuenta
+        if user_id == admin_user.id:
+            raise HTTPException(
+                status_code=403,
+                detail="Administrators cannot deactivate their own account. Please contact another administrator."
+            )
+        
+        # Verificar que el usuario existe
+        user = db.query(UserAccount).filter(UserAccount.id == user_id).first()
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        # Verificar que el usuario es un cliente (solo clientes pueden ser desactivados por admin)
+        user_type_service = UserTypeService(db)
+        current_table = user_type_service.get_user_current_table(user_id)
+        
+        if current_table != 'client':
+            raise HTTPException(
+                status_code=403,
+                detail="Only client accounts can be deactivated by administrators. Administrators and operators cannot be deactivated."
+            )
+        
+        # Verificar si ya está desactivado
+        if not user.is_active:
+            raise HTTPException(
+                status_code=400,
+                detail="User account is already deactivated"
+            )
+        
+        # Desactivar la cuenta
+        user.is_active = False
+        db.commit()
+        db.refresh(user)
+        
+        # Enviar correo de notificación al usuario
+        try:
+            await EmailService.send_account_deactivation_notification(
+                email=user.email,
+                deactivated_by_admin=True,
+                admin_username=admin_user.username
+            )
+        except Exception as e:
+            # Log el error pero no fallar la operación
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Error sending deactivation email to {user.email}: {str(e)}")
+        
+        return {
+            "message": f"User account {user.username} has been deactivated successfully",
+            "deactivated": True,
+            "user_id": user_id
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error deactivating user account: {str(e)}")
 
 @router.get("/users/{user_id}/roles", response_model=List[RoleResponse])
 async def get_user_roles(

@@ -22,7 +22,8 @@ from app.schemas.user import (
     ForgotPasswordRequest, ResetPasswordRequest,
     TwoFactorSetupResponse, TwoFactorVerifyRequest, TwoFactorEnableRequest,
     TwoFactorDisableRequest, TwoFactorStatusResponse,
-    AvatarUploadResponse, UserSessionResponse, SessionRevokeRequest
+    AvatarUploadResponse, UserSessionResponse, SessionRevokeRequest,
+    DeactivateAccountRequest
 )
 from app.services.user_service import UserService
 from app.services.auth_service import get_current_user, authenticate_user, create_access_token, get_password_hash, verify_password
@@ -1366,6 +1367,79 @@ async def get_2fa_status(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching 2FA status: {str(e)}")
 
+@router.post("/me/deactivate", status_code=status.HTTP_200_OK)
+async def deactivate_account(
+    request: DeactivateAccountRequest,
+    current_user: UserAccount = Depends(get_current_user),
+    db: Session = Depends(get_sys_db)
+):
+    """
+    Deactivate the current user's account (clients only).
+    Requires 2FA code verification before deactivation.
+    """
+    try:
+        # Verificar que el usuario es un cliente (no admin u operator)
+        user_type_service = UserTypeService(db)
+        current_table = user_type_service.get_user_current_table(current_user.id)
+        
+        if current_table != 'client':
+            raise HTTPException(
+                status_code=403,
+                detail="Only clients can deactivate their own account. Administrators and operators cannot deactivate their accounts."
+            )
+        
+        # Verificar que el usuario tiene 2FA habilitado
+        two_factor_service = TwoFactorService(db)
+        is_2fa_enabled = await two_factor_service.is_2fa_enabled(current_user.id)
+        
+        if not is_2fa_enabled:
+            raise HTTPException(
+                status_code=400,
+                detail="Two-factor authentication must be enabled to deactivate your account. Please enable 2FA first."
+            )
+        
+        # Verificar el código 2FA
+        if not await two_factor_service.verify_2fa_code(current_user.id, request.two_factor_code):
+            raise HTTPException(
+                status_code=401,
+                detail="Invalid 2FA code. Please provide a valid TOTP code or backup code."
+            )
+        
+        # Verificar si ya está desactivado
+        if not current_user.is_active:
+            raise HTTPException(
+                status_code=400,
+                detail="Account is already deactivated"
+            )
+        
+        # Desactivar la cuenta
+        current_user.is_active = False
+        db.commit()
+        db.refresh(current_user)
+        
+        logger.info(f"Account deactivated for user: {current_user.username} (ID: {current_user.id})")
+        
+        # Enviar correo de notificación al usuario (auto-desactivación)
+        try:
+            from app.services.email_service import EmailService
+            await EmailService.send_account_deactivation_notification(
+                email=current_user.email,
+                deactivated_by_admin=False
+            )
+        except Exception as e:
+            # Log el error pero no fallar la operación
+            logger.error(f"Error sending deactivation email to {current_user.email}: {str(e)}")
+        
+        return {
+            "message": "Account deactivated successfully",
+            "deactivated": True
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error deactivating account: {str(e)}")
+
 # ============================================================================
 # Avatar Endpoints
 # ============================================================================
@@ -1436,6 +1510,8 @@ async def upload_avatar(
                 if not success:
                     # Si ensure_user_in_correct_table falla pero el usuario tiene roles,
                     # esto es un error crítico que no debe ser silenciado
+                    # Hacer rollback de cualquier cambio sin confirmar antes de lanzar la excepción
+                    db.rollback()
                     raise HTTPException(
                         status_code=500,
                         detail=f"Failed to move user to correct table. User has role '{primary_role.code}' but could not be placed in corresponding table."
@@ -1457,6 +1533,8 @@ async def upload_avatar(
                 # Si aún no hay registro después de ensure_user_in_correct_table,
                 # esto es un error de integridad
                 if not user_record:
+                    # Hacer rollback de cualquier cambio sin confirmar antes de lanzar la excepción
+                    db.rollback()
                     raise HTTPException(
                         status_code=500,
                         detail=f"User has role '{primary_role.code}' but record was not created in corresponding table. Data integrity error."

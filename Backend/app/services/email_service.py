@@ -453,3 +453,172 @@ Si no solicitaste este código, puedes ignorar este mensaje de forma segura."""
             return False
         
         return True
+    
+    @staticmethod
+    async def send_account_deactivation_notification(
+        email: str,
+        deactivated_by_admin: bool = False,
+        admin_username: Optional[str] = None
+    ):
+        """
+        Send account deactivation notification email
+        
+        Args:
+            email: Email address to send notification to
+            deactivated_by_admin: True if deactivated by admin, False if self-deactivated
+            admin_username: Username of admin who deactivated (if deactivated_by_admin is True)
+        """
+        if deactivated_by_admin:
+            subject = "Tu cuenta ha sido desactivada por un administrador"
+            admin_info = ""
+            if admin_username:
+                admin_info = f" por el administrador <strong>{admin_username}</strong>"
+            content = f"""
+                <p>Hola,</p>
+                <p>Te informamos que tu cuenta en <strong>House Always Win</strong> ha sido desactivada{admin_info}.</p>
+                <p>Si crees que esto es un error o necesitas más información, por favor contacta con nuestro equipo de soporte.</p>
+                <p>Para reactivar tu cuenta, necesitarás contactar con un administrador del sistema.</p>
+                <p>Gracias por tu comprensión.</p>
+            """
+        else:
+            subject = "Tu cuenta ha sido desactivada"
+            content = """
+                <p>Hola,</p>
+                <p>Te informamos que tu cuenta en <strong>House Always Win</strong> ha sido desactivada exitosamente.</p>
+                <p>Gracias por haber sido parte de nuestra comunidad. Esperamos verte de nuevo pronto.</p>
+                <p>Si en el futuro deseas reactivar tu cuenta, por favor contacta con un administrador del sistema.</p>
+                <p>¡Que tengas un excelente día!</p>
+            """
+        
+        html_content = EmailService._get_notification_html_template(subject, content)
+        
+        # Send email based on configured provider
+        if settings.EMAIL_PROVIDER == "sendgrid":
+            await EmailService._send_notification_via_sendgrid(email, subject, html_content)
+        elif settings.EMAIL_PROVIDER == "smtp":
+            await EmailService._send_notification_via_smtp(email, subject, html_content)
+        else:
+            # Console mode (development)
+            print(f"📧 Account deactivation notification to {email}")
+            print(f"   Subject: {subject}")
+            if settings.EMAIL_PROVIDER != "console":
+                print(f"   ⚠️  Email provider '{settings.EMAIL_PROVIDER}' not configured, using console mode")
+    
+    @staticmethod
+    def _send_notification_via_sendgrid_sync(email: str, subject: str, html_content: str):
+        """Send notification email via SendGrid (synchronous, to be run in thread pool)"""
+        if not SENDGRID_AVAILABLE:
+            print(f"⚠️  SendGrid not available, falling back to console")
+            return
+        
+        if not settings.SENDGRID_API_KEY or not settings.SENDGRID_FROM_EMAIL:
+            print(f"⚠️  SendGrid API key or from email not configured, falling back to console")
+            return
+        
+        try:
+            import logging
+            logger = logging.getLogger(__name__)
+            
+            message = Mail(
+                from_email=settings.SENDGRID_FROM_EMAIL,
+                to_emails=email,
+                subject=subject,
+                html_content=html_content
+            )
+            
+            sg = SendGridAPIClient(settings.SENDGRID_API_KEY)
+            response = sg.send(message)
+            
+            if response.status_code in [200, 202]:
+                logger.info(f"✅ Notification email sent via SendGrid to {email} (status: {response.status_code})")
+                print(f"✅ Notification email sent via SendGrid to {email}")
+            else:
+                logger.warning(f"⚠️  SendGrid returned status {response.status_code}, email may not have been sent")
+                print(f"⚠️  SendGrid returned status {response.status_code}, email may not have been sent")
+        except Exception as e:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"❌ Error sending notification email via SendGrid: {e}", exc_info=True)
+            print(f"❌ Error sending notification email via SendGrid: {e}")
+    
+    @staticmethod
+    async def _send_notification_via_sendgrid(email: str, subject: str, html_content: str):
+        """Send notification email via SendGrid (async wrapper)"""
+        import asyncio
+        # Run blocking I/O in thread pool to avoid blocking event loop
+        loop = asyncio.get_event_loop()
+        await loop.run_in_executor(
+            None,
+            EmailService._send_notification_via_sendgrid_sync,
+            email,
+            subject,
+            html_content
+        )
+    
+    @staticmethod
+    def _send_notification_via_smtp_sync(email: str, subject: str, html_content: str):
+        """Send notification email via SMTP (synchronous, to be run in thread pool)"""
+        if not SMTP_AVAILABLE:
+            print(f"⚠️  SMTP not available, falling back to console")
+            return
+        
+        try:
+            import logging
+            logger = logging.getLogger(__name__)
+            
+            from_email = settings.SMTP_FROM_EMAIL or settings.SENDGRID_FROM_EMAIL
+            smtp_host = settings.SMTP_HOST or "smtp.gmail.com"
+            smtp_port = settings.SMTP_PORT or 587
+            smtp_user = settings.SMTP_USER
+            smtp_password = settings.SMTP_PASSWORD
+            
+            if not from_email or not smtp_user or not smtp_password:
+                print(f"⚠️  SMTP credentials not configured, falling back to console")
+                return
+            
+            msg = MIMEMultipart('alternative')
+            msg['Subject'] = subject
+            msg['From'] = from_email
+            msg['To'] = email
+            
+            msg.attach(MIMEText(html_content, 'html'))
+            
+            # Use same logic as _send_via_smtp for port handling
+            timeout_seconds = 30
+            if smtp_port == 465:
+                server = smtplib.SMTP_SSL(smtp_host, smtp_port, timeout=timeout_seconds)
+            elif smtp_port == 587:
+                server = smtplib.SMTP(smtp_host, smtp_port, timeout=timeout_seconds)
+                server.starttls()
+            else:
+                server = smtplib.SMTP(smtp_host, smtp_port, timeout=timeout_seconds)
+                if getattr(settings, 'SMTP_USE_TLS', True):
+                    server.starttls()
+            
+            try:
+                server.login(smtp_user, smtp_password)
+                server.sendmail(from_email, email, msg.as_string())
+                logger.info(f"✅ Notification email sent via SMTP to {email}")
+                print(f"✅ Notification email sent via SMTP to {email}")
+            finally:
+                server.quit()
+        except Exception as e:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"❌ Error sending notification email via SMTP: {e}", exc_info=True)
+            print(f"❌ Error sending notification email via SMTP: {e}")
+            print(f"   Falling back to console mode")
+    
+    @staticmethod
+    async def _send_notification_via_smtp(email: str, subject: str, html_content: str):
+        """Send notification email via SMTP (async wrapper)"""
+        import asyncio
+        # Run blocking I/O in thread pool to avoid blocking event loop
+        loop = asyncio.get_event_loop()
+        await loop.run_in_executor(
+            None,
+            EmailService._send_notification_via_smtp_sync,
+            email,
+            subject,
+            html_content
+        )

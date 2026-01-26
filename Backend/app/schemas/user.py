@@ -148,3 +148,30 @@ class UserSessionResponse(BaseModel):
 class SessionRevokeRequest(BaseModel):
     """Request to revoke a session"""
     session_id: int
+
+# ============================================================================
+# Admin User List Schemas
+# ============================================================================
+
+class AdminUserListItem(BaseModel):
+    """User information for admin panel list - excludes current admin"""
+    id: int
+    username: str
+    email: EmailStr
+    is_active: bool
+    role_code: Optional[str] = None  # Código del rol principal (admin, operator, client)
+    role_name: Optional[str] = None  # Nombre del rol principal
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+    # Información específica según tipo
+    credits: Optional[float] = None  # Solo para clients
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    avatar_url: Optional[str] = None
+    
+    class Config:
+        from_attributes = True
+
+class DeactivateAccountRequest(BaseModel):
+    """Request to deactivate account - requires 2FA code"""
+    two_factor_code: str  # TOTP code or backup code

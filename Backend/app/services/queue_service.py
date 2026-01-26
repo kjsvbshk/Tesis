@@ -88,10 +88,16 @@ class QueueService:
         """
         if not self._available or not self._redis_conn:
             # Fallback: execute synchronously
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.warning(f"⚠️  Redis Queue not available, executing {func.__name__} synchronously")
             print(f"⚠️  Redis Queue not available, executing {func.__name__} synchronously")
             try:
-                return func(*args, **kwargs)
+                result = func(*args, **kwargs)
+                logger.info(f"✅ Task {func.__name__} executed synchronously (fallback mode)")
+                return result
             except Exception as e:
+                logger.error(f"❌ Error executing {func.__name__} synchronously: {e}", exc_info=True)
                 print(f"❌ Error executing {func.__name__} synchronously: {e}")
                 raise
         
@@ -103,14 +109,23 @@ class QueueService:
                 job_timeout=timeout,
                 **kwargs
             )
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.info(f"✅ Task {func.__name__} queued (Job ID: {job.id})")
             print(f"✅ Task {func.__name__} queued (Job ID: {job.id})")
             return job
         except Exception as e:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.warning(f"❌ Error enqueueing task {func.__name__}: {e}, falling back to synchronous execution")
             print(f"❌ Error enqueueing task {func.__name__}: {e}")
             # Fallback: execute synchronously
             try:
-                return func(*args, **kwargs)
+                result = func(*args, **kwargs)
+                logger.info(f"✅ Task {func.__name__} executed synchronously (fallback after enqueue error)")
+                return result
             except Exception as e2:
+                logger.error(f"❌ Error executing {func.__name__} synchronously: {e2}", exc_info=True)
                 print(f"❌ Error executing {func.__name__} synchronously: {e2}")
                 raise
     

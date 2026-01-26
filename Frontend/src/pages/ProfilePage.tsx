@@ -11,7 +11,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useToast } from '@/hooks/use-toast'
 import { useAuth } from '@/contexts/AuthContext'
 import { userService } from '@/services/user.service'
-import { User, CreditCard, Bell, Shield, LogOut } from 'lucide-react'
+import { User, CreditCard, Bell, Shield, LogOut, AlertTriangle } from 'lucide-react'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 
 export function ProfilePage() {
   const { toast } = useToast()
@@ -65,6 +66,10 @@ export function ProfilePage() {
   // Sessions state
   const [sessions, setSessions] = useState<any[]>([])
   const [sessionsLoading, setSessionsLoading] = useState(false)
+
+  // Account deactivation state
+  const [deactivationCode, setDeactivationCode] = useState('')
+  const [showDeactivationDialog, setShowDeactivationDialog] = useState(false)
 
   useEffect(() => {
     const loadProfileData = async () => {
@@ -462,6 +467,49 @@ export function ProfilePage() {
       })
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const handleDeactivateAccount = async () => {
+    if (!deactivationCode) {
+      toast({
+        title: 'Error',
+        description: 'Por favor ingresa el código de verificación 2FA',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    if (!twoFactorStatus.is_enabled) {
+      toast({
+        title: 'Error',
+        description: 'Debes tener 2FA activado para desactivar tu cuenta',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    try {
+      setIsLoading(true)
+      await userService.deactivateAccount(deactivationCode)
+      toast({
+        title: 'Cuenta desactivada',
+        description: 'Tu cuenta ha sido desactivada exitosamente. Serás redirigido al inicio de sesión.',
+      })
+      // Wait a bit before logout to show the toast
+      setTimeout(async () => {
+        await logout()
+      }, 2000)
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Error al desactivar la cuenta. Verifica que el código 2FA sea correcto.',
+        variant: 'destructive',
+      })
+    } finally {
+      setIsLoading(false)
+      setDeactivationCode('')
+      setShowDeactivationDialog(false)
     }
   }
 
@@ -899,6 +947,44 @@ export function ProfilePage() {
                     </div>
                   )}
                 </div>
+
+                <Separator />
+
+                <div className="space-y-4">
+                  <h3 className="text-lg font-heading font-semibold text-white">Desactivar Cuenta</h3>
+                  <div className="p-4 border border-[#FF4C4C]/30 rounded-lg bg-[#FF4C4C]/5">
+                    <div className="flex items-start gap-3 mb-4">
+                      <AlertTriangle className="text-[#FF4C4C] mt-0.5" size={20} />
+                      <div className="flex-1">
+                        <p className="font-medium text-white mb-2">¿Deseas desactivar tu cuenta?</p>
+                        <p className="text-sm text-[#B0B3C5] mb-2">
+                          Al desactivar tu cuenta:
+                        </p>
+                        <ul className="text-sm text-[#B0B3C5] list-disc list-inside space-y-1 mb-4">
+                          <li>No podrás iniciar sesión</li>
+                          <li>Tu información se mantendrá pero no podrás acceder a ella</li>
+                          <li>Para reactivar tu cuenta, deberás contactar con un administrador</li>
+                        </ul>
+                        {!twoFactorStatus.is_enabled && (
+                          <div className="p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg mb-4">
+                            <p className="text-sm text-yellow-400">
+                              ⚠️ Debes tener 2FA activado para poder desactivar tu cuenta. Por favor configura 2FA primero.
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <Button 
+                      variant="destructive" 
+                      className="w-full"
+                      onClick={() => setShowDeactivationDialog(true)}
+                      disabled={isLoading || !twoFactorStatus.is_enabled}
+                    >
+                      <AlertTriangle size={18} className="mr-2" />
+                      Desactivar Mi Cuenta
+                    </Button>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </motion.div>
@@ -1074,6 +1160,65 @@ export function ProfilePage() {
           </motion.div>
         </TabsContent>
       </Tabs>
+
+      {/* Deactivation Dialog */}
+      <Dialog open={showDeactivationDialog} onOpenChange={setShowDeactivationDialog}>
+        <DialogContent className="bg-[#0B132B] border-[#1C2541] text-white">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-[#FF4C4C]">
+              <AlertTriangle size={20} />
+              Confirmar Desactivación de Cuenta
+            </DialogTitle>
+            <DialogDescription className="text-[#B0B3C5]">
+              Esta acción es irreversible. Para reactivar tu cuenta, deberás contactar con un administrador.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="p-4 bg-[#FF4C4C]/10 border border-[#FF4C4C]/30 rounded-lg">
+              <p className="text-sm text-white mb-2 font-medium">
+                ⚠️ Advertencia: Esta acción desactivará tu cuenta permanentemente.
+              </p>
+              <p className="text-sm text-[#B0B3C5]">
+                Para confirmar, ingresa tu código de verificación 2FA (TOTP o código de respaldo).
+              </p>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="deactivationCode">Código de Verificación 2FA</Label>
+              <Input
+                id="deactivationCode"
+                type="text"
+                value={deactivationCode}
+                onChange={(e) => setDeactivationCode(e.target.value)}
+                placeholder="000000 o código de respaldo"
+                className="bg-[#0B132B] border-[#1C2541] text-white text-center text-xl tracking-widest"
+                maxLength={10}
+              />
+              <p className="text-xs text-[#B0B3C5]">
+                Ingresa el código de 6 dígitos de tu aplicación de autenticación o un código de respaldo.
+              </p>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowDeactivationDialog(false)
+                setDeactivationCode('')
+              }}
+              disabled={isLoading}
+            >
+              Cancelar
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDeactivateAccount}
+              disabled={isLoading || !deactivationCode}
+            >
+              {isLoading ? 'Desactivando...' : 'Confirmar Desactivación'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

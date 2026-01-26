@@ -716,16 +716,18 @@ async def deactivate_user_account(
         db.refresh(user)
         
         # Enviar correo de notificación al usuario (usando cola de trabajos como los correos de apuestas)
+        import logging
+        logger = logging.getLogger(__name__)
+        
         try:
             from app.services.queue_service import queue_service
             from app.tasks.email_tasks import send_account_deactivation_email_task
-            import logging
-            logger = logging.getLogger(__name__)
             
-            logger.info(f"Queueing deactivation email to {user.email} (deactivated by admin: {admin_user.username})")
+            logger.info(f"📧 Preparing to send deactivation email to {user.email} (deactivated by admin: {admin_user.username})")
             
             # Enviar correo usando la cola de trabajos (igual que los correos de apuestas)
             if queue_service.is_available():
+                logger.info(f"📧 Queue service available, queuing deactivation email for {user.email}")
                 queue_service.enqueue(
                     send_account_deactivation_email_task,
                     user.email,
@@ -733,22 +735,20 @@ async def deactivate_user_account(
                     admin_user.username,  # admin_username
                     queue_name='default'
                 )
-                logger.info(f"Deactivation email queued successfully for {user.email}")
+                logger.info(f"✅ Deactivation email queued successfully for {user.email}")
             else:
                 # Fallback: enviar directamente si la cola no está disponible
-                logger.warning(f"Queue service not available, sending deactivation email directly")
+                logger.warning(f"⚠️  Queue service not available, sending deactivation email directly to {user.email}")
                 from app.services.email_service import EmailService
                 await EmailService.send_account_deactivation_notification(
                     email=user.email,
                     deactivated_by_admin=True,
                     admin_username=admin_user.username
                 )
-                logger.info(f"Deactivation email sent directly to {user.email}")
+                logger.info(f"✅ Deactivation email sent directly to {user.email}")
         except Exception as e:
             # Log el error pero no fallar la operación
-            import logging
-            logger = logging.getLogger(__name__)
-            logger.error(f"Error sending deactivation email to {user.email}: {str(e)}", exc_info=True)
+            logger.error(f"❌ Error sending deactivation email to {user.email}: {str(e)}", exc_info=True)
         
         return {
             "message": f"User account {user.username} has been deactivated successfully",

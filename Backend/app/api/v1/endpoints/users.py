@@ -865,12 +865,24 @@ async def add_credits(
 async def get_all_users(
     limit: int = 50,
     offset: int = 0,
+    current_user: UserAccount = Depends(get_current_user),
     db: Session = Depends(get_sys_db)
 ):
-    """Get all users (admin only - for now, no auth required for demo)"""
+    """Get all users (admin only) - excludes current admin from list"""
     try:
+        # Check if user has admin permission
+        from app.core.authorization import get_user_permissions, has_permission
+        user_permissions = get_user_permissions(db, current_user.id)
+        if not has_permission("admin:write", user_permissions):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Admin permission required"
+            )
+        
         user_service = UserService(db)
-        users = await user_service.get_all_users(limit=limit, offset=offset)
+        # Get all users excluding the current admin
+        all_users = await user_service.get_all_users(limit=limit * 2, offset=offset)  # Get more to account for filtering
+        users = [u for u in all_users if u.id != current_user.id][:limit]  # Filter out current admin and limit
         
         # Construir respuestas con todos los campos requeridos
         result = []
@@ -895,6 +907,8 @@ async def get_all_users(
             result.append(user_dict)
         
         return result
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching users: {str(e)}")
 
@@ -1424,10 +1438,11 @@ async def deactivate_account(
             from app.services.queue_service import queue_service
             from app.tasks.email_tasks import send_account_deactivation_email_task
             
-            logger.info(f"Queueing deactivation email to {current_user.email} (self-deactivation)")
+            logger.info(f"📧 Preparing to send deactivation email to {current_user.email} (self-deactivation)")
             
             # Enviar correo usando la cola de trabajos (igual que los correos de apuestas)
             if queue_service.is_available():
+                logger.info(f"📧 Queue service available, queuing deactivation email for {current_user.email}")
                 queue_service.enqueue(
                     send_account_deactivation_email_task,
                     current_user.email,
@@ -1435,19 +1450,19 @@ async def deactivate_account(
                     None,  # admin_username
                     queue_name='default'
                 )
-                logger.info(f"Deactivation email queued successfully for {current_user.email}")
+                logger.info(f"✅ Deactivation email queued successfully for {current_user.email}")
             else:
                 # Fallback: enviar directamente si la cola no está disponible
-                logger.warning(f"Queue service not available, sending deactivation email directly")
+                logger.warning(f"⚠️  Queue service not available, sending deactivation email directly to {current_user.email}")
                 from app.services.email_service import EmailService
                 await EmailService.send_account_deactivation_notification(
                     email=current_user.email,
                     deactivated_by_admin=False
                 )
-                logger.info(f"Deactivation email sent directly to {current_user.email}")
+                logger.info(f"✅ Deactivation email sent directly to {current_user.email}")
         except Exception as e:
             # Log el error pero no fallar la operación
-            logger.error(f"Error sending deactivation email to {current_user.email}: {str(e)}", exc_info=True)
+            logger.error(f"❌ Error sending deactivation email to {current_user.email}: {str(e)}", exc_info=True)
         
         return {
             "message": "Account deactivated successfully",

@@ -124,6 +124,17 @@ class UserService {
       method: 'POST',
     })
   }
+
+  /**
+   * Deactivate account (clients only)
+   * Requires 2FA code verification
+   */
+  async deactivateAccount(twoFactorCode: string): Promise<any> {
+    return apiRequest('/users/me/deactivate', {
+      method: 'POST',
+      body: JSON.stringify({ two_factor_code: twoFactorCode }),
+    })
+  }
 }
 
 export const userService = new UserService()

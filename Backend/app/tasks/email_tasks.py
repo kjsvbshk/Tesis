@@ -117,75 +117,58 @@ def send_account_deactivation_email_task(email: str, deactivated_by_admin: bool 
     Background task to send account deactivation notification email
     This function is executed by RQ worker (must be synchronous)
     
+    Uses EmailService.send_account_deactivation_notification() which handles all the logic
+    consistently with other email services.
+    
     Args:
         email: Email address to send to
         deactivated_by_admin: True if deactivated by admin, False if self-deactivated
         admin_username: Username of admin who deactivated (if deactivated_by_admin is True)
     """
+    logger.info(f"📧 Starting send_account_deactivation_email_task for {email} (deactivated_by_admin={deactivated_by_admin}, admin_username={admin_username})")
     try:
-        from app.services.email_service import EmailService
-        import asyncio
-        
-        # Generate email content
-        if deactivated_by_admin:
-            subject = "Tu cuenta ha sido desactivada por un administrador"
-            admin_info = ""
-            if admin_username:
-                admin_info = f" por el administrador <strong>{admin_username}</strong>"
-            content = f"""
-                <p>Hola,</p>
-                <p>Te informamos que tu cuenta en <strong>House Always Win</strong> ha sido desactivada{admin_info}.</p>
-                <p>Si crees que esto es un error o necesitas más información, por favor contacta con nuestro equipo de soporte.</p>
-                <p>Para reactivar tu cuenta, necesitarás contactar con un administrador del sistema.</p>
-                <p>Gracias por tu comprensión.</p>
-            """
-        else:
-            subject = "Tu cuenta ha sido desactivada"
-            content = """
-                <p>Hola,</p>
-                <p>Te informamos que tu cuenta en <strong>House Always Win</strong> ha sido desactivada exitosamente.</p>
-                <p>Gracias por haber sido parte de nuestra comunidad. Esperamos verte de nuevo pronto.</p>
-                <p>Si en el futuro deseas reactivar tu cuenta, por favor contacta con un administrador del sistema.</p>
-                <p>¡Que tengas un excelente día!</p>
-            """
-        
-        # Generate full HTML email
-        full_html = EmailService._get_notification_html_template(subject, content)
-        
-        # Send via SendGrid (only supported email provider)
-        if settings.EMAIL_PROVIDER == "sendgrid":
-            if not SENDGRID_AVAILABLE:
-                logger.error(f"❌ SendGrid package not installed. Install with: pip install sendgrid")
-                logger.info(f"📧 Account deactivation email (console mode): {email} - {subject}")
-            elif not settings.SENDGRID_API_KEY or not settings.SENDGRID_FROM_EMAIL:
-                logger.error(f"❌ SendGrid not configured. Missing SENDGRID_API_KEY or SENDGRID_FROM_EMAIL")
-                logger.info(f"📧 Account deactivation email (console mode): {email} - {subject}")
-            else:
+        # Use EmailService method which handles all the logic consistently
+        # This is async, so we need to run it in a sync context (like send_verification_email_task)
+        try:
+            # Try to get the running loop - this will raise RuntimeError if no loop is running
+            asyncio.get_running_loop()
+            # If we get here, we're inside an async context (FastAPI)
+            # This shouldn't happen in RQ worker, but if called from FastAPI fallback, handle it
+            # Use a separate thread with its own event loop
+            import concurrent.futures
+            def run_async_in_thread():
+                new_loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(new_loop)
                 try:
-                    sg = SendGridAPIClient(settings.SENDGRID_API_KEY)
-                    message = Mail(
-                        from_email=settings.SENDGRID_FROM_EMAIL,
-                        to_emails=email,
-                        subject=subject,
-                        html_content=full_html
+                    new_loop.run_until_complete(
+                        EmailService.send_account_deactivation_notification(
+                            email=email,
+                            deactivated_by_admin=deactivated_by_admin,
+                            admin_username=admin_username
+                        )
                     )
-                    response = sg.send(message)
-                    if response.status_code in [200, 201, 202]:
-                        logger.info(f"✅ Account deactivation email sent to {email} via SendGrid (status: {response.status_code})")
-                    else:
-                        logger.warning(f"⚠️  SendGrid returned status {response.status_code} for deactivation email")
-                        logger.info(f"📧 Account deactivation email may not have been sent")
-                except Exception as e:
-                    logger.error(f"❌ Error sending deactivation email via SendGrid: {e}", exc_info=True)
-                    # Fallback to console
-                    logger.info(f"📧 Account deactivation email (console mode): {email} - {subject}")
-        else:
-            # Console mode (development or if SendGrid not configured)
-            logger.info(f"📧 Account deactivation email (console mode): {email}")
-            logger.info(f"   Subject: {subject}")
-            logger.info(f"   Content preview: {content[:100]}...")
-            if settings.EMAIL_PROVIDER != "console":
-                logger.warning(f"⚠️  EMAIL_PROVIDER is '{settings.EMAIL_PROVIDER}' but only 'sendgrid' is supported. Using console mode.")
+                finally:
+                    new_loop.close()
+            
+            # Run in a separate thread with its own event loop
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                future = executor.submit(run_async_in_thread)
+                future.result()  # Wait for completion
+        except RuntimeError:
+            # No running loop, we're in a sync context (RQ worker) - this is the normal case
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            try:
+                # Use EmailService method which handles all providers and logic
+                loop.run_until_complete(
+                    EmailService.send_account_deactivation_notification(
+                        email=email,
+                        deactivated_by_admin=deactivated_by_admin,
+                        admin_username=admin_username
+                    )
+                )
+            finally:
+                loop.close()
         
         logger.info(f"✅ Account deactivation email processed for {email}")
     except Exception as e:

@@ -26,7 +26,7 @@ class PermissionService:
         return query.offset(offset).limit(limit).all()
     
     async def create_permission(self, code: str, name: str, description: Optional[str] = None, scope: Optional[str] = None) -> Permission:
-        """Create a new permission"""
+        """Create a new permission (does not commit - endpoint must handle transaction)"""
         # Verificar si ya existe
         existing = await self.get_permission_by_code(code)
         if existing:
@@ -34,12 +34,11 @@ class PermissionService:
         
         permission = Permission(code=code, name=name, description=description, scope=scope)
         self.db.add(permission)
-        self.db.commit()
-        self.db.refresh(permission)
+        # NO hacer commit aquí - el endpoint maneja la transacción
         return permission
     
     async def update_permission(self, permission_id: int, name: Optional[str] = None, description: Optional[str] = None, scope: Optional[str] = None) -> Optional[Permission]:
-        """Update a permission"""
+        """Update a permission (does not commit - endpoint must handle transaction)"""
         permission = await self.get_permission_by_id(permission_id)
         if not permission:
             return None
@@ -51,18 +50,17 @@ class PermissionService:
         if scope is not None:
             permission.scope = scope
         
-        self.db.commit()
-        self.db.refresh(permission)
+        # NO hacer commit aquí - el endpoint maneja la transacción
         return permission
     
     async def delete_permission(self, permission_id: int) -> bool:
-        """Delete a permission"""
+        """Delete a permission (does not commit - endpoint must handle transaction)"""
         permission = await self.get_permission_by_id(permission_id)
         if not permission:
             return False
         
         self.db.delete(permission)
-        self.db.commit()
+        # NO hacer commit aquí - el endpoint maneja la transacción
         return True
     
     async def get_permission_roles(self, permission_id: int) -> List[Role]:

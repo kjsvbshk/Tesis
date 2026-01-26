@@ -18,7 +18,7 @@ migrations/
 Scripts Python que ejecutan migraciones SQL o crean tablas:
 
 - **`create_tables_neon.py`** - Crea todas las tablas del esquema usando SQLAlchemy
-- **`run_2fa_migration.py`** - Ejecuta migración de 2FA, Avatar y Sesiones
+- **`run_2fa_migration.py`** - Ejecuta migración de 2FA y Sesiones
 - **`run_indexes_migration.py`** - Ejecuta migración de índices de rendimiento
 - **`run_migrations.py`** - Ejecuta migraciones de normalización en orden
 - **`verify_migration.py`** - Verifica que las migraciones se aplicaron correctamente

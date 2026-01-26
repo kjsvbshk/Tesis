@@ -1,10 +1,12 @@
 -- ============================================================================
--- MIGRACIÓN: Agregar 2FA, Avatar y Sesiones de Usuario
+-- MIGRACIÓN: Agregar 2FA y Sesiones de Usuario
 -- ============================================================================
 -- Este script agrega las nuevas funcionalidades:
 -- 1. Tabla user_two_factor para autenticación de dos factores
 -- 2. Tabla user_sessions para rastrear sesiones activas
--- 3. Campo avatar_url en user_accounts
+--
+-- NOTA: avatar_url ahora está en las tablas individuales (clients, administrators, operators)
+-- y no se agrega a user_accounts
 --
 -- Fecha: 2025-01-XX
 -- ============================================================================
@@ -12,29 +14,7 @@
 BEGIN;
 
 -- ============================================================================
--- 1. AGREGAR CAMPO avatar_url A user_accounts
--- ============================================================================
--- Agregar columna para almacenar la URL del avatar del usuario
-
-DO $$
-BEGIN
-    IF NOT EXISTS (
-        SELECT 1 FROM information_schema.columns 
-        WHERE table_schema = 'app' 
-        AND table_name = 'user_accounts' 
-        AND column_name = 'avatar_url'
-    ) THEN
-        ALTER TABLE app.user_accounts 
-        ADD COLUMN avatar_url VARCHAR(500) NULL;
-        
-        RAISE NOTICE '✅ Columna avatar_url agregada a user_accounts';
-    ELSE
-        RAISE NOTICE '⚠️  Columna avatar_url ya existe en user_accounts';
-    END IF;
-END $$;
-
--- ============================================================================
--- 2. CREAR TABLA user_two_factor
+-- 1. CREAR TABLA user_two_factor
 -- ============================================================================
 -- Almacena la configuración de 2FA para cada usuario
 
@@ -111,22 +91,13 @@ COMMIT;
 -- ============================================================================
 -- VERIFICACIÓN
 -- ============================================================================
--- Verificar que las tablas y columnas se crearon correctamente
+-- Verificar que las tablas se crearon correctamente
 
 DO $$
 DECLARE
-    avatar_exists BOOLEAN;
     two_factor_exists BOOLEAN;
     sessions_exists BOOLEAN;
 BEGIN
-    -- Verificar avatar_url
-    SELECT EXISTS (
-        SELECT 1 FROM information_schema.columns 
-        WHERE table_schema = 'app' 
-        AND table_name = 'user_accounts' 
-        AND column_name = 'avatar_url'
-    ) INTO avatar_exists;
-    
     -- Verificar user_two_factor
     SELECT EXISTS (
         SELECT 1 FROM information_schema.tables 
@@ -145,8 +116,6 @@ BEGIN
     RAISE NOTICE '========================================';
     RAISE NOTICE 'RESUMEN DE MIGRACIÓN';
     RAISE NOTICE '========================================';
-    RAISE NOTICE 'avatar_url en user_accounts: %', 
-        CASE WHEN avatar_exists THEN '✅ Creado' ELSE '❌ Faltante' END;
     RAISE NOTICE 'user_two_factor: %', 
         CASE WHEN two_factor_exists THEN '✅ Creado' ELSE '❌ Faltante' END;
     RAISE NOTICE 'user_sessions: %', 

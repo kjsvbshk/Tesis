@@ -22,7 +22,7 @@ class UserAccount(SysBase):
     email = Column(String(100), unique=True, index=True, nullable=False)
     hashed_password = Column(String(255), nullable=False)
     is_active = Column(Boolean, default=True, nullable=False)
-    avatar_url = Column(String(500), nullable=True)  # URL o path del avatar
+    # avatar_url movido a tablas individuales (clients/administrators/operators)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     
@@ -70,6 +70,7 @@ class Client(SysBase):
     last_name = Column(String(100), nullable=True)
     phone = Column(String(20), nullable=True)
     date_of_birth = Column(Date, nullable=True)
+    avatar_url = Column(String(500), nullable=True)  # URL o path del avatar
     
     # Timestamps
     created_at = Column(DateTime(timezone=True), server_default=func.now())
@@ -103,6 +104,7 @@ class Administrator(SysBase):
     employee_id = Column(String(50), unique=True, nullable=True)
     department = Column(String(100), nullable=True)
     phone = Column(String(20), nullable=True)
+    avatar_url = Column(String(500), nullable=True)  # URL o path del avatar
     
     # Timestamps
     created_at = Column(DateTime(timezone=True), server_default=func.now())
@@ -137,6 +139,7 @@ class Operator(SysBase):
     department = Column(String(100), nullable=True)
     phone = Column(String(20), nullable=True)
     shift = Column(String(50), nullable=True)  # Work shift: "mañana", "tarde", "noche"
+    avatar_url = Column(String(500), nullable=True)  # URL o path del avatar
     
     # Timestamps
     created_at = Column(DateTime(timezone=True), server_default=func.now())

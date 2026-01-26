@@ -12,6 +12,7 @@ from app.services.auth_service import get_current_user
 from app.services.role_service import RoleService
 from app.services.permission_service import PermissionService
 from app.services.provider_orchestrator import ProviderOrchestrator
+from app.services.user_type_service import UserTypeService
 from app.schemas.role import RoleCreate, RoleUpdate, RoleResponse
 from app.schemas.permission import PermissionCreate, PermissionUpdate, PermissionResponse
 from app.schemas.provider import (
@@ -49,10 +50,15 @@ async def create_role(
             name=role.name,
             description=role.description
         )
+        # El servicio no hace commit, así que el endpoint maneja la transacción
+        db.commit()
+        db.refresh(new_role)
         return new_role
     except ValueError as e:
+        db.rollback()
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
+        db.rollback()
         raise HTTPException(status_code=500, detail=f"Error creating role: {str(e)}")
 
 @router.get("/roles", response_model=List[RoleResponse])
@@ -105,10 +111,14 @@ async def update_role(
         )
         if not updated_role:
             raise HTTPException(status_code=404, detail="Role not found")
+        # El servicio no hace commit, así que el endpoint maneja la transacción
+        db.commit()
+        db.refresh(updated_role)
         return updated_role
     except HTTPException:
         raise
     except Exception as e:
+        db.rollback()
         raise HTTPException(status_code=500, detail=f"Error updating role: {str(e)}")
 
 @router.delete("/roles/{role_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -123,10 +133,13 @@ async def delete_role(
         success = await role_service.delete_role(role_id)
         if not success:
             raise HTTPException(status_code=404, detail="Role not found")
+        # El servicio no hace commit, así que el endpoint maneja la transacción
+        db.commit()
         return None
     except HTTPException:
         raise
     except Exception as e:
+        db.rollback()
         raise HTTPException(status_code=500, detail=f"Error deleting role: {str(e)}")
 
 @router.post("/roles/{role_id}/permissions/{permission_id}", status_code=status.HTTP_201_CREATED)
@@ -142,10 +155,17 @@ async def assign_permission_to_role(
         success = await role_service.assign_permission_to_role(role_id, permission_id)
         if not success:
             raise HTTPException(status_code=400, detail="Permission already assigned to role")
+        # El servicio no hace commit, así que el endpoint maneja la transacción
+        db.commit()
+        # Verificar que se asignó correctamente
+        role = await role_service.get_role_by_id(role_id)
+        if role:
+            db.refresh(role)
         return {"message": "Permission assigned to role successfully"}
     except HTTPException:
         raise
     except Exception as e:
+        db.rollback()
         raise HTTPException(status_code=500, detail=f"Error assigning permission: {str(e)}")
 
 @router.delete("/roles/{role_id}/permissions/{permission_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -161,10 +181,13 @@ async def remove_permission_from_role(
         success = await role_service.remove_permission_from_role(role_id, permission_id)
         if not success:
             raise HTTPException(status_code=404, detail="Permission not assigned to role")
+        # El servicio no hace commit, así que el endpoint maneja la transacción
+        db.commit()
         return None
     except HTTPException:
         raise
     except Exception as e:
+        db.rollback()
         raise HTTPException(status_code=500, detail=f"Error removing permission: {str(e)}")
 
 # ========== Permissions ==========
@@ -184,10 +207,15 @@ async def create_permission(
             description=permission.description,
             scope=permission.scope
         )
+        # El servicio no hace commit, así que el endpoint maneja la transacción
+        db.commit()
+        db.refresh(new_permission)
         return new_permission
     except ValueError as e:
+        db.rollback()
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
+        db.rollback()
         raise HTTPException(status_code=500, detail=f"Error creating permission: {str(e)}")
 
 @router.get("/permissions", response_model=List[PermissionResponse])
@@ -242,10 +270,14 @@ async def update_permission(
         )
         if not updated_permission:
             raise HTTPException(status_code=404, detail="Permission not found")
+        # El servicio no hace commit, así que el endpoint maneja la transacción
+        db.commit()
+        db.refresh(updated_permission)
         return updated_permission
     except HTTPException:
         raise
     except Exception as e:
+        db.rollback()
         raise HTTPException(status_code=500, detail=f"Error updating permission: {str(e)}")
 
 @router.delete("/permissions/{permission_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -260,15 +292,18 @@ async def delete_permission(
         success = await permission_service.delete_permission(permission_id)
         if not success:
             raise HTTPException(status_code=404, detail="Permission not found")
+        # El servicio no hace commit, así que el endpoint maneja la transacción
+        db.commit()
         return None
     except HTTPException:
         raise
     except Exception as e:
+        db.rollback()
         raise HTTPException(status_code=500, detail=f"Error deleting permission: {str(e)}")
 
 # ========== User Roles ==========
 
-@router.post("/users/{user_id}/roles/{role_id}", status_code=status.HTTP_201_CREATED)
+@router.post("/users/{user_id}/roles/{role_id}", response_model=RoleResponse, status_code=status.HTTP_201_CREATED)
 async def assign_role_to_user(
     user_id: int,
     role_id: int,
@@ -299,18 +334,115 @@ async def assign_role_to_user(
         if existing:
             # Si existe pero está inactivo, activarlo
             if not existing.is_active:
+                # Un usuario solo puede tener un rol activo a la vez
+                # Desactivar todos los roles activos anteriores
+                existing_active_roles = db.query(UserRole).filter(
+                    UserRole.user_id == user_id,
+                    UserRole.is_active == True
+                ).all()
+                
+                for active_role in existing_active_roles:
+                    active_role.is_active = False
+                
                 existing.is_active = True
+                db.flush()
+                
+                # Re-verificar que el rol todavía existe antes de usarlo
+                # Esto previene usar un objeto stale si el rol fue eliminado concurrentemente
+                role = await role_service.get_role_by_id(role_id)
+                if not role:
+                    db.rollback()
+                    raise HTTPException(
+                        status_code=500,
+                        detail=f"Role with id {role_id} was deleted concurrently. Cannot reactivate deleted role for user."
+                    )
+                db.refresh(role)
+                
+                # Validar que el código del rol es uno de los códigos reconocidos antes de mover al usuario
+                # Esto previene inconsistencias donde el usuario tiene un rol asignado pero está en la tabla incorrecta
+                valid_role_codes = ['client', 'admin', 'operator']
+                if role.code not in valid_role_codes:
+                    db.rollback()
+                    raise HTTPException(
+                        status_code=400,
+                        detail=f"Role code '{role.code}' is not recognized. Only 'client', 'admin', and 'operator' are supported for table placement."
+                    )
+                
+                # Mover usuario a la tabla correspondiente según el rol activo
+                # Hacer esto antes del commit para mantener todo en una transacción
+                user_type_service = UserTypeService(db)
+                success = user_type_service.ensure_user_in_correct_table(user_id)
+                if not success:
+                    db.rollback()
+                    raise HTTPException(status_code=500, detail="Error moving user to correct table")
+                
+                # Commit toda la transacción (reactivación de rol + movimiento de usuario)
+                # Toda la verificación se hizo antes del commit para poder hacer rollback si es necesario
                 db.commit()
-                return {"message": "Role activated for user"}
+                db.refresh(existing)
+                db.refresh(role)
+                
+                # Devolver el rol reactivado
+                # Nota: No verificamos el rol después del commit porque no podemos hacer rollback
+                # de cambios ya confirmados. La verificación antes del commit es suficiente.
+                return role
             raise HTTPException(status_code=400, detail="Role already assigned to user")
+        
+        # Un usuario solo puede tener un rol activo a la vez
+        # Desactivar todos los roles activos anteriores
+        existing_active_roles = db.query(UserRole).filter(
+            UserRole.user_id == user_id,
+            UserRole.is_active == True
+        ).all()
+        
+        for active_role in existing_active_roles:
+            active_role.is_active = False
         
         # Crear nueva asignación
         user_role = UserRole(user_id=user_id, role_id=role_id, is_active=True)
         db.add(user_role)
+        db.flush()
+        
+        # Re-verificar que el rol todavía existe antes de usarlo
+        # Esto previene usar un objeto stale si el rol fue eliminado concurrentemente
+        role = await role_service.get_role_by_id(role_id)
+        if not role:
+            db.rollback()
+            raise HTTPException(
+                status_code=500,
+                detail=f"Role with id {role_id} was deleted concurrently. Cannot assign deleted role to user."
+            )
+        db.refresh(role)
+        
+        # Validar que el código del rol es uno de los códigos reconocidos antes de mover al usuario
+        # Esto previene inconsistencias donde el usuario tiene un rol asignado pero está en la tabla incorrecta
+        valid_role_codes = ['client', 'admin', 'operator']
+        if role.code not in valid_role_codes:
+            db.rollback()
+            raise HTTPException(
+                status_code=400,
+                detail=f"Role code '{role.code}' is not recognized. Only 'client', 'admin', and 'operator' are supported for table placement."
+            )
+        
+        # Mover usuario a la tabla correspondiente según el rol principal activo
+        # Un usuario solo puede tener un rol activo a la vez, así que este será el principal
+        # Hacer esto antes del commit para mantener todo en una transacción
+        user_type_service = UserTypeService(db)
+        success = user_type_service.move_user_to_table(user_id, role.code)
+        if not success:
+            db.rollback()
+            raise HTTPException(status_code=500, detail="Error moving user to correct table")
+        
+        # Commit toda la transacción (asignación de rol + movimiento de usuario)
+        # Toda la verificación se hizo antes del commit para poder hacer rollback si es necesario
         db.commit()
         db.refresh(user_role)
+        db.refresh(role)
         
-        return {"message": "Role assigned to user successfully"}
+        # Devolver el rol asignado (FastAPI lo convierte automáticamente con from_attributes=True)
+        # Nota: No verificamos el rol después del commit porque no podemos hacer rollback
+        # de cambios ya confirmados. La verificación antes del commit es suficiente.
+        return role
     except HTTPException:
         raise
     except Exception as e:
@@ -328,6 +460,11 @@ async def remove_role_from_user(
     try:
         from app.models import UserRole
         
+        # Verificar que el usuario existe
+        user = db.query(UserAccount).filter(UserAccount.id == user_id).first()
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
         user_role = db.query(UserRole).filter(
             UserRole.user_id == user_id,
             UserRole.role_id == role_id
@@ -338,7 +475,18 @@ async def remove_role_from_user(
         
         # Desactivar en lugar de eliminar (soft delete)
         user_role.is_active = False
+        db.flush()
+        
+        # Verificar si quedan roles activos y mover usuario según corresponda
+        # Hacer esto antes del commit para mantener todo en una transacción
+        user_type_service = UserTypeService(db)
+        success = user_type_service.ensure_user_in_correct_table(user_id)
+        if not success:
+            db.rollback()
+            raise HTTPException(status_code=500, detail="Error moving user to correct table after role removal")
+        
         db.commit()
+        db.refresh(user_role)
         
         return None
     except HTTPException:
@@ -355,9 +503,18 @@ async def get_user_roles(
 ):
     """Get all roles for a user (admin only)"""
     try:
+        # Verificar que el usuario existe
+        user = db.query(UserAccount).filter(UserAccount.id == user_id).first()
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
         role_service = RoleService(db)
         roles = await role_service.get_user_roles(user_id)
-        return roles
+        
+        # Devolver roles (FastAPI los convierte automáticamente con from_attributes=True)
+        return [role for role in roles if role is not None]
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching user roles: {str(e)}")
 
@@ -385,6 +542,7 @@ async def create_provider(
             provider_metadata=provider.provider_metadata
         )
         db.add(new_provider)
+        db.flush()
         db.commit()
         db.refresh(new_provider)
         return new_provider
@@ -440,6 +598,7 @@ async def update_provider(
         for key, value in update_data.items():
             setattr(provider, key, value)
         
+        db.flush()
         db.commit()
         db.refresh(provider)
         return provider
@@ -462,6 +621,7 @@ async def delete_provider(
             raise HTTPException(status_code=404, detail="Provider not found")
         
         db.delete(provider)
+        db.flush()
         db.commit()
         return None
     except HTTPException:
@@ -510,6 +670,7 @@ async def create_provider_endpoint(
             headers=endpoint.headers
         )
         db.add(new_endpoint)
+        db.flush()
         db.commit()
         db.refresh(new_endpoint)
         return new_endpoint
@@ -540,6 +701,7 @@ async def update_provider_endpoint(
         for key, value in update_data.items():
             setattr(endpoint, key, value)
         
+        db.flush()
         db.commit()
         db.refresh(endpoint)
         return endpoint
@@ -566,6 +728,7 @@ async def delete_provider_endpoint(
             raise HTTPException(status_code=404, detail="Provider endpoint not found")
         
         db.delete(endpoint)
+        db.flush()
         db.commit()
         return None
     except HTTPException:

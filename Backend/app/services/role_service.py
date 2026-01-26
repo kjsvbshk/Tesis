@@ -23,7 +23,7 @@ class RoleService:
         return self.db.query(Role).offset(offset).limit(limit).all()
     
     async def create_role(self, code: str, name: str, description: Optional[str] = None) -> Role:
-        """Create a new role"""
+        """Create a new role (does not commit - endpoint must handle transaction)"""
         # Verificar si ya existe
         existing = await self.get_role_by_code(code)
         if existing:
@@ -31,12 +31,11 @@ class RoleService:
         
         role = Role(code=code, name=name, description=description)
         self.db.add(role)
-        self.db.commit()
-        self.db.refresh(role)
+        # NO hacer commit aquí - el endpoint maneja la transacción
         return role
     
     async def update_role(self, role_id: int, name: Optional[str] = None, description: Optional[str] = None) -> Optional[Role]:
-        """Update a role"""
+        """Update a role (does not commit - endpoint must handle transaction)"""
         role = await self.get_role_by_id(role_id)
         if not role:
             return None
@@ -46,22 +45,21 @@ class RoleService:
         if description is not None:
             role.description = description
         
-        self.db.commit()
-        self.db.refresh(role)
+        # NO hacer commit aquí - el endpoint maneja la transacción
         return role
     
     async def delete_role(self, role_id: int) -> bool:
-        """Delete a role"""
+        """Delete a role (does not commit - endpoint must handle transaction)"""
         role = await self.get_role_by_id(role_id)
         if not role:
             return False
         
         self.db.delete(role)
-        self.db.commit()
+        # NO hacer commit aquí - el endpoint maneja la transacción
         return True
     
     async def assign_permission_to_role(self, role_id: int, permission_id: int) -> bool:
-        """Assign a permission to a role"""
+        """Assign a permission to a role (does not commit - endpoint must handle transaction)"""
         # Verificar si ya existe la relación
         existing = self.db.query(RolePermission).filter(
             RolePermission.role_id == role_id,
@@ -73,11 +71,11 @@ class RoleService:
         
         role_perm = RolePermission(role_id=role_id, permission_id=permission_id)
         self.db.add(role_perm)
-        self.db.commit()
+        # NO hacer commit aquí - el endpoint maneja la transacción
         return True
     
     async def remove_permission_from_role(self, role_id: int, permission_id: int) -> bool:
-        """Remove a permission from a role"""
+        """Remove a permission from a role (does not commit - endpoint must handle transaction)"""
         role_perm = self.db.query(RolePermission).filter(
             RolePermission.role_id == role_id,
             RolePermission.permission_id == permission_id
@@ -87,7 +85,7 @@ class RoleService:
             return False
         
         self.db.delete(role_perm)
-        self.db.commit()
+        # NO hacer commit aquí - el endpoint maneja la transacción
         return True
     
     async def get_role_permissions(self, role_id: int) -> List[Permission]:
@@ -104,11 +102,13 @@ class RoleService:
         if not user:
             return []
         
-        # Obtener roles activos
-        user_roles = self.db.query(UserRole).filter(
+        # Obtener roles activos usando join para mejor rendimiento
+        roles = self.db.query(Role).join(
+            UserRole, Role.id == UserRole.role_id
+        ).filter(
             UserRole.user_id == user_id,
             UserRole.is_active == True
         ).all()
         
-        return [self.db.query(Role).filter(Role.id == ur.role_id).first() for ur in user_roles if ur.role_id]
+        return roles
     

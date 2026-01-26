@@ -1,6 +1,6 @@
 """
-Script para ejecutar la migración de 2FA, Avatar y Sesiones
-Ejecuta el script SQL de migración para agregar avatar_url y crear las tablas
+Script para ejecutar la migración de 2FA y Sesiones
+Ejecuta el script SQL de migración para crear las tablas de 2FA y sesiones
 """
 
 import sys
@@ -19,7 +19,7 @@ from app.core.config import settings
 def run_migration():
     """Ejecutar migración SQL"""
     print("=" * 60)
-    print("🚀 MIGRACIÓN: 2FA, Avatar y Sesiones")
+    print("🚀 MIGRACIÓN: 2FA y Sesiones")
     print("=" * 60)
     
     migration_file = os.path.join(os.path.dirname(__file__), '..', 'add_2fa_avatar_sessions.sql')
@@ -44,17 +44,6 @@ def run_migration():
         # Verificar resultados
         print("\n🔍 Verificando cambios...")
         with sys_engine.connect() as conn:
-            # Verificar avatar_url
-            result = conn.execute(text("""
-                SELECT EXISTS (
-                    SELECT 1 FROM information_schema.columns 
-                    WHERE table_schema = 'app' 
-                    AND table_name = 'user_accounts' 
-                    AND column_name = 'avatar_url'
-                ) as exists
-            """))
-            avatar_exists = result.scalar()
-            
             # Verificar tablas
             result = conn.execute(text("""
                 SELECT EXISTS (
@@ -75,11 +64,10 @@ def run_migration():
             sessions_exists = result.scalar()
             
             print("\n📋 Resultados:")
-            print(f"   avatar_url en user_accounts: {'✅ Existe' if avatar_exists else '❌ No existe'}")
             print(f"   user_two_factor: {'✅ Existe' if two_factor_exists else '❌ No existe'}")
             print(f"   user_sessions: {'✅ Existe' if sessions_exists else '❌ No existe'}")
             
-            if avatar_exists and two_factor_exists and sessions_exists:
+            if two_factor_exists and sessions_exists:
                 print("\n" + "=" * 60)
                 print("✅ Migración completada exitosamente")
                 print("=" * 60)

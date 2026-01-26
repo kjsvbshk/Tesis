@@ -4,8 +4,9 @@ Users API endpoints
 
 from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Request
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
 from datetime import timedelta
+from decimal import Decimal
 import os
 import shutil
 import uuid
@@ -28,11 +29,41 @@ from app.services.auth_service import get_current_user, authenticate_user, creat
 from app.services.email_service import EmailService
 from app.services.two_factor_service import TwoFactorService
 from app.services.session_service import SessionService
+from app.services.user_type_service import UserTypeService
 from app.core.security import sanitize_for_logging, safe_log_request
 from app.middleware.security_monitoring import security_monitoring
 import logging
 
 router = APIRouter()
+
+def get_user_avatar_url(db: Session, user_id: int) -> Optional[str]:
+    """
+    Helper function to get avatar_url from user's individual table.
+    
+    This is a read-only operation. If user doesn't exist in any type table,
+    returns None without modifying the database.
+    
+    Searches directly in all tables to avoid race conditions where the user
+    is moved between tables between determining current_table and querying.
+    """
+    # Buscar directamente en todas las tablas sin depender de current_table
+    # Esto evita condiciones de carrera donde el usuario se mueve entre tablas
+    # entre determinar current_table y obtener el registro
+    client = db.query(Client).filter(Client.user_account_id == user_id).first()
+    if client:
+        return client.avatar_url
+    
+    admin = db.query(Administrator).filter(Administrator.user_account_id == user_id).first()
+    if admin:
+        return admin.avatar_url
+    
+    operator = db.query(Operator).filter(Operator.user_account_id == user_id).first()
+    if operator:
+        return operator.avatar_url
+    
+    # If user doesn't exist in any type table, return None
+    # This is a read-only operation - do not modify the database
+    return None
 logger = logging.getLogger(__name__)
 
 
@@ -379,7 +410,7 @@ async def register_user(
             "rol": user_role,
             "created_at": new_user_account.created_at,
             "updated_at": new_user_account.updated_at,
-            "avatar_url": new_user_account.avatar_url,
+            "avatar_url": get_user_avatar_url(db, new_user_account.id),
         }
         return user_dict
     except HTTPException:
@@ -427,7 +458,7 @@ async def get_current_user_info(
         "rol": user_role,
         "created_at": current_user.created_at,
         "updated_at": current_user.updated_at,
-        "avatar_url": current_user.avatar_url,
+        "avatar_url": get_user_avatar_url(db, current_user.id),
         # Include Client profile fields if user is a client
         "first_name": client.first_name if client else None,
         "last_name": client.last_name if client else None,
@@ -470,7 +501,7 @@ async def update_current_user(
             "rol": user_role,
             "created_at": updated_user.created_at,
             "updated_at": updated_user.updated_at,
-            "avatar_url": updated_user.avatar_url,
+            "avatar_url": get_user_avatar_url(db, updated_user.id),
             # Include Client profile fields if user is a client
             "first_name": client.first_name if client else None,
             "last_name": client.last_name if client else None,
@@ -858,7 +889,7 @@ async def get_all_users(
                 "rol": user_role,
                 "created_at": user_account.created_at,
                 "updated_at": user_account.updated_at,
-                "avatar_url": user_account.avatar_url,
+                "avatar_url": get_user_avatar_url(db, user_account.id),
             }
             result.append(user_dict)
         
@@ -906,7 +937,7 @@ async def get_user_by_id(
             "rol": user_role,
             "created_at": user_account.created_at,
             "updated_at": user_account.updated_at,
-            "avatar_url": user_account.avatar_url,
+            "avatar_url": get_user_avatar_url(db, user_account.id),
             # Include Client profile fields if user is a client
             "first_name": client.first_name if client else None,
             "last_name": client.last_name if client else None,
@@ -966,7 +997,7 @@ async def create_user_admin(
             "rol": user_role,
             "created_at": new_user_account.created_at,
             "updated_at": new_user_account.updated_at,
-            "avatar_url": new_user_account.avatar_url,
+            "avatar_url": get_user_avatar_url(db, new_user_account.id),
         }
         return user_dict
     except HTTPException:
@@ -1048,10 +1079,13 @@ async def update_user_admin(
                 
                 # Create or update client
                 if not current_client:
+                    # Usar 0.0 créditos para mantener consistencia con move_user_to_table
+                    # Si el usuario viene de administrator/operator, no debe recibir créditos no ganados
+                    # Si el usuario no tiene registro previo, también usar 0.0 para consistencia
                     client = Client(
                         user_account_id=user_id,
                         role_id=role.id,
-                        credits=1000.0
+                        credits=Decimal('0.0')  # Consistente con move_user_to_table - no créditos no ganados
                     )
                     db.add(client)
                 else:
@@ -1145,7 +1179,7 @@ async def update_user_admin(
             "rol": user_role,
             "created_at": updated_user.created_at,
             "updated_at": updated_user.updated_at,
-            "avatar_url": updated_user.avatar_url,
+            "avatar_url": get_user_avatar_url(db, updated_user.id),
             **profile_data
         }
         return user_dict
@@ -1368,24 +1402,128 @@ async def upload_avatar(
         upload_dir = base_dir / "uploads" / "avatars"
         upload_dir.mkdir(parents=True, exist_ok=True)
         
-        # Save old avatar URL before updating (to delete old file)
-        old_avatar_url = current_user.avatar_url
+        # Obtener tabla actual del usuario para leer/escribir avatar_url
+        user_type_service = UserTypeService(db)
+        current_table = user_type_service.get_user_current_table(current_user.id)
+        
+        # Leer avatar_url actual desde la tabla individual
+        old_avatar_url = None
+        user_record = None
+        if current_table == 'client':
+            from app.models.user_accounts import Client
+            user_record = db.query(Client).filter(Client.user_account_id == current_user.id).first()
+            if user_record:
+                old_avatar_url = user_record.avatar_url
+        elif current_table == 'administrator':
+            from app.models.user_accounts import Administrator
+            user_record = db.query(Administrator).filter(Administrator.user_account_id == current_user.id).first()
+            if user_record:
+                old_avatar_url = user_record.avatar_url
+        elif current_table == 'operator':
+            from app.models.user_accounts import Operator
+            user_record = db.query(Operator).filter(Operator.user_account_id == current_user.id).first()
+            if user_record:
+                old_avatar_url = user_record.avatar_url
+        
+        # Si no está en ninguna tabla, asegurar que esté en la tabla correcta según su rol
+        if not user_record:
+            # Verificar si el usuario tiene roles asignados antes de intentar moverlo
+            primary_role = user_type_service.get_user_primary_role(current_user.id)
+            
+            if primary_role:
+                # El usuario tiene roles asignados, intentar moverlo a la tabla correcta
+                success = user_type_service.ensure_user_in_correct_table(current_user.id)
+                if not success:
+                    # Si ensure_user_in_correct_table falla pero el usuario tiene roles,
+                    # esto es un error crítico que no debe ser silenciado
+                    raise HTTPException(
+                        status_code=500,
+                        detail=f"Failed to move user to correct table. User has role '{primary_role.code}' but could not be placed in corresponding table."
+                    )
+                
+                # Re-verificar la tabla después de ensure_user_in_correct_table
+                current_table = user_type_service.get_user_current_table(current_user.id)
+                # Leer el registro desde la tabla correcta
+                if current_table == 'client':
+                    from app.models.user_accounts import Client
+                    user_record = db.query(Client).filter(Client.user_account_id == current_user.id).first()
+                elif current_table == 'administrator':
+                    from app.models.user_accounts import Administrator
+                    user_record = db.query(Administrator).filter(Administrator.user_account_id == current_user.id).first()
+                elif current_table == 'operator':
+                    from app.models.user_accounts import Operator
+                    user_record = db.query(Operator).filter(Operator.user_account_id == current_user.id).first()
+                
+                # Si aún no hay registro después de ensure_user_in_correct_table,
+                # esto es un error de integridad
+                if not user_record:
+                    raise HTTPException(
+                        status_code=500,
+                        detail=f"User has role '{primary_role.code}' but record was not created in corresponding table. Data integrity error."
+                    )
+            else:
+                # El usuario no tiene roles asignados, crear como client por defecto
+                # Usar 0.0 créditos para mantener consistencia con move_user_to_table
+                # y prevenir que usuarios existentes obtengan créditos no ganados
+                from app.models.user_accounts import Client
+                from app.models.role import Role
+                client_role = db.query(Role).filter(Role.code == 'client').first()
+                if not client_role:
+                    raise HTTPException(status_code=500, detail="Client role not found")
+                user_record = Client(
+                    user_account_id=current_user.id,
+                    role_id=client_role.id,
+                    credits=Decimal('0.0')  # Consistente con move_user_to_table - no créditos no ganados
+                )
+                db.add(user_record)
+                db.flush()
+                current_table = 'client'
         
         # Generate unique filename
         file_ext = file.filename.split('.')[-1] if '.' in file.filename else 'jpg'
         unique_filename = f"{current_user.id}_{uuid.uuid4().hex[:8]}.{file_ext}"
         file_path = upload_dir / unique_filename
         
-        # Save file
-        with open(file_path, "wb") as buffer:
-            buffer.write(content)
+        # Save file first
+        # If file save fails, we don't update the database
+        try:
+            with open(file_path, "wb") as buffer:
+                buffer.write(content)
+        except Exception as e:
+            # File save failed - don't update database
+            db.rollback()
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to save avatar file. Database was not updated. Error: {str(e)}"
+            )
         
-        # Update user avatar URL
+        # Update user avatar URL en la tabla individual
         # Use relative path for serving (matches the mount point in main.py: /uploads)
         avatar_url = f"/uploads/avatars/{unique_filename}"
-        current_user.avatar_url = avatar_url
-        db.commit()
-        db.refresh(current_user)
+        user_record.avatar_url = avatar_url
+        db.flush()
+        
+        # Commit database transaction
+        # If commit fails, try to clean up the orphaned file
+        try:
+            db.commit()
+            db.refresh(user_record)
+        except Exception as e:
+            # Database commit failed - try to clean up orphaned file
+            db.rollback()
+            try:
+                if file_path.exists() and file_path.is_file():
+                    file_path.unlink()
+            except Exception as cleanup_error:
+                # Log cleanup error but don't fail on it
+                import logging
+                logger = logging.getLogger(__name__)
+                logger.error(f"Failed to clean up orphaned avatar file {file_path}: {cleanup_error}")
+            
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to update database. File was saved but database update failed. Error: {str(e)}"
+            )
         
         # Delete old avatar file if it exists and is different from the new one
         if old_avatar_url and old_avatar_url != avatar_url:
@@ -1407,6 +1545,8 @@ async def upload_avatar(
     except HTTPException:
         raise
     except Exception as e:
+        # Rollback any uncommitted changes before raising exception
+        db.rollback()
         raise HTTPException(status_code=500, detail=f"Error uploading avatar: {str(e)}")
 
 @router.delete("/me/avatar")
@@ -1416,30 +1556,69 @@ async def delete_avatar(
 ):
     """Delete avatar for the current user"""
     try:
-        if current_user.avatar_url:
+        # Buscar el registro del usuario directamente en todas las tablas
+        # Esto evita condiciones de carrera donde el usuario se mueve entre tablas
+        # entre determinar current_table y obtener el registro
+        from app.models.user_accounts import Client, Administrator, Operator
+        
+        user_record = None
+        avatar_url_to_delete = None
+        
+        # Buscar en todas las tablas en orden de prioridad
+        # Esto es más robusto que depender de get_user_current_table que puede cambiar
+        # entre la determinación y la obtención del registro
+        client = db.query(Client).filter(Client.user_account_id == current_user.id).first()
+        if client:
+            user_record = client
+            avatar_url_to_delete = client.avatar_url
+        else:
+            admin = db.query(Administrator).filter(Administrator.user_account_id == current_user.id).first()
+            if admin:
+                user_record = admin
+                avatar_url_to_delete = admin.avatar_url
+            else:
+                operator = db.query(Operator).filter(Operator.user_account_id == current_user.id).first()
+                if operator:
+                    user_record = operator
+                    avatar_url_to_delete = operator.avatar_url
+        
+        if avatar_url_to_delete:
             # Use absolute path (same as upload_avatar)
-            # From Backend/app/api/v1/endpoints/users.py:
-            # - .parent.parent.parent.parent -> Backend/app/
-            # - .parent.parent.parent.parent.parent -> Backend/
             base_dir = Path(__file__).resolve().parent.parent.parent.parent.parent  # Backend/
-            file_path = base_dir / current_user.avatar_url.lstrip("/")
+            file_path = base_dir / avatar_url_to_delete.lstrip("/")
             
             # Delete file if it exists
+            # Only update database if:
+            # 1. File doesn't exist (orphaned reference - safe to clean up)
+            # 2. File exists and deletion succeeds
+            # If file exists and deletion fails, don't update DB to maintain consistency
             if file_path.exists() and file_path.is_file():
                 try:
                     file_path.unlink()
                 except Exception as e:
-                    # Log error but don't fail the request if deletion fails
+                    # File deletion failed - don't update database to maintain consistency
                     import logging
                     logger = logging.getLogger(__name__)
-                    logger.warning(f"Failed to delete avatar file {file_path}: {e}")
+                    logger.error(f"Failed to delete avatar file {file_path}: {e}")
+                    raise HTTPException(
+                        status_code=500,
+                        detail=f"Failed to delete avatar file. Database was not updated to maintain consistency. Error: {str(e)}"
+                    )
             
-            # Clear avatar URL
-            current_user.avatar_url = None
-            db.commit()
+            # Update database only if file deletion succeeded or file doesn't exist
+            # This ensures data consistency: database and filesystem stay in sync
+            if user_record:
+                user_record.avatar_url = None
+                db.flush()
+                db.commit()
+                db.refresh(user_record)
         
         return {"message": "Avatar deleted successfully"}
+    except HTTPException:
+        raise
     except Exception as e:
+        # Rollback any uncommitted changes before raising exception
+        db.rollback()
         raise HTTPException(status_code=500, detail=f"Error deleting avatar: {str(e)}")
 
 # ============================================================================

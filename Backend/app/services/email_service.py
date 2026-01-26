@@ -492,15 +492,24 @@ Si no solicitaste este código, puedes ignorar este mensaje de forma segura."""
         
         html_content = EmailService._get_notification_html_template(subject, content)
         
+        # Log email attempt
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.info(f"Preparing to send account deactivation email to {email} (provider: {settings.EMAIL_PROVIDER})")
+        
         # Send email based on configured provider
         if settings.EMAIL_PROVIDER == "sendgrid":
+            logger.info(f"Sending deactivation email via SendGrid to {email}")
             await EmailService._send_notification_via_sendgrid(email, subject, html_content)
         elif settings.EMAIL_PROVIDER == "smtp":
+            logger.info(f"Sending deactivation email via SMTP to {email}")
             await EmailService._send_notification_via_smtp(email, subject, html_content)
         else:
             # Console mode (development)
+            logger.warning(f"EMAIL_PROVIDER is '{settings.EMAIL_PROVIDER}', using console mode for deactivation email")
             print(f"📧 Account deactivation notification to {email}")
             print(f"   Subject: {subject}")
+            print(f"   Content preview: {content[:100]}...")
             if settings.EMAIL_PROVIDER != "console":
                 print(f"   ⚠️  Email provider '{settings.EMAIL_PROVIDER}' not configured, using console mode")
     
@@ -529,7 +538,8 @@ Si no solicitaste este código, puedes ignorar este mensaje de forma segura."""
             sg = SendGridAPIClient(settings.SENDGRID_API_KEY)
             response = sg.send(message)
             
-            if response.status_code in [200, 202]:
+            # SendGrid success codes: 200 (OK), 201 (Created), 202 (Accepted)
+            if response.status_code in [200, 201, 202]:
                 logger.info(f"✅ Notification email sent via SendGrid to {email} (status: {response.status_code})")
                 print(f"✅ Notification email sent via SendGrid to {email}")
             else:

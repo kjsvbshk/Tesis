@@ -35,6 +35,9 @@ import { OperatorHomePage } from '@/pages/operator/OperatorHomePage'
 import { ProvidersManagementPage } from '@/pages/operator/ProvidersManagementPage'
 import { IntegrationMonitoringPage } from '@/pages/operator/IntegrationMonitoringPage'
 import { SyncRecordsPage } from '@/pages/operator/SyncRecordsPage'
+import { ProviderLayout } from '@/components/layout/ProviderLayout'
+import { ProviderHomePage } from '@/pages/provider/ProviderHomePage'
+import { ProviderIntegrationPage } from '@/pages/provider/ProviderIntegrationPage'
 
 
 // Create router with AuthProvider and PermissionsProvider wrapper
@@ -122,6 +125,21 @@ const routerWithAuth = createBrowserRouter([
           { path: 'proveedores', element: <ProvidersManagementPage /> },
           { path: 'monitoreo', element: <IntegrationMonitoringPage /> },
           { path: 'sincronizacion', element: <SyncRecordsPage /> },
+        ],
+      },
+      // Provider routes
+      {
+        path: 'provider',
+        element: (
+          <RoleProtectedRoute allowedRoles={['provider', 'admin']}>
+            <ProviderLayout />
+          </RoleProtectedRoute>
+        ),
+        children: [
+          { index: true, element: <ProviderHomePage /> },
+          { path: 'integration', element: <ProviderIntegrationPage /> },
+          { path: 'docs', element: <div className="p-8 text-white">API Documentation Coming Soon</div> },
+          { path: 'settings', element: <div className="p-8 text-white">Provider Settings Coming Soon</div> },
         ],
       },
       // User routes (default layout) - exclude admins and operators

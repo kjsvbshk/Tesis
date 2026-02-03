@@ -26,9 +26,14 @@ class UserService:
         """Get user account by email"""
         return self.db.query(UserAccount).filter(UserAccount.email == email).first()
     
-    async def get_all_users(self, limit: int = 50, offset: int = 0) -> List[UserAccount]:
+    async def get_all_users(self, limit: int = 50, offset: int = 0, exclude_user_id: Optional[int] = None) -> List[UserAccount]:
         """Get all user accounts with pagination"""
-        return self.db.query(UserAccount).offset(offset).limit(limit).all()
+        query = self.db.query(UserAccount)
+        
+        if exclude_user_id is not None:
+            query = query.filter(UserAccount.id != exclude_user_id)
+            
+        return query.offset(offset).limit(limit).all()
     
     async def get_client_by_user_id(self, user_id: int) -> Optional[Client]:
         """Get client record for a user account"""

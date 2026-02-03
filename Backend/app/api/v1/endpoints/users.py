@@ -873,7 +873,7 @@ async def get_all_users(
         # Check if user has admin permission
         from app.core.authorization import get_user_permissions, has_permission
         user_permissions = get_user_permissions(db, current_user.id)
-        if not has_permission("admin:write", user_permissions):
+        if not has_permission("admin:read", user_permissions):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Admin permission required"
@@ -881,8 +881,7 @@ async def get_all_users(
         
         user_service = UserService(db)
         # Get all users excluding the current admin
-        all_users = await user_service.get_all_users(limit=limit * 2, offset=offset)  # Get more to account for filtering
-        users = [u for u in all_users if u.id != current_user.id][:limit]  # Filter out current admin and limit
+        users = await user_service.get_all_users(limit=limit, offset=offset, exclude_user_id=current_user.id)
         
         # Construir respuestas con todos los campos requeridos
         result = []
@@ -1253,6 +1252,41 @@ async def delete_user(
                 detail="Error deactivating user"
             )
         
+
+        
+        # Enviar correo de notificación al usuario (desactivado por admin)
+        try:
+            from app.services.queue_service import queue_service
+            from app.tasks.email_tasks import send_account_deactivation_email_task
+            from app.core.config import settings
+            
+            logger.info(f"📧 Preparing to send deactivation email to {user_account.email} (deactivated by admin)")
+            
+            # Enviar correo usando la cola de trabajos
+            if queue_service.is_available():
+                logger.info(f"📧 Queue service available, queuing deactivation email for {user_account.email}")
+                queue_service.enqueue(
+                    send_account_deactivation_email_task,
+                    user_account.email,
+                    True,  # deactivated_by_admin
+                    current_user.username,  # admin_username
+                    queue_name='default'
+                )
+                logger.info(f"✅ Deactivation email queued successfully for {user_account.email}")
+            else:
+                # Fallback: enviar directamente si la cola no está disponible
+                logger.warning(f"⚠️  Queue service not available, sending deactivation email directly to {user_account.email}")
+                from app.services.email_service import EmailService
+                await EmailService.send_account_deactivation_notification(
+                    email=user_account.email,
+                    deactivated_by_admin=True,
+                    admin_username=current_user.username
+                )
+                logger.info(f"✅ Deactivation email sent directly to {user_account.email}")
+        except Exception as e:
+            # Log el error pero no fallar la operación principal
+            logger.error(f"❌ Error sending deactivation email to {user_account.email}: {str(e)}", exc_info=True)
+
         return {
             "message": f"Usuario '{username}' desactivado correctamente",
             "user_id": user_id,

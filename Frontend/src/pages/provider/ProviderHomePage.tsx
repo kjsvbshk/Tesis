@@ -22,14 +22,16 @@ export function ProviderHomePage() {
                 className="flex flex-col md:flex-row md:items-center justify-between gap-4"
             >
                 <div>
-                    <h1 className={`text-4xl font-heading font-bold bg-gradient-to-r ${gradient} bg-clip-text text-transparent mb-2`}>
-                        Provider Portal
-                    </h1>
+                    <Link to="/provider">
+                        <h1 className={`text-4xl font-heading font-bold bg-gradient-to-r ${gradient} bg-clip-text text-transparent mb-2 hover:opacity-80 transition-opacity`}>
+                            Provider Portal
+                        </h1>
+                    </Link>
                     <p className="text-[#B0B3C5]">Welcome back, <span className="text-white font-medium">{user?.username}</span></p>
                 </div>
 
                 <div className={`px-4 py-2 bg-[#00F0FF]/10 ${themeBorder} border rounded-sm flex items-center gap-3`}>
-                    <div className="w-2 h-2 rounded-full bg-[#00F0FF] animate-pulse" />
+                    <div className={`w-2 h-2 rounded-full ${themeBg} animate-pulse`} />
                     <span className={`font-mono text-xs ${themeColor} font-bold`}>SYSTEM STATUS: OPERATIONAL</span>
                 </div>
             </motion.div>
@@ -89,7 +91,7 @@ export function ProviderHomePage() {
                         <CardContent>
                             <div className="h-[300px] flex items-center justify-center border border-dashed border-white/10 rounded-md bg-black/20">
                                 <div className="text-center">
-                                    <Activity size={48} className={`mx-auto mb-4 ${themeColor} opacity-50`} />
+                                    <Database size={48} className={`mx-auto mb-4 ${themeColor} opacity-50`} />
                                     <p className="text-muted-foreground font-mono text-sm">Real-time traffic visualization would appear here.</p>
                                     <p className="text-xs text-[#B0B3C5] mt-1">(Mock Data for UI Demo)</p>
                                 </div>

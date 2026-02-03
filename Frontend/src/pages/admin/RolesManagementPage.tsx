@@ -31,6 +31,7 @@ import {
 } from '@/components/ui/sheet'
 import { adminService, type Role, type Permission } from '@/services/admin.service'
 import { useToast } from '@/hooks/use-toast'
+import { Loader } from '@/components/ui/loader'
 
 export function RolesManagementPage() {
   const [roles, setRoles] = useState<Role[]>([])
@@ -261,7 +262,7 @@ export function RolesManagementPage() {
             Administra roles, permisos y sus asignaciones
           </p>
         </div>
-        <Button 
+        <Button
           className="bg-[#00FF73] hover:bg-[#00D95F] text-black"
           onClick={() => {
             if (activeTab === 'roles') {
@@ -298,7 +299,7 @@ export function RolesManagementPage() {
             </CardHeader>
             <CardContent>
               {loading ? (
-                <div className="text-center py-8 text-[#B0B3C5]">Cargando roles...</div>
+                <Loader text="LOADING ROLES" className="py-20" />
               ) : (
                 <Table>
                   <TableHeader>
@@ -394,14 +395,14 @@ export function RolesManagementPage() {
                             >
                               <Edit size={14} />
                             </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
+                            <Button
+                              variant="ghost"
+                              size="sm"
                               className="text-red-500 hover:text-red-400 hover:bg-[#1C2541]"
-                            onClick={() => handleDeletePermission(permission.id)}
-                          >
-                            <Trash2 size={14} />
-                          </Button>
+                              onClick={() => handleDeletePermission(permission.id)}
+                            >
+                              <Trash2 size={14} />
+                            </Button>
                           </div>
                         </div>
                       </div>

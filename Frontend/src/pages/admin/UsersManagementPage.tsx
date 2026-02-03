@@ -1,8 +1,3 @@
-/**
- * Users Management Page
- * CRUD completo de usuarios para administradores
- */
-
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Plus, Edit, Trash2, Shield, Search, X } from 'lucide-react'
@@ -30,6 +25,7 @@ import {
 import { usersService, type User, type UserCreate, type UserUpdate } from '@/services/users.service'
 import { adminService, type Role, type UserRole } from '@/services/admin.service'
 import { useToast } from '@/hooks/use-toast'
+import { Loader } from '@/components/ui/loader'
 
 export function UsersManagementPage() {
   const [users, setUsers] = useState<User[]>([])
@@ -252,7 +248,7 @@ export function UsersManagementPage() {
           </h1>
           <p className="text-[#B0B3C5] mt-2">Administra usuarios, roles y permisos del sistema</p>
         </div>
-        <Button 
+        <Button
           className="bg-[#00FF73] hover:bg-[#00D95F] text-black"
           onClick={() => setIsCreateOpen(true)}
         >
@@ -285,7 +281,7 @@ export function UsersManagementPage() {
         </CardHeader>
         <CardContent>
           {loading ? (
-            <div className="text-center py-8 text-[#B0B3C5]">Cargando usuarios...</div>
+            <Loader text="LOADING USERS" className="py-20" />
           ) : (
             <Table>
               <TableHeader>
@@ -311,8 +307,8 @@ export function UsersManagementPage() {
                       </Badge>
                     </TableCell>
                     <TableCell className="text-white">
-                      {user.credits !== null && user.credits !== undefined 
-                        ? `$${user.credits.toFixed(2)}` 
+                      {user.credits !== null && user.credits !== undefined
+                        ? `$${user.credits.toFixed(2)}`
                         : 'N/A'}
                     </TableCell>
                     <TableCell>

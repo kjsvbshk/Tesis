@@ -6,6 +6,13 @@ export default {
     "./src/**/*.{ts,tsx,js,jsx}"
   ],
   theme: {
+    container: {
+      center: true,
+      padding: "2rem",
+      screens: {
+        "2xl": "1400px",
+      },
+    },
     extend: {
       colors: {
         border: "hsl(var(--border))",
@@ -41,21 +48,34 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        neon: {
-          green: "#00FF73",
-          yellow: "#FFD700",
+        // Custom Theme Colors
+        acid: {
+          DEFAULT: "#CCFF00", // Acid Lime
+          500: "#CCFF00",
+          600: "#A3CC00",
+          900: "#1A2200",
+        },
+        violet: {
+          DEFAULT: "#B366FF", // Electric Violet
+          500: "#B366FF",
+          glow: "rgba(179, 102, 255, 0.5)",
+        },
+        metal: {
+          DEFAULT: "#0E0E12", // Dark Metal
+          500: "#0E0E12",
+          800: "#030305", // Void Black
+          900: "#000000",
         },
       },
       fontFamily: {
-        sans: ['Inter', 'Roboto', 'sans-serif'],
-        heading: ['Poppins', 'Montserrat', 'sans-serif'],
-        mono: ['Roboto Mono', 'Space Mono', 'monospace'],
+        sans: ['Rajdhani', 'sans-serif'], // Body
+        display: ['Chakra Petch', 'sans-serif'], // Headings
+        mono: ['Space Mono', 'monospace'],
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
-        DEFAULT: "0.5rem", // 8px
       },
       keyframes: {
         "accordion-down": {
@@ -66,23 +86,25 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: 0 },
         },
-        "slide-in-from-right": {
-          from: { transform: "translateX(100%)", opacity: "0" },
-          to: { transform: "translateX(0)", opacity: "1" },
+        "glitch": {
+          "0%, 100%": { transform: "translate(0)" },
+          "20%": { transform: "translate(-2px, 2px)" },
+          "40%": { transform: "translate(-2px, -2px)" },
+          "60%": { transform: "translate(2px, 2px)" },
+          "80%": { transform: "translate(2px, -2px)" },
         },
-        "slide-out-to-right": {
-          from: { transform: "translateX(0)", opacity: "1" },
-          to: { transform: "translateX(100%)", opacity: "0" },
-        },
+        "pulse-glow": {
+          "0%, 100%": { boxShadow: "0 0 5px var(--acid-lime)" },
+          "50%": { boxShadow: "0 0 20px var(--acid-lime)" },
+        }
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "slide-in-from-right": "slide-in-from-right 0.3s ease-out",
-        "slide-out-to-right": "slide-out-to-right 0.2s ease-in",
+        "glitch": "glitch 0.2s ease-in-out infinite",
+        "pulse-glow": "pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
       },
     },
   },
   plugins: [require("tailwindcss-animate")],
 }
-

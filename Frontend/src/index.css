@@ -1,8 +1,166 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=Rajdhani:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  /* Digital Industrial Palette */
+  --void-black: 240 25% 2%;      /* #030305 */
+  --dark-metal: 240 12% 6%;      /* #0E0E12 */
+  --chrome-grey: 210 10% 20%;    /* #2E3238 */
+  
+  --acid-lime: 72 100% 50%;      /* #CCFF00 */
+  --electric-violet: 265 100% 72%; /* #B366FF */
+  --alert-red: 0 100% 60%;       /* #FF3333 */
+  
+  /* Semantic Mappings */
+  --background: var(--void-black);
+  --foreground: 0 0% 100%;       /* #FFFFFF */
+  
+  --card: var(--dark-metal);
+  --card-foreground: 0 0% 100%;
+  
+  --popover: var(--dark-metal);
+  --popover-foreground: 0 0% 100%;
+  
+  --primary: var(--acid-lime);
+  --primary-foreground: 240 25% 2%; /* Void Black */
+  
+  --secondary: var(--chrome-grey);
+  --secondary-foreground: 0 0% 100%;
+  
+  --muted: 240 10% 10%;
+  --muted-foreground: 240 5% 65%;
+  
+  --accent: var(--electric-violet);
+  --accent-foreground: 0 0% 100%;
+  
+  --destructive: var(--alert-red);
+  --destructive-foreground: 0 0% 100%;
+  
+  --border: var(--chrome-grey);
+  --input: 240 10% 10%;
+  --ring: var(--acid-lime);
+  
+  --radius: 0px; /* Brutalist - no rounded corners by default */
+}
+
+.dark {
+  /* Same as root for now since this theme is inherently dark */
+  --background: var(--void-black);
+  --foreground: 0 0% 100%;
+  --card: var(--dark-metal);
+  --card-foreground: 0 0% 100%;
+  --primary: var(--acid-lime);
+  --primary-foreground: 240 25% 2%;
+  --border: var(--chrome-grey);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  html, body, #root {
+    @apply h-full w-full overflow-hidden bg-background text-foreground;
+    font-family: 'Rajdhani', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Chakra Petch', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-background;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-border hover:bg-primary/50 transition-colors;
+  }
+}
+
+@layer utilities {
+  /* Backgrounds */
+  .bg-void {
+    background-color: hsl(var(--void-black));
+  }
+  .bg-metal {
+    background-color: hsl(var(--dark-metal));
+  }
+  
+  /* Effects */
+  .scanlines {
+    background: linear-gradient(
+      to bottom,
+      rgba(255,255,255,0),
+      rgba(255,255,255,0) 50%,
+      rgba(0,0,0,0.2) 50%,
+      rgba(0,0,0,0.2)
+    );
+    background-size: 100% 4px;
+    pointer-events: none;
+  }
+
+  .noise-bg {
+    position: relative;
+  }
+  .noise-bg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Borders & Corners */
+  .cut-corners {
+    clip-path: polygon(
+      0 0,
+      100% 0,
+      100% calc(100% - 10px),
+      calc(100% - 10px) 100%,
+      0 100%
+    );
+  }
+  
+  .cut-corners-top {
+    clip-path: polygon(
+      10px 0,
+      100% 0,
+      100% 100%,
+      0 100%,
+      0 10px
+    );
+  }
+
+  /* Text Effects */
+  .text-glow {
+    text-shadow: 0 0 10px rgba(204, 255, 0, 0.5);
+  }
+  
+  .text-glow-accent {
+    text-shadow: 0 0 10px rgba(179, 102, 255, 0.5);
+  }
+
+  /* Animations */
+  .animate-glitch {
+    animation: glitch 1s linear infinite;
+  }
+
+  @keyframes glitch {
+    2%, 64% { transform: translate(2px,0) skew(0deg); }
+    4%, 60% { transform: translate(-2px,0) skew(0deg); }
+    62% { transform: translate(0,0) skew(5deg); }
+  }
+}
 
 :root {
   /* Paleta de colores tecnológica */

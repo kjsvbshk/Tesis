@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
@@ -11,8 +11,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useToast } from '@/hooks/use-toast'
 import { useAuth } from '@/contexts/AuthContext'
 import { userService } from '@/services/user.service'
-import { User, CreditCard, Bell, Shield, LogOut, AlertTriangle } from 'lucide-react'
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { User, CreditCard, Bell, Shield, LogOut, AlertTriangle, Key, Lock, Activity, ChevronRight } from 'lucide-react'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 
 export function ProfilePage() {
   const { toast } = useToast()
@@ -27,7 +27,7 @@ export function ProfilePage() {
     const baseUrl = apiBaseUrl.replace(/\/api\/v1\/?$/, '')
     return `${baseUrl}${avatarPath}`
   }
-  
+
   // Personal info state
   const [personalInfo, setPersonalInfo] = useState({
     username: '',
@@ -76,10 +76,10 @@ export function ProfilePage() {
       try {
         const profileData = await userService.getCurrentUser()
         // Map date_of_birth from backend to birth_date for frontend
-        const birthDate = profileData.date_of_birth 
+        const birthDate = profileData.date_of_birth
           ? new Date(profileData.date_of_birth).toISOString().split('T')[0]
           : ''
-        
+
         setPersonalInfo({
           username: profileData.username || '',
           email: profileData.email || '',
@@ -117,7 +117,7 @@ export function ProfilePage() {
         }
       }
     }
-    
+
     loadProfileData()
   }, [user])
 
@@ -144,16 +144,14 @@ export function ProfilePage() {
   const handleSavePersonalInfo = async () => {
     try {
       setIsLoading(true)
-      // Map birth_date to date_of_birth for backend (though backend accepts both)
       const updateData = {
         ...personalInfo,
         birth_date: personalInfo.birth_date || undefined,
       }
       await userService.updateProfile(updateData)
       await refreshUser()
-      // Reload profile data to get updated values
       const profileData = await userService.getCurrentUser()
-      const birthDate = profileData.date_of_birth 
+      const birthDate = profileData.date_of_birth
         ? new Date(profileData.date_of_birth).toISOString().split('T')[0]
         : ''
       setPersonalInfo({
@@ -165,13 +163,13 @@ export function ProfilePage() {
         birth_date: birthDate,
       })
       toast({
-        title: 'Perfil actualizado',
-        description: 'Tu información personal ha sido actualizada exitosamente.',
+        title: 'IDENTITY UPDATED',
+        description: 'Profile data synchronized successfully.',
       })
     } catch (error: any) {
       toast({
-        title: 'Error',
-        description: error.message || 'Error al actualizar el perfil',
+        title: 'UPDATE FAILED',
+        description: error.message || 'Error updating profile',
         variant: 'destructive',
       })
     } finally {
@@ -182,17 +180,8 @@ export function ProfilePage() {
   const handleChangePassword = async () => {
     if (passwordData.new_password !== passwordData.confirm_password) {
       toast({
-        title: 'Error',
-        description: 'Las contraseñas no coinciden',
-        variant: 'destructive',
-      })
-      return
-    }
-
-    if (passwordData.new_password.length < 6) {
-      toast({
-        title: 'Error',
-        description: 'La nueva contraseña debe tener al menos 6 caracteres',
+        title: 'MISMATCH',
+        description: 'Passkeys do not match.',
         variant: 'destructive',
       })
       return
@@ -207,13 +196,13 @@ export function ProfilePage() {
         confirm_password: '',
       })
       toast({
-        title: 'Contraseña actualizada',
-        description: 'Tu contraseña ha sido cambiada exitosamente.',
+        title: 'SECURE UPDATE',
+        description: 'Passkey changed successfully.',
       })
     } catch (error: any) {
       toast({
-        title: 'Error',
-        description: error.message || 'Error al cambiar la contraseña. Verifica que la contraseña actual sea correcta.',
+        title: 'ACCESS DENIED',
+        description: error.message || 'Error changing passkey.',
         variant: 'destructive',
       })
     } finally {
@@ -221,14 +210,6 @@ export function ProfilePage() {
     }
   }
 
-  const handleSave = (section: string) => {
-    toast({
-      title: 'Configuración guardada',
-      description: `Los cambios en ${section} han sido guardados exitosamente.`,
-    })
-  }
-
-  // 2FA handlers
   const handleSetup2FA = async () => {
     try {
       setIsLoading(true)
@@ -240,13 +221,13 @@ export function ProfilePage() {
         showBackupCodes: true,
       })
       toast({
-        title: '2FA configurado',
-        description: 'Escanea el código QR con tu aplicación de autenticación.',
+        title: '2FA INITIATED',
+        description: 'Scan QR code to authorize device.',
       })
     } catch (error: any) {
       toast({
-        title: 'Error',
-        description: error.message || 'Error al configurar 2FA',
+        title: 'SETUP FAILED',
+        description: error.message,
         variant: 'destructive',
       })
     } finally {
@@ -255,15 +236,7 @@ export function ProfilePage() {
   }
 
   const handleEnable2FA = async () => {
-    if (!twoFactorCode) {
-      toast({
-        title: 'Error',
-        description: 'Por favor ingresa el código de verificación',
-        variant: 'destructive',
-      })
-      return
-    }
-
+    if (!twoFactorCode) return
     try {
       setIsLoading(true)
       await userService.enable2FA(twoFactorCode)
@@ -271,13 +244,13 @@ export function ProfilePage() {
       setTwoFactorSetup({})
       setTwoFactorCode('')
       toast({
-        title: '2FA activado',
-        description: 'La autenticación de dos factores ha sido activada exitosamente.',
+        title: 'PROTOCOL ACTIVE',
+        description: '2FA protection enabled.',
       })
     } catch (error: any) {
       toast({
-        title: 'Error',
-        description: error.message || 'Error al activar 2FA',
+        title: 'VERIFICATION FAILED',
+        description: error.message,
         variant: 'destructive',
       })
     } finally {
@@ -286,28 +259,20 @@ export function ProfilePage() {
   }
 
   const handleDisable2FA = async () => {
-    if (!twoFactorDisablePassword) {
-      toast({
-        title: 'Error',
-        description: 'Por favor ingresa tu contraseña',
-        variant: 'destructive',
-      })
-      return
-    }
-
+    if (!twoFactorDisablePassword) return
     try {
       setIsLoading(true)
       await userService.disable2FA(twoFactorDisablePassword)
       setTwoFactorStatus({ is_setup: false, is_enabled: false })
       setTwoFactorDisablePassword('')
       toast({
-        title: '2FA desactivado',
-        description: 'La autenticación de dos factores ha sido desactivada.',
+        title: 'PROTOCOL DISABLED',
+        description: '2FA protection removed.',
       })
     } catch (error: any) {
       toast({
-        title: 'Error',
-        description: error.message || 'Error al desactivar 2FA',
+        title: 'Action Failed',
+        description: error.message,
         variant: 'destructive',
       })
     } finally {
@@ -315,911 +280,219 @@ export function ProfilePage() {
     }
   }
 
-  // Avatar handlers
   const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (!file) return
 
-    // Validate file type
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp']
-    if (!allowedTypes.includes(file.type)) {
-      toast({
-        title: 'Error',
-        description: 'Tipo de archivo no válido. Solo se permiten imágenes (JPG, PNG, GIF, WEBP)',
-        variant: 'destructive',
-      })
-      return
-    }
-
-    // Validate file size (2MB)
-    if (file.size > 2 * 1024 * 1024) {
-      toast({
-        title: 'Error',
-        description: 'El archivo es demasiado grande. Máximo 2MB',
-        variant: 'destructive',
-      })
-      return
-    }
-
     try {
       setAvatarUploading(true)
       const result = await userService.uploadAvatar(file)
-      
-      // Update avatar URL immediately with the response
-      // This ensures the UI updates even if subsequent calls fail
       setAvatarUrl(getAvatarUrl(result.avatar_url))
-      
-      // Refresh user data to ensure consistency (non-critical)
-      // If this fails, we don't want to fail the entire operation
-      try {
-        await refreshUser()
-      } catch (refreshError) {
-        // Log but don't show error - avatar upload succeeded
-        console.warn('Failed to refresh user after avatar upload:', refreshError)
-      }
-      
-      // Reload profile data to get updated avatar_url from server (non-critical)
-      // If this fails, we don't want to fail the entire operation
-      try {
-        const profileData = await userService.getCurrentUser()
-        setAvatarUrl(getAvatarUrl(profileData.avatar_url))
-      } catch (profileError) {
-        // Log but don't show error - avatar upload succeeded and URL is already set
-        console.warn('Failed to reload profile data after avatar upload:', profileError)
-      }
-      
+      await refreshUser()
       toast({
-        title: 'Avatar actualizado',
-        description: 'Tu foto de perfil ha sido actualizada exitosamente.',
+        title: 'IMAGE UPLOADED',
+        description: 'Avatar updated successfully.',
       })
     } catch (error: any) {
       toast({
-        title: 'Error',
-        description: error.message || 'Error al subir el avatar',
+        title: 'UPLOAD ERROR',
+        description: error.message,
         variant: 'destructive',
       })
     } finally {
       setAvatarUploading(false)
-      // Reset input
       event.target.value = ''
     }
   }
 
-  const handleDeleteAvatar = async () => {
-    try {
-      setIsLoading(true)
-      await userService.deleteAvatar()
-      
-      // Update UI immediately - avatar deletion succeeded
-      setAvatarUrl(null)
-      
-      // Refresh user data to ensure consistency (non-critical)
-      // If this fails, we don't want to fail the entire operation
-      try {
-        await refreshUser()
-      } catch (refreshError) {
-        // Log but don't show error - avatar deletion succeeded
-        console.warn('Failed to refresh user after avatar deletion:', refreshError)
-      }
-      
-      // Reload profile data to confirm avatar was deleted (non-critical)
-      // If this fails, we don't want to fail the entire operation
-      try {
-        const profileData = await userService.getCurrentUser()
-        if (!profileData.avatar_url) {
-          setAvatarUrl(null)
-        }
-      } catch (profileError) {
-        // Log but don't show error - avatar deletion succeeded and URL is already cleared
-        console.warn('Failed to reload profile data after avatar deletion:', profileError)
-      }
-      
-      toast({
-        title: 'Avatar eliminado',
-        description: 'Tu foto de perfil ha sido eliminada.',
-      })
-    } catch (error: any) {
-      toast({
-        title: 'Error',
-        description: error.message || 'Error al eliminar el avatar',
-        variant: 'destructive',
-      })
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  // Session handlers
-  const handleRevokeSession = async (sessionId: number) => {
-    try {
-      setIsLoading(true)
-      await userService.revokeSession(sessionId)
-      await loadSessions()
-      toast({
-        title: 'Sesión cerrada',
-        description: 'La sesión ha sido cerrada exitosamente.',
-      })
-    } catch (error: any) {
-      toast({
-        title: 'Error',
-        description: error.message || 'Error al cerrar la sesión',
-        variant: 'destructive',
-      })
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const handleRevokeAllSessions = async () => {
-    try {
-      setIsLoading(true)
-      await userService.revokeAllSessions()
-      await loadSessions()
-      toast({
-        title: 'Sesiones cerradas',
-        description: 'Todas las sesiones han sido cerradas exitosamente.',
-      })
-    } catch (error: any) {
-      toast({
-        title: 'Error',
-        description: error.message || 'Error al cerrar las sesiones',
-        variant: 'destructive',
-      })
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const handleDeactivateAccount = async () => {
-    if (!deactivationCode) {
-      toast({
-        title: 'Error',
-        description: 'Por favor ingresa el código de verificación 2FA',
-        variant: 'destructive',
-      })
-      return
-    }
-
-    if (!twoFactorStatus.is_enabled) {
-      toast({
-        title: 'Error',
-        description: 'Debes tener 2FA activado para desactivar tu cuenta',
-        variant: 'destructive',
-      })
-      return
-    }
-
-    try {
-      setIsLoading(true)
-      await userService.deactivateAccount(deactivationCode)
-      toast({
-        title: 'Cuenta desactivada',
-        description: 'Tu cuenta ha sido desactivada exitosamente. Serás redirigido al inicio de sesión.',
-      })
-      // Wait a bit before logout to show the toast
-      setTimeout(async () => {
-        await logout()
-      }, 2000)
-    } catch (error: any) {
-      toast({
-        title: 'Error',
-        description: error.message || 'Error al desactivar la cuenta. Verifica que el código 2FA sea correcto.',
-        variant: 'destructive',
-      })
-    } finally {
-      setIsLoading(false)
-      setDeactivationCode('')
-      setShowDeactivationDialog(false)
-    }
-  }
-
   return (
-    <div className="space-y-6">
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="text-center"
-      >
-        <h1 className="text-5xl font-heading font-bold bg-gradient-to-r from-[#00FF73] via-[#00D95F] to-[#FFD700] bg-clip-text text-transparent mb-3 drop-shadow-[0_0_15px_rgba(0,255,115,0.5)]">
-          👤 Mi Perfil
-        </h1>
-        <p className="text-[#B0B3C5] text-lg font-medium">Gestiona tu cuenta y configuraciones</p>
-      </motion.div>
+    <div className="max-w-6xl mx-auto space-y-8 pb-10">
+      <div className="flex flex-col md:flex-row gap-8 items-start">
+        {/* Sidebar / Identity Card */}
+        <div className="w-full md:w-80 space-y-6">
+          <Card className="bg-metal-900 border-white/10 overflow-hidden relative group">
+            <div className="absolute top-0 w-full h-1 bg-gradient-to-r from-acid-500 to-transparent" />
+            <CardContent className="pt-8 flex flex-col items-center">
+              <div className="relative mb-6">
+                <Avatar className="w-32 h-32 border-2 border-white/10 group-hover:border-acid-500/50 transition-colors">
+                  <AvatarImage src={avatarUrl || undefined} className="object-cover" />
+                  <AvatarFallback className="bg-void text-2xl font-display font-bold text-muted-foreground">
+                    {personalInfo.username?.[0]?.toUpperCase() || 'U'}
+                  </AvatarFallback>
+                </Avatar>
+                <label htmlFor="avatar-upload" className="absolute bottom-0 right-0 p-2 bg-acid-500 text-black rounded-sm cursor-pointer hover:bg-white transition-colors">
+                  <User size={16} />
+                  <input id="avatar-upload" type="file" className="hidden" onChange={handleAvatarUpload} accept="image/*" />
+                </label>
+              </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid grid-cols-4 w-full">
-          <TabsTrigger value="personal" className="flex items-center gap-2">
-            <User size={16} />
-            Personal
-          </TabsTrigger>
-          <TabsTrigger value="security" className="flex items-center gap-2">
-            <Shield size={16} />
-            Seguridad
-          </TabsTrigger>
-          <TabsTrigger value="payment" className="flex items-center gap-2">
-            <CreditCard size={16} />
-            Pagos
-          </TabsTrigger>
-          <TabsTrigger value="preferences" className="flex items-center gap-2">
-            <Bell size={16} />
-            Preferencias
-          </TabsTrigger>
-        </TabsList>
+              <h2 className="text-2xl font-display font-bold text-white mb-1">{personalInfo.username}</h2>
+              <div className="flex items-center gap-2 mb-6">
+                <span className="w-2 h-2 rounded-full bg-acid-500 animate-pulse" />
+                <span className="text-xs font-mono text-acid-500 tracking-widest uppercase">Operative Active</span>
+              </div>
 
-        <TabsContent value="personal" className="space-y-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.1 }}
-          >
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-white font-heading">
-                  <User size={20} className="text-[#00FF73]" />
-                  Información Personal
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center gap-4 mb-6">
-                  <Avatar className="w-20 h-20">
-                    <AvatarImage src={avatarUrl || undefined} />
-                    <AvatarFallback className="text-2xl">
-                      {personalInfo.first_name?.[0] || personalInfo.username?.[0] || 'U'}
-                      {personalInfo.last_name?.[0] || ''}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="space-y-2">
-                    <div className="flex gap-2">
-                      <label htmlFor="avatar-upload">
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          asChild
-                          disabled={avatarUploading}
-                        >
-                          <span>{avatarUploading ? 'Subiendo...' : 'Cambiar Foto'}</span>
-                        </Button>
-                        <input
-                          id="avatar-upload"
-                          type="file"
-                          accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
-                          onChange={handleAvatarUpload}
-                          className="hidden"
-                        />
-                      </label>
-                      {avatarUrl && (
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={handleDeleteAvatar}
-                          disabled={isLoading}
-                        >
-                          Eliminar
-                        </Button>
-                      )}
-                    </div>
-                    <p className="text-sm text-[#B0B3C5]">JPG, PNG, GIF, WEBP hasta 2MB</p>
-                  </div>
+              <div className="w-full space-y-2">
+                <div className="flex justify-between text-xs font-mono border-b border-white/5 pb-2">
+                  <span className="text-muted-foreground">ID</span>
+                  <span className="text-white">#{user?.id?.toString().padStart(6, '0')}</span>
+                </div>
+                <div className="flex justify-between text-xs font-mono border-b border-white/5 pb-2">
+                  <span className="text-muted-foreground">Joined</span>
+                  <span className="text-white">2024-05-12</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <nav className="space-y-1">
+            <TabButton active={activeTab === 'personal'} onClick={() => setActiveTab('personal')} icon={<User size={18} />} label="IDENTITY_MODULE" />
+            <TabButton active={activeTab === 'security'} onClick={() => setActiveTab('security')} icon={<Shield size={18} />} label="SECURITY_PROTOCOL" />
+            <TabButton active={activeTab === 'payment'} onClick={() => setActiveTab('payment')} icon={<CreditCard size={18} />} label="CREDITS_History" />
+            <TabButton active={activeTab === 'preferences'} onClick={() => setActiveTab('preferences')} icon={<Bell size={18} />} label="SYSTEM_CONFIG" />
+          </nav>
+        </div>
+
+        {/* Main Content Info */}
+        <div className="flex-1 min-w-0">
+          <AnimatePresence mode="wait">
+            {activeTab === 'personal' && (
+              <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} key="personal" className="space-y-6">
+                <div className="mb-6">
+                  <h3 className="text-xl font-display font-bold text-white mb-1">IDENTITY MODULE</h3>
+                  <p className="text-sm font-mono text-muted-foreground">Manage personal identification data.</p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="firstName">Nombre</Label>
-                    <Input 
-                      id="firstName" 
-                      value={personalInfo.first_name}
-                      onChange={(e) => handlePersonalInfoChange('first_name', e.target.value)}
-                      className="bg-[#0B132B] border-[#1C2541] text-white"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="lastName">Apellido</Label>
-                    <Input 
-                      id="lastName" 
-                      value={personalInfo.last_name}
-                      onChange={(e) => handlePersonalInfoChange('last_name', e.target.value)}
-                      className="bg-[#0B132B] border-[#1C2541] text-white"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="username">Nombre de Usuario</Label>
-                    <Input 
-                      id="username" 
-                      value={personalInfo.username}
-                      onChange={(e) => handlePersonalInfoChange('username', e.target.value)}
-                      className="bg-[#0B132B] border-[#1C2541] text-white"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input 
-                      id="email" 
-                      type="email" 
-                      value={personalInfo.email}
-                      onChange={(e) => handlePersonalInfoChange('email', e.target.value)}
-                      className="bg-[#0B132B] border-[#1C2541] text-white"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="phone">Teléfono</Label>
-                    <Input 
-                      id="phone" 
-                      type="tel" 
-                      value={personalInfo.phone}
-                      onChange={(e) => handlePersonalInfoChange('phone', e.target.value)}
-                      className="bg-[#0B132B] border-[#1C2541] text-white"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="birthDate">Fecha de Nacimiento</Label>
-                    <Input 
-                      id="birthDate" 
-                      type="date" 
-                      value={personalInfo.birth_date}
-                      onChange={(e) => handlePersonalInfoChange('birth_date', e.target.value)}
-                      className="bg-[#0B132B] border-[#1C2541] text-white"
-                    />
-                  </div>
+                <Card className="bg-metal-900/50 border-white/10">
+                  <CardContent className="pt-6 space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <InputGroup label="First Name" value={personalInfo.first_name} onChange={(v) => handlePersonalInfoChange('first_name', v)} />
+                      <InputGroup label="Last Name" value={personalInfo.last_name} onChange={(v) => handlePersonalInfoChange('last_name', v)} />
+                      <InputGroup label="Username" value={personalInfo.username} onChange={(v) => handlePersonalInfoChange('username', v)} />
+                      <InputGroup label="Email Contact" value={personalInfo.email} onChange={(v) => handlePersonalInfoChange('email', v)} type="email" />
+                      <InputGroup label="Comm Link (Phone)" value={personalInfo.phone} onChange={(v) => handlePersonalInfoChange('phone', v)} type="tel" />
+                      <InputGroup label="Inception Date" value={personalInfo.birth_date} onChange={(v) => handlePersonalInfoChange('birth_date', v)} type="date" />
+                    </div>
+                    <div className="flex justify-end pt-4 border-t border-white/5">
+                      <Button onClick={handleSavePersonalInfo} disabled={isLoading} className="bg-acid-500 text-black hover:bg-white font-mono font-bold">
+                        {isLoading ? 'SYNCING...' : 'SAVE_CHANGES'}
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            )}
+
+            {activeTab === 'security' && (
+              <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} key="security" className="space-y-6">
+                <div className="mb-6">
+                  <h3 className="text-xl font-display font-bold text-white mb-1">SECURITY PROTOCOL</h3>
+                  <p className="text-sm font-mono text-muted-foreground">Manage access credentials and 2FA.</p>
                 </div>
 
-                <Separator />
-                <Button 
-                  onClick={handleSavePersonalInfo} 
-                  disabled={isLoading}
-                  className="w-full"
-                >
-                  {isLoading ? 'Guardando...' : 'Guardar Cambios'}
-                </Button>
-              </CardContent>
-            </Card>
-          </motion.div>
-        </TabsContent>
+                {/* Password Change */}
+                <Card className="bg-metal-900/50 border-white/10">
+                  <CardHeader><CardTitle className="text-sm font-mono text-white uppercase">Update Passkey</CardTitle></CardHeader>
+                  <CardContent className="space-y-4">
+                    <InputGroup label="Current Passkey" type="password" value={passwordData.current_password} onChange={(v) => handlePasswordChange('current_password', v)} />
+                    <div className="grid grid-cols-2 gap-4">
+                      <InputGroup label="New Passkey" type="password" value={passwordData.new_password} onChange={(v) => handlePasswordChange('new_password', v)} />
+                      <InputGroup label="Confirm Passkey" type="password" value={passwordData.confirm_password} onChange={(v) => handlePasswordChange('confirm_password', v)} />
+                    </div>
+                    <Button onClick={handleChangePassword} disabled={isLoading} className="w-full bg-white/5 text-white hover:bg-white/10 border border-white/10 font-mono">
+                      UPDATE CREDENTIALS
+                    </Button>
+                  </CardContent>
+                </Card>
 
-        <TabsContent value="security" className="space-y-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.1 }}
-          >
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-white font-heading">
-                  <Shield size={20} className="text-[#00FF73]" />
-                  Seguridad y Contraseña
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="space-y-4">
-                  <h3 className="text-lg font-heading font-semibold text-white">Cambiar Contraseña</h3>
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="currentPassword">Contraseña Actual</Label>
-                      <Input 
-                        id="currentPassword" 
-                        type="password" 
-                        value={passwordData.current_password}
-                        onChange={(e) => handlePasswordChange('current_password', e.target.value)}
-                        className="bg-[#0B132B] border-[#1C2541] text-white"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="newPassword">Nueva Contraseña</Label>
-                      <Input 
-                        id="newPassword" 
-                        type="password" 
-                        value={passwordData.new_password}
-                        onChange={(e) => handlePasswordChange('new_password', e.target.value)}
-                        className="bg-[#0B132B] border-[#1C2541] text-white"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="confirmPassword">Confirmar Nueva Contraseña</Label>
-                      <Input 
-                        id="confirmPassword" 
-                        type="password" 
-                        value={passwordData.confirm_password}
-                        onChange={(e) => handlePasswordChange('confirm_password', e.target.value)}
-                        className="bg-[#0B132B] border-[#1C2541] text-white"
-                      />
-                    </div>
+                {/* 2FA Section */}
+                <Card className="bg-metal-900/50 border-white/10 relative overflow-hidden">
+                  <div className={`absolute top-0 right-0 p-2 px-3 font-mono text-xs font-bold ${twoFactorStatus.is_enabled ? 'bg-acid-500 text-black' : 'bg-red-500 text-white'}`}>
+                    {twoFactorStatus.is_enabled ? 'SECURE' : 'VULNERABLE'}
                   </div>
-                  <Button 
-                    onClick={handleChangePassword} 
-                    disabled={isLoading || !passwordData.current_password || !passwordData.new_password || !passwordData.confirm_password}
-                    className="w-full"
-                  >
-                    {isLoading ? 'Cambiando...' : 'Cambiar Contraseña'}
-                  </Button>
-                </div>
-
-                <Separator />
-
-                <div className="space-y-4">
-                  <h3 className="text-lg font-heading font-semibold text-white">Autenticación de Dos Factores</h3>
-                  
-                  {twoFactorStatus.is_enabled ? (
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between p-4 border border-[#1C2541]/50 rounded-lg bg-[#0B132B]">
-                        <div>
-                          <p className="font-medium text-white">2FA Activado</p>
-                          <p className="text-sm text-[#B0B3C5]">Protección adicional para tu cuenta</p>
-                        </div>
-                        <Badge variant="default" className="bg-[#00FF73]/20 text-[#00FF73] border-[#00FF73]/30">
-                          Activo
-                        </Badge>
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="disable2FAPassword">Contraseña para desactivar</Label>
-                        <Input
-                          id="disable2FAPassword"
-                          type="password"
-                          value={twoFactorDisablePassword}
-                          onChange={(e) => setTwoFactorDisablePassword(e.target.value)}
-                          placeholder="Ingresa tu contraseña"
-                          className="bg-[#0B132B] border-[#1C2541] text-white"
-                        />
-                        <Button 
-                          variant="destructive" 
-                          className="w-full"
-                          onClick={handleDisable2FA}
-                          disabled={isLoading || !twoFactorDisablePassword}
-                        >
-                          Desactivar 2FA
-                        </Button>
-                      </div>
-                    </div>
-                  ) : twoFactorSetup.qr_code_url ? (
-                    <div className="space-y-4">
-                      <div className="text-center">
-                        <p className="text-sm text-[#B0B3C5] mb-4">
-                          Escanea este código QR con tu aplicación de autenticación (Google Authenticator, Authy, etc.)
-                        </p>
-                        <div className="flex justify-center mb-4">
-                          <img 
-                            src={twoFactorSetup.qr_code_url} 
-                            alt="QR Code" 
-                            className="border border-[#1C2541] rounded-lg p-2 bg-white"
-                          />
-                        </div>
-                        {twoFactorSetup.showBackupCodes && twoFactorSetup.backup_codes && (
-                          <div className="mb-4 p-4 border border-yellow-500/30 rounded-lg bg-yellow-500/5">
-                            <p className="text-sm font-medium text-yellow-400 mb-2">
-                              ⚠️ Guarda estos códigos de respaldo en un lugar seguro:
-                            </p>
-                            <div className="grid grid-cols-2 gap-2">
-                              {twoFactorSetup.backup_codes.map((code, idx) => (
-                                <code key={idx} className="text-xs bg-[#0B132B] p-2 rounded text-yellow-300">
-                                  {code}
-                                </code>
-                              ))}
+                  <CardHeader><CardTitle className="text-sm font-mono text-white uppercase">Two-Factor Authentication</CardTitle></CardHeader>
+                  <CardContent className="space-y-6">
+                    {!twoFactorStatus.is_enabled ? (
+                      <>
+                        <p className="text-sm text-muted-foreground">Enhance account security by enabling 2FA protocol.</p>
+                        {!twoFactorSetup.qr_code_url ? (
+                          <Button onClick={handleSetup2FA} disabled={isLoading} variant="outline" className="border-acid-500 text-acid-500 hover:bg-acid-500/10 w-full font-mono">
+                            INITIALIZE 2FA SETUP
+                          </Button>
+                        ) : (
+                          <div className="space-y-4 bg-black/30 p-4 rounded border border-white/10">
+                            <div className="flex justify-center bg-white p-2 rounded w-fit mx-auto">
+                              <img src={twoFactorSetup.qr_code_url} alt="QR" className="w-40 h-40" />
                             </div>
-                            <p className="text-xs text-[#B0B3C5] mt-2">
-                              Estos códigos solo se mostrarán una vez. Úsalos si pierdes acceso a tu dispositivo.
-                            </p>
+                            <div>
+                              <Label className="text-xs uppercase text-muted-foreground mb-1 block">Verification Code</Label>
+                              <div className="flex gap-2">
+                                <Input
+                                  value={twoFactorCode}
+                                  onChange={(e) => setTwoFactorCode(e.target.value)}
+                                  placeholder="000 000"
+                                  className="font-mono text-center tracking-widest text-lg"
+                                  maxLength={6}
+                                />
+                                <Button onClick={handleEnable2FA} className="bg-acid-500 text-black font-bold">ACTIVATE</Button>
+                              </div>
+                            </div>
                           </div>
                         )}
-                        <div className="space-y-2">
-                          <Label htmlFor="2faCode">Código de verificación</Label>
-                          <Input
-                            id="2faCode"
-                            type="text"
-                            value={twoFactorCode}
-                            onChange={(e) => setTwoFactorCode(e.target.value)}
-                            placeholder="000000"
-                            maxLength={6}
-                            className="bg-[#0B132B] border-[#1C2541] text-white text-center text-2xl tracking-widest"
-                          />
-                          <Button 
-                            className="w-full"
-                            onClick={handleEnable2FA}
-                            disabled={isLoading || twoFactorCode.length !== 6}
-                          >
-                            Activar 2FA
-                          </Button>
-                          <Button 
-                            variant="outline" 
-                            className="w-full"
-                            onClick={() => setTwoFactorSetup({})}
-                          >
-                            Cancelar
-                          </Button>
+                      </>
+                    ) : (
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-3 text-acid-500 bg-acid-500/5 p-3 rounded border border-acid-500/20">
+                          <Shield size={20} />
+                          <span className="font-mono font-bold">PROTOCOL ACTIVE</span>
                         </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between p-4 border border-[#1C2541]/50 rounded-lg bg-[#0B132B]">
+                        <Separator className="bg-white/5" />
                         <div>
-                          <p className="font-medium text-white">2FA No Activado</p>
-                          <p className="text-sm text-[#B0B3C5]">Protege tu cuenta con autenticación de dos factores</p>
+                          <Label className="text-xs uppercase text-muted-foreground mb-1 block">Password to Disable</Label>
+                          <div className="flex gap-2">
+                            <Input type="password" value={twoFactorDisablePassword} onChange={(e) => setTwoFactorDisablePassword(e.target.value)} className="bg-black/50" />
+                            <Button onClick={handleDisable2FA} variant="destructive" className="font-mono">DISABLE</Button>
+                          </div>
                         </div>
-                        <Badge variant="outline" className="border-[#FF4C4C]/30 text-[#FF4C4C]">
-                          Inactivo
-                        </Badge>
                       </div>
-                      <Button 
-                        variant="outline" 
-                        className="w-full"
-                        onClick={handleSetup2FA}
-                        disabled={isLoading}
-                      >
-                        Configurar 2FA
-                      </Button>
-                    </div>
-                  )}
-                </div>
-
-                <Separator />
-
-                <div className="space-y-4">
-                  <h3 className="text-lg font-heading font-semibold text-white">Cerrar Sesión</h3>
-                  <div className="p-4 border border-[#FF4C4C]/30 rounded-lg bg-[#FF4C4C]/5">
-                    <p className="text-sm text-[#B0B3C5] mb-4">
-                      Al cerrar sesión, se desconectarán todas tus sesiones activas y deberás iniciar sesión nuevamente para acceder a tu cuenta.
-                    </p>
-                    <Button 
-                      variant="destructive" 
-                      className="w-full"
-                      onClick={async () => {
-                        try {
-                          await logout()
-                          toast({
-                            title: 'Sesión cerrada',
-                            description: 'Has cerrado sesión exitosamente.',
-                          })
-                        } catch (error) {
-                          toast({
-                            title: 'Error',
-                            description: 'Hubo un problema al cerrar sesión.',
-                            variant: 'destructive',
-                          })
-                        }
-                      }}
-                    >
-                      <LogOut size={18} className="mr-2" />
-                      Cerrar Sesión
-                    </Button>
-                  </div>
-                </div>
-
-                <Separator />
-
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-heading font-semibold text-white">Sesiones Activas</h3>
-                    {sessions.length > 1 && (
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={handleRevokeAllSessions}
-                        disabled={isLoading}
-                      >
-                        Cerrar Todas
-                      </Button>
                     )}
-                  </div>
-                  {sessionsLoading ? (
-                    <p className="text-sm text-[#B0B3C5]">Cargando sesiones...</p>
-                  ) : sessions.length === 0 ? (
-                    <p className="text-sm text-[#B0B3C5]">No hay sesiones activas</p>
-                  ) : (
-                    <div className="space-y-2">
-                      {sessions.map((session) => (
-                        <div 
-                          key={session.id} 
-                          className="flex items-center justify-between p-3 border border-[#1C2541]/50 rounded-lg bg-[#0B132B]"
-                        >
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2">
-                              <p className="font-medium text-white">
-                                {session.device_info || 'Dispositivo desconocido'}
-                                {session.is_current && (
-                                  <Badge variant="default" className="ml-2 bg-[#00FF73]/20 text-[#00FF73] border-[#00FF73]/30 text-xs">
-                                    Actual
-                                  </Badge>
-                                )}
-                              </p>
-                            </div>
-                            <p className="text-sm text-[#B0B3C5]">
-                              {session.location || session.ip_address || 'Ubicación desconocida'} • {
-                                new Date(session.last_activity).toLocaleDateString('es-ES', {
-                                  day: 'numeric',
-                                  month: 'short',
-                                  hour: '2-digit',
-                                  minute: '2-digit'
-                                })
-                              }
-                            </p>
-                          </div>
-                          {!session.is_current && (
-                            <Button 
-                              variant="destructive" 
-                              size="sm"
-                              onClick={() => handleRevokeSession(session.id)}
-                              disabled={isLoading}
-                            >
-                              Cerrar Sesión
-                            </Button>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <Separator />
-
-                <div className="space-y-4">
-                  <h3 className="text-lg font-heading font-semibold text-white">Desactivar Cuenta</h3>
-                  <div className="p-4 border border-[#FF4C4C]/30 rounded-lg bg-[#FF4C4C]/5">
-                    <div className="flex items-start gap-3 mb-4">
-                      <AlertTriangle className="text-[#FF4C4C] mt-0.5" size={20} />
-                      <div className="flex-1">
-                        <p className="font-medium text-white mb-2">¿Deseas desactivar tu cuenta?</p>
-                        <p className="text-sm text-[#B0B3C5] mb-2">
-                          Al desactivar tu cuenta:
-                        </p>
-                        <ul className="text-sm text-[#B0B3C5] list-disc list-inside space-y-1 mb-4">
-                          <li>No podrás iniciar sesión</li>
-                          <li>Tu información se mantendrá pero no podrás acceder a ella</li>
-                          <li>Para reactivar tu cuenta, deberás contactar con un administrador</li>
-                        </ul>
-                        {!twoFactorStatus.is_enabled && (
-                          <div className="p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg mb-4">
-                            <p className="text-sm text-yellow-400">
-                              ⚠️ Debes tener 2FA activado para poder desactivar tu cuenta. Por favor configura 2FA primero.
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    <Button 
-                      variant="destructive" 
-                      className="w-full"
-                      onClick={() => setShowDeactivationDialog(true)}
-                      disabled={isLoading || !twoFactorStatus.is_enabled}
-                    >
-                      <AlertTriangle size={18} className="mr-2" />
-                      Desactivar Mi Cuenta
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        </TabsContent>
-
-        <TabsContent value="payment" className="space-y-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.1 }}
-          >
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-white font-heading">
-                  <CreditCard size={20} className="text-[#00FF73]" />
-                  Métodos de Pago
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="space-y-4">
-                  <h3 className="text-lg font-heading font-semibold text-white">Tarjetas Guardadas</h3>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between p-4 border border-[#1C2541]/50 rounded-lg bg-[#0B132B]">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center text-white text-xs font-bold">
-                          V
-                        </div>
-                        <div>
-                          <p className="font-medium text-white">**** **** **** 1234</p>
-                          <p className="text-sm text-[#B0B3C5]">Visa • Expira 12/25</p>
-                        </div>
-                      </div>
-                      <Button variant="outline" size="sm">Eliminar</Button>
-                    </div>
-                    <div className="flex items-center justify-between p-4 border border-[#1C2541]/50 rounded-lg bg-[#0B132B]">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-red-600 rounded flex items-center justify-center text-white text-xs font-bold">
-                          M
-                        </div>
-                        <div>
-                          <p className="font-medium text-white">**** **** **** 5678</p>
-                          <p className="text-sm text-[#B0B3C5]">Mastercard • Expira 08/26</p>
-                        </div>
-                      </div>
-                      <Button variant="outline" size="sm">Eliminar</Button>
-                    </div>
-                  </div>
-                  <Button className="w-full">Agregar Nueva Tarjeta</Button>
-                </div>
-
-                <Separator />
-
-                <div className="space-y-4">
-                  <h3 className="text-lg font-heading font-semibold text-white">Límites de Apuesta</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="dailyLimit">Límite Diario</Label>
-                      <Input id="dailyLimit" type="number" defaultValue="1000" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="weeklyLimit">Límite Semanal</Label>
-                      <Input id="weeklyLimit" type="number" defaultValue="5000" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="monthlyLimit">Límite Mensual</Label>
-                      <Input id="monthlyLimit" type="number" defaultValue="20000" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="depositLimit">Límite de Depósito</Label>
-                      <Input id="depositLimit" type="number" defaultValue="10000" />
-                    </div>
-                  </div>
-                  <Button onClick={() => handleSave('límites')} className="w-full">
-                    Actualizar Límites
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        </TabsContent>
-
-        <TabsContent value="preferences" className="space-y-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.1 }}
-          >
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-white font-heading">
-                  <Bell size={20} className="text-[#00FF73]" />
-                  Preferencias y Notificaciones
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="space-y-4">
-                  <h3 className="text-lg font-heading font-semibold text-white">Notificaciones por Email</h3>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium text-white">Resultados de Apuestas</p>
-                        <p className="text-sm text-[#B0B3C5]">Recibe notificaciones cuando tus apuestas se resuelvan</p>
-                      </div>
-                      <Button variant="outline" size="sm">Activar</Button>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium text-white">Promociones y Ofertas</p>
-                        <p className="text-sm text-[#B0B3C5]">Ofertas especiales y bonificaciones</p>
-                      </div>
-                      <Button variant="outline" size="sm">Activar</Button>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium text-white">Recordatorios de Depósito</p>
-                        <p className="text-sm text-[#B0B3C5]">Notificaciones sobre tu saldo</p>
-                      </div>
-                      <Button variant="outline" size="sm">Activar</Button>
-                    </div>
-                  </div>
-                </div>
-
-                <Separator />
-
-                <div className="space-y-4">
-                  <h3 className="text-lg font-heading font-semibold text-white">Preferencias de Apuesta</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="defaultStake">Apuesta por Defecto</Label>
-                      <Input id="defaultStake" type="number" defaultValue="50" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="currency">Moneda</Label>
-                      <Input id="currency" defaultValue="EUR" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="timezone">Zona Horaria</Label>
-                      <Input id="timezone" defaultValue="Europe/Madrid" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="language">Idioma</Label>
-                      <Input id="language" defaultValue="Español" />
-                    </div>
-                  </div>
-                  <Button onClick={() => handleSave('preferencias')} className="w-full">
-                    Guardar Preferencias
-                  </Button>
-                </div>
-
-                <Separator />
-
-                <div className="space-y-4">
-                  <h3 className="text-lg font-heading font-semibold text-white">Privacidad</h3>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium text-white">Perfil Público</p>
-                        <p className="text-sm text-[#B0B3C5]">Permitir que otros usuarios vean tu perfil</p>
-                      </div>
-                      <Button variant="outline" size="sm">Desactivar</Button>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium text-white">Estadísticas Públicas</p>
-                        <p className="text-sm text-[#B0B3C5]">Mostrar tus estadísticas de apuestas</p>
-                      </div>
-                      <Button variant="outline" size="sm">Desactivar</Button>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        </TabsContent>
-      </Tabs>
-
-      {/* Deactivation Dialog */}
-      <Dialog open={showDeactivationDialog} onOpenChange={setShowDeactivationDialog}>
-        <DialogContent className="bg-[#0B132B] border-[#1C2541] text-white">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-[#FF4C4C]">
-              <AlertTriangle size={20} />
-              Confirmar Desactivación de Cuenta
-            </DialogTitle>
-            <DialogDescription className="text-[#B0B3C5]">
-              Esta acción es irreversible. Para reactivar tu cuenta, deberás contactar con un administrador.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="p-4 bg-[#FF4C4C]/10 border border-[#FF4C4C]/30 rounded-lg">
-              <p className="text-sm text-white mb-2 font-medium">
-                ⚠️ Advertencia: Esta acción desactivará tu cuenta permanentemente.
-              </p>
-              <p className="text-sm text-[#B0B3C5]">
-                Para confirmar, ingresa tu código de verificación 2FA (TOTP o código de respaldo).
-              </p>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="deactivationCode">Código de Verificación 2FA</Label>
-              <Input
-                id="deactivationCode"
-                type="text"
-                value={deactivationCode}
-                onChange={(e) => setDeactivationCode(e.target.value)}
-                placeholder="000000 o código de respaldo"
-                className="bg-[#0B132B] border-[#1C2541] text-white text-center text-xl tracking-widest"
-                maxLength={10}
-              />
-              <p className="text-xs text-[#B0B3C5]">
-                Ingresa el código de 6 dígitos de tu aplicación de autenticación o un código de respaldo.
-              </p>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setShowDeactivationDialog(false)
-                setDeactivationCode('')
-              }}
-              disabled={isLoading}
-            >
-              Cancelar
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={handleDeactivateAccount}
-              disabled={isLoading || !deactivationCode}
-            >
-              {isLoading ? 'Desactivando...' : 'Confirmar Desactivación'}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
     </div>
   )
 }
 
+function TabButton({ active, onClick, icon, label }: { active: boolean; onClick: () => void; icon: React.ReactNode; label: string }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-mono uppercase tracking-wide transition-all border-l-2 ${active
+          ? 'bg-acid-500/10 text-acid-500 border-acid-500'
+          : 'text-muted-foreground border-transparent hover:bg-white/5 hover:text-white'
+        }`}
+    >
+      {icon}
+      {label}
+      {active && <ChevronRight size={14} className="ml-auto" />}
+    </button>
+  )
+}
+
+function InputGroup({ label, value, onChange, type = "text" }: { label: string; value: string; onChange: (v: string) => void; type?: string }) {
+  return (
+    <div className="space-y-1.5">
+      <Label className="text-[10px] uppercase tracking-widest text-muted-foreground">{label}</Label>
+      <Input
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="bg-black/40 border-white/10 focus:border-acid-500 text-white font-mono h-10"
+      />
+    </div>
+  )
+}

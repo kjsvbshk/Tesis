@@ -5,7 +5,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { BarChart3, Activity, TrendingUp, Clock, AlertCircle } from 'lucide-react'
+import { BarChart3, Activity, TrendingUp, Clock, AlertCircle, RefreshCcw } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -51,61 +51,62 @@ export function MetricsDashboardPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-[#00FF73] border-r-transparent"></div>
+      <div className="flex h-96 items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-16 h-16 border-4 border-acid-500/20 border-t-acid-500 rounded-full animate-spin" />
+          <div className="text-acid-500 font-mono text-sm animate-pulse">LOADING METRICS...</div>
+        </div>
       </div>
     )
   }
 
   return (
     <div className="space-y-6">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
-        <h1 className="text-4xl font-heading font-bold bg-gradient-to-r from-[#00FF73] to-[#FFD700] bg-clip-text text-transparent mb-2">
-          Dashboard de Métricas
-        </h1>
-        <p className="text-[#B0B3C5]">Monitoreo de rendimiento y disponibilidad del sistema</p>
-      </motion.div>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-display font-bold text-white mb-1">
+            SYSTEM METRICS
+          </h1>
+          <p className="text-muted-foreground font-mono text-sm uppercase tracking-wider">
+            Real-time performance monitoring
+          </p>
+        </div>
+        <Button onClick={loadMetrics} variant="outline" className="border-acid-500/20 hover:bg-acid-500/10 text-acid-500">
+          <RefreshCcw size={16} className="mr-2" />
+          REFRESH DATA
+        </Button>
+      </div>
 
       {/* Filters */}
-      <Card className="bg-[#1C2541]/50 border-[#1C2541]">
-        <CardHeader>
-          <CardTitle className="text-white">Filtros</CardTitle>
+      <Card className="bg-metal-900/50 border-white/10 backdrop-blur-sm">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-mono text-muted-foreground uppercase tracking-widest">Time Range Filter</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-3 items-end">
             <div>
-              <Label htmlFor="dateFrom" className="text-[#B0B3C5]">
-                Fecha Desde
-              </Label>
+              <Label htmlFor="dateFrom" className="text-xs uppercase text-muted-foreground mb-1.5 block">From</Label>
               <Input
                 id="dateFrom"
                 type="date"
                 value={dateFrom}
                 onChange={(e) => setDateFrom(e.target.value)}
-                className="bg-[#0B132B] border-[#1C2541] text-white"
+                className="bg-black/50 border-white/10 text-white font-mono h-9"
               />
             </div>
             <div>
-              <Label htmlFor="dateTo" className="text-[#B0B3C5]">
-                Fecha Hasta
-              </Label>
+              <Label htmlFor="dateTo" className="text-xs uppercase text-muted-foreground mb-1.5 block">To</Label>
               <Input
                 id="dateTo"
                 type="date"
                 value={dateTo}
                 onChange={(e) => setDateTo(e.target.value)}
-                className="bg-[#0B132B] border-[#1C2541] text-white"
+                className="bg-black/50 border-white/10 text-white font-mono h-9"
               />
             </div>
-            <div className="flex items-end">
-              <Button onClick={handleFilter} className="w-full bg-[#00FF73] hover:bg-[#00D95F] text-black">
-                Aplicar Filtros
-              </Button>
-            </div>
+            <Button onClick={handleFilter} className="w-full bg-white text-black hover:bg-gray-200 font-mono text-xs font-bold h-9">
+              APPLY FILTER
+            </Button>
           </div>
         </CardContent>
       </Card>
@@ -115,128 +116,128 @@ export function MetricsDashboardPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          transition={{ duration: 0.4 }}
           className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
         >
           <MetricCard
-            title="Total Requests"
+            title="TOTAL REQUESTS"
             value={metrics.requests.total.toString()}
-            icon={<Activity size={24} />}
-            description={`${metrics.requests.completed} completados`}
+            icon={<Activity size={18} />}
+            description={`${metrics.requests.completed} completed`}
             trend={metrics.requests.success_rate}
           />
           <MetricCard
-            title="Tasa de Éxito"
-            value={`${metrics.requests.success_rate.toFixed(2)}%`}
-            icon={<TrendingUp size={24} />}
-            description={`${metrics.requests.failed} fallidos`}
+            title="SUCCESS RATE"
+            value={`${metrics.requests.success_rate.toFixed(1)}%`}
+            icon={<TrendingUp size={18} />}
+            description={`${metrics.requests.failed} failed`}
             trend={metrics.requests.success_rate}
           />
           <MetricCard
-            title="Logs de Auditoría"
+            title="AUDIT LOGS"
             value={metrics.audit.total_logs.toString()}
-            icon={<BarChart3 size={24} />}
-            description="Registros totales"
+            icon={<BarChart3 size={18} />}
+            description="Total entries"
           />
           <MetricCard
-            title="Eventos Outbox"
+            title="OUTBOX EVENTS"
             value={metrics.outbox.total_events.toString()}
-            icon={<Clock size={24} />}
-            description={`${metrics.outbox.unpublished_events} pendientes`}
+            icon={<Clock size={18} />}
+            description={`${metrics.outbox.unpublished_events} pending`}
           />
         </motion.div>
       )}
 
       {/* Request Metrics */}
       {requestMetrics && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="grid gap-4 md:grid-cols-2"
-        >
-          <Card className="bg-[#1C2541]/50 border-[#1C2541]">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center gap-2">
-                <Activity size={20} className="text-[#00FF73]" />
-                Métricas de Requests
+        <div className="grid gap-6 md:grid-cols-2">
+          <Card className="bg-metal-900 border-white/10 overflow-hidden relative">
+            <div className="absolute top-0 left-0 w-1 h-full bg-acid-500" />
+            <CardHeader className="border-b border-white/5 bg-white/5 py-4">
+              <CardTitle className="text-white flex items-center gap-2 font-display text-lg">
+                <Activity size={20} className="text-acid-500" />
+                REQUEST ANALYTICS
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex justify-between">
-                <span className="text-[#B0B3C5]">Total:</span>
-                <span className="text-white font-bold">{requestMetrics.requests.total}</span>
+            <CardContent className="space-y-4 pt-6">
+              <div className="flex justify-between items-center bg-black/30 p-3 rounded border border-white/5">
+                <span className="text-muted-foreground font-mono text-xs uppercase">Total Volume</span>
+                <span className="text-white font-mono font-bold text-lg">{requestMetrics.requests.total}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-[#B0B3C5]">Completados:</span>
-                <span className="text-[#00FF73] font-bold">{requestMetrics.requests.completed}</span>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-3 rounded border border-white/5 bg-acid-500/5">
+                  <div className="text-acid-500 font-mono text-xs uppercase mb-1">Completed</div>
+                  <div className="text-white font-mono font-bold">{requestMetrics.requests.completed}</div>
+                </div>
+                <div className="p-3 rounded border border-white/5 bg-alert-red/5">
+                  <div className="text-alert-red font-mono text-xs uppercase mb-1">Failed</div>
+                  <div className="text-white font-mono font-bold">{requestMetrics.requests.failed}</div>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-[#B0B3C5]">Fallidos:</span>
-                <span className="text-red-500 font-bold">{requestMetrics.requests.failed}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-[#B0B3C5]">En Proceso:</span>
-                <span className="text-yellow-500 font-bold">{requestMetrics.requests.processing}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-[#B0B3C5]">Tasa de Éxito:</span>
-                <span className="text-white font-bold">{requestMetrics.requests.success_rate.toFixed(2)}%</span>
+
+              <div className="flex justify-between items-center pt-2 border-t border-white/5">
+                <span className="text-muted-foreground font-mono text-xs uppercase">Current Processing</span>
+                <span className="text-yellow-500 font-mono font-bold">{requestMetrics.requests.processing}</span>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-[#1C2541]/50 border-[#1C2541]">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center gap-2">
-                <TrendingUp size={20} className="text-[#00FF73]" />
-                Rendimiento
+          <Card className="bg-metal-900 border-white/10 overflow-hidden relative">
+            <div className="absolute top-0 left-0 w-1 h-full bg-electric-violet" />
+            <CardHeader className="border-b border-white/5 bg-white/5 py-4">
+              <CardTitle className="text-white flex items-center gap-2 font-display text-lg">
+                <TrendingUp size={20} className="text-electric-violet" />
+                PERFORMANCE
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex justify-between">
-                <span className="text-[#B0B3C5]">Latencia Promedio:</span>
-                <span className="text-white font-bold">
-                  {requestMetrics.performance.avg_latency_ms
-                    ? `${requestMetrics.performance.avg_latency_ms.toFixed(2)} ms`
-                    : 'N/A'}
-                </span>
+            <CardContent className="space-y-6 pt-6">
+              <div>
+                <div className="flex justify-between mb-2">
+                  <span className="text-muted-foreground font-mono text-xs uppercase">Avg Latency</span>
+                  <span className="text-electric-violet font-mono font-bold">
+                    {requestMetrics.performance.avg_latency_ms ? `${requestMetrics.performance.avg_latency_ms.toFixed(2)}ms` : 'N/A'}
+                  </span>
+                </div>
+                <div className="h-1 w-full bg-metal-800 rounded-full overflow-hidden">
+                  <div className="h-full bg-electric-violet w-[35%]" />
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-[#B0B3C5]">Total Predicciones:</span>
-                <span className="text-white font-bold">{requestMetrics.performance.total_predictions}</span>
+
+              <div className="p-4 bg-black/30 border border-white/5 rounded">
+                <div className="text-xs text-muted-foreground font-mono uppercase mb-1">Total Predictions</div>
+                <div className="text-3xl font-display font-bold text-white tracking-tight">{requestMetrics.performance.total_predictions}</div>
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
 
       {/* Cache Status */}
       {metrics && (
-        <Card className="bg-[#1C2541]/50 border-[#1C2541]">
-          <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
-              <BarChart3 size={20} className="text-[#00FF73]" />
-              Estado del Caché
+        <Card className="bg-metal-900 border-white/10">
+          <CardHeader className="py-4 border-b border-white/5">
+            <CardTitle className="text-white flex items-center gap-2 font-mono text-sm uppercase tracking-wider">
+              <BarChart3 size={16} className="text-acid-500" />
+              Redis Cache Status
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-6">
             <div className="grid gap-4 md:grid-cols-4">
-              <div>
-                <span className="text-[#B0B3C5] text-sm">Total Entradas:</span>
-                <p className="text-white font-bold text-xl">{metrics.cache.total_entries}</p>
+              <div className="bg-black/40 p-4 rounded border border-white/5 text-center">
+                <div className="text-2xl font-display font-bold text-white mb-1">{metrics.cache.total_entries}</div>
+                <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Total Entries</div>
               </div>
-              <div>
-                <span className="text-[#B0B3C5] text-sm">Activas:</span>
-                <p className="text-[#00FF73] font-bold text-xl">{metrics.cache.active_entries}</p>
+              <div className="bg-acid-500/10 p-4 rounded border border-acid-500/20 text-center">
+                <div className="text-2xl font-display font-bold text-acid-500 mb-1">{metrics.cache.active_entries}</div>
+                <div className="text-[10px] uppercase tracking-widest text-acid-500/70">Active</div>
               </div>
-              <div>
-                <span className="text-[#B0B3C5] text-sm">Obsoletas:</span>
-                <p className="text-yellow-500 font-bold text-xl">{metrics.cache.stale_entries}</p>
+              <div className="bg-metal-800/50 p-4 rounded border border-white/5 text-center">
+                <div className="text-2xl font-display font-bold text-yellow-500 mb-1">{metrics.cache.stale_entries}</div>
+                <div className="text-[10px] uppercase tracking-widest text-yellow-500/70">Stale</div>
               </div>
-              <div>
-                <span className="text-[#B0B3C5] text-sm">Expiradas:</span>
-                <p className="text-red-500 font-bold text-xl">{metrics.cache.expired_entries}</p>
+              <div className="bg-metal-800/50 p-4 rounded border border-white/5 text-center">
+                <div className="text-2xl font-display font-bold text-alert-red mb-1">{metrics.cache.expired_entries}</div>
+                <div className="text-[10px] uppercase tracking-widest text-alert-red/70">Expired</div>
               </div>
             </div>
           </CardContent>
@@ -260,23 +261,23 @@ function MetricCard({
   trend?: number
 }) {
   return (
-    <Card className="bg-[#1C2541]/50 border-[#1C2541] hover:border-[#00FF73]/30 transition-all">
+    <Card className="bg-metal-900 border-white/10 hover:border-acid-500/50 transition-colors group">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium text-[#B0B3C5]">{title}</CardTitle>
-        <div className="text-[#00FF73]">{icon}</div>
+        <CardTitle className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground group-hover:text-white transition-colors">{title}</CardTitle>
+        <div className="text-muted-foreground group-hover:text-acid-500 transition-colors">{icon}</div>
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold text-white">{value}</div>
-        {description && <p className="text-xs text-[#B0B3C5] mt-1">{description}</p>}
+        <div className="text-2xl font-display font-bold text-white tracking-tight">{value}</div>
+        {description && <p className="text-xs text-muted-foreground mt-1 font-mono">{description}</p>}
         {trend !== undefined && (
-          <div className="mt-2 flex items-center gap-1">
+          <div className="mt-3 pt-3 border-t border-white/5 flex items-center gap-1">
             {trend >= 90 ? (
-              <TrendingUp size={14} className="text-[#00FF73]" />
+              <TrendingUp size={12} className="text-acid-500" />
             ) : (
-              <AlertCircle size={14} className="text-yellow-500" />
+              <AlertCircle size={12} className="text-yellow-500" />
             )}
-            <span className={`text-xs ${trend >= 90 ? 'text-[#00FF73]' : 'text-yellow-500'}`}>
-              {trend >= 90 ? 'Excelente' : 'Revisar'}
+            <span className={`text-[10px] font-mono uppercase ${trend >= 90 ? 'text-acid-500' : 'text-yellow-500'}`}>
+              {trend >= 90 ? 'System Optimal' : 'Needs Review'}
             </span>
           </div>
         )}

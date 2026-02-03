@@ -1,22 +1,19 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
-import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useToast } from '@/hooks/use-toast'
 import { useAuth } from '@/contexts/AuthContext'
 import { userService } from '@/services/user.service'
-import { User, CreditCard, Bell, Shield, LogOut, AlertTriangle, Key, Lock, Activity, ChevronRight } from 'lucide-react'
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { User, CreditCard, Bell, Shield, ChevronRight } from 'lucide-react'
 
 export function ProfilePage() {
   const { toast } = useToast()
-  const { logout, user, refreshUser } = useAuth()
+  const { user, refreshUser } = useAuth()
   const [activeTab, setActiveTab] = useState('personal')
   const [isLoading, setIsLoading] = useState(false)
 
@@ -61,15 +58,6 @@ export function ProfilePage() {
 
   // Avatar state
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
-  const [avatarUploading, setAvatarUploading] = useState(false)
-
-  // Sessions state
-  const [sessions, setSessions] = useState<any[]>([])
-  const [sessionsLoading, setSessionsLoading] = useState(false)
-
-  // Account deactivation state
-  const [deactivationCode, setDeactivationCode] = useState('')
-  const [showDeactivationDialog, setShowDeactivationDialog] = useState(false)
 
   useEffect(() => {
     const loadProfileData = async () => {
@@ -99,9 +87,6 @@ export function ProfilePage() {
         } catch (error) {
           console.error('Error loading 2FA status:', error)
         }
-
-        // Load sessions
-        loadSessions()
       } catch (error) {
         console.error('Error loading profile data:', error)
         // Fallback to user data from context if available
@@ -120,18 +105,6 @@ export function ProfilePage() {
 
     loadProfileData()
   }, [user])
-
-  const loadSessions = async () => {
-    try {
-      setSessionsLoading(true)
-      const sessionsData = await userService.getSessions()
-      setSessions(sessionsData)
-    } catch (error) {
-      console.error('Error loading sessions:', error)
-    } finally {
-      setSessionsLoading(false)
-    }
-  }
 
   const handlePersonalInfoChange = (field: string, value: string) => {
     setPersonalInfo(prev => ({ ...prev, [field]: value }))
@@ -285,7 +258,7 @@ export function ProfilePage() {
     if (!file) return
 
     try {
-      setAvatarUploading(true)
+      setIsLoading(true)
       const result = await userService.uploadAvatar(file)
       setAvatarUrl(getAvatarUrl(result.avatar_url))
       await refreshUser()
@@ -300,7 +273,7 @@ export function ProfilePage() {
         variant: 'destructive',
       })
     } finally {
-      setAvatarUploading(false)
+      setIsLoading(false)
       event.target.value = ''
     }
   }
@@ -472,8 +445,8 @@ function TabButton({ active, onClick, icon, label }: { active: boolean; onClick:
     <button
       onClick={onClick}
       className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-mono uppercase tracking-wide transition-all border-l-2 ${active
-          ? 'bg-acid-500/10 text-acid-500 border-acid-500'
-          : 'text-muted-foreground border-transparent hover:bg-white/5 hover:text-white'
+        ? 'bg-acid-500/10 text-acid-500 border-acid-500'
+        : 'text-muted-foreground border-transparent hover:bg-white/5 hover:text-white'
         }`}
     >
       {icon}

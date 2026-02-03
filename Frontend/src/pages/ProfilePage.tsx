@@ -22,6 +22,7 @@ export function ProfilePage() {
     if (!avatarPath) return null
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1'
     const baseUrl = apiBaseUrl.replace(/\/api\/v1\/?$/, '')
+    // Append timestamp to bust cache if it's a fresh upload
     return `${baseUrl}${avatarPath}`
   }
 
@@ -260,7 +261,11 @@ export function ProfilePage() {
     try {
       setIsLoading(true)
       const result = await userService.uploadAvatar(file)
-      setAvatarUrl(getAvatarUrl(result.avatar_url))
+      // Force cache update with timestamp
+      const newUrl = getAvatarUrl(result.avatar_url)
+      if (newUrl) {
+        setAvatarUrl(`${newUrl}?t=${new Date().getTime()}`)
+      }
       await refreshUser()
       toast({
         title: 'IMAGE UPLOADED',

@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { motion } from 'framer-motion'
 import { useBetStore, type BetType } from '@/store/bets'
 import { Crosshair } from 'lucide-react'
+import { useToast } from '@/hooks/use-toast'
 
 export interface Match {
   id: string | number
@@ -23,6 +24,7 @@ export interface Match {
 
 export function MatchCard({ match, delay = 0 }: { match: Match; delay?: number }) {
   const addBet = useBetStore((s) => s.addBet)
+  const { toast } = useToast()
 
   const add = (type: BetType) => {
     const label = `${match.home} vs ${match.away} · ${type.toUpperCase()}`
@@ -37,6 +39,12 @@ export function MatchCard({ match, delay = 0 }: { match: Match; delay?: number }
       homeTeamId: match.homeTeamId,
       awayTeamId: match.awayTeamId,
       overUnderValue: match.overUnderValue,
+    })
+
+    toast({
+      title: "BET ADDED",
+      description: `${label} @ ${odd.toFixed(2)}`,
+      variant: "success",
     })
   }
 

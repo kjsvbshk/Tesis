@@ -95,7 +95,7 @@ export function SidebarLayout() {
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="px-3 py-1 bg-acid-500/10 border border-acid-500/20 text-acid-500 font-mono text-xs rounded-sm">
+            <div className="px-3 py-1 bg-acid-500/10 border border-acid-500/20 text-acid-500 font-mono text-xs rounded-sm max-w-[200px] truncate" title="Available Credits">
               CREDITS: <span className="font-bold">2,450</span>
             </div>
             <div className="w-8 h-8 bg-metal-800 rounded-none border border-white/10 flex items-center justify-center">

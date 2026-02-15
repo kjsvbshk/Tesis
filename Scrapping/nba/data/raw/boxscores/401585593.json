@@ -1,32 +1,32 @@
 {
-  "game_id": "401585593",
-  "fecha": "2025-11-09",
-  "home_team": "Nuggets",
-  "away_team": "Spurs",
-  "home_score": 132,
-  "away_score": 120,
+  "game_id": 401585593,
+  "fecha": "2026-02-14",
+  "home_team": "San Antonio Spurs",
+  "away_team": "Denver Nuggets",
+  "home_score": 106,
+  "away_score": 117,
   "home_stats": {
     "PTS": 106,
     "REB": 44,
     "AST": 23,
-    "STL": 6,
-    "BLK": 4,
-    "TO": 16,
+    "STL": 16,
+    "BLK": 6,
+    "TO": 4,
+    "PF": 12,
     "FG%": 45.7,
     "3P%": 37.9,
-    "FT%": 77.8,
-    "PF": 13
+    "FT%": 77.8
   },
   "away_stats": {
     "PTS": 117,
     "REB": 40,
     "AST": 37,
-    "STL": 13,
-    "BLK": 5,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 13,
+    "TO": 5,
+    "PF": 7,
     "FG%": 55.1,
     "3P%": 40.0,
-    "FT%": 75.0,
-    "PF": 20
+    "FT%": 75.0
   }
 }

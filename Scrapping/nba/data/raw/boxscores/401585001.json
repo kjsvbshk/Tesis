@@ -1,32 +1,32 @@
 {
-  "game_id": "401585001",
-  "fecha": "2025-11-09",
-  "home_team": "Kings",
-  "away_team": "Celtics",
+  "game_id": 401585001,
+  "fecha": "2026-02-14",
+  "home_team": "Sacramento Kings",
+  "away_team": "Boston Celtics",
   "home_score": 119,
   "away_score": 144,
   "home_stats": {
     "PTS": 119,
     "REB": 37,
     "AST": 29,
-    "STL": 4,
-    "BLK": 8,
-    "TO": 7,
+    "STL": 7,
+    "BLK": 4,
+    "TO": 8,
+    "PF": 12,
     "FG%": 47.3,
     "3P%": 47.7,
-    "FT%": 52.2,
-    "PF": 15
+    "FT%": 52.2
   },
   "away_stats": {
     "PTS": 144,
     "REB": 50,
     "AST": 35,
-    "STL": 6,
-    "BLK": 10,
-    "TO": 9,
+    "STL": 9,
+    "BLK": 6,
+    "TO": 10,
+    "PF": 14,
     "FG%": 55.4,
     "3P%": 52.4,
-    "FT%": 83.3,
-    "PF": 17
+    "FT%": 83.3
   }
 }

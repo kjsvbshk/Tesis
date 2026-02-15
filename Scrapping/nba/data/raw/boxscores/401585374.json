@@ -1,32 +1,32 @@
 {
-  "game_id": "401585374",
-  "fecha": "2025-11-09",
-  "home_team": "Kings",
-  "away_team": "Nuggets",
-  "home_score": 123,
-  "away_score": 117,
+  "game_id": 401585374,
+  "fecha": "2026-02-14",
+  "home_team": "Sacramento Kings",
+  "away_team": "Denver Nuggets",
+  "home_score": 106,
+  "away_score": 135,
   "home_stats": {
     "PTS": 135,
     "REB": 42,
     "AST": 32,
-    "STL": 11,
-    "BLK": 1,
-    "TO": 16,
+    "STL": 16,
+    "BLK": 11,
+    "TO": 1,
+    "PF": 6,
     "FG%": 58.6,
     "3P%": 50.0,
-    "FT%": 88.9,
-    "PF": 22
+    "FT%": 88.9
   },
   "away_stats": {
     "PTS": 106,
     "REB": 35,
     "AST": 26,
-    "STL": 9,
-    "BLK": 5,
-    "TO": 20,
+    "STL": 20,
+    "BLK": 9,
+    "TO": 5,
+    "PF": 9,
     "FG%": 46.3,
     "3P%": 34.5,
-    "FT%": 71.4,
-    "PF": 16
+    "FT%": 71.4
   }
 }

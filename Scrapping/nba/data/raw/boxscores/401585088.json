@@ -1,32 +1,32 @@
 {
-  "game_id": "401585088",
-  "fecha": "2025-11-09",
-  "home_team": "Spurs",
-  "away_team": "Grizzlies",
-  "home_score": 108,
-  "away_score": 120,
+  "game_id": 401585088,
+  "fecha": "2026-02-14",
+  "home_team": "Memphis Grizzlies",
+  "away_team": "San Antonio Spurs",
+  "home_score": 98,
+  "away_score": 106,
   "home_stats": {
     "PTS": 106,
     "REB": 46,
     "AST": 24,
-    "STL": 5,
-    "BLK": 8,
-    "TO": 15,
-    "FG%": 46.3,
+    "STL": 15,
+    "BLK": 5,
+    "TO": 8,
+    "PF": 8,
+    "FG%": 46.2,
     "3P%": 31.6,
-    "FT%": 80.0,
-    "PF": 23
+    "FT%": 80.0
   },
   "away_stats": {
     "PTS": 98,
     "REB": 40,
     "AST": 21,
-    "STL": 6,
-    "BLK": 8,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 6,
+    "TO": 8,
+    "PF": 6,
     "FG%": 42.4,
     "3P%": 32.3,
-    "FT%": 69.6,
-    "PF": 24
+    "FT%": 69.6
   }
 }

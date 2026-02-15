@@ -1,32 +1,32 @@
 {
-  "game_id": "401607491",
-  "fecha": "2025-11-09",
-  "home_team": "Celtics",
-  "away_team": "Pacers",
-  "home_score": 155,
-  "away_score": 104,
+  "game_id": 401607491,
+  "fecha": "2026-02-14",
+  "home_team": "Indiana Pacers",
+  "away_team": "Boston Celtics",
+  "home_score": 112,
+  "away_score": 122,
   "home_stats": {
     "PTS": 122,
     "REB": 41,
     "AST": 28,
-    "STL": 8,
-    "BLK": 4,
-    "TO": 6,
+    "STL": 6,
+    "BLK": 8,
+    "TO": 4,
+    "PF": 7,
     "FG%": 45.7,
     "3P%": 47.5,
-    "FT%": 81.0,
-    "PF": 15
+    "FT%": 81.0
   },
   "away_stats": {
     "PTS": 112,
     "REB": 56,
     "AST": 27,
-    "STL": 5,
-    "BLK": 9,
-    "TO": 17,
+    "STL": 17,
+    "BLK": 5,
+    "TO": 9,
+    "PF": 13,
     "FG%": 47.4,
     "3P%": 29.3,
-    "FT%": 66.7,
-    "PF": 19
+    "FT%": 66.7
   }
 }

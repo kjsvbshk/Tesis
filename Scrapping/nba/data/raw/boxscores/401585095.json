@@ -1,32 +1,32 @@
 {
-  "game_id": "401585095",
-  "fecha": "2025-11-09",
-  "home_team": "Thunder",
-  "away_team": "Hawks",
-  "home_score": 126,
-  "away_score": 117,
+  "game_id": 401585095,
+  "fecha": "2026-02-14",
+  "home_team": "Atlanta Hawks",
+  "away_team": "Oklahoma City Thunder",
+  "home_score": 138,
+  "away_score": 141,
   "home_stats": {
     "PTS": 141,
     "REB": 49,
     "AST": 30,
-    "STL": 8,
-    "BLK": 5,
-    "TO": 11,
+    "STL": 11,
+    "BLK": 8,
+    "TO": 5,
+    "PF": 15,
     "FG%": 50.5,
     "3P%": 35.9,
-    "FT%": 93.9,
-    "PF": 21
+    "FT%": 93.9
   },
   "away_stats": {
     "PTS": 138,
     "REB": 37,
     "AST": 30,
-    "STL": 10,
-    "BLK": 1,
-    "TO": 13,
+    "STL": 13,
+    "BLK": 10,
+    "TO": 1,
+    "PF": 9,
     "FG%": 54.9,
     "3P%": 50.0,
-    "FT%": 76.9,
-    "PF": 23
+    "FT%": 76.9
   }
 }

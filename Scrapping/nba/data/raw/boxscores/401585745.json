@@ -1,32 +1,32 @@
 {
-  "game_id": "401585745",
-  "fecha": "2025-11-09",
-  "home_team": "Trail Blazers",
-  "away_team": "Wizards",
-  "home_score": 117,
-  "away_score": 118,
+  "game_id": 401585745,
+  "fecha": "2026-02-14",
+  "home_team": "Washington Wizards",
+  "away_team": "Portland Trail Blazers",
+  "home_score": 102,
+  "away_score": 108,
   "home_stats": {
     "PTS": 102,
     "REB": 45,
     "AST": 24,
     "STL": 9,
-    "BLK": 5,
-    "TO": 9,
+    "BLK": 9,
+    "TO": 5,
+    "PF": 12,
     "FG%": 43.2,
     "3P%": 15.2,
-    "FT%": 70.0,
-    "PF": 21
+    "FT%": 70.0
   },
   "away_stats": {
     "PTS": 108,
     "REB": 55,
     "AST": 29,
-    "STL": 7,
-    "BLK": 5,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 7,
+    "TO": 5,
+    "PF": 16,
     "FG%": 43.6,
     "3P%": 31.0,
-    "FT%": 70.8,
-    "PF": 23
+    "FT%": 70.8
   }
 }

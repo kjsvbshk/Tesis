@@ -1,32 +1,32 @@
 {
-  "game_id": "401584141",
-  "fecha": "2025-11-09",
-  "home_team": "Celtics",
-  "away_team": "Bulls",
-  "home_score": 124,
-  "away_score": 97,
+  "game_id": 401584141,
+  "fecha": "2026-02-14",
+  "home_team": "Boston Celtics",
+  "away_team": "Chicago Bulls",
+  "home_score": 97,
+  "away_score": 124,
   "home_stats": {
     "PTS": 124,
     "REB": 52,
     "AST": 36,
-    "STL": 6,
-    "BLK": 9,
-    "TO": 16,
+    "STL": 16,
+    "BLK": 6,
+    "TO": 9,
+    "PF": 11,
     "FG%": 52.2,
     "3P%": 42.9,
-    "FT%": 75.0,
-    "PF": 18
+    "FT%": 75.0
   },
   "away_stats": {
     "PTS": 97,
     "REB": 37,
     "AST": 25,
-    "STL": 11,
-    "BLK": 7,
-    "TO": 8,
+    "STL": 8,
+    "BLK": 11,
+    "TO": 7,
+    "PF": 9,
     "FG%": 43.3,
     "3P%": 32.1,
-    "FT%": 55.6,
-    "PF": 13
+    "FT%": 55.6
   }
 }

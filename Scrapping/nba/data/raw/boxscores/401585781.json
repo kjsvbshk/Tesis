@@ -1,32 +1,32 @@
 {
-  "game_id": "401585781",
-  "fecha": "2025-11-09",
-  "home_team": "Kings",
-  "away_team": "Thunder",
+  "game_id": 401585781,
+  "fecha": "2026-02-14",
+  "home_team": "Oklahoma City Thunder",
+  "away_team": "Sacramento Kings",
   "home_score": 105,
-  "away_score": 98,
+  "away_score": 112,
   "home_stats": {
     "PTS": 112,
     "REB": 42,
     "AST": 21,
-    "STL": 11,
-    "BLK": 8,
-    "TO": 13,
+    "STL": 13,
+    "BLK": 11,
+    "TO": 8,
+    "PF": 6,
     "FG%": 48.8,
     "3P%": 36.7,
-    "FT%": 74.2,
-    "PF": 18
+    "FT%": 74.2
   },
   "away_stats": {
     "PTS": 105,
     "REB": 56,
     "AST": 23,
-    "STL": 8,
-    "BLK": 4,
-    "TO": 17,
+    "STL": 17,
+    "BLK": 8,
+    "TO": 4,
+    "PF": 21,
     "FG%": 34.4,
     "3P%": 34.5,
-    "FT%": 73.1,
-    "PF": 22
+    "FT%": 73.1
   }
 }

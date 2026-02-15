@@ -34,9 +34,19 @@ def scrape_boxscore(game_id):
         res.raise_for_status()
         soup = BeautifulSoup(res.text, "lxml")
         
-        # Parse equipos
-        teams = [t.text for t in soup.select(".ScoreCell__TeamName")]
-        scores = [s.text for s in soup.select(".ScoreCell__Score")]
+        # Parse equipos - ESPN changed structure, now using BoxscoreItem__TeamName
+        teams = [t.text.strip() for t in soup.select(".BoxscoreItem__TeamName")]
+        
+        # Parse scores from page title (format: "Team1 Score1-Score2 Team2")
+        title = soup.find("title")
+        scores = []
+        if title:
+            title_text = title.text.strip()
+            # Extract scores from title like "Warriors 127-86 Jazz"
+            import re
+            score_match = re.search(r'(\d+)-(\d+)', title_text)
+            if score_match:
+                scores = [score_match.group(1), score_match.group(2)]
         
         # Parse tabla de estadísticas - buscar tablas con clase Table
         team_stats_tables = soup.find_all("table", class_="Table")
@@ -60,10 +70,10 @@ def scrape_boxscore(game_id):
         for table in team_stats_tables:
             rows = table.find_all("tr")
             
-            # Buscar la fila que tiene 17 celdas y la primera está vacía (fila "team" con estadísticas)
+            # Buscar la fila que tiene 14+ celdas y la primera está vacía (fila "team" con estadísticas)
             for row in rows:
                 cells = row.find_all("td")
-                if len(cells) >= 17:
+                if len(cells) >= 14:  # ESPN now uses 14 cells for team totals
                     first_cell_text = cells[0].get_text(strip=True)
                     # La fila de TOTALS del equipo tiene la primera celda vacía o "team"
                     if first_cell_text == "" or first_cell_text.lower() == "team":
@@ -127,32 +137,39 @@ def extract_team_stats_from_row(team_row):
     try:
         cells = team_row.find_all("td")
         
-        # La estructura es: [team, PTS, OREB, DREB, REB, AST, STL, BLK, TO, FG, FG%, 3PT, 3PT%, FT, FT%, PF, +/-]
-        # Necesitamos: FG%, 3PT%, FT%, REB, AST, STL, BLK, TO, PF, PTS
+        # Nueva estructura de 14 celdas: ['', PTS, FG, 3PT, FT, REB, AST, STL, BLK, TO, PF, ...]
+        # Índices: [0]=empty, [1]=PTS, [2]=FG, [3]=3PT, [4]=FT, [5]=REB, [6]=AST, [7]=STL, [8]=BLK, [9]=TO, [10]=PF
         
-        if len(cells) >= 17:
-            # PTS está en la celda 1 (índice 1)
-            # REB está en la celda 4 (índice 4)
-            # AST está en la celda 5 (índice 5)
-            # STL está en la celda 6 (índice 6)
-            # BLK está en la celda 7 (índice 7)
-            # TO está en la celda 8 (índice 8)
-            # FG% está en la celda 10 (índice 10)
-            # 3PT% está en la celda 12 (índice 12)
-            # FT% está en la celda 14 (índice 14)
-            # PF está en la celda 15 (índice 15)
+        if len(cells) >= 11:  # Need at least 11 cells for all stats
+            # Extract raw values
+            pts_raw = cells[1].get_text(strip=True)
+            fg_raw = cells[2].get_text(strip=True)
+            three_pt_raw = cells[3].get_text(strip=True)
+            ft_raw = cells[4].get_text(strip=True)
+            
+            # Parse percentages from "made-attempted" format or direct percentage
+            def parse_percentage(value):
+                if '%' in value:
+                    return parse_stat(value.replace('%', ''))
+                elif '-' in value:
+                    parts = value.split('-')
+                    if len(parts) == 2:
+                        made, attempted = parse_stat(parts[0]), parse_stat(parts[1])
+                        if made is not None and attempted is not None and attempted > 0:
+                            return round((made / attempted) * 100, 1)
+                return None
             
             stats = {
-                "PTS": parse_stat(cells[1].get_text(strip=True)) if len(cells) > 1 else None,
-                "REB": parse_stat(cells[4].get_text(strip=True)) if len(cells) > 4 else None,
-                "AST": parse_stat(cells[5].get_text(strip=True)) if len(cells) > 5 else None,
-                "STL": parse_stat(cells[6].get_text(strip=True)) if len(cells) > 6 else None,
-                "BLK": parse_stat(cells[7].get_text(strip=True)) if len(cells) > 7 else None,
-                "TO": parse_stat(cells[8].get_text(strip=True)) if len(cells) > 8 else None,
-                "FG%": parse_stat(cells[10].get_text(strip=True)) if len(cells) > 10 else None,
-                "3P%": parse_stat(cells[12].get_text(strip=True)) if len(cells) > 12 else None,
-                "FT%": parse_stat(cells[14].get_text(strip=True)) if len(cells) > 14 else None,
-                "PF": parse_stat(cells[15].get_text(strip=True)) if len(cells) > 15 else None
+                "PTS": parse_stat(pts_raw) if pts_raw else None,
+                "REB": parse_stat(cells[5].get_text(strip=True)) if len(cells) > 5 else None,
+                "AST": parse_stat(cells[6].get_text(strip=True)) if len(cells) > 6 else None,
+                "STL": parse_stat(cells[7].get_text(strip=True)) if len(cells) > 7 else None,
+                "BLK": parse_stat(cells[8].get_text(strip=True)) if len(cells) > 8 else None,
+                "TO": parse_stat(cells[9].get_text(strip=True)) if len(cells) > 9 else None,
+                "PF": parse_stat(cells[10].get_text(strip=True)) if len(cells) > 10 else None,
+                "FG%": parse_percentage(fg_raw) if fg_raw else None,
+                "3P%": parse_percentage(three_pt_raw) if three_pt_raw else None,
+                "FT%": parse_percentage(ft_raw) if ft_raw else None
             }
         
         logger.debug(f"Estadísticas extraídas: {stats}")
@@ -192,6 +209,19 @@ def parse_stat(stat_text):
     except:
         return None
 
+import numpy as np
+
+class NumpyEncoder(json.JSONEncoder):
+    """Custom JSON encoder to handle numpy types"""
+    def default(self, obj):
+        if isinstance(obj, (np.integer, np.int64)):
+            return int(obj)
+        elif isinstance(obj, (np.floating, np.float64)):
+            return float(obj)
+        elif isinstance(obj, np.ndarray):
+            return obj.tolist()
+        return super(NumpyEncoder, self).default(obj)
+
 def save_boxscore_to_json(game_data, game_id):
     """
     Guardar boxscore en data/raw/boxscores/{game_id}.json.
@@ -204,10 +234,10 @@ def save_boxscore_to_json(game_data, game_id):
         # Crear directorio si no existe
         os.makedirs("data/raw/boxscores", exist_ok=True)
         
-        # Guardar JSON
+        # Guardar JSON con custom encoder para manejar tipos numpy
         json_path = f"data/raw/boxscores/{game_id}.json"
         with open(json_path, 'w', encoding='utf-8') as f:
-            json.dump(game_data, f, indent=2, ensure_ascii=False)
+            json.dump(game_data, f, indent=2, ensure_ascii=False, cls=NumpyEncoder)
         
         logger.info(f"Boxscore guardado en {json_path}")
         

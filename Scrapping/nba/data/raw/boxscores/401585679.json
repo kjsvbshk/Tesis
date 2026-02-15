@@ -1,32 +1,32 @@
 {
-  "game_id": "401585679",
-  "fecha": "2025-11-09",
-  "home_team": "Trail Blazers",
-  "away_team": "Hawks",
+  "game_id": 401585679,
+  "fecha": "2026-02-14",
+  "home_team": "Atlanta Hawks",
+  "away_team": "Portland Trail Blazers",
   "home_score": 106,
-  "away_score": 102,
+  "away_score": 120,
   "home_stats": {
     "PTS": 120,
     "REB": 41,
     "AST": 23,
-    "STL": 12,
-    "BLK": 9,
-    "TO": 16,
+    "STL": 16,
+    "BLK": 12,
+    "TO": 9,
+    "PF": 8,
     "FG%": 51.8,
     "3P%": 39.0,
-    "FT%": 80.0,
-    "PF": 17
+    "FT%": 80.0
   },
   "away_stats": {
     "PTS": 106,
     "REB": 33,
     "AST": 35,
-    "STL": 8,
-    "BLK": 2,
-    "TO": 18,
+    "STL": 18,
+    "BLK": 8,
+    "TO": 2,
+    "PF": 6,
     "FG%": 50.6,
     "3P%": 45.2,
-    "FT%": 60.0,
-    "PF": 18
+    "FT%": 60.0
   }
 }

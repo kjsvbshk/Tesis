@@ -1,32 +1,32 @@
 {
-  "game_id": "401654656",
-  "fecha": "2025-11-09",
-  "home_team": "Kings",
-  "away_team": "Warriors",
-  "home_score": 118,
-  "away_score": 94,
+  "game_id": 401654656,
+  "fecha": "2026-02-14",
+  "home_team": "Sacramento Kings",
+  "away_team": "Golden State Warriors",
+  "home_score": 94,
+  "away_score": 118,
   "home_stats": {
     "PTS": 118,
     "REB": 49,
     "AST": 28,
-    "STL": 10,
-    "BLK": 5,
-    "TO": 8,
+    "STL": 8,
+    "BLK": 10,
+    "TO": 5,
+    "PF": 15,
     "FG%": 43.9,
     "3P%": 46.2,
-    "FT%": 93.3,
-    "PF": 17
+    "FT%": 93.3
   },
   "away_stats": {
     "PTS": 94,
     "REB": 42,
     "AST": 19,
-    "STL": 5,
-    "BLK": 3,
-    "TO": 16,
-    "FG%": 41.3,
-    "3P%": 31.3,
-    "FT%": 78.3,
-    "PF": 17
+    "STL": 16,
+    "BLK": 5,
+    "TO": 3,
+    "PF": 8,
+    "FG%": 41.2,
+    "3P%": 31.2,
+    "FT%": 78.3
   }
 }

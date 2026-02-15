@@ -1,32 +1,32 @@
 {
-  "game_id": "401584111",
-  "fecha": "2025-11-09",
-  "home_team": "Jazz",
-  "away_team": "Trail Blazers",
-  "home_score": 115,
-  "away_score": 99,
+  "game_id": 401584111,
+  "fecha": "2026-02-14",
+  "home_team": "Utah Jazz",
+  "away_team": "Portland Trail Blazers",
+  "home_score": 99,
+  "away_score": 115,
   "home_stats": {
     "PTS": 115,
     "REB": 52,
     "AST": 26,
-    "STL": 11,
-    "BLK": 6,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 11,
+    "TO": 6,
+    "PF": 16,
     "FG%": 46.3,
     "3P%": 30.2,
-    "FT%": 93.3,
-    "PF": 18
+    "FT%": 93.3
   },
   "away_stats": {
     "PTS": 99,
     "REB": 43,
     "AST": 23,
-    "STL": 5,
-    "BLK": 6,
-    "TO": 17,
+    "STL": 17,
+    "BLK": 5,
+    "TO": 6,
+    "PF": 13,
     "FG%": 42.0,
     "3P%": 31.4,
-    "FT%": 70.0,
-    "PF": 15
+    "FT%": 70.0
   }
 }

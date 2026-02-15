@@ -1,32 +1,32 @@
 {
-  "game_id": "401585658",
-  "fecha": "2025-11-09",
-  "home_team": "Bucks",
-  "away_team": "Thunder",
-  "home_score": 118,
-  "away_score": 93,
+  "game_id": 401585658,
+  "fecha": "2026-02-14",
+  "home_team": "Milwaukee Bucks",
+  "away_team": "Oklahoma City Thunder",
+  "home_score": 93,
+  "away_score": 118,
   "home_stats": {
     "PTS": 118,
     "REB": 57,
     "AST": 33,
-    "STL": 7,
-    "BLK": 5,
-    "TO": 16,
+    "STL": 16,
+    "BLK": 7,
+    "TO": 5,
+    "PF": 15,
     "FG%": 53.3,
     "3P%": 32.4,
-    "FT%": 64.3,
-    "PF": 21
+    "FT%": 64.3
   },
   "away_stats": {
     "PTS": 93,
     "REB": 37,
     "AST": 20,
-    "STL": 9,
-    "BLK": 1,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 9,
+    "TO": 1,
+    "PF": 10,
     "FG%": 37.1,
     "3P%": 23.3,
-    "FT%": 77.3,
-    "PF": 16
+    "FT%": 77.3
   }
 }

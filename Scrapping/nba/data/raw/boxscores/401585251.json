@@ -1,8 +1,8 @@
 {
-  "game_id": "401585251",
-  "fecha": "2025-11-09",
-  "home_team": "Rockets",
-  "away_team": "Trail Blazers",
+  "game_id": 401585251,
+  "fecha": "2026-02-14",
+  "home_team": "Houston Rockets",
+  "away_team": "Portland Trail Blazers",
   "home_score": 131,
   "away_score": 137,
   "home_stats": {
@@ -10,23 +10,23 @@
     "REB": 37,
     "AST": 29,
     "STL": 8,
-    "BLK": 6,
-    "TO": 8,
+    "BLK": 8,
+    "TO": 6,
+    "PF": 8,
     "FG%": 53.2,
     "3P%": 33.3,
-    "FT%": 86.4,
-    "PF": 19
+    "FT%": 86.4
   },
   "away_stats": {
     "PTS": 137,
     "REB": 48,
     "AST": 31,
-    "STL": 6,
-    "BLK": 4,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 6,
+    "TO": 4,
+    "PF": 13,
     "FG%": 51.0,
     "3P%": 42.9,
-    "FT%": 91.7,
-    "PF": 18
+    "FT%": 91.7
   }
 }

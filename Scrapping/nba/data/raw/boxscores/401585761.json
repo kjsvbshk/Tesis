@@ -1,32 +1,32 @@
 {
-  "game_id": "401585761",
-  "fecha": "2025-11-09",
-  "home_team": "Heat",
-  "away_team": "Pacers",
-  "home_score": 142,
-  "away_score": 132,
+  "game_id": 401585761,
+  "fecha": "2026-02-14",
+  "home_team": "Indiana Pacers",
+  "away_team": "Miami Heat",
+  "home_score": 115,
+  "away_score": 117,
   "home_stats": {
     "PTS": 117,
     "REB": 37,
     "AST": 27,
-    "STL": 4,
-    "BLK": 6,
+    "STL": 6,
+    "BLK": 4,
     "TO": 6,
+    "PF": 4,
     "FG%": 51.2,
     "3P%": 28.1,
-    "FT%": 95.2,
-    "PF": 24
+    "FT%": 95.2
   },
   "away_stats": {
     "PTS": 115,
     "REB": 39,
     "AST": 21,
-    "STL": 3,
-    "BLK": 2,
-    "TO": 7,
+    "STL": 7,
+    "BLK": 3,
+    "TO": 2,
+    "PF": 8,
     "FG%": 46.4,
     "3P%": 29.6,
-    "FT%": 90.6,
-    "PF": 22
+    "FT%": 90.6
   }
 }

@@ -1,32 +1,32 @@
 {
-  "game_id": "401585577",
-  "fecha": "2025-11-09",
-  "home_team": "Nuggets",
-  "away_team": "Heat",
-  "home_score": 103,
-  "away_score": 97,
+  "game_id": 401585577,
+  "fecha": "2026-02-14",
+  "home_team": "Miami Heat",
+  "away_team": "Denver Nuggets",
+  "home_score": 88,
+  "away_score": 100,
   "home_stats": {
     "PTS": 88,
     "REB": 42,
     "AST": 18,
-    "STL": 5,
-    "BLK": 2,
-    "TO": 8,
+    "STL": 8,
+    "BLK": 5,
+    "TO": 2,
+    "PF": 8,
     "FG%": 42.5,
     "3P%": 23.8,
-    "FT%": 83.3,
-    "PF": 13
+    "FT%": 83.3
   },
   "away_stats": {
     "PTS": 100,
     "REB": 41,
     "AST": 24,
-    "STL": 4,
-    "BLK": 2,
-    "TO": 9,
+    "STL": 9,
+    "BLK": 4,
+    "TO": 2,
+    "PF": 7,
     "FG%": 48.8,
     "3P%": 33.3,
-    "FT%": 69.2,
-    "PF": 13
+    "FT%": 69.2
   }
 }

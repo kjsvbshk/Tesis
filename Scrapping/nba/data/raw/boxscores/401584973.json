@@ -1,32 +1,32 @@
 {
-  "game_id": "401584973",
-  "fecha": "2025-11-09",
-  "home_team": "Pelicans",
-  "away_team": "Spurs",
-  "home_score": 121,
-  "away_score": 106,
+  "game_id": 401584973,
+  "fecha": "2026-02-14",
+  "home_team": "San Antonio Spurs",
+  "away_team": "New Orleans Pelicans",
+  "home_score": 110,
+  "away_score": 146,
   "home_stats": {
     "PTS": 110,
     "REB": 39,
     "AST": 29,
-    "STL": 6,
+    "STL": 13,
     "BLK": 6,
-    "TO": 13,
+    "TO": 6,
+    "PF": 9,
     "FG%": 42.6,
     "3P%": 35.7,
-    "FT%": 71.4,
-    "PF": 15
+    "FT%": 71.4
   },
   "away_stats": {
     "PTS": 146,
     "REB": 51,
     "AST": 38,
-    "STL": 11,
-    "BLK": 3,
-    "TO": 13,
+    "STL": 13,
+    "BLK": 11,
+    "TO": 3,
+    "PF": 11,
     "FG%": 56.1,
     "3P%": 52.4,
-    "FT%": 63.6,
-    "PF": 19
+    "FT%": 63.6
   }
 }

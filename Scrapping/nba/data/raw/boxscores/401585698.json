@@ -1,32 +1,32 @@
 {
-  "game_id": "401585698",
-  "fecha": "2025-11-09",
-  "home_team": "Knicks",
-  "away_team": "Spurs",
+  "game_id": 401585698,
+  "fecha": "2026-02-14",
+  "home_team": "San Antonio Spurs",
+  "away_team": "New York Knicks",
   "home_score": 126,
-  "away_score": 105,
+  "away_score": 130,
   "home_stats": {
     "PTS": 130,
     "REB": 46,
     "AST": 34,
-    "STL": 3,
-    "BLK": 2,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 3,
+    "TO": 2,
+    "PF": 8,
     "FG%": 53.7,
     "3P%": 40.0,
-    "FT%": 81.3,
-    "PF": 16
+    "FT%": 81.2
   },
   "away_stats": {
     "PTS": 126,
     "REB": 50,
     "AST": 24,
-    "STL": 10,
-    "BLK": 1,
-    "TO": 11,
+    "STL": 11,
+    "BLK": 10,
+    "TO": 1,
+    "PF": 18,
     "FG%": 46.4,
     "3P%": 37.8,
-    "FT%": 83.3,
-    "PF": 24
+    "FT%": 83.3
   }
 }

@@ -1,32 +1,32 @@
 {
-  "game_id": "401585739",
-  "fecha": "2025-11-09",
-  "home_team": "Heat",
-  "away_team": "76ers",
-  "home_score": 119,
-  "away_score": 113,
+  "game_id": 401585739,
+  "fecha": "2026-02-14",
+  "home_team": "Miami Heat",
+  "away_team": "Philadelphia 76ers",
+  "home_score": 105,
+  "away_score": 109,
   "home_stats": {
     "PTS": 105,
     "REB": 51,
     "AST": 24,
-    "STL": 8,
-    "BLK": 4,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 8,
+    "TO": 4,
+    "PF": 16,
     "FG%": 41.5,
     "3P%": 30.2,
-    "FT%": 87.5,
-    "PF": 10
+    "FT%": 87.5
   },
   "away_stats": {
     "PTS": 109,
     "REB": 41,
     "AST": 28,
     "STL": 11,
-    "BLK": 7,
-    "TO": 11,
+    "BLK": 11,
+    "TO": 7,
+    "PF": 8,
     "FG%": 46.7,
     "3P%": 35.0,
-    "FT%": 81.8,
-    "PF": 15
+    "FT%": 81.8
   }
 }

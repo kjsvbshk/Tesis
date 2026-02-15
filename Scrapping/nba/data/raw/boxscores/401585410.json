@@ -1,32 +1,32 @@
 {
-  "game_id": "401585410",
-  "fecha": "2025-11-09",
-  "home_team": "Pacers",
-  "away_team": "Raptors",
-  "home_score": 131,
-  "away_score": 132,
+  "game_id": 401585410,
+  "fecha": "2026-02-14",
+  "home_team": "Toronto Raptors",
+  "away_team": "Indiana Pacers",
+  "home_score": 125,
+  "away_score": 127,
   "home_stats": {
     "PTS": 125,
     "REB": 56,
     "AST": 30,
-    "STL": 6,
-    "BLK": 7,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 6,
+    "TO": 7,
+    "PF": 15,
     "FG%": 51.0,
     "3P%": 23.1,
-    "FT%": 73.1,
-    "PF": 20
+    "FT%": 73.1
   },
   "away_stats": {
     "PTS": 127,
     "REB": 39,
     "AST": 32,
-    "STL": 9,
+    "STL": 8,
     "BLK": 9,
-    "TO": 8,
+    "TO": 9,
+    "PF": 9,
     "FG%": 48.5,
     "3P%": 41.5,
-    "FT%": 69.6,
-    "PF": 20
+    "FT%": 69.6
   }
 }

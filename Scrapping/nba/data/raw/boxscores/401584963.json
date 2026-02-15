@@ -1,32 +1,32 @@
 {
-  "game_id": "401584963",
-  "fecha": "2025-11-09",
-  "home_team": "Hornets",
-  "away_team": "76ers",
+  "game_id": 401584963,
+  "fecha": "2026-02-14",
+  "home_team": "Charlotte Hornets",
+  "away_team": "Philadelphia 76ers",
   "home_score": 82,
   "away_score": 135,
   "home_stats": {
     "PTS": 82,
     "REB": 36,
     "AST": 15,
-    "STL": 3,
-    "BLK": 4,
-    "TO": 11,
+    "STL": 11,
+    "BLK": 3,
+    "TO": 4,
+    "PF": 8,
     "FG%": 36.3,
     "3P%": 20.0,
-    "FT%": 81.8,
-    "PF": 14
+    "FT%": 81.8
   },
   "away_stats": {
     "PTS": 135,
     "REB": 45,
     "AST": 30,
     "STL": 10,
-    "BLK": 6,
-    "TO": 10,
+    "BLK": 10,
+    "TO": 6,
+    "PF": 5,
     "FG%": 60.2,
     "3P%": 45.2,
-    "FT%": 88.2,
-    "PF": 17
+    "FT%": 88.2
   }
 }

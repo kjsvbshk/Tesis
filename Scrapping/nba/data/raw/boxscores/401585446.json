@@ -1,32 +1,32 @@
 {
-  "game_id": "401585446",
-  "fecha": "2025-11-09",
-  "home_team": "Lakers",
-  "away_team": "Suns",
-  "home_score": 100,
-  "away_score": 95,
+  "game_id": 401585446,
+  "fecha": "2026-02-14",
+  "home_team": "Phoenix Suns",
+  "away_team": "Los Angeles Lakers",
+  "home_score": 113,
+  "away_score": 123,
   "home_stats": {
     "PTS": 123,
     "REB": 51,
     "AST": 32,
-    "STL": 6,
-    "BLK": 9,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 6,
+    "TO": 9,
+    "PF": 14,
     "FG%": 47.3,
     "3P%": 42.5,
-    "FT%": 94.7,
-    "PF": 12
+    "FT%": 94.7
   },
   "away_stats": {
     "PTS": 113,
     "REB": 34,
     "AST": 28,
-    "STL": 7,
-    "BLK": 4,
-    "TO": 10,
+    "STL": 10,
+    "BLK": 7,
+    "TO": 4,
+    "PF": 3,
     "FG%": 52.2,
     "3P%": 42.9,
-    "FT%": 50.0,
-    "PF": 14
+    "FT%": 50.0
   }
 }

@@ -1,32 +1,32 @@
 {
-  "game_id": "401585141",
-  "fecha": "2025-11-09",
-  "home_team": "Magic",
-  "away_team": "Timberwolves",
+  "game_id": 401585141,
+  "fecha": "2026-02-14",
+  "home_team": "Orlando Magic",
+  "away_team": "Minnesota Timberwolves",
   "home_score": 92,
   "away_score": 113,
   "home_stats": {
     "PTS": 92,
     "REB": 46,
     "AST": 20,
-    "STL": 13,
-    "BLK": 5,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 13,
+    "TO": 5,
+    "PF": 16,
     "FG%": 36.2,
     "3P%": 31.0,
-    "FT%": 61.1,
-    "PF": 22
+    "FT%": 61.1
   },
   "away_stats": {
     "PTS": 113,
     "REB": 48,
     "AST": 34,
-    "STL": 8,
-    "BLK": 4,
-    "TO": 18,
+    "STL": 18,
+    "BLK": 8,
+    "TO": 4,
+    "PF": 5,
     "FG%": 53.8,
     "3P%": 40.0,
-    "FT%": 78.9,
-    "PF": 18
+    "FT%": 78.9
   }
 }

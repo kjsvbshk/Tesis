@@ -1,32 +1,32 @@
 {
-  "game_id": "401584105",
-  "fecha": "2025-11-09",
-  "home_team": "Hornets",
-  "away_team": "Heat",
+  "game_id": 401584105,
+  "fecha": "2026-02-14",
+  "home_team": "Charlotte Hornets",
+  "away_team": "Miami Heat",
   "home_score": 105,
   "away_score": 111,
   "home_stats": {
     "PTS": 105,
     "REB": 45,
     "AST": 21,
-    "STL": 6,
-    "BLK": 0,
-    "TO": 18,
+    "STL": 18,
+    "BLK": 6,
+    "TO": 0,
+    "PF": 13,
     "FG%": 44.4,
     "3P%": 46.9,
-    "FT%": 81.8,
-    "PF": 21
+    "FT%": 81.8
   },
   "away_stats": {
     "PTS": 111,
     "REB": 42,
     "AST": 26,
-    "STL": 12,
-    "BLK": 5,
-    "TO": 7,
+    "STL": 7,
+    "BLK": 12,
+    "TO": 5,
+    "PF": 10,
     "FG%": 48.2,
     "3P%": 25.8,
-    "FT%": 82.1,
-    "PF": 19
+    "FT%": 82.1
   }
 }

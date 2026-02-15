@@ -1,32 +1,32 @@
 {
-  "game_id": "401584915",
-  "fecha": "2025-11-09",
-  "home_team": "Mavericks",
-  "away_team": "Thunder",
+  "game_id": 401584915,
+  "fecha": "2026-02-14",
+  "home_team": "Dallas Mavericks",
+  "away_team": "Oklahoma City Thunder",
   "home_score": 120,
   "away_score": 126,
   "home_stats": {
     "PTS": 120,
     "REB": 47,
     "AST": 26,
-    "STL": 5,
-    "BLK": 12,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 5,
+    "TO": 12,
+    "PF": 15,
     "FG%": 44.8,
     "3P%": 36.5,
-    "FT%": 65.7,
-    "PF": 21
+    "FT%": 65.7
   },
   "away_stats": {
     "PTS": 126,
     "REB": 50,
     "AST": 24,
-    "STL": 8,
-    "BLK": 5,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 8,
+    "TO": 5,
+    "PF": 16,
     "FG%": 44.0,
     "3P%": 45.5,
-    "FT%": 81.8,
-    "PF": 24
+    "FT%": 81.8
   }
 }

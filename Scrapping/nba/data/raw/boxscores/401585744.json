@@ -1,32 +1,32 @@
 {
-  "game_id": "401585744",
-  "fecha": "2025-11-09",
-  "home_team": "Thunder",
-  "away_team": "Pacers",
-  "home_score": 111,
-  "away_score": 121,
+  "game_id": 401585744,
+  "fecha": "2026-02-14",
+  "home_team": "Indiana Pacers",
+  "away_team": "Oklahoma City Thunder",
+  "home_score": 112,
+  "away_score": 126,
   "home_stats": {
     "PTS": 126,
     "REB": 39,
     "AST": 30,
-    "STL": 8,
-    "BLK": 5,
-    "TO": 13,
+    "STL": 13,
+    "BLK": 8,
+    "TO": 5,
+    "PF": 8,
     "FG%": 52.3,
     "3P%": 42.9,
-    "FT%": 90.5,
-    "PF": 23
+    "FT%": 90.5
   },
   "away_stats": {
     "PTS": 112,
     "REB": 39,
     "AST": 24,
-    "STL": 8,
-    "BLK": 6,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 8,
+    "TO": 6,
+    "PF": 9,
     "FG%": 48.8,
     "3P%": 26.7,
-    "FT%": 83.3,
-    "PF": 17
+    "FT%": 83.3
   }
 }

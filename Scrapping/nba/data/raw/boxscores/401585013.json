@@ -1,32 +1,32 @@
 {
-  "game_id": "401585013",
-  "fecha": "2025-11-09",
-  "home_team": "Mavericks",
-  "away_team": "Rockets",
-  "home_score": 121,
-  "away_score": 115,
+  "game_id": 401585013,
+  "fecha": "2026-02-14",
+  "home_team": "Houston Rockets",
+  "away_team": "Dallas Mavericks",
+  "home_score": 96,
+  "away_score": 122,
   "home_stats": {
     "PTS": 122,
     "REB": 63,
     "AST": 21,
-    "STL": 7,
-    "BLK": 3,
-    "TO": 16,
+    "STL": 16,
+    "BLK": 7,
+    "TO": 3,
+    "PF": 12,
     "FG%": 48.4,
     "3P%": 28.9,
-    "FT%": 82.6,
-    "PF": 22
+    "FT%": 82.6
   },
   "away_stats": {
     "PTS": 96,
     "REB": 47,
     "AST": 18,
-    "STL": 10,
-    "BLK": 1,
-    "TO": 11,
+    "STL": 11,
+    "BLK": 10,
+    "TO": 1,
+    "PF": 14,
     "FG%": 34.7,
     "3P%": 17.5,
-    "FT%": 73.1,
-    "PF": 17
+    "FT%": 73.1
   }
 }

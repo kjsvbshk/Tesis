@@ -1,32 +1,32 @@
 {
-  "game_id": "401585459",
-  "fecha": "2025-11-09",
-  "home_team": "Heat",
-  "away_team": "Kings",
-  "home_score": 115,
-  "away_score": 106,
+  "game_id": 401585459,
+  "fecha": "2026-02-14",
+  "home_team": "Sacramento Kings",
+  "away_team": "Miami Heat",
+  "home_score": 110,
+  "away_score": 121,
   "home_stats": {
     "PTS": 110,
     "REB": 41,
     "AST": 30,
-    "STL": 10,
-    "BLK": 5,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 10,
+    "TO": 5,
+    "PF": 11,
     "FG%": 52.9,
     "3P%": 40.6,
-    "FT%": 58.3,
-    "PF": 20
+    "FT%": 58.3
   },
   "away_stats": {
     "PTS": 121,
     "REB": 39,
     "AST": 27,
-    "STL": 12,
-    "BLK": 3,
-    "TO": 11,
+    "STL": 11,
+    "BLK": 12,
+    "TO": 3,
+    "PF": 10,
     "FG%": 51.7,
     "3P%": 36.7,
-    "FT%": 80.0,
-    "PF": 12
+    "FT%": 80.0
   }
 }

@@ -1,32 +1,32 @@
 {
-  "game_id": "401584961",
-  "fecha": "2025-11-09",
-  "home_team": "Knicks",
-  "away_team": "Suns",
-  "home_score": 113,
-  "away_score": 116,
+  "game_id": 401584961,
+  "fecha": "2026-02-14",
+  "home_team": "Phoenix Suns",
+  "away_team": "New York Knicks",
+  "home_score": 122,
+  "away_score": 139,
   "home_stats": {
     "PTS": 122,
     "REB": 33,
     "AST": 30,
-    "STL": 4,
-    "BLK": 3,
-    "TO": 11,
+    "STL": 11,
+    "BLK": 4,
+    "TO": 3,
+    "PF": 10,
     "FG%": 52.2,
     "3P%": 39.3,
-    "FT%": 81.0,
-    "PF": 17
+    "FT%": 81.0
   },
   "away_stats": {
     "PTS": 139,
     "REB": 38,
     "AST": 28,
-    "STL": 9,
-    "BLK": 5,
-    "TO": 11,
+    "STL": 11,
+    "BLK": 9,
+    "TO": 5,
+    "PF": 9,
     "FG%": 59.8,
     "3P%": 58.6,
-    "FT%": 85.7,
-    "PF": 20
+    "FT%": 85.7
   }
 }

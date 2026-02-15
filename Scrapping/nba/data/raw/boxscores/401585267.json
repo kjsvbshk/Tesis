@@ -1,32 +1,32 @@
 {
-  "game_id": "401585267",
-  "fecha": "2025-11-09",
-  "home_team": "Cavaliers",
-  "away_team": "Bucks",
-  "home_score": 111,
-  "away_score": 119,
+  "game_id": 401585267,
+  "fecha": "2026-02-14",
+  "home_team": "Milwaukee Bucks",
+  "away_team": "Cleveland Cavaliers",
+  "home_score": 100,
+  "away_score": 112,
   "home_stats": {
     "PTS": 100,
     "REB": 51,
     "AST": 21,
-    "STL": 6,
-    "BLK": 4,
-    "TO": 18,
+    "STL": 18,
+    "BLK": 6,
+    "TO": 4,
+    "PF": 12,
     "FG%": 40.2,
     "3P%": 38.2,
-    "FT%": 70.8,
-    "PF": 24
+    "FT%": 70.8
   },
   "away_stats": {
     "PTS": 112,
     "REB": 51,
     "AST": 20,
-    "STL": 7,
-    "BLK": 8,
-    "TO": 13,
+    "STL": 13,
+    "BLK": 7,
+    "TO": 8,
+    "PF": 15,
     "FG%": 41.3,
     "3P%": 38.9,
-    "FT%": 71.0,
-    "PF": 22
+    "FT%": 71.0
   }
 }

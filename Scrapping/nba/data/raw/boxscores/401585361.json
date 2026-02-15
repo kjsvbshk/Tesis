@@ -1,32 +1,32 @@
 {
-  "game_id": "401585361",
-  "fecha": "2025-11-09",
-  "home_team": "Pacers",
-  "away_team": "Warriors",
+  "game_id": 401585361,
+  "fecha": "2026-02-14",
+  "home_team": "Indiana Pacers",
+  "away_team": "Golden State Warriors",
   "home_score": 109,
   "away_score": 131,
   "home_stats": {
     "PTS": 109,
     "REB": 30,
     "AST": 31,
-    "STL": 11,
-    "BLK": 6,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 11,
+    "TO": 6,
+    "PF": 7,
     "FG%": 48.1,
     "3P%": 38.7,
-    "FT%": 70.4,
-    "PF": 17
+    "FT%": 70.4
   },
   "away_stats": {
     "PTS": 131,
     "REB": 49,
     "AST": 33,
-    "STL": 7,
+    "STL": 17,
     "BLK": 7,
-    "TO": 17,
+    "TO": 7,
+    "PF": 10,
     "FG%": 55.9,
     "3P%": 53.1,
-    "FT%": 76.9,
-    "PF": 22
+    "FT%": 76.9
   }
 }

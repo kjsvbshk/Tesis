@@ -1,32 +1,32 @@
 {
-  "game_id": "401585610",
-  "fecha": "2025-11-09",
-  "home_team": "Hawks",
-  "away_team": "Clippers",
-  "home_score": 144,
-  "away_score": 149,
+  "game_id": 401585610,
+  "fecha": "2026-02-14",
+  "home_team": "LA Clippers",
+  "away_team": "Atlanta Hawks",
+  "home_score": 93,
+  "away_score": 110,
   "home_stats": {
     "PTS": 93,
     "REB": 40,
     "AST": 17,
-    "STL": 10,
-    "BLK": 5,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 10,
+    "TO": 5,
+    "PF": 10,
     "FG%": 37.8,
     "3P%": 30.6,
-    "FT%": 89.7,
-    "PF": 13
+    "FT%": 89.7
   },
   "away_stats": {
     "PTS": 110,
     "REB": 45,
     "AST": 32,
-    "STL": 10,
-    "BLK": 7,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 10,
+    "TO": 7,
+    "PF": 10,
     "FG%": 48.8,
     "3P%": 50.0,
-    "FT%": 91.7,
-    "PF": 22
+    "FT%": 91.7
   }
 }

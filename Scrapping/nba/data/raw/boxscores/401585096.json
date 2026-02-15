@@ -1,32 +1,32 @@
 {
-  "game_id": "401585096",
-  "fecha": "2025-11-09",
-  "home_team": "Knicks",
-  "away_team": "Bulls",
-  "home_score": 116,
-  "away_score": 100,
+  "game_id": 401585096,
+  "fecha": "2026-02-14",
+  "home_team": "New York Knicks",
+  "away_team": "Chicago Bulls",
+  "home_score": 100,
+  "away_score": 116,
   "home_stats": {
     "PTS": 116,
     "REB": 52,
     "AST": 29,
-    "STL": 6,
-    "BLK": 7,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 6,
+    "TO": 7,
+    "PF": 13,
     "FG%": 51.7,
     "3P%": 39.5,
-    "FT%": 81.8,
-    "PF": 17
+    "FT%": 81.8
   },
   "away_stats": {
     "PTS": 100,
     "REB": 39,
     "AST": 24,
-    "STL": 9,
-    "BLK": 7,
-    "TO": 11,
+    "STL": 11,
+    "BLK": 9,
+    "TO": 7,
+    "PF": 11,
     "FG%": 41.6,
     "3P%": 40.6,
-    "FT%": 81.3,
-    "PF": 17
+    "FT%": 81.2
   }
 }

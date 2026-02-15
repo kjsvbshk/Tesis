@@ -1,32 +1,32 @@
 {
-  "game_id": "401585309",
-  "fecha": "2025-11-09",
-  "home_team": "Spurs",
-  "away_team": "Magic",
+  "game_id": 401585309,
+  "fecha": "2026-02-14",
+  "home_team": "San Antonio Spurs",
+  "away_team": "Orlando Magic",
   "home_score": 98,
   "away_score": 108,
   "home_stats": {
     "PTS": 98,
     "REB": 41,
     "AST": 24,
-    "STL": 9,
+    "STL": 17,
     "BLK": 9,
-    "TO": 17,
+    "TO": 9,
+    "PF": 7,
     "FG%": 45.0,
     "3P%": 29.0,
-    "FT%": 70.8,
-    "PF": 20
+    "FT%": 70.8
   },
   "away_stats": {
     "PTS": 108,
     "REB": 45,
     "AST": 29,
-    "STL": 10,
-    "BLK": 5,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 10,
+    "TO": 5,
+    "PF": 12,
     "FG%": 47.7,
     "3P%": 35.0,
-    "FT%": 82.6,
-    "PF": 20
+    "FT%": 82.6
   }
 }

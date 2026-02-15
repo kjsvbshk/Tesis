@@ -1,32 +1,32 @@
 {
-  "game_id": "401585752",
-  "fecha": "2025-11-09",
-  "home_team": "Hawks",
-  "away_team": "Mavericks",
-  "home_score": 143,
-  "away_score": 148,
+  "game_id": 401585752,
+  "fecha": "2026-02-14",
+  "home_team": "Dallas Mavericks",
+  "away_team": "Atlanta Hawks",
+  "home_score": 95,
+  "away_score": 109,
   "home_stats": {
     "PTS": 109,
     "REB": 53,
     "AST": 20,
-    "STL": 7,
+    "STL": 14,
     "BLK": 7,
-    "TO": 14,
+    "TO": 7,
+    "PF": 11,
     "FG%": 40.4,
     "3P%": 36.7,
-    "FT%": 88.2,
-    "PF": 17
+    "FT%": 88.2
   },
   "away_stats": {
     "PTS": 95,
     "REB": 56,
     "AST": 21,
-    "STL": 7,
-    "BLK": 2,
-    "TO": 21,
+    "STL": 21,
+    "BLK": 7,
+    "TO": 2,
+    "PF": 11,
     "FG%": 40.0,
     "3P%": 34.2,
-    "FT%": 66.7,
-    "PF": 22
+    "FT%": 66.7
   }
 }

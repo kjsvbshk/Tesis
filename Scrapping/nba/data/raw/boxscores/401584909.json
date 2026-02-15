@@ -1,32 +1,32 @@
 {
-  "game_id": "401584909",
-  "fecha": "2025-11-09",
-  "home_team": "Hornets",
-  "away_team": "Timberwolves",
+  "game_id": 401584909,
+  "fecha": "2026-02-14",
+  "home_team": "Charlotte Hornets",
+  "away_team": "Minnesota Timberwolves",
   "home_score": 117,
   "away_score": 123,
   "home_stats": {
     "PTS": 117,
     "REB": 36,
     "AST": 29,
-    "STL": 6,
-    "BLK": 4,
-    "TO": 8,
+    "STL": 8,
+    "BLK": 6,
+    "TO": 4,
+    "PF": 10,
     "FG%": 48.4,
     "3P%": 48.0,
-    "FT%": 89.5,
-    "PF": 22
+    "FT%": 89.5
   },
   "away_stats": {
     "PTS": 123,
     "REB": 41,
     "AST": 26,
-    "STL": 5,
-    "BLK": 3,
-    "TO": 11,
+    "STL": 11,
+    "BLK": 5,
+    "TO": 3,
+    "PF": 10,
     "FG%": 51.2,
     "3P%": 35.5,
-    "FT%": 86.7,
-    "PF": 16
+    "FT%": 86.7
   }
 }

@@ -1,32 +1,32 @@
 {
-  "game_id": "401584968",
-  "fecha": "2025-11-09",
-  "home_team": "Thunder",
-  "away_team": "Nuggets",
-  "home_score": 95,
-  "away_score": 128,
+  "game_id": 401584968,
+  "fecha": "2026-02-14",
+  "home_team": "Denver Nuggets",
+  "away_team": "Oklahoma City Thunder",
+  "home_score": 117,
+  "away_score": 118,
   "home_stats": {
     "PTS": 117,
     "REB": 46,
     "AST": 30,
-    "STL": 5,
-    "BLK": 0,
-    "TO": 9,
+    "STL": 9,
+    "BLK": 5,
+    "TO": 0,
+    "PF": 16,
     "FG%": 45.2,
     "3P%": 37.5,
-    "FT%": 87.5,
-    "PF": 22
+    "FT%": 87.5
   },
   "away_stats": {
     "PTS": 118,
     "REB": 40,
     "AST": 22,
-    "STL": 4,
-    "BLK": 9,
-    "TO": 10,
+    "STL": 10,
+    "BLK": 4,
+    "TO": 9,
+    "PF": 9,
     "FG%": 51.2,
     "3P%": 33.3,
-    "FT%": 83.3,
-    "PF": 19
+    "FT%": 83.3
   }
 }

@@ -1,32 +1,32 @@
 {
-  "game_id": "401585347",
-  "fecha": "2025-11-09",
-  "home_team": "Rockets",
-  "away_team": "Pacers",
-  "home_score": 117,
-  "away_score": 123,
+  "game_id": 401585347,
+  "fecha": "2026-02-14",
+  "home_team": "Indiana Pacers",
+  "away_team": "Houston Rockets",
+  "home_score": 129,
+  "away_score": 132,
   "home_stats": {
     "PTS": 132,
     "REB": 25,
     "AST": 35,
-    "STL": 7,
+    "STL": 12,
     "BLK": 7,
-    "TO": 12,
+    "TO": 7,
+    "PF": 5,
     "FG%": 62.8,
     "3P%": 46.9,
-    "FT%": 64.3,
-    "PF": 20
+    "FT%": 64.3
   },
   "away_stats": {
     "PTS": 129,
     "REB": 48,
     "AST": 26,
-    "STL": 5,
-    "BLK": 3,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 5,
+    "TO": 3,
+    "PF": 20,
     "FG%": 51.5,
     "3P%": 48.0,
-    "FT%": 73.9,
-    "PF": 16
+    "FT%": 73.9
   }
 }

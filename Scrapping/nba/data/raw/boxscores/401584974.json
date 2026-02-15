@@ -1,32 +1,32 @@
 {
-  "game_id": "401584974",
-  "fecha": "2025-11-09",
-  "home_team": "Bucks",
-  "away_team": "Rockets",
-  "home_score": 128,
-  "away_score": 119,
+  "game_id": 401584974,
+  "fecha": "2026-02-14",
+  "home_team": "Milwaukee Bucks",
+  "away_team": "Houston Rockets",
+  "home_score": 119,
+  "away_score": 128,
   "home_stats": {
     "PTS": 128,
     "REB": 46,
     "AST": 25,
-    "STL": 4,
-    "BLK": 1,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 4,
+    "TO": 1,
+    "PF": 16,
     "FG%": 50.0,
     "3P%": 36.1,
-    "FT%": 78.1,
-    "PF": 23
+    "FT%": 78.1
   },
   "away_stats": {
     "PTS": 119,
     "REB": 31,
     "AST": 26,
-    "STL": 8,
-    "BLK": 4,
-    "TO": 9,
+    "STL": 9,
+    "BLK": 8,
+    "TO": 4,
+    "PF": 6,
     "FG%": 52.9,
     "3P%": 40.7,
-    "FT%": 85.7,
-    "PF": 21
+    "FT%": 85.7
   }
 }

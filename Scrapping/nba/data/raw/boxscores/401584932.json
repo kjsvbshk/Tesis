@@ -1,32 +1,32 @@
 {
-  "game_id": "401584932",
-  "fecha": "2025-11-09",
-  "home_team": "Clippers",
-  "away_team": "Trail Blazers",
-  "home_score": 123,
-  "away_score": 111,
+  "game_id": 401584932,
+  "fecha": "2026-02-14",
+  "home_team": "LA Clippers",
+  "away_team": "Portland Trail Blazers",
+  "home_score": 127,
+  "away_score": 132,
   "home_stats": {
     "PTS": 132,
     "REB": 35,
     "AST": 33,
-    "STL": 7,
-    "BLK": 9,
+    "STL": 9,
+    "BLK": 7,
     "TO": 9,
+    "PF": 9,
     "FG%": 55.1,
     "3P%": 38.2,
-    "FT%": 95.5,
-    "PF": 20
+    "FT%": 95.5
   },
   "away_stats": {
     "PTS": 127,
     "REB": 36,
     "AST": 25,
-    "STL": 5,
-    "BLK": 4,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 5,
+    "TO": 4,
+    "PF": 11,
     "FG%": 47.8,
     "3P%": 47.5,
-    "FT%": 84.6,
-    "PF": 21
+    "FT%": 84.6
   }
 }

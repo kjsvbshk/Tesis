@@ -1,32 +1,32 @@
 {
-  "game_id": "401585493",
-  "fecha": "2025-11-09",
-  "home_team": "Wizards",
-  "away_team": "Clippers",
-  "home_score": 109,
-  "away_score": 125,
+  "game_id": 401585493,
+  "fecha": "2026-02-14",
+  "home_team": "LA Clippers",
+  "away_team": "Washington Wizards",
+  "home_score": 115,
+  "away_score": 140,
   "home_stats": {
     "PTS": 140,
     "REB": 49,
     "AST": 32,
-    "STL": 5,
-    "BLK": 7,
-    "TO": 8,
+    "STL": 8,
+    "BLK": 5,
+    "TO": 7,
+    "PF": 9,
     "FG%": 57.4,
     "3P%": 40.6,
-    "FT%": 76.0,
-    "PF": 13
+    "FT%": 76.0
   },
   "away_stats": {
     "PTS": 115,
     "REB": 39,
     "AST": 29,
-    "STL": 5,
-    "BLK": 3,
-    "TO": 9,
+    "STL": 9,
+    "BLK": 5,
+    "TO": 3,
+    "PF": 9,
     "FG%": 46.9,
     "3P%": 35.3,
-    "FT%": 73.3,
-    "PF": 17
+    "FT%": 73.3
   }
 }

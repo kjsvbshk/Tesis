@@ -1,32 +1,32 @@
 {
-  "game_id": "401584939",
-  "fecha": "2025-11-09",
-  "home_team": "Wizards",
-  "away_team": "Pelicans",
+  "game_id": 401584939,
+  "fecha": "2026-02-14",
+  "home_team": "Washington Wizards",
+  "away_team": "New Orleans Pelicans",
   "home_score": 122,
   "away_score": 142,
   "home_stats": {
     "PTS": 122,
     "REB": 33,
     "AST": 28,
-    "STL": 7,
-    "BLK": 6,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 7,
+    "TO": 6,
+    "PF": 3,
     "FG%": 51.2,
     "3P%": 43.2,
-    "FT%": 79.2,
-    "PF": 16
+    "FT%": 79.2
   },
   "away_stats": {
     "PTS": 142,
     "REB": 46,
     "AST": 30,
-    "STL": 11,
-    "BLK": 3,
-    "TO": 9,
+    "STL": 9,
+    "BLK": 11,
+    "TO": 3,
+    "PF": 10,
     "FG%": 52.1,
     "3P%": 47.1,
-    "FT%": 86.7,
-    "PF": 17
+    "FT%": 86.7
   }
 }

@@ -1,32 +1,32 @@
 {
-  "game_id": "401585065",
-  "fecha": "2025-11-09",
-  "home_team": "Trail Blazers",
-  "away_team": "Spurs",
-  "home_score": 105,
-  "away_score": 118,
+  "game_id": 401585065,
+  "fecha": "2026-02-14",
+  "home_team": "Portland Trail Blazers",
+  "away_team": "San Antonio Spurs",
+  "home_score": 128,
+  "away_score": 134,
   "home_stats": {
     "PTS": 134,
     "REB": 43,
     "AST": 28,
-    "STL": 8,
-    "BLK": 6,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 8,
+    "TO": 6,
+    "PF": 16,
     "FG%": 50.5,
     "3P%": 59.3,
-    "FT%": 81.5,
-    "PF": 19
+    "FT%": 81.5
   },
   "away_stats": {
     "PTS": 128,
     "REB": 42,
     "AST": 31,
-    "STL": 9,
-    "BLK": 3,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 9,
+    "TO": 3,
+    "PF": 13,
     "FG%": 51.1,
     "3P%": 42.4,
-    "FT%": 72.0,
-    "PF": 19
+    "FT%": 72.0
   }
 }

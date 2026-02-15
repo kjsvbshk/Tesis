@@ -1,32 +1,32 @@
 {
-  "game_id": "401585089",
-  "fecha": "2025-11-09",
-  "home_team": "Pelicans",
-  "away_team": "Nets",
-  "home_score": 112,
-  "away_score": 85,
+  "game_id": 401585089,
+  "fecha": "2026-02-14",
+  "home_team": "New Orleans Pelicans",
+  "away_team": "Brooklyn Nets",
+  "home_score": 85,
+  "away_score": 112,
   "home_stats": {
     "PTS": 112,
     "REB": 53,
     "AST": 23,
-    "STL": 10,
-    "BLK": 9,
-    "TO": 16,
+    "STL": 16,
+    "BLK": 10,
+    "TO": 9,
+    "PF": 17,
     "FG%": 46.6,
     "3P%": 41.0,
-    "FT%": 77.8,
-    "PF": 12
+    "FT%": 77.8
   },
   "away_stats": {
     "PTS": 85,
     "REB": 43,
     "AST": 26,
-    "STL": 7,
-    "BLK": 4,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 7,
+    "TO": 4,
+    "PF": 18,
     "FG%": 35.7,
     "3P%": 25.6,
-    "FT%": 50.0,
-    "PF": 13
+    "FT%": 50.0
   }
 }

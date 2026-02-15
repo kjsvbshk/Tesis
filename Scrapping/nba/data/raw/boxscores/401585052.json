@@ -1,32 +1,32 @@
 {
-  "game_id": "401585052",
-  "fecha": "2025-11-09",
-  "home_team": "Jazz",
-  "away_team": "Pelicans",
+  "game_id": 401585052,
+  "fecha": "2026-02-14",
+  "home_team": "New Orleans Pelicans",
+  "away_team": "Utah Jazz",
   "home_score": 105,
-  "away_score": 100,
+  "away_score": 112,
   "home_stats": {
     "PTS": 112,
     "REB": 35,
     "AST": 27,
-    "STL": 10,
-    "BLK": 7,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 10,
+    "TO": 7,
+    "PF": 6,
     "FG%": 54.9,
     "3P%": 37.0,
-    "FT%": 80.0,
-    "PF": 19
+    "FT%": 80.0
   },
   "away_stats": {
     "PTS": 105,
     "REB": 42,
     "AST": 27,
-    "STL": 5,
-    "BLK": 3,
-    "TO": 18,
+    "STL": 18,
+    "BLK": 5,
+    "TO": 3,
+    "PF": 17,
     "FG%": 42.4,
     "3P%": 30.8,
-    "FT%": 84.0,
-    "PF": 15
+    "FT%": 84.0
   }
 }

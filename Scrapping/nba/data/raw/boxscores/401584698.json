@@ -1,32 +1,32 @@
 {
-  "game_id": "401584698",
-  "fecha": "2025-11-09",
-  "home_team": "Bulls",
-  "away_team": "Thunder",
+  "game_id": 401584698,
+  "fecha": "2026-02-14",
+  "home_team": "Chicago Bulls",
+  "away_team": "Oklahoma City Thunder",
   "home_score": 104,
   "away_score": 124,
   "home_stats": {
     "PTS": 104,
     "REB": 42,
     "AST": 26,
-    "STL": 10,
-    "BLK": 3,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 10,
+    "TO": 3,
+    "PF": 13,
     "FG%": 41.5,
     "3P%": 28.6,
-    "FT%": 77.8,
-    "PF": 16
+    "FT%": 77.8
   },
   "away_stats": {
     "PTS": 124,
     "REB": 43,
     "AST": 30,
-    "STL": 6,
-    "BLK": 4,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 6,
+    "TO": 4,
+    "PF": 5,
     "FG%": 54.9,
     "3P%": 48.7,
-    "FT%": 83.3,
-    "PF": 19
+    "FT%": 83.3
   }
 }

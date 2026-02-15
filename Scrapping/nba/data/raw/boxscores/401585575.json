@@ -1,32 +1,32 @@
 {
-  "game_id": "401585575",
-  "fecha": "2025-11-09",
-  "home_team": "Nets",
-  "away_team": "Magic",
-  "home_score": 124,
-  "away_score": 104,
+  "game_id": 401585575,
+  "fecha": "2026-02-14",
+  "home_team": "Orlando Magic",
+  "away_team": "Brooklyn Nets",
+  "home_score": 106,
+  "away_score": 114,
   "home_stats": {
     "PTS": 114,
     "REB": 34,
     "AST": 29,
-    "STL": 6,
+    "STL": 12,
     "BLK": 6,
-    "TO": 12,
+    "TO": 6,
+    "PF": 6,
     "FG%": 51.9,
     "3P%": 43.8,
-    "FT%": 76.9,
-    "PF": 20
+    "FT%": 76.9
   },
   "away_stats": {
     "PTS": 106,
     "REB": 32,
     "AST": 21,
-    "STL": 7,
-    "BLK": 4,
-    "TO": 13,
+    "STL": 13,
+    "BLK": 7,
+    "TO": 4,
+    "PF": 8,
     "FG%": 46.9,
     "3P%": 26.9,
-    "FT%": 85.2,
-    "PF": 19
+    "FT%": 85.2
   }
 }

@@ -1,32 +1,32 @@
 {
-  "game_id": "401584992",
-  "fecha": "2025-11-09",
-  "home_team": "Cavaliers",
-  "away_team": "Jazz",
-  "home_score": 124,
-  "away_score": 116,
+  "game_id": 401584992,
+  "fecha": "2026-02-14",
+  "home_team": "Cleveland Cavaliers",
+  "away_team": "Utah Jazz",
+  "home_score": 116,
+  "away_score": 124,
   "home_stats": {
     "PTS": 124,
     "REB": 44,
     "AST": 34,
-    "STL": 8,
-    "BLK": 3,
-    "TO": 11,
+    "STL": 11,
+    "BLK": 8,
+    "TO": 3,
+    "PF": 14,
     "FG%": 46.9,
     "3P%": 45.1,
-    "FT%": 68.8,
-    "PF": 23
+    "FT%": 68.8
   },
   "away_stats": {
     "PTS": 116,
     "REB": 38,
     "AST": 24,
-    "STL": 5,
-    "BLK": 6,
-    "TO": 16,
+    "STL": 16,
+    "BLK": 5,
+    "TO": 6,
+    "PF": 6,
     "FG%": 51.3,
     "3P%": 43.3,
-    "FT%": 82.1,
-    "PF": 22
+    "FT%": 82.1
   }
 }

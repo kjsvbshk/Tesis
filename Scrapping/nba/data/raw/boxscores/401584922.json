@@ -1,32 +1,32 @@
 {
-  "game_id": "401584922",
-  "fecha": "2025-11-09",
-  "home_team": "Cavaliers",
-  "away_team": "Magic",
-  "home_score": 121,
-  "away_score": 111,
+  "game_id": 401584922,
+  "fecha": "2026-02-14",
+  "home_team": "Orlando Magic",
+  "away_team": "Cleveland Cavaliers",
+  "home_score": 94,
+  "away_score": 104,
   "home_stats": {
     "PTS": 104,
     "REB": 43,
     "AST": 22,
-    "STL": 7,
-    "BLK": 8,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 7,
+    "TO": 8,
+    "PF": 12,
     "FG%": 46.4,
     "3P%": 26.9,
-    "FT%": 76.0,
-    "PF": 22
+    "FT%": 76.0
   },
   "away_stats": {
     "PTS": 94,
     "REB": 48,
     "AST": 15,
-    "STL": 10,
-    "BLK": 3,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 10,
+    "TO": 3,
+    "PF": 18,
     "FG%": 35.3,
     "3P%": 22.5,
-    "FT%": 75.8,
-    "PF": 23
+    "FT%": 75.8
   }
 }

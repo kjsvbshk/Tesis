@@ -1,32 +1,32 @@
 {
-  "game_id": "401584983",
-  "fecha": "2025-11-09",
-  "home_team": "Thunder",
-  "away_team": "Grizzlies",
-  "home_score": 116,
-  "away_score": 97,
+  "game_id": 401584983,
+  "fecha": "2026-02-14",
+  "home_team": "Oklahoma City Thunder",
+  "away_team": "Memphis Grizzlies",
+  "home_score": 97,
+  "away_score": 116,
   "home_stats": {
     "PTS": 116,
     "REB": 53,
     "AST": 31,
-    "STL": 11,
-    "BLK": 10,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 11,
+    "TO": 10,
+    "PF": 10,
     "FG%": 45.7,
     "3P%": 30.6,
-    "FT%": 91.3,
-    "PF": 18
+    "FT%": 91.3
   },
   "away_stats": {
     "PTS": 97,
     "REB": 45,
     "AST": 25,
-    "STL": 6,
-    "BLK": 3,
-    "TO": 22,
+    "STL": 22,
+    "BLK": 6,
+    "TO": 3,
+    "PF": 7,
     "FG%": 35.3,
     "3P%": 35.2,
-    "FT%": 85.7,
-    "PF": 19
+    "FT%": 85.7
   }
 }

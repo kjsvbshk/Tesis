@@ -1,32 +1,32 @@
 {
-  "game_id": "401585764",
-  "fecha": "2025-11-09",
-  "home_team": "Bulls",
-  "away_team": "Magic",
-  "home_score": 94,
-  "away_score": 96,
+  "game_id": 401585764,
+  "fecha": "2026-02-14",
+  "home_team": "Orlando Magic",
+  "away_team": "Chicago Bulls",
+  "home_score": 98,
+  "away_score": 113,
   "home_stats": {
     "PTS": 113,
     "REB": 40,
     "AST": 24,
-    "STL": 12,
-    "BLK": 4,
-    "TO": 10,
+    "STL": 10,
+    "BLK": 12,
+    "TO": 4,
+    "PF": 10,
     "FG%": 46.7,
     "3P%": 32.4,
-    "FT%": 94.7,
-    "PF": 17
+    "FT%": 94.7
   },
   "away_stats": {
     "PTS": 98,
     "REB": 37,
     "AST": 20,
-    "STL": 7,
-    "BLK": 5,
-    "TO": 21,
+    "STL": 21,
+    "BLK": 7,
+    "TO": 5,
+    "PF": 8,
     "FG%": 50.7,
     "3P%": 30.0,
-    "FT%": 72.7,
-    "PF": 17
+    "FT%": 72.7
   }
 }

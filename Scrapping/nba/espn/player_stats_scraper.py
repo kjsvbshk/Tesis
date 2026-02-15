@@ -46,7 +46,8 @@ logger.add("logs/player_stats_scraper_{time}.log", rotation="1 day", retention="
 # Mapeo de temporadas a años de ESPN
 SEASON_MAPPING = {
     "2023-24": {"year": 2024, "regular": 2, "playoffs": 3},
-    "2024-25": {"year": 2025, "regular": 2, "playoffs": 3}
+    "2024-25": {"year": 2025, "regular": 2, "playoffs": 3},
+    "2025-26": {"year": 2026, "regular": 2, "playoffs": 3}
 }
 
 # Categorías de estadísticas
@@ -675,7 +676,7 @@ def main():
         '--season',
         type=str,
         required=True,
-        choices=['2023-24', '2024-25'],
+        choices=['2023-24', '2024-25', '2025-26'],
         help='Temporada a scrapear'
     )
     

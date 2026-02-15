@@ -1,32 +1,32 @@
 {
-  "game_id": "401584102",
-  "fecha": "2025-11-09",
-  "home_team": "Mavericks",
-  "away_team": "Clippers",
-  "home_score": 144,
-  "away_score": 126,
+  "game_id": 401584102,
+  "fecha": "2026-02-14",
+  "home_team": "Dallas Mavericks",
+  "away_team": "LA Clippers",
+  "home_score": 126,
+  "away_score": 144,
   "home_stats": {
     "PTS": 144,
     "REB": 41,
     "AST": 30,
-    "STL": 7,
-    "BLK": 1,
-    "TO": 8,
+    "STL": 8,
+    "BLK": 7,
+    "TO": 1,
+    "PF": 15,
     "FG%": 52.0,
     "3P%": 45.2,
-    "FT%": 88.5,
-    "PF": 23
+    "FT%": 88.5
   },
   "away_stats": {
     "PTS": 126,
     "REB": 47,
     "AST": 21,
-    "STL": 7,
-    "BLK": 2,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 7,
+    "TO": 2,
+    "PF": 19,
     "FG%": 48.9,
     "3P%": 29.6,
-    "FT%": 88.9,
-    "PF": 27
+    "FT%": 88.9
   }
 }

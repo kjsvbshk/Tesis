@@ -1,32 +1,32 @@
 {
-  "game_id": "401585191",
-  "fecha": "2025-11-09",
-  "home_team": "Celtics",
-  "away_team": "Raptors",
-  "home_score": 117,
-  "away_score": 94,
+  "game_id": 401585191,
+  "fecha": "2026-02-14",
+  "home_team": "Toronto Raptors",
+  "away_team": "Boston Celtics",
+  "home_score": 96,
+  "away_score": 105,
   "home_stats": {
     "PTS": 96,
     "REB": 52,
     "AST": 25,
-    "STL": 6,
-    "BLK": 2,
-    "TO": 7,
+    "STL": 7,
+    "BLK": 6,
+    "TO": 2,
+    "PF": 9,
     "FG%": 40.0,
     "3P%": 12.5,
-    "FT%": 76.2,
-    "PF": 21
+    "FT%": 76.2
   },
   "away_stats": {
     "PTS": 105,
     "REB": 53,
     "AST": 20,
-    "STL": 3,
-    "BLK": 7,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 3,
+    "TO": 7,
+    "PF": 5,
     "FG%": 40.2,
     "3P%": 41.0,
-    "FT%": 92.0,
-    "PF": 16
+    "FT%": 92.0
   }
 }

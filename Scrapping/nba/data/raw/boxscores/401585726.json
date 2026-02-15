@@ -1,32 +1,32 @@
 {
-  "game_id": "401585726",
-  "fecha": "2025-11-09",
-  "home_team": "Rockets",
-  "away_team": "Timberwolves",
-  "home_score": 95,
-  "away_score": 122,
+  "game_id": 401585726,
+  "fecha": "2026-02-14",
+  "home_team": "Minnesota Timberwolves",
+  "away_team": "Houston Rockets",
+  "home_score": 106,
+  "away_score": 113,
   "home_stats": {
     "PTS": 113,
     "REB": 39,
     "AST": 29,
-    "STL": 12,
-    "BLK": 5,
-    "TO": 17,
+    "STL": 17,
+    "BLK": 12,
+    "TO": 5,
+    "PF": 6,
     "FG%": 53.2,
     "3P%": 42.3,
-    "FT%": 90.9,
-    "PF": 17
+    "FT%": 90.9
   },
   "away_stats": {
     "PTS": 106,
     "REB": 37,
     "AST": 23,
-    "STL": 10,
-    "BLK": 0,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 10,
+    "TO": 0,
+    "PF": 12,
     "FG%": 44.6,
     "3P%": 29.2,
-    "FT%": 71.4,
-    "PF": 23
+    "FT%": 71.4
   }
 }

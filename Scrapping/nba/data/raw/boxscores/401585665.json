@@ -1,32 +1,32 @@
 {
-  "game_id": "401585665",
-  "fecha": "2025-11-09",
-  "home_team": "Bulls",
-  "away_team": "Wizards",
-  "home_score": 127,
-  "away_score": 98,
+  "game_id": 401585665,
+  "fecha": "2026-02-14",
+  "home_team": "Chicago Bulls",
+  "away_team": "Washington Wizards",
+  "home_score": 105,
+  "away_score": 107,
   "home_stats": {
     "PTS": 105,
     "REB": 46,
     "AST": 27,
-    "STL": 9,
-    "BLK": 8,
-    "TO": 11,
+    "STL": 11,
+    "BLK": 9,
+    "TO": 8,
+    "PF": 9,
     "FG%": 41.4,
     "3P%": 28.6,
-    "FT%": 82.1,
-    "PF": 14
+    "FT%": 82.1
   },
   "away_stats": {
     "PTS": 107,
     "REB": 52,
     "AST": 32,
-    "STL": 8,
-    "BLK": 5,
-    "TO": 13,
+    "STL": 13,
+    "BLK": 8,
+    "TO": 5,
+    "PF": 14,
     "FG%": 40.2,
     "3P%": 28.6,
-    "FT%": 83.3,
-    "PF": 21
+    "FT%": 83.3
   }
 }

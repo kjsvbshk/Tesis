@@ -1,32 +1,32 @@
 {
-  "game_id": "401584093",
-  "fecha": "2025-11-09",
-  "home_team": "Thunder",
-  "away_team": "Warriors",
+  "game_id": 401584093,
+  "fecha": "2026-02-14",
+  "home_team": "Oklahoma City Thunder",
+  "away_team": "Golden State Warriors",
   "home_score": 139,
   "away_score": 141,
   "home_stats": {
     "PTS": 139,
     "REB": 32,
     "AST": 26,
-    "STL": 3,
-    "BLK": 1,
-    "TO": 19,
+    "STL": 19,
+    "BLK": 3,
+    "TO": 1,
+    "PF": 7,
     "FG%": 60.2,
     "3P%": 51.7,
-    "FT%": 80.0,
-    "PF": 20
+    "FT%": 80.0
   },
   "away_stats": {
     "PTS": 141,
     "REB": 38,
     "AST": 36,
-    "STL": 9,
-    "BLK": 2,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 9,
+    "TO": 2,
+    "PF": 13,
     "FG%": 53.3,
     "3P%": 45.0,
-    "FT%": 83.3,
-    "PF": 25
+    "FT%": 83.3
   }
 }

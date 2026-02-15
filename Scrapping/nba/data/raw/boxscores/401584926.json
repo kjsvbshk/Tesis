@@ -1,32 +1,32 @@
 {
-  "game_id": "401584926",
-  "fecha": "2025-11-09",
-  "home_team": "Spurs",
-  "away_team": "Rockets",
-  "home_score": 126,
-  "away_score": 122,
+  "game_id": 401584926,
+  "fecha": "2026-02-14",
+  "home_team": "Houston Rockets",
+  "away_team": "San Antonio Spurs",
+  "home_score": 82,
+  "away_score": 93,
   "home_stats": {
     "PTS": 93,
     "REB": 60,
     "AST": 20,
-    "STL": 7,
-    "BLK": 2,
-    "TO": 16,
+    "STL": 16,
+    "BLK": 7,
+    "TO": 2,
+    "PF": 15,
     "FG%": 34.4,
     "3P%": 30.8,
-    "FT%": 85.0,
-    "PF": 18
+    "FT%": 85.0
   },
   "away_stats": {
     "PTS": 82,
     "REB": 51,
     "AST": 20,
-    "STL": 9,
-    "BLK": 5,
-    "TO": 17,
+    "STL": 17,
+    "BLK": 9,
+    "TO": 5,
+    "PF": 9,
     "FG%": 35.6,
     "3P%": 12.2,
-    "FT%": 68.2,
-    "PF": 14
+    "FT%": 68.2
   }
 }

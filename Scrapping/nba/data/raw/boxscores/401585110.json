@@ -1,32 +1,32 @@
 {
-  "game_id": "401585110",
-  "fecha": "2025-11-09",
-  "home_team": "Cavaliers",
-  "away_team": "Wizards",
-  "home_score": 140,
-  "away_score": 101,
+  "game_id": 401585110,
+  "fecha": "2026-02-14",
+  "home_team": "Cleveland Cavaliers",
+  "away_team": "Washington Wizards",
+  "home_score": 90,
+  "away_score": 114,
   "home_stats": {
     "PTS": 114,
     "REB": 52,
     "AST": 31,
-    "STL": 9,
-    "BLK": 1,
-    "TO": 23,
+    "STL": 23,
+    "BLK": 9,
+    "TO": 1,
+    "PF": 12,
     "FG%": 53.2,
     "3P%": 48.5,
-    "FT%": 69.6,
-    "PF": 19
+    "FT%": 69.6
   },
   "away_stats": {
     "PTS": 90,
     "REB": 31,
     "AST": 19,
-    "STL": 12,
-    "BLK": 8,
-    "TO": 16,
+    "STL": 16,
+    "BLK": 12,
+    "TO": 8,
+    "PF": 7,
     "FG%": 41.7,
     "3P%": 30.0,
-    "FT%": 73.3,
-    "PF": 19
+    "FT%": 73.3
   }
 }

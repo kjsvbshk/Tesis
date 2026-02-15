@@ -1,32 +1,32 @@
 {
-  "game_id": "401585058",
-  "fecha": "2025-11-09",
-  "home_team": "Nets",
-  "away_team": "Wizards",
-  "home_score": 102,
-  "away_score": 94,
+  "game_id": 401585058,
+  "fecha": "2026-02-14",
+  "home_team": "Washington Wizards",
+  "away_team": "Brooklyn Nets",
+  "home_score": 104,
+  "away_score": 110,
   "home_stats": {
     "PTS": 110,
     "REB": 43,
     "AST": 28,
-    "STL": 5,
+    "STL": 6,
     "BLK": 5,
-    "TO": 6,
+    "TO": 5,
+    "PF": 8,
     "FG%": 50.5,
     "3P%": 39.5,
-    "FT%": 42.9,
-    "PF": 19
+    "FT%": 42.9
   },
   "away_stats": {
     "PTS": 104,
     "REB": 54,
     "AST": 24,
-    "STL": 5,
-    "BLK": 4,
-    "TO": 10,
+    "STL": 10,
+    "BLK": 5,
+    "TO": 4,
+    "PF": 18,
     "FG%": 42.9,
     "3P%": 32.1,
-    "FT%": 63.0,
-    "PF": 13
+    "FT%": 63.0
   }
 }

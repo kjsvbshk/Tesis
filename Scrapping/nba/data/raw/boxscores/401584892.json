@@ -1,32 +1,32 @@
 {
-  "game_id": "401584892",
-  "fecha": "2025-11-09",
-  "home_team": "Kings",
-  "away_team": "Clippers",
+  "game_id": 401584892,
+  "fecha": "2026-02-14",
+  "home_team": "Sacramento Kings",
+  "away_team": "LA Clippers",
   "home_score": 117,
   "away_score": 131,
   "home_stats": {
     "PTS": 117,
     "REB": 47,
     "AST": 22,
-    "STL": 1,
+    "STL": 14,
     "BLK": 1,
-    "TO": 14,
+    "TO": 1,
+    "PF": 13,
     "FG%": 46.5,
     "3P%": 31.7,
-    "FT%": 85.7,
-    "PF": 20
+    "FT%": 85.7
   },
   "away_stats": {
     "PTS": 131,
     "REB": 37,
     "AST": 28,
-    "STL": 8,
-    "BLK": 5,
-    "TO": 4,
+    "STL": 4,
+    "BLK": 8,
+    "TO": 5,
+    "PF": 8,
     "FG%": 53.8,
     "3P%": 50.0,
-    "FT%": 77.3,
-    "PF": 20
+    "FT%": 77.3
   }
 }

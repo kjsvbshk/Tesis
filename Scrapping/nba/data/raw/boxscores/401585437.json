@@ -1,32 +1,32 @@
 {
-  "game_id": "401585437",
-  "fecha": "2025-11-09",
-  "home_team": "Wizards",
-  "away_team": "Thunder",
-  "home_score": 128,
-  "away_score": 136,
+  "game_id": 401585437,
+  "fecha": "2026-02-14",
+  "home_team": "Oklahoma City Thunder",
+  "away_team": "Washington Wizards",
+  "home_score": 106,
+  "away_score": 147,
   "home_stats": {
     "PTS": 147,
     "REB": 56,
     "AST": 30,
-    "STL": 5,
-    "BLK": 9,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 5,
+    "TO": 9,
+    "PF": 8,
     "FG%": 59.8,
     "3P%": 50.0,
-    "FT%": 81.0,
-    "PF": 22
+    "FT%": 81.0
   },
   "away_stats": {
     "PTS": 106,
     "REB": 43,
     "AST": 20,
-    "STL": 10,
-    "BLK": 3,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 10,
+    "TO": 3,
+    "PF": 16,
     "FG%": 39.4,
     "3P%": 23.7,
-    "FT%": 71.4,
-    "PF": 17
+    "FT%": 71.4
   }
 }

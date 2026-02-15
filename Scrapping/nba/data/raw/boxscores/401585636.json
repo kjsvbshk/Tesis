@@ -1,32 +1,32 @@
 {
-  "game_id": "401585636",
-  "fecha": "2025-11-09",
-  "home_team": "Mavericks",
-  "away_team": "Jazz",
-  "home_score": 147,
-  "away_score": 97,
+  "game_id": 401585636,
+  "fecha": "2026-02-14",
+  "home_team": "Dallas Mavericks",
+  "away_team": "Utah Jazz",
+  "home_score": 97,
+  "away_score": 113,
   "home_stats": {
     "PTS": 113,
     "REB": 43,
     "AST": 33,
-    "STL": 12,
-    "BLK": 3,
-    "TO": 13,
+    "STL": 13,
+    "BLK": 12,
+    "TO": 3,
+    "PF": 11,
     "FG%": 50.0,
-    "3P%": 31.3,
-    "FT%": 60.7,
-    "PF": 20
+    "3P%": 31.2,
+    "FT%": 60.7
   },
   "away_stats": {
     "PTS": 97,
     "REB": 38,
     "AST": 29,
-    "STL": 6,
-    "BLK": 3,
-    "TO": 18,
+    "STL": 18,
+    "BLK": 6,
+    "TO": 3,
+    "PF": 5,
     "FG%": 45.8,
     "3P%": 13.3,
-    "FT%": 89.5,
-    "PF": 23
+    "FT%": 89.5
   }
 }

@@ -1,32 +1,32 @@
 {
-  "game_id": "401585553",
-  "fecha": "2025-11-09",
-  "home_team": "Pelicans",
-  "away_team": "Hawks",
-  "home_score": 105,
-  "away_score": 123,
+  "game_id": 401585553,
+  "fecha": "2026-02-14",
+  "home_team": "Atlanta Hawks",
+  "away_team": "New Orleans Pelicans",
+  "home_score": 103,
+  "away_score": 116,
   "home_stats": {
     "PTS": 103,
     "REB": 41,
     "AST": 28,
-    "STL": 6,
-    "BLK": 4,
-    "TO": 11,
+    "STL": 11,
+    "BLK": 6,
+    "TO": 4,
+    "PF": 12,
     "FG%": 41.8,
     "3P%": 37.0,
-    "FT%": 76.9,
-    "PF": 15
+    "FT%": 76.9
   },
   "away_stats": {
     "PTS": 116,
     "REB": 43,
     "AST": 32,
-    "STL": 8,
-    "BLK": 7,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 8,
+    "TO": 7,
+    "PF": 4,
     "FG%": 57.3,
     "3P%": 51.9,
-    "FT%": 72.7,
-    "PF": 10
+    "FT%": 72.7
   }
 }

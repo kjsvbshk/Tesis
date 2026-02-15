@@ -1,32 +1,32 @@
 {
-  "game_id": "401584143",
-  "fecha": "2025-11-09",
-  "home_team": "Cavaliers",
-  "away_team": "Hawks",
-  "home_score": 128,
-  "away_score": 105,
+  "game_id": 401584143,
+  "fecha": "2026-02-14",
+  "home_team": "Cleveland Cavaliers",
+  "away_team": "Atlanta Hawks",
+  "home_score": 105,
+  "away_score": 128,
   "home_stats": {
     "PTS": 128,
     "REB": 55,
     "AST": 27,
-    "STL": 8,
-    "BLK": 12,
-    "TO": 16,
+    "STL": 16,
+    "BLK": 8,
+    "TO": 12,
+    "PF": 12,
     "FG%": 53.8,
     "3P%": 36.1,
-    "FT%": 88.2,
-    "PF": 20
+    "FT%": 88.2
   },
   "away_stats": {
     "PTS": 105,
     "REB": 44,
     "AST": 21,
-    "STL": 9,
-    "BLK": 3,
-    "TO": 10,
+    "STL": 10,
+    "BLK": 9,
+    "TO": 3,
+    "PF": 14,
     "FG%": 34.7,
     "3P%": 29.5,
-    "FT%": 91.7,
-    "PF": 16
+    "FT%": 91.7
   }
 }

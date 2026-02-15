@@ -1,32 +1,32 @@
 {
-  "game_id": "401585264",
-  "fecha": "2025-11-09",
-  "home_team": "Suns",
-  "away_team": "Pacers",
-  "home_score": 117,
-  "away_score": 110,
+  "game_id": 401585264,
+  "fecha": "2026-02-14",
+  "home_team": "Indiana Pacers",
+  "away_team": "Phoenix Suns",
+  "home_score": 131,
+  "away_score": 133,
   "home_stats": {
     "PTS": 133,
     "REB": 48,
     "AST": 34,
-    "STL": 8,
-    "BLK": 3,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 8,
+    "TO": 3,
+    "PF": 21,
     "FG%": 53.2,
     "3P%": 30.8,
-    "FT%": 60.0,
-    "PF": 17
+    "FT%": 60.0
   },
   "away_stats": {
     "PTS": 131,
     "REB": 38,
     "AST": 24,
-    "STL": 8,
-    "BLK": 5,
-    "TO": 20,
+    "STL": 20,
+    "BLK": 8,
+    "TO": 5,
+    "PF": 7,
     "FG%": 57.3,
     "3P%": 43.3,
-    "FT%": 88.9,
-    "PF": 17
+    "FT%": 88.9
   }
 }

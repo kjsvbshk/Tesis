@@ -1,32 +1,32 @@
 {
-  "game_id": "401585059",
-  "fecha": "2025-11-09",
-  "home_team": "Hawks",
-  "away_team": "Kings",
+  "game_id": 401585059,
+  "fecha": "2026-02-14",
+  "home_team": "Atlanta Hawks",
+  "away_team": "Sacramento Kings",
   "home_score": 110,
   "away_score": 117,
   "home_stats": {
     "PTS": 110,
     "REB": 51,
     "AST": 29,
-    "STL": 9,
-    "BLK": 4,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 9,
+    "TO": 4,
+    "PF": 18,
     "FG%": 39.4,
     "3P%": 34.9,
-    "FT%": 84.0,
-    "PF": 16
+    "FT%": 84.0
   },
   "away_stats": {
     "PTS": 117,
     "REB": 38,
     "AST": 35,
-    "STL": 9,
-    "BLK": 3,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 9,
+    "TO": 3,
+    "PF": 5,
     "FG%": 51.7,
     "3P%": 37.8,
-    "FT%": 53.3,
-    "PF": 20
+    "FT%": 53.3
   }
 }

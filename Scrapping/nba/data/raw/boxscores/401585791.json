@@ -1,32 +1,32 @@
 {
-  "game_id": "401585791",
-  "fecha": "2025-11-09",
-  "home_team": "Thunder",
-  "away_team": "Spurs",
-  "home_score": 123,
-  "away_score": 87,
+  "game_id": 401585791,
+  "fecha": "2026-02-14",
+  "home_team": "Oklahoma City Thunder",
+  "away_team": "San Antonio Spurs",
+  "home_score": 89,
+  "away_score": 127,
   "home_stats": {
     "PTS": 127,
     "REB": 62,
     "AST": 33,
     "STL": 12,
-    "BLK": 6,
-    "TO": 12,
+    "BLK": 12,
+    "TO": 6,
+    "PF": 7,
     "FG%": 46.5,
     "3P%": 42.1,
-    "FT%": 81.0,
-    "PF": 16
+    "FT%": 81.0
   },
   "away_stats": {
     "PTS": 89,
     "REB": 47,
     "AST": 24,
-    "STL": 8,
-    "BLK": 4,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 8,
+    "TO": 4,
+    "PF": 4,
     "FG%": 33.3,
     "3P%": 22.5,
-    "FT%": 80.0,
-    "PF": 14
+    "FT%": 80.0
   }
 }

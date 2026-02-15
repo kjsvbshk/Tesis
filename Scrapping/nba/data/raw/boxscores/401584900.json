@@ -1,32 +1,32 @@
 {
-  "game_id": "401584900",
-  "fecha": "2025-11-09",
-  "home_team": "Spurs",
-  "away_team": "Hawks",
+  "game_id": 401584900,
+  "fecha": "2026-02-14",
+  "home_team": "San Antonio Spurs",
+  "away_team": "Atlanta Hawks",
   "home_score": 135,
   "away_score": 137,
   "home_stats": {
     "PTS": 135,
     "REB": 47,
     "AST": 34,
-    "STL": 4,
-    "BLK": 7,
-    "TO": 21,
+    "STL": 21,
+    "BLK": 4,
+    "TO": 7,
+    "PF": 11,
     "FG%": 53.9,
     "3P%": 43.9,
-    "FT%": 91.3,
-    "PF": 22
+    "FT%": 91.3
   },
   "away_stats": {
     "PTS": 137,
     "REB": 37,
     "AST": 24,
-    "STL": 14,
-    "BLK": 2,
-    "TO": 10,
+    "STL": 10,
+    "BLK": 14,
+    "TO": 2,
+    "PF": 8,
     "FG%": 51.0,
     "3P%": 42.4,
-    "FT%": 86.2,
-    "PF": 25
+    "FT%": 86.2
   }
 }

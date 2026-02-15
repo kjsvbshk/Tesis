@@ -1,32 +1,32 @@
 {
-  "game_id": "401585036",
-  "fecha": "2025-11-09",
-  "home_team": "Bulls",
-  "away_team": "Hawks",
-  "home_score": 118,
-  "away_score": 113,
+  "game_id": 401585036,
+  "fecha": "2026-02-14",
+  "home_team": "Chicago Bulls",
+  "away_team": "Atlanta Hawks",
+  "home_score": 113,
+  "away_score": 118,
   "home_stats": {
     "PTS": 118,
     "REB": 48,
     "AST": 23,
-    "STL": 10,
-    "BLK": 2,
-    "TO": 8,
+    "STL": 8,
+    "BLK": 10,
+    "TO": 2,
+    "PF": 18,
     "FG%": 45.7,
     "3P%": 28.0,
-    "FT%": 87.1,
-    "PF": 17
+    "FT%": 87.1
   },
   "away_stats": {
     "PTS": 113,
     "REB": 40,
     "AST": 24,
-    "STL": 6,
-    "BLK": 3,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 6,
+    "TO": 3,
+    "PF": 12,
     "FG%": 46.1,
     "3P%": 28.9,
-    "FT%": 85.7,
-    "PF": 21
+    "FT%": 85.7
   }
 }

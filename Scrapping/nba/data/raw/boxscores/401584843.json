@@ -1,32 +1,32 @@
 {
-  "game_id": "401584843",
-  "fecha": "2025-11-09",
-  "home_team": "Trail Blazers",
-  "away_team": "Thunder",
+  "game_id": 401584843,
+  "fecha": "2026-02-14",
+  "home_team": "Portland Trail Blazers",
+  "away_team": "Oklahoma City Thunder",
   "home_score": 91,
   "away_score": 134,
   "home_stats": {
     "PTS": 91,
     "REB": 31,
     "AST": 21,
-    "STL": 10,
-    "BLK": 2,
-    "TO": 17,
+    "STL": 17,
+    "BLK": 10,
+    "TO": 2,
+    "PF": 13,
     "FG%": 40.0,
     "3P%": 26.5,
-    "FT%": 66.7,
-    "PF": 15
+    "FT%": 66.7
   },
   "away_stats": {
     "PTS": 134,
     "REB": 43,
     "AST": 28,
-    "STL": 8,
-    "BLK": 3,
-    "TO": 17,
+    "STL": 17,
+    "BLK": 8,
+    "TO": 3,
+    "PF": 10,
     "FG%": 60.5,
     "3P%": 61.1,
-    "FT%": 100.0,
-    "PF": 18
+    "FT%": 100.0
   }
 }

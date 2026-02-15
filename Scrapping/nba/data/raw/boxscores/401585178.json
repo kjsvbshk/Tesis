@@ -1,32 +1,32 @@
 {
-  "game_id": "401585178",
-  "fecha": "2025-11-09",
-  "home_team": "Nuggets",
-  "away_team": "Pacers",
-  "home_score": 117,
-  "away_score": 109,
+  "game_id": 401585178,
+  "fecha": "2026-02-14",
+  "home_team": "Denver Nuggets",
+  "away_team": "Indiana Pacers",
+  "home_score": 109,
+  "away_score": 117,
   "home_stats": {
     "PTS": 117,
     "REB": 40,
     "AST": 31,
-    "STL": 8,
-    "BLK": 3,
-    "TO": 21,
+    "STL": 21,
+    "BLK": 8,
+    "TO": 3,
+    "PF": 4,
     "FG%": 64.8,
     "3P%": 50.0,
-    "FT%": 65.2,
-    "PF": 18
+    "FT%": 65.2
   },
   "away_stats": {
     "PTS": 109,
     "REB": 37,
     "AST": 28,
-    "STL": 11,
-    "BLK": 1,
-    "TO": 13,
+    "STL": 13,
+    "BLK": 11,
+    "TO": 1,
+    "PF": 14,
     "FG%": 46.7,
     "3P%": 27.6,
-    "FT%": 68.2,
-    "PF": 21
+    "FT%": 68.2
   }
 }

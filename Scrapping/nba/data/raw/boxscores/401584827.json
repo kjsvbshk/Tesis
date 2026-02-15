@@ -1,32 +1,32 @@
 {
-  "game_id": "401584827",
-  "fecha": "2025-11-09",
-  "home_team": "Trail Blazers",
-  "away_team": "Cavaliers",
+  "game_id": 401584827,
+  "fecha": "2026-02-14",
+  "home_team": "Portland Trail Blazers",
+  "away_team": "Cleveland Cavaliers",
   "home_score": 95,
   "away_score": 109,
   "home_stats": {
     "PTS": 95,
     "REB": 30,
     "AST": 24,
-    "STL": 9,
-    "BLK": 3,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 9,
+    "TO": 3,
+    "PF": 8,
     "FG%": 37.4,
     "3P%": 34.2,
-    "FT%": 87.5,
-    "PF": 21
+    "FT%": 87.5
   },
   "away_stats": {
     "PTS": 109,
     "REB": 47,
     "AST": 23,
-    "STL": 5,
-    "BLK": 9,
-    "TO": 17,
+    "STL": 17,
+    "BLK": 5,
+    "TO": 9,
+    "PF": 7,
     "FG%": 56.0,
     "3P%": 30.0,
-    "FT%": 76.2,
-    "PF": 16
+    "FT%": 76.2
   }
 }

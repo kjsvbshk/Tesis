@@ -1,32 +1,32 @@
 {
-  "game_id": "401585328",
-  "fecha": "2025-11-09",
-  "home_team": "Bulls",
-  "away_team": "Kings",
+  "game_id": 401585328,
+  "fecha": "2026-02-14",
+  "home_team": "Chicago Bulls",
+  "away_team": "Sacramento Kings",
   "home_score": 115,
   "away_score": 123,
   "home_stats": {
     "PTS": 115,
     "REB": 47,
     "AST": 24,
-    "STL": 13,
-    "BLK": 3,
-    "TO": 16,
+    "STL": 16,
+    "BLK": 13,
+    "TO": 3,
+    "PF": 11,
     "FG%": 46.2,
     "3P%": 32.4,
-    "FT%": 90.9,
-    "PF": 20
+    "FT%": 90.9
   },
   "away_stats": {
     "PTS": 123,
     "REB": 40,
     "AST": 33,
-    "STL": 12,
-    "BLK": 1,
-    "TO": 16,
+    "STL": 16,
+    "BLK": 12,
+    "TO": 1,
+    "PF": 4,
     "FG%": 50.0,
     "3P%": 38.5,
-    "FT%": 82.8,
-    "PF": 18
+    "FT%": 82.8
   }
 }

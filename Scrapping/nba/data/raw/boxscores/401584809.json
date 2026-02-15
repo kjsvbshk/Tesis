@@ -1,32 +1,32 @@
 {
-  "game_id": "401584809",
-  "fecha": "2025-11-09",
-  "home_team": "Pistons",
-  "away_team": "Bulls",
-  "home_score": 118,
-  "away_score": 102,
+  "game_id": 401584809,
+  "fecha": "2026-02-14",
+  "home_team": "Chicago Bulls",
+  "away_team": "Detroit Pistons",
+  "home_score": 108,
+  "away_score": 119,
   "home_stats": {
     "PTS": 119,
     "REB": 40,
     "AST": 22,
-    "STL": 12,
-    "BLK": 6,
+    "STL": 6,
+    "BLK": 12,
     "TO": 6,
+    "PF": 11,
     "FG%": 48.4,
     "3P%": 36.7,
-    "FT%": 80.0,
-    "PF": 21
+    "FT%": 80.0
   },
   "away_stats": {
     "PTS": 108,
     "REB": 49,
     "AST": 26,
-    "STL": 4,
-    "BLK": 6,
-    "TO": 16,
+    "STL": 16,
+    "BLK": 4,
+    "TO": 6,
+    "PF": 16,
     "FG%": 43.2,
     "3P%": 34.4,
-    "FT%": 80.8,
-    "PF": 19
+    "FT%": 80.8
   }
 }

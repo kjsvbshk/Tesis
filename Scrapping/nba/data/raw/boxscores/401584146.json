@@ -1,32 +1,32 @@
 {
-  "game_id": "401584146",
-  "fecha": "2025-11-09",
-  "home_team": "Timberwolves",
-  "away_team": "Thunder",
-  "home_score": 106,
-  "away_score": 103,
+  "game_id": 401584146,
+  "fecha": "2026-02-14",
+  "home_team": "Minnesota Timberwolves",
+  "away_team": "Oklahoma City Thunder",
+  "home_score": 103,
+  "away_score": 106,
   "home_stats": {
     "PTS": 106,
     "REB": 51,
     "AST": 18,
-    "STL": 3,
-    "BLK": 9,
-    "TO": 19,
+    "STL": 19,
+    "BLK": 3,
+    "TO": 9,
+    "PF": 10,
     "FG%": 42.3,
     "3P%": 42.4,
-    "FT%": 81.3,
-    "PF": 17
+    "FT%": 81.2
   },
   "away_stats": {
     "PTS": 103,
     "REB": 36,
     "AST": 22,
     "STL": 8,
-    "BLK": 4,
-    "TO": 8,
+    "BLK": 8,
+    "TO": 4,
+    "PF": 9,
     "FG%": 41.1,
     "3P%": 36.7,
-    "FT%": 78.3,
-    "PF": 23
+    "FT%": 78.3
   }
 }

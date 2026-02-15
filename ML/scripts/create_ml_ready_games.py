@@ -286,10 +286,24 @@ def populate_ml_ready_games():
                         select_cols.append("(home_score > away_score)::boolean")
                     elif target_col == 'home_win' and actual_type == 'boolean':
                         select_cols.append(f"{source_col}")
+                    elif target_col == 'home_win' and actual_type == 'character varying':
+                        # Si es VARCHAR, necesitamos convertir a numeric primero
+                        select_cols.append("(NULLIF(home_score, '')::numeric > NULLIF(away_score, '')::numeric)::boolean")
                     else:
                         select_cols.append(f"{source_col}::{expected_type}")
                 else:
-                    select_cols.append(f"{source_col}")
+                    # Si la columna actual es VARCHAR pero debería ser numérica, convertir
+                    actual_type = columns.get(source_col, '')
+                    if actual_type == 'character varying' and target_col in [
+                        'home_score', 'away_score', 'home_fg_pct', 'home_3p_pct', 'home_ft_pct',
+                        'home_reb', 'home_ast', 'home_stl', 'home_blk', 'home_to', 'home_pts',
+                        'away_fg_pct', 'away_3p_pct', 'away_ft_pct', 'away_reb', 'away_ast',
+                        'away_stl', 'away_blk', 'away_to', 'away_pts', 'point_diff',
+                        'net_rating_diff', 'reb_diff', 'ast_diff', 'tov_diff'
+                    ]:
+                        select_cols.append(f"NULLIF({source_col}, '')::double precision")
+                    else:
+                        select_cols.append(f"{source_col}")
             
             # Agregar columnas que no existen (serán NULL)
             for target_col, source_col in column_mapping.items():

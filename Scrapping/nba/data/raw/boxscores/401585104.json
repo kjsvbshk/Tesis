@@ -1,32 +1,32 @@
 {
-  "game_id": "401585104",
-  "fecha": "2025-11-09",
-  "home_team": "Kings",
-  "away_team": "Magic",
-  "home_score": 138,
-  "away_score": 135,
+  "game_id": 401585104,
+  "fecha": "2026-02-14",
+  "home_team": "Sacramento Kings",
+  "away_team": "Orlando Magic",
+  "home_score": 135,
+  "away_score": 138,
   "home_stats": {
     "PTS": 138,
     "REB": 58,
     "AST": 36,
-    "STL": 9,
-    "BLK": 3,
-    "TO": 17,
+    "STL": 17,
+    "BLK": 9,
+    "TO": 3,
+    "PF": 18,
     "FG%": 48.6,
     "3P%": 37.5,
-    "FT%": 67.7,
-    "PF": 21
+    "FT%": 67.7
   },
   "away_stats": {
     "PTS": 135,
     "REB": 39,
     "AST": 33,
-    "STL": 10,
-    "BLK": 7,
-    "TO": 20,
+    "STL": 20,
+    "BLK": 10,
+    "TO": 7,
+    "PF": 7,
     "FG%": 48.9,
     "3P%": 56.8,
-    "FT%": 81.5,
-    "PF": 30
+    "FT%": 81.5
   }
 }

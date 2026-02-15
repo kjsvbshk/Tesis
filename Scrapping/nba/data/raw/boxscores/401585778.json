@@ -1,32 +1,32 @@
 {
-  "game_id": "401585778",
-  "fecha": "2025-11-09",
-  "home_team": "Magic",
-  "away_team": "Rockets",
-  "home_score": 116,
-  "away_score": 86,
+  "game_id": 401585778,
+  "fecha": "2026-02-14",
+  "home_team": "Houston Rockets",
+  "away_team": "Orlando Magic",
+  "home_score": 106,
+  "away_score": 118,
   "home_stats": {
     "PTS": 118,
     "REB": 37,
     "AST": 29,
-    "STL": 8,
-    "BLK": 7,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 8,
+    "TO": 7,
+    "PF": 6,
     "FG%": 52.3,
     "3P%": 42.9,
-    "FT%": 72.2,
-    "PF": 21
+    "FT%": 72.2
   },
   "away_stats": {
     "PTS": 106,
     "REB": 42,
     "AST": 23,
-    "STL": 9,
-    "BLK": 6,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 9,
+    "TO": 6,
+    "PF": 10,
     "FG%": 45.3,
     "3P%": 29.2,
-    "FT%": 91.3,
-    "PF": 15
+    "FT%": 91.3
   }
 }

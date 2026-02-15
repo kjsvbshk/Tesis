@@ -1,32 +1,32 @@
 {
-  "game_id": "401584976",
-  "fecha": "2025-11-09",
-  "home_team": "Warriors",
-  "away_team": "Trail Blazers",
-  "home_score": 110,
-  "away_score": 106,
+  "game_id": 401584976,
+  "fecha": "2026-02-14",
+  "home_team": "Portland Trail Blazers",
+  "away_team": "Golden State Warriors",
+  "home_score": 114,
+  "away_score": 118,
   "home_stats": {
     "PTS": 114,
     "REB": 37,
     "AST": 23,
-    "STL": 10,
-    "BLK": 4,
-    "TO": 13,
+    "STL": 13,
+    "BLK": 10,
+    "TO": 4,
+    "PF": 9,
     "FG%": 47.1,
     "3P%": 37.1,
-    "FT%": 91.3,
-    "PF": 20
+    "FT%": 91.3
   },
   "away_stats": {
     "PTS": 118,
     "REB": 43,
     "AST": 31,
-    "STL": 10,
-    "BLK": 4,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 10,
+    "TO": 4,
+    "PF": 11,
     "FG%": 52.9,
     "3P%": 34.2,
-    "FT%": 68.4,
-    "PF": 20
+    "FT%": 68.4
   }
 }

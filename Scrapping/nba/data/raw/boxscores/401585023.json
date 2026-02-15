@@ -1,32 +1,32 @@
 {
-  "game_id": "401585023",
-  "fecha": "2025-11-09",
-  "home_team": "Raptors",
-  "away_team": "Jazz",
+  "game_id": 401585023,
+  "fecha": "2026-02-14",
+  "home_team": "Toronto Raptors",
+  "away_team": "Utah Jazz",
   "home_score": 119,
   "away_score": 126,
   "home_stats": {
     "PTS": 119,
     "REB": 39,
     "AST": 35,
-    "STL": 7,
-    "BLK": 5,
-    "TO": 11,
+    "STL": 11,
+    "BLK": 7,
+    "TO": 5,
+    "PF": 12,
     "FG%": 47.9,
     "3P%": 40.6,
-    "FT%": 84.2,
-    "PF": 17
+    "FT%": 84.2
   },
   "away_stats": {
     "PTS": 126,
     "REB": 41,
     "AST": 35,
-    "STL": 7,
-    "BLK": 5,
-    "TO": 11,
+    "STL": 11,
+    "BLK": 7,
+    "TO": 5,
+    "PF": 8,
     "FG%": 52.7,
     "3P%": 44.7,
-    "FT%": 92.9,
-    "PF": 17
+    "FT%": 92.9
   }
 }

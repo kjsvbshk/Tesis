@@ -1,32 +1,32 @@
 {
-  "game_id": "401584099",
-  "fecha": "2025-11-09",
-  "home_team": "Rockets",
-  "away_team": "Pelicans",
-  "home_score": 104,
-  "away_score": 101,
+  "game_id": 401584099,
+  "fecha": "2026-02-14",
+  "home_team": "Houston Rockets",
+  "away_team": "New Orleans Pelicans",
+  "home_score": 101,
+  "away_score": 104,
   "home_stats": {
     "PTS": 104,
     "REB": 42,
     "AST": 20,
     "STL": 9,
-    "BLK": 5,
-    "TO": 9,
+    "BLK": 9,
+    "TO": 5,
+    "PF": 9,
     "FG%": 40.9,
     "3P%": 28.6,
-    "FT%": 78.6,
-    "PF": 22
+    "FT%": 78.6
   },
   "away_stats": {
     "PTS": 101,
     "REB": 49,
     "AST": 12,
-    "STL": 6,
+    "STL": 18,
     "BLK": 6,
-    "TO": 18,
+    "TO": 6,
+    "PF": 8,
     "FG%": 45.3,
     "3P%": 32.0,
-    "FT%": 73.5,
-    "PF": 26
+    "FT%": 73.5
   }
 }

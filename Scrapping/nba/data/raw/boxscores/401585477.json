@@ -1,32 +1,32 @@
 {
-  "game_id": "401585477",
-  "fecha": "2025-11-09",
-  "home_team": "Hornets",
-  "away_team": "Bucks",
+  "game_id": 401585477,
+  "fecha": "2026-02-14",
+  "home_team": "Charlotte Hornets",
+  "away_team": "Milwaukee Bucks",
   "home_score": 99,
-  "away_score": 130,
+  "away_score": 111,
   "home_stats": {
     "PTS": 99,
     "REB": 42,
     "AST": 24,
-    "STL": 3,
+    "STL": 13,
     "BLK": 3,
-    "TO": 13,
+    "TO": 3,
+    "PF": 9,
     "FG%": 43.9,
     "3P%": 30.8,
-    "FT%": 75.0,
-    "PF": 18
+    "FT%": 75.0
   },
   "away_stats": {
     "PTS": 111,
     "REB": 44,
     "AST": 21,
-    "STL": 9,
-    "BLK": 3,
-    "TO": 7,
+    "STL": 7,
+    "BLK": 9,
+    "TO": 3,
+    "PF": 8,
     "FG%": 45.3,
     "3P%": 41.0,
-    "FT%": 85.0,
-    "PF": 18
+    "FT%": 85.0
   }
 }

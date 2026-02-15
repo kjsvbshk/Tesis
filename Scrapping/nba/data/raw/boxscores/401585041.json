@@ -1,32 +1,32 @@
 {
-  "game_id": "401585041",
-  "fecha": "2025-11-09",
-  "home_team": "Kings",
-  "away_team": "Trail Blazers",
-  "home_score": 121,
-  "away_score": 118,
+  "game_id": 401585041,
+  "fecha": "2026-02-14",
+  "home_team": "Portland Trail Blazers",
+  "away_team": "Sacramento Kings",
+  "home_score": 113,
+  "away_score": 130,
   "home_stats": {
     "PTS": 130,
     "REB": 46,
     "AST": 28,
-    "STL": 5,
+    "STL": 7,
     "BLK": 5,
-    "TO": 7,
+    "TO": 5,
+    "PF": 16,
     "FG%": 50.0,
     "3P%": 40.0,
-    "FT%": 80.0,
-    "PF": 17
+    "FT%": 80.0
   },
   "away_stats": {
     "PTS": 113,
     "REB": 40,
     "AST": 25,
-    "STL": 5,
-    "BLK": 7,
-    "TO": 10,
+    "STL": 10,
+    "BLK": 5,
+    "TO": 7,
+    "PF": 11,
     "FG%": 48.4,
     "3P%": 23.8,
-    "FT%": 81.3,
-    "PF": 16
+    "FT%": 81.2
   }
 }

@@ -1,32 +1,32 @@
 {
-  "game_id": "401584708",
-  "fecha": "2025-11-09",
-  "home_team": "Celtics",
-  "away_team": "Heat",
-  "home_score": 119,
-  "away_score": 111,
+  "game_id": 401584708,
+  "fecha": "2026-02-14",
+  "home_team": "Boston Celtics",
+  "away_team": "Miami Heat",
+  "home_score": 111,
+  "away_score": 119,
   "home_stats": {
     "PTS": 119,
     "REB": 55,
     "AST": 20,
-    "STL": 7,
-    "BLK": 6,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 7,
+    "TO": 6,
+    "PF": 16,
     "FG%": 47.4,
     "3P%": 41.0,
-    "FT%": 68.4,
-    "PF": 19
+    "FT%": 68.4
   },
   "away_stats": {
     "PTS": 111,
     "REB": 45,
     "AST": 24,
-    "STL": 8,
-    "BLK": 6,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 8,
+    "TO": 6,
+    "PF": 11,
     "FG%": 42.7,
     "3P%": 48.5,
-    "FT%": 82.6,
-    "PF": 16
+    "FT%": 82.6
   }
 }

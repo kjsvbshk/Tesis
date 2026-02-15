@@ -1,32 +1,32 @@
 {
-  "game_id": "401585652",
-  "fecha": "2025-11-09",
-  "home_team": "Rockets",
-  "away_team": "Jazz",
-  "home_score": 127,
-  "away_score": 126,
+  "game_id": 401585652,
+  "fecha": "2026-02-14",
+  "home_team": "Houston Rockets",
+  "away_team": "Utah Jazz",
+  "home_score": 119,
+  "away_score": 147,
   "home_stats": {
     "PTS": 147,
     "REB": 44,
     "AST": 31,
-    "STL": 7,
-    "BLK": 3,
-    "TO": 9,
+    "STL": 9,
+    "BLK": 7,
+    "TO": 3,
+    "PF": 12,
     "FG%": 55.7,
     "3P%": 55.1,
-    "FT%": 85.7,
-    "PF": 26
+    "FT%": 85.7
   },
   "away_stats": {
     "PTS": 119,
     "REB": 40,
     "AST": 24,
-    "STL": 2,
-    "BLK": 4,
-    "TO": 10,
+    "STL": 10,
+    "BLK": 2,
+    "TO": 4,
+    "PF": 12,
     "FG%": 44.9,
     "3P%": 29.7,
-    "FT%": 84.8,
-    "PF": 11
+    "FT%": 84.8
   }
 }

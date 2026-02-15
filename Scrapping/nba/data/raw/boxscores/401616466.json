@@ -1,32 +1,32 @@
 {
-  "game_id": "401616466",
-  "fecha": "2025-11-09",
-  "home_team": "Rockets",
-  "away_team": "Thunder",
-  "home_score": 110,
-  "away_score": 101,
+  "game_id": 401616466,
+  "fecha": "2026-02-14",
+  "home_team": "Houston Rockets",
+  "away_team": "Oklahoma City Thunder",
+  "home_score": 101,
+  "away_score": 110,
   "home_stats": {
     "PTS": 110,
     "REB": 53,
     "AST": 28,
-    "STL": 6,
-    "BLK": 5,
-    "TO": 19,
+    "STL": 19,
+    "BLK": 6,
+    "TO": 5,
+    "PF": 10,
     "FG%": 48.2,
     "3P%": 45.5,
-    "FT%": 68.2,
-    "PF": 16
+    "FT%": 68.2
   },
   "away_stats": {
     "PTS": 101,
     "REB": 30,
     "AST": 22,
-    "STL": 14,
-    "BLK": 10,
-    "TO": 8,
+    "STL": 8,
+    "BLK": 14,
+    "TO": 10,
+    "PF": 4,
     "FG%": 42.5,
     "3P%": 27.6,
-    "FT%": 79.2,
-    "PF": 21
+    "FT%": 79.2
   }
 }

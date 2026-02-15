@@ -1,32 +1,32 @@
 {
-  "game_id": "401585755",
-  "fecha": "2025-11-09",
-  "home_team": "Cavaliers",
-  "away_team": "Lakers",
-  "home_score": 115,
-  "away_score": 121,
+  "game_id": 401585755,
+  "fecha": "2026-02-14",
+  "home_team": "Los Angeles Lakers",
+  "away_team": "Cleveland Cavaliers",
+  "home_score": 97,
+  "away_score": 116,
   "home_stats": {
     "PTS": 116,
     "REB": 40,
     "AST": 30,
-    "STL": 11,
+    "STL": 17,
     "BLK": 11,
-    "TO": 17,
-    "FG%": 56.3,
+    "TO": 11,
+    "PF": 6,
+    "FG%": 56.2,
     "3P%": 43.2,
-    "FT%": 62.5,
-    "PF": 12
+    "FT%": 62.5
   },
   "away_stats": {
     "PTS": 97,
     "REB": 40,
     "AST": 24,
-    "STL": 11,
-    "BLK": 3,
-    "TO": 18,
+    "STL": 18,
+    "BLK": 11,
+    "TO": 3,
+    "PF": 11,
     "FG%": 43.3,
     "3P%": 31.4,
-    "FT%": 66.7,
-    "PF": 11
+    "FT%": 66.7
   }
 }

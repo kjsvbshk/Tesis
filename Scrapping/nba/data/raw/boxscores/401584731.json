@@ -1,32 +1,32 @@
 {
-  "game_id": "401584731",
-  "fecha": "2025-11-09",
-  "home_team": "Wizards",
-  "away_team": "Celtics",
+  "game_id": 401584731,
+  "fecha": "2026-02-14",
+  "home_team": "Washington Wizards",
+  "away_team": "Boston Celtics",
   "home_score": 107,
   "away_score": 126,
   "home_stats": {
     "PTS": 107,
     "REB": 40,
     "AST": 26,
-    "STL": 12,
-    "BLK": 4,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 12,
+    "TO": 4,
+    "PF": 11,
     "FG%": 44.8,
     "3P%": 30.6,
-    "FT%": 69.2,
-    "PF": 13
+    "FT%": 69.2
   },
   "away_stats": {
     "PTS": 126,
     "REB": 51,
     "AST": 31,
-    "STL": 11,
-    "BLK": 6,
-    "TO": 17,
+    "STL": 17,
+    "BLK": 11,
+    "TO": 6,
+    "PF": 15,
     "FG%": 50.0,
     "3P%": 35.8,
-    "FT%": 71.4,
-    "PF": 21
+    "FT%": 71.4
   }
 }

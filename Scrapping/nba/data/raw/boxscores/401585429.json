@@ -1,32 +1,32 @@
 {
-  "game_id": "401585429",
-  "fecha": "2025-11-09",
-  "home_team": "Hornets",
-  "away_team": "Jazz",
-  "home_score": 122,
-  "away_score": 134,
+  "game_id": 401585429,
+  "fecha": "2026-02-14",
+  "home_team": "Utah Jazz",
+  "away_team": "Charlotte Hornets",
+  "home_score": 107,
+  "away_score": 115,
   "home_stats": {
     "PTS": 107,
     "REB": 54,
     "AST": 26,
-    "STL": 3,
-    "BLK": 2,
-    "TO": 19,
+    "STL": 19,
+    "BLK": 3,
+    "TO": 2,
+    "PF": 15,
     "FG%": 43.0,
     "3P%": 23.1,
-    "FT%": 88.9,
-    "PF": 21
+    "FT%": 88.9
   },
   "away_stats": {
     "PTS": 115,
     "REB": 42,
     "AST": 28,
-    "STL": 11,
-    "BLK": 3,
-    "TO": 9,
+    "STL": 9,
+    "BLK": 11,
+    "TO": 3,
+    "PF": 12,
     "FG%": 43.5,
     "3P%": 47.6,
-    "FT%": 68.2,
-    "PF": 23
+    "FT%": 68.2
   }
 }

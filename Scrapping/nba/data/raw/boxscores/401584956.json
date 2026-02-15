@@ -1,32 +1,32 @@
 {
-  "game_id": "401584956",
-  "fecha": "2025-11-09",
-  "home_team": "Pacers",
-  "away_team": "Wizards",
-  "home_score": 143,
-  "away_score": 120,
+  "game_id": 401584956,
+  "fecha": "2026-02-14",
+  "home_team": "Washington Wizards",
+  "away_team": "Indiana Pacers",
+  "home_score": 123,
+  "away_score": 137,
   "home_stats": {
     "PTS": 137,
     "REB": 47,
     "AST": 36,
-    "STL": 7,
-    "BLK": 8,
-    "TO": 17,
+    "STL": 17,
+    "BLK": 7,
+    "TO": 8,
+    "PF": 8,
     "FG%": 56.5,
     "3P%": 48.1,
-    "FT%": 76.9,
-    "PF": 18
+    "FT%": 76.9
   },
   "away_stats": {
     "PTS": 123,
     "REB": 41,
     "AST": 35,
-    "STL": 7,
-    "BLK": 8,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 7,
+    "TO": 8,
+    "PF": 13,
     "FG%": 44.9,
     "3P%": 37.5,
-    "FT%": 75.0,
-    "PF": 25
+    "FT%": 75.0
   }
 }

@@ -1,32 +1,32 @@
 {
-  "game_id": "401585725",
-  "fecha": "2025-11-09",
-  "home_team": "Warriors",
-  "away_team": "Mavericks",
-  "home_score": 122,
-  "away_score": 132,
+  "game_id": 401585725,
+  "fecha": "2026-02-14",
+  "home_team": "Dallas Mavericks",
+  "away_team": "Golden State Warriors",
+  "home_score": 106,
+  "away_score": 108,
   "home_stats": {
     "PTS": 108,
     "REB": 41,
     "AST": 30,
-    "STL": 9,
+    "STL": 17,
     "BLK": 9,
-    "TO": 17,
+    "TO": 9,
+    "PF": 8,
     "FG%": 47.6,
     "3P%": 35.3,
-    "FT%": 76.2,
-    "PF": 17
+    "FT%": 76.2
   },
   "away_stats": {
     "PTS": 106,
     "REB": 44,
     "AST": 27,
-    "STL": 12,
-    "BLK": 5,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 12,
+    "TO": 5,
+    "PF": 11,
     "FG%": 44.1,
     "3P%": 34.3,
-    "FT%": 66.7,
-    "PF": 19
+    "FT%": 66.7
   }
 }

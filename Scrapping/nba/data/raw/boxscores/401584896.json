@@ -1,32 +1,32 @@
 {
-  "game_id": "401584896",
-  "fecha": "2025-11-09",
-  "home_team": "Knicks",
-  "away_team": "Pistons",
-  "home_score": 118,
-  "away_score": 112,
+  "game_id": 401584896,
+  "fecha": "2026-02-14",
+  "home_team": "New York Knicks",
+  "away_team": "Detroit Pistons",
+  "home_score": 112,
+  "away_score": 118,
   "home_stats": {
     "PTS": 118,
     "REB": 41,
     "AST": 25,
-    "STL": 8,
-    "BLK": 3,
-    "TO": 11,
+    "STL": 11,
+    "BLK": 8,
+    "TO": 3,
+    "PF": 12,
     "FG%": 46.6,
     "3P%": 39.0,
-    "FT%": 71.4,
-    "PF": 17
+    "FT%": 71.4
   },
   "away_stats": {
     "PTS": 112,
     "REB": 42,
     "AST": 22,
-    "STL": 4,
-    "BLK": 3,
-    "TO": 20,
+    "STL": 20,
+    "BLK": 4,
+    "TO": 3,
+    "PF": 8,
     "FG%": 53.1,
     "3P%": 42.9,
-    "FT%": 64.7,
-    "PF": 25
+    "FT%": 64.7
   }
 }

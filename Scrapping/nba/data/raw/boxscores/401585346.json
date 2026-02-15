@@ -1,32 +1,32 @@
 {
-  "game_id": "401585346",
-  "fecha": "2025-11-09",
-  "home_team": "Pelicans",
-  "away_team": "Raptors",
-  "home_score": 138,
-  "away_score": 100,
+  "game_id": 401585346,
+  "fecha": "2026-02-14",
+  "home_team": "New Orleans Pelicans",
+  "away_team": "Toronto Raptors",
+  "home_score": 100,
+  "away_score": 138,
   "home_stats": {
     "PTS": 138,
     "REB": 51,
     "AST": 36,
-    "STL": 11,
-    "BLK": 5,
-    "TO": 7,
+    "STL": 7,
+    "BLK": 11,
+    "TO": 5,
+    "PF": 17,
     "FG%": 51.0,
     "3P%": 42.2,
-    "FT%": 100.0,
-    "PF": 13
+    "FT%": 100.0
   },
   "away_stats": {
     "PTS": 100,
     "REB": 38,
     "AST": 27,
-    "STL": 4,
-    "BLK": 6,
-    "TO": 18,
+    "STL": 18,
+    "BLK": 4,
+    "TO": 6,
+    "PF": 10,
     "FG%": 47.6,
     "3P%": 32.3,
-    "FT%": 66.7,
-    "PF": 12
+    "FT%": 66.7
   }
 }

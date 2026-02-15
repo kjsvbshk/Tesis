@@ -1,32 +1,32 @@
 {
-  "game_id": "401585343",
-  "fecha": "2025-11-09",
-  "home_team": "76ers",
-  "away_team": "Mavericks",
+  "game_id": 401585343,
+  "fecha": "2026-02-14",
+  "home_team": "Philadelphia 76ers",
+  "away_team": "Dallas Mavericks",
   "home_score": 102,
   "away_score": 118,
   "home_stats": {
     "PTS": 102,
     "REB": 51,
     "AST": 20,
-    "STL": 8,
-    "BLK": 5,
-    "TO": 11,
+    "STL": 11,
+    "BLK": 8,
+    "TO": 5,
+    "PF": 16,
     "FG%": 43.0,
     "3P%": 27.6,
-    "FT%": 70.0,
-    "PF": 21
+    "FT%": 70.0
   },
   "away_stats": {
     "PTS": 118,
     "REB": 44,
     "AST": 28,
-    "STL": 6,
-    "BLK": 4,
-    "TO": 9,
+    "STL": 9,
+    "BLK": 6,
+    "TO": 4,
+    "PF": 8,
     "FG%": 48.3,
     "3P%": 39.5,
-    "FT%": 73.9,
-    "PF": 16
+    "FT%": 73.9
   }
 }

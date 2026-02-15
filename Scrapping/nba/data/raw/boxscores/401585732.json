@@ -1,32 +1,32 @@
 {
-  "game_id": "401585732",
-  "fecha": "2025-11-09",
-  "home_team": "Pistons",
-  "away_team": "Hawks",
-  "home_score": 120,
-  "away_score": 126,
+  "game_id": 401585732,
+  "fecha": "2026-02-14",
+  "home_team": "Atlanta Hawks",
+  "away_team": "Detroit Pistons",
+  "home_score": 113,
+  "away_score": 121,
   "home_stats": {
     "PTS": 121,
     "REB": 48,
     "AST": 36,
-    "STL": 9,
-    "BLK": 8,
-    "TO": 16,
+    "STL": 16,
+    "BLK": 9,
+    "TO": 8,
+    "PF": 6,
     "FG%": 54.4,
     "3P%": 34.2,
-    "FT%": 66.7,
-    "PF": 13
+    "FT%": 66.7
   },
   "away_stats": {
     "PTS": 113,
     "REB": 37,
     "AST": 24,
-    "STL": 14,
-    "BLK": 3,
-    "TO": 10,
+    "STL": 10,
+    "BLK": 14,
+    "TO": 3,
+    "PF": 8,
     "FG%": 45.7,
     "3P%": 33.3,
-    "FT%": 81.0,
-    "PF": 13
+    "FT%": 81.0
   }
 }

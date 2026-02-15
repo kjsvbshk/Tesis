@@ -32,7 +32,8 @@ from webdriver_manager.chrome import ChromeDriverManager
 # Mapeo de temporadas a años de ESPN
 SEASON_MAPPING = {
     "2023-24": {"year": 2024, "regular": 2, "playoffs": 3},
-    "2024-25": {"year": 2025, "regular": 2, "playoffs": 3}
+    "2024-25": {"year": 2025, "regular": 2, "playoffs": 3},
+    "2025-26": {"year": 2026, "regular": 2, "playoffs": 3}
 }
 
 # Headers para requests

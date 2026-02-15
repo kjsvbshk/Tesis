@@ -1,32 +1,32 @@
 {
-  "game_id": "401585713",
-  "fecha": "2025-11-09",
-  "home_team": "Warriors",
-  "away_team": "Spurs",
-  "home_score": 118,
-  "away_score": 112,
+  "game_id": 401585713,
+  "fecha": "2026-02-14",
+  "home_team": "San Antonio Spurs",
+  "away_team": "Golden State Warriors",
+  "home_score": 113,
+  "away_score": 117,
   "home_stats": {
     "PTS": 113,
     "REB": 45,
     "AST": 31,
-    "STL": 7,
-    "BLK": 5,
-    "TO": 19,
+    "STL": 19,
+    "BLK": 7,
+    "TO": 5,
+    "PF": 16,
     "FG%": 44.9,
     "3P%": 39.5,
-    "FT%": 88.9,
-    "PF": 12
+    "FT%": 88.9
   },
   "away_stats": {
     "PTS": 117,
     "REB": 41,
     "AST": 34,
     "STL": 15,
-    "BLK": 3,
-    "TO": 15,
+    "BLK": 15,
+    "TO": 3,
+    "PF": 12,
     "FG%": 48.9,
     "3P%": 41.0,
-    "FT%": 84.6,
-    "PF": 14
+    "FT%": 84.6
   }
 }

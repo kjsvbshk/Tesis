@@ -1,32 +1,32 @@
 {
-  "game_id": "401585225",
-  "fecha": "2025-11-09",
-  "home_team": "Bulls",
-  "away_team": "Grizzlies",
-  "home_score": 125,
-  "away_score": 96,
+  "game_id": 401585225,
+  "fecha": "2026-02-14",
+  "home_team": "Chicago Bulls",
+  "away_team": "Memphis Grizzlies",
+  "home_score": 96,
+  "away_score": 125,
   "home_stats": {
     "PTS": 125,
     "REB": 52,
     "AST": 32,
     "STL": 11,
-    "BLK": 5,
-    "TO": 11,
+    "BLK": 11,
+    "TO": 5,
+    "PF": 13,
     "FG%": 51.6,
     "3P%": 42.4,
-    "FT%": 81.0,
-    "PF": 18
+    "FT%": 81.0
   },
   "away_stats": {
     "PTS": 96,
     "REB": 32,
     "AST": 28,
-    "STL": 6,
-    "BLK": 4,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 6,
+    "TO": 4,
+    "PF": 3,
     "FG%": 42.7,
     "3P%": 31.0,
-    "FT%": 82.6,
-    "PF": 13
+    "FT%": 82.6
   }
 }

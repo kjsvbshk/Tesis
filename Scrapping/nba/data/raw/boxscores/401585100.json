@@ -1,32 +1,32 @@
 {
-  "game_id": "401585100",
-  "fecha": "2025-11-09",
-  "home_team": "Trail Blazers",
-  "away_team": "Mavericks",
-  "home_score": 112,
-  "away_score": 125,
+  "game_id": 401585100,
+  "fecha": "2026-02-14",
+  "home_team": "Dallas Mavericks",
+  "away_team": "Portland Trail Blazers",
+  "home_score": 97,
+  "away_score": 126,
   "home_stats": {
     "PTS": 126,
     "REB": 43,
     "AST": 25,
-    "STL": 12,
-    "BLK": 7,
-    "TO": 11,
+    "STL": 11,
+    "BLK": 12,
+    "TO": 7,
+    "PF": 7,
     "FG%": 50.0,
     "3P%": 43.3,
-    "FT%": 70.7,
-    "PF": 18
+    "FT%": 70.7
   },
   "away_stats": {
     "PTS": 97,
     "REB": 46,
     "AST": 23,
-    "STL": 4,
-    "BLK": 3,
-    "TO": 22,
+    "STL": 22,
+    "BLK": 4,
+    "TO": 3,
+    "PF": 10,
     "FG%": 39.1,
     "3P%": 32.5,
-    "FT%": 72.7,
-    "PF": 34
+    "FT%": 72.7
   }
 }

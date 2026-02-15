@@ -1,32 +1,32 @@
 {
-  "game_id": "401585366",
-  "fecha": "2025-11-09",
-  "home_team": "Bucks",
-  "away_team": "Timberwolves",
+  "game_id": 401585366,
+  "fecha": "2026-02-14",
+  "home_team": "Milwaukee Bucks",
+  "away_team": "Minnesota Timberwolves",
   "home_score": 105,
   "away_score": 129,
   "home_stats": {
     "PTS": 105,
     "REB": 35,
     "AST": 35,
-    "STL": 6,
-    "BLK": 3,
-    "TO": 13,
+    "STL": 13,
+    "BLK": 6,
+    "TO": 3,
+    "PF": 10,
     "FG%": 49.4,
     "3P%": 42.4,
-    "FT%": 68.8,
-    "PF": 10
+    "FT%": 68.8
   },
   "away_stats": {
     "PTS": 129,
     "REB": 43,
     "AST": 34,
     "STL": 8,
-    "BLK": 3,
-    "TO": 8,
+    "BLK": 8,
+    "TO": 3,
+    "PF": 12,
     "FG%": 55.2,
     "3P%": 51.2,
-    "FT%": 75.0,
-    "PF": 17
+    "FT%": 75.0
   }
 }

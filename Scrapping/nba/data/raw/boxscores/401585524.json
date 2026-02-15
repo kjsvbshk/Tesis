@@ -1,8 +1,8 @@
 {
-  "game_id": "401585524",
-  "fecha": "2025-11-09",
-  "home_team": "76ers",
-  "away_team": "Grizzlies",
+  "game_id": 401585524,
+  "fecha": "2026-02-14",
+  "home_team": "Philadelphia 76ers",
+  "away_team": "Memphis Grizzlies",
   "home_score": 109,
   "away_score": 115,
   "home_stats": {
@@ -10,23 +10,23 @@
     "REB": 47,
     "AST": 25,
     "STL": 11,
-    "BLK": 9,
-    "TO": 11,
+    "BLK": 11,
+    "TO": 9,
+    "PF": 17,
     "FG%": 38.2,
     "3P%": 37.1,
-    "FT%": 85.7,
-    "PF": 21
+    "FT%": 85.7
   },
   "away_stats": {
     "PTS": 115,
     "REB": 54,
     "AST": 21,
-    "STL": 3,
-    "BLK": 15,
+    "STL": 15,
+    "BLK": 3,
     "TO": 15,
+    "PF": 15,
     "FG%": 45.1,
     "3P%": 35.1,
-    "FT%": 87.0,
-    "PF": 14
+    "FT%": 87.0
   }
 }

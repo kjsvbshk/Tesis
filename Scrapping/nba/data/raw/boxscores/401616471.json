@@ -1,32 +1,32 @@
 {
-  "game_id": "401616471",
-  "fecha": "2025-11-09",
-  "home_team": "Magic",
-  "away_team": "Pistons",
-  "home_score": 123,
-  "away_score": 91,
+  "game_id": 401616471,
+  "fecha": "2026-02-14",
+  "home_team": "Orlando Magic",
+  "away_team": "Detroit Pistons",
+  "home_score": 91,
+  "away_score": 123,
   "home_stats": {
     "PTS": 123,
     "REB": 45,
     "AST": 26,
-    "STL": 5,
-    "BLK": 4,
-    "TO": 9,
+    "STL": 9,
+    "BLK": 5,
+    "TO": 4,
+    "PF": 6,
     "FG%": 55.1,
     "3P%": 38.5,
-    "FT%": 78.9,
-    "PF": 20
+    "FT%": 78.9
   },
   "away_stats": {
     "PTS": 91,
     "REB": 38,
     "AST": 17,
-    "STL": 3,
-    "BLK": 2,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 3,
+    "TO": 2,
+    "PF": 8,
     "FG%": 42.0,
     "3P%": 20.0,
-    "FT%": 70.8,
-    "PF": 17
+    "FT%": 70.8
   }
 }

@@ -1,32 +1,32 @@
 {
-  "game_id": "401585040",
-  "fecha": "2025-11-09",
-  "home_team": "Spurs",
-  "away_team": "Jazz",
+  "game_id": 401585040,
+  "fecha": "2026-02-14",
+  "home_team": "San Antonio Spurs",
+  "away_team": "Utah Jazz",
   "home_score": 118,
   "away_score": 130,
   "home_stats": {
     "PTS": 118,
     "REB": 43,
     "AST": 36,
-    "STL": 8,
+    "STL": 9,
     "BLK": 8,
-    "TO": 9,
+    "TO": 8,
+    "PF": 13,
     "FG%": 44.9,
     "3P%": 45.7,
-    "FT%": 66.7,
-    "PF": 18
+    "FT%": 66.7
   },
   "away_stats": {
     "PTS": 130,
     "REB": 53,
     "AST": 34,
-    "STL": 4,
-    "BLK": 7,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 4,
+    "TO": 7,
+    "PF": 13,
     "FG%": 49.5,
     "3P%": 37.2,
-    "FT%": 90.9,
-    "PF": 21
+    "FT%": 90.9
   }
 }

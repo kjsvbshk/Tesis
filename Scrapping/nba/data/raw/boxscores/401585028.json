@@ -1,32 +1,32 @@
 {
-  "game_id": "401585028",
-  "fecha": "2025-11-09",
-  "home_team": "Timberwolves",
-  "away_team": "Kings",
-  "home_score": 111,
-  "away_score": 124,
+  "game_id": 401585028,
+  "fecha": "2026-02-14",
+  "home_team": "Sacramento Kings",
+  "away_team": "Minnesota Timberwolves",
+  "home_score": 98,
+  "away_score": 110,
   "home_stats": {
     "PTS": 98,
     "REB": 40,
     "AST": 23,
-    "STL": 10,
-    "BLK": 2,
-    "TO": 11,
+    "STL": 11,
+    "BLK": 10,
+    "TO": 2,
+    "PF": 8,
     "FG%": 43.5,
     "3P%": 24.2,
-    "FT%": 76.2,
-    "PF": 20
+    "FT%": 76.2
   },
   "away_stats": {
     "PTS": 110,
     "REB": 43,
     "AST": 31,
-    "STL": 9,
-    "BLK": 5,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 9,
+    "TO": 5,
+    "PF": 7,
     "FG%": 50.6,
     "3P%": 30.3,
-    "FT%": 85.7,
-    "PF": 18
+    "FT%": 85.7
   }
 }

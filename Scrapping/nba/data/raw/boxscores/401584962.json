@@ -1,32 +1,32 @@
 {
-  "game_id": "401584962",
-  "fecha": "2025-11-09",
-  "home_team": "Bucks",
-  "away_team": "Pistons",
-  "home_score": 120,
-  "away_score": 118,
+  "game_id": 401584962,
+  "fecha": "2026-02-14",
+  "home_team": "Milwaukee Bucks",
+  "away_team": "Detroit Pistons",
+  "home_score": 114,
+  "away_score": 146,
   "home_stats": {
     "PTS": 146,
     "REB": 49,
     "AST": 24,
-    "STL": 5,
-    "BLK": 8,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 5,
+    "TO": 8,
+    "PF": 8,
     "FG%": 56.8,
     "3P%": 45.2,
-    "FT%": 84.4,
-    "PF": 24
+    "FT%": 84.4
   },
   "away_stats": {
     "PTS": 114,
     "REB": 36,
     "AST": 25,
-    "STL": 10,
-    "BLK": 4,
-    "TO": 8,
+    "STL": 8,
+    "BLK": 10,
+    "TO": 4,
+    "PF": 10,
     "FG%": 44.8,
     "3P%": 21.4,
-    "FT%": 84.6,
-    "PF": 23
+    "FT%": 84.6
   }
 }

@@ -1,32 +1,32 @@
 {
-  "game_id": "401584925",
-  "fecha": "2025-11-09",
-  "home_team": "Raptors",
-  "away_team": "Knicks",
-  "home_score": 106,
-  "away_score": 119,
+  "game_id": 401584925,
+  "fecha": "2026-02-14",
+  "home_team": "New York Knicks",
+  "away_team": "Toronto Raptors",
+  "home_score": 130,
+  "away_score": 136,
   "home_stats": {
     "PTS": 136,
     "REB": 42,
     "AST": 36,
-    "STL": 5,
-    "BLK": 3,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 5,
+    "TO": 3,
+    "PF": 14,
     "FG%": 60.5,
     "3P%": 58.6,
-    "FT%": 65.2,
-    "PF": 22
+    "FT%": 65.2
   },
   "away_stats": {
     "PTS": 130,
     "REB": 38,
     "AST": 32,
-    "STL": 12,
-    "BLK": 0,
-    "TO": 10,
+    "STL": 10,
+    "BLK": 12,
+    "TO": 0,
+    "PF": 17,
     "FG%": 49.0,
     "3P%": 35.9,
-    "FT%": 73.3,
-    "PF": 21
+    "FT%": 73.3
   }
 }

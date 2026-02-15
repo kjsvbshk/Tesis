@@ -1,32 +1,32 @@
 {
-  "game_id": "401585166",
-  "fecha": "2025-11-09",
-  "home_team": "Timberwolves",
-  "away_team": "Trail Blazers",
-  "home_score": 116,
-  "away_score": 93,
+  "game_id": 401585166,
+  "fecha": "2026-02-14",
+  "home_team": "Minnesota Timberwolves",
+  "away_team": "Portland Trail Blazers",
+  "home_score": 93,
+  "away_score": 116,
   "home_stats": {
     "PTS": 116,
     "REB": 45,
     "AST": 35,
-    "STL": 14,
-    "BLK": 5,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 14,
+    "TO": 5,
+    "PF": 8,
     "FG%": 55.0,
     "3P%": 35.5,
-    "FT%": 70.8,
-    "PF": 23
+    "FT%": 70.8
   },
   "away_stats": {
     "PTS": 93,
     "REB": 38,
     "AST": 18,
-    "STL": 8,
-    "BLK": 5,
-    "TO": 19,
+    "STL": 19,
+    "BLK": 8,
+    "TO": 5,
+    "PF": 10,
     "FG%": 39.0,
     "3P%": 35.7,
-    "FT%": 67.6,
-    "PF": 19
+    "FT%": 67.6
   }
 }

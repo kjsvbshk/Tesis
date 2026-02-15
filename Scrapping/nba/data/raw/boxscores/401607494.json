@@ -1,32 +1,32 @@
 {
-  "game_id": "401607494",
-  "fecha": "2025-11-09",
-  "home_team": "Pacers",
-  "away_team": "Bucks",
-  "home_score": 126,
-  "away_score": 124,
+  "game_id": 401607494,
+  "fecha": "2026-02-14",
+  "home_team": "Milwaukee Bucks",
+  "away_team": "Indiana Pacers",
+  "home_score": 119,
+  "away_score": 128,
   "home_stats": {
     "PTS": 119,
     "REB": 46,
     "AST": 19,
-    "STL": 3,
-    "BLK": 9,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 3,
+    "TO": 9,
+    "PF": 12,
     "FG%": 44.8,
     "3P%": 36.4,
-    "FT%": 75.0,
-    "PF": 17
+    "FT%": 75.0
   },
   "away_stats": {
     "PTS": 128,
     "REB": 51,
     "AST": 30,
     "STL": 9,
-    "BLK": 8,
-    "TO": 9,
+    "BLK": 9,
+    "TO": 8,
+    "PF": 15,
     "FG%": 49.0,
     "3P%": 21.2,
-    "FT%": 84.0,
-    "PF": 21
+    "FT%": 84.0
   }
 }

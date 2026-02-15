@@ -1,32 +1,32 @@
 {
-  "game_id": "401584832",
-  "fecha": "2025-11-09",
-  "home_team": "Bulls",
-  "away_team": "Heat",
-  "home_score": 102,
-  "away_score": 97,
+  "game_id": 401584832,
+  "fecha": "2026-02-14",
+  "home_team": "Chicago Bulls",
+  "away_team": "Miami Heat",
+  "home_score": 97,
+  "away_score": 102,
   "home_stats": {
     "PTS": 102,
     "REB": 44,
     "AST": 24,
-    "STL": 9,
-    "BLK": 6,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 9,
+    "TO": 6,
+    "PF": 10,
     "FG%": 44.4,
     "3P%": 35.6,
-    "FT%": 73.7,
-    "PF": 22
+    "FT%": 73.7
   },
   "away_stats": {
     "PTS": 97,
     "REB": 34,
     "AST": 23,
-    "STL": 9,
-    "BLK": 0,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 9,
+    "TO": 0,
+    "PF": 5,
     "FG%": 42.9,
     "3P%": 33.3,
-    "FT%": 82.6,
-    "PF": 18
+    "FT%": 82.6
   }
 }

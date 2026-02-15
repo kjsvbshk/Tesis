@@ -1,32 +1,32 @@
 {
-  "game_id": "401584098",
-  "fecha": "2025-11-09",
-  "home_team": "Nets",
-  "away_team": "Celtics",
-  "home_score": 114,
-  "away_score": 124,
+  "game_id": 401584098,
+  "fecha": "2026-02-14",
+  "home_team": "Boston Celtics",
+  "away_team": "Brooklyn Nets",
+  "home_score": 107,
+  "away_score": 121,
   "home_stats": {
     "PTS": 121,
     "REB": 52,
     "AST": 29,
-    "STL": 5,
-    "BLK": 3,
-    "TO": 7,
+    "STL": 7,
+    "BLK": 5,
+    "TO": 3,
+    "PF": 17,
     "FG%": 43.6,
     "3P%": 36.5,
-    "FT%": 71.4,
-    "PF": 13
+    "FT%": 71.4
   },
   "away_stats": {
     "PTS": 107,
     "REB": 46,
     "AST": 26,
-    "STL": 0,
-    "BLK": 3,
-    "TO": 10,
+    "STL": 10,
+    "BLK": 0,
+    "TO": 3,
+    "PF": 9,
     "FG%": 44.7,
     "3P%": 40.5,
-    "FT%": 88.9,
-    "PF": 25
+    "FT%": 88.9
   }
 }

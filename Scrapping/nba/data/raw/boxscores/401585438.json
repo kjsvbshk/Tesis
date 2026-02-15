@@ -1,32 +1,32 @@
 {
-  "game_id": "401585438",
-  "fecha": "2025-11-09",
-  "home_team": "Pelicans",
-  "away_team": "Heat",
+  "game_id": 401585438,
+  "fecha": "2026-02-14",
+  "home_team": "New Orleans Pelicans",
+  "away_team": "Miami Heat",
   "home_score": 95,
   "away_score": 106,
   "home_stats": {
     "PTS": 95,
     "REB": 54,
     "AST": 20,
-    "STL": 6,
-    "BLK": 7,
-    "TO": 11,
+    "STL": 11,
+    "BLK": 6,
+    "TO": 7,
+    "PF": 18,
     "FG%": 37.5,
     "3P%": 21.9,
-    "FT%": 76.9,
-    "PF": 19
+    "FT%": 76.9
   },
   "away_stats": {
     "PTS": 106,
     "REB": 46,
     "AST": 20,
-    "STL": 6,
-    "BLK": 11,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 6,
+    "TO": 11,
+    "PF": 10,
     "FG%": 46.3,
     "3P%": 44.8,
-    "FT%": 68.0,
-    "PF": 14
+    "FT%": 68.0
   }
 }

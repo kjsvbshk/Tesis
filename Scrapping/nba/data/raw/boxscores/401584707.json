@@ -1,32 +1,32 @@
 {
-  "game_id": "401584707",
-  "fecha": "2025-11-09",
-  "home_team": "Hawks",
-  "away_team": "Knicks",
+  "game_id": 401584707,
+  "fecha": "2026-02-14",
+  "home_team": "Atlanta Hawks",
+  "away_team": "New York Knicks",
   "home_score": 120,
   "away_score": 126,
   "home_stats": {
     "PTS": 120,
     "REB": 44,
     "AST": 28,
-    "STL": 7,
-    "BLK": 6,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 7,
+    "TO": 6,
+    "PF": 9,
     "FG%": 48.3,
     "3P%": 37.5,
-    "FT%": 80.0,
-    "PF": 20
+    "FT%": 80.0
   },
   "away_stats": {
     "PTS": 126,
     "REB": 45,
     "AST": 30,
-    "STL": 9,
-    "BLK": 6,
-    "TO": 16,
+    "STL": 16,
+    "BLK": 9,
+    "TO": 6,
+    "PF": 12,
     "FG%": 47.8,
     "3P%": 45.5,
-    "FT%": 71.4,
-    "PF": 21
+    "FT%": 71.4
   }
 }

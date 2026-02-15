@@ -1,32 +1,32 @@
 {
-  "game_id": "401585602",
-  "fecha": "2025-11-09",
-  "home_team": "Timberwolves",
-  "away_team": "Jazz",
-  "home_score": 123,
-  "away_score": 95,
+  "game_id": 401585602,
+  "fecha": "2026-02-14",
+  "home_team": "Utah Jazz",
+  "away_team": "Minnesota Timberwolves",
+  "home_score": 100,
+  "away_score": 119,
   "home_stats": {
     "PTS": 100,
     "REB": 51,
     "AST": 23,
-    "STL": 4,
-    "BLK": 5,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 4,
+    "TO": 5,
+    "PF": 10,
     "FG%": 45.8,
     "3P%": 23.1,
-    "FT%": 85.7,
-    "PF": 14
+    "FT%": 85.7
   },
   "away_stats": {
     "PTS": 119,
     "REB": 44,
     "AST": 31,
     "STL": 8,
-    "BLK": 6,
-    "TO": 8,
+    "BLK": 8,
+    "TO": 6,
+    "PF": 7,
     "FG%": 47.3,
     "3P%": 46.3,
-    "FT%": 80.0,
-    "PF": 16
+    "FT%": 80.0
   }
 }

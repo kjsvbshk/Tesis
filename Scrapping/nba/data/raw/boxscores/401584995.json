@@ -1,32 +1,32 @@
 {
-  "game_id": "401584995",
-  "fecha": "2025-11-09",
-  "home_team": "Timberwolves",
-  "away_team": "76ers",
-  "home_score": 112,
-  "away_score": 99,
+  "game_id": 401584995,
+  "fecha": "2026-02-14",
+  "home_team": "Philadelphia 76ers",
+  "away_team": "Minnesota Timberwolves",
+  "home_score": 113,
+  "away_score": 127,
   "home_stats": {
     "PTS": 127,
     "REB": 36,
     "AST": 20,
-    "STL": 9,
-    "BLK": 3,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 9,
+    "TO": 3,
+    "PF": 7,
     "FG%": 53.6,
     "3P%": 36.4,
-    "FT%": 90.6,
-    "PF": 25
+    "FT%": 90.6
   },
   "away_stats": {
     "PTS": 113,
     "REB": 39,
     "AST": 22,
-    "STL": 4,
-    "BLK": 2,
-    "TO": 18,
+    "STL": 18,
+    "BLK": 4,
+    "TO": 2,
+    "PF": 9,
     "FG%": 51.2,
     "3P%": 36.0,
-    "FT%": 83.3,
-    "PF": 22
+    "FT%": 83.3
   }
 }

@@ -1,32 +1,32 @@
 {
-  "game_id": "401585409",
-  "fecha": "2025-11-09",
-  "home_team": "Bulls",
-  "away_team": "Cavaliers",
-  "home_score": 95,
-  "away_score": 109,
+  "game_id": 401585409,
+  "fecha": "2026-02-14",
+  "home_team": "Cleveland Cavaliers",
+  "away_team": "Chicago Bulls",
+  "home_score": 105,
+  "away_score": 108,
   "home_stats": {
     "PTS": 108,
     "REB": 36,
     "AST": 31,
-    "STL": 6,
-    "BLK": 2,
-    "TO": 8,
+    "STL": 8,
+    "BLK": 6,
+    "TO": 2,
+    "PF": 6,
     "FG%": 48.2,
     "3P%": 32.4,
-    "FT%": 76.2,
-    "PF": 18
+    "FT%": 76.2
   },
   "away_stats": {
     "PTS": 105,
     "REB": 44,
     "AST": 18,
-    "STL": 5,
-    "BLK": 3,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 5,
+    "TO": 3,
+    "PF": 9,
     "FG%": 45.8,
     "3P%": 42.4,
-    "FT%": 88.2,
-    "PF": 21
+    "FT%": 88.2
   }
 }

@@ -1,32 +1,32 @@
 {
-  "game_id": "401585539",
-  "fecha": "2025-11-09",
-  "home_team": "Cavaliers",
-  "away_team": "Timberwolves",
-  "home_score": 113,
-  "away_score": 104,
+  "game_id": 401585539,
+  "fecha": "2026-02-14",
+  "home_team": "Cleveland Cavaliers",
+  "away_team": "Minnesota Timberwolves",
+  "home_score": 104,
+  "away_score": 113,
   "home_stats": {
     "PTS": 113,
     "REB": 46,
     "AST": 27,
-    "STL": 7,
-    "BLK": 8,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 7,
+    "TO": 8,
+    "PF": 10,
     "FG%": 43.2,
     "3P%": 32.4,
-    "FT%": 72.2,
-    "PF": 20
+    "FT%": 72.2
   },
   "away_stats": {
     "PTS": 104,
     "REB": 45,
     "AST": 25,
-    "STL": 5,
+    "STL": 12,
     "BLK": 5,
-    "TO": 12,
+    "TO": 5,
+    "PF": 7,
     "FG%": 41.5,
     "3P%": 26.7,
-    "FT%": 81.8,
-    "PF": 25
+    "FT%": 81.8
   }
 }

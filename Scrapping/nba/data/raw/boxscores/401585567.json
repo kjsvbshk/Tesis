@@ -1,32 +1,32 @@
 {
-  "game_id": "401585567",
-  "fecha": "2025-11-09",
-  "home_team": "76ers",
-  "away_team": "Knicks",
-  "home_score": 92,
-  "away_score": 128,
+  "game_id": 401585567,
+  "fecha": "2026-02-14",
+  "home_team": "New York Knicks",
+  "away_team": "Philadelphia 76ers",
+  "home_score": 79,
+  "away_score": 106,
   "home_stats": {
     "PTS": 106,
     "REB": 51,
     "AST": 32,
-    "STL": 4,
+    "STL": 12,
     "BLK": 4,
-    "TO": 12,
+    "TO": 4,
+    "PF": 9,
     "FG%": 50.6,
     "3P%": 35.0,
-    "FT%": 80.0,
-    "PF": 15
+    "FT%": 80.0
   },
   "away_stats": {
     "PTS": 79,
     "REB": 31,
     "AST": 17,
-    "STL": 7,
-    "BLK": 4,
-    "TO": 8,
+    "STL": 8,
+    "BLK": 7,
+    "TO": 4,
+    "PF": 7,
     "FG%": 37.5,
     "3P%": 24.2,
-    "FT%": 68.8,
-    "PF": 16
+    "FT%": 68.8
   }
 }

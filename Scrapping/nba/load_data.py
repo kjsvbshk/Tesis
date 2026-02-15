@@ -161,15 +161,16 @@ class DataAnalyzer:
         """Analiza todos los archivos de datos y extrae metadata"""
         print("🔍 Analizando estructura de datos...")
         
-        # Analizar dataset consolidado
-        self._analyze_processed_dataset()
+        # self._analyze_processed_dataset()
         
         # Analizar archivos raw
-        self._analyze_standings()
-        self._analyze_team_stats()
-        self._analyze_player_stats()
-        self._analyze_injuries()
-        self._analyze_odds()
+        # self._analyze_standings()
+        # self._analyze_team_stats()
+        # self._analyze_team_stats()
+        # self._analyze_player_stats()
+        self._analyze_nba_player_boxscores()
+        # self._analyze_injuries()
+        # self._analyze_odds()
         
         print(f"✅ {len(self.metadata)} tablas detectadas\n")
         return self.metadata
@@ -403,6 +404,43 @@ class DataAnalyzer:
         
         print(f"  ✓ player_stats: {total_rows} registros de {len(csv_files)} archivos")
     
+    def _analyze_nba_player_boxscores(self):
+        """Analizar nba_player_boxscores.csv"""
+        file_path = self.config.data_dir / 'processed' / 'nba_player_boxscores.csv'
+        
+        if not file_path.exists():
+            return
+        
+        df = pd.read_csv(file_path, nrows=100)
+        
+        columns_info = self._infer_columns(df)
+        
+        # Ajustes de tipos específicos
+        if 'game_id' in columns_info:
+            columns_info['game_id']['type'] = 'VARCHAR(20)' # IDs como '0022300001'
+        if 'player_id' in columns_info:
+            columns_info['player_id']['type'] = 'BIGINT'
+        if 'team_tricode' in columns_info:
+            columns_info['team_tricode']['type'] = 'VARCHAR(5)'
+            
+        self.metadata['nba_player_boxscores'] = {
+            'source_file': str(file_path),
+            'source_type': 'csv',
+            'table_name': 'nba_player_boxscores',
+            'columns': columns_info,
+            # No hay PK única en CSV, pero podemos decir que (game_id, player_id) es único
+            # O dejar que la DB cree una PK serial si quisiéramos, pero usando COPY el loader crea tabla basada en CSV
+            # Mejor dejar sin PK explicita en metadata y crear indices
+            'primary_key': None, 
+            'indexes': ['game_id', 'player_id', 'team_tricode'],
+            'row_count': len(pd.read_csv(file_path))
+        }
+        
+        # Nota: Idealmente agregaríamos una columna SERIAL 'id' en la base de datos después
+        # pero para carga masiva inicial, esto funciona bien.
+        
+        print(f"  ✓ nba_player_boxscores: {self.metadata['nba_player_boxscores']['row_count']} registros")
+
     def _analyze_injuries(self):
         """Analizar injuries CSV files"""
         injuries_dir = self.config.data_dir / 'raw' / 'injuries'
@@ -695,6 +733,8 @@ class DDLGenerator:
             order.append('team_stats')
         if 'player_stats' in self.metadata:
             order.append('player_stats')
+        if 'nba_player_boxscores' in self.metadata:
+            order.append('nba_player_boxscores')
         if 'games' in self.metadata:
             order.append('games')
         if 'standings' in self.metadata:
@@ -1619,7 +1659,8 @@ def main():
     ddl_statements = ddl_generator.generate_ddl()
     
     # 6. Confirmar ejecución
-    response = input("¿Continuar con la carga? (s/n): ")
+    # response = input("¿Continuar con la carga? (s/n): ")
+    response = 's'
     if response.lower() != 's':
         print("❌ Carga cancelada")
         return

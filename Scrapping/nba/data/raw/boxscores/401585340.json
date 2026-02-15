@@ -1,32 +1,32 @@
 {
-  "game_id": "401585340",
-  "fecha": "2025-11-09",
-  "home_team": "Nuggets",
-  "away_team": "Trail Blazers",
-  "home_score": 120,
-  "away_score": 108,
+  "game_id": 401585340,
+  "fecha": "2026-02-14",
+  "home_team": "Denver Nuggets",
+  "away_team": "Portland Trail Blazers",
+  "home_score": 103,
+  "away_score": 112,
   "home_stats": {
     "PTS": 112,
     "REB": 42,
     "AST": 26,
     "STL": 8,
-    "BLK": 6,
-    "TO": 8,
+    "BLK": 8,
+    "TO": 6,
+    "PF": 14,
     "FG%": 48.8,
     "3P%": 42.9,
-    "FT%": 84.2,
-    "PF": 11
+    "FT%": 84.2
   },
   "away_stats": {
     "PTS": 103,
     "REB": 42,
     "AST": 29,
-    "STL": 6,
-    "BLK": 3,
-    "TO": 13,
+    "STL": 13,
+    "BLK": 6,
+    "TO": 3,
+    "PF": 15,
     "FG%": 45.9,
     "3P%": 35.5,
-    "FT%": 93.3,
-    "PF": 16
+    "FT%": 93.3
   }
 }

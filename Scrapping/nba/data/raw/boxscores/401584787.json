@@ -1,32 +1,32 @@
 {
-  "game_id": "401584787",
-  "fecha": "2025-11-09",
-  "home_team": "76ers",
-  "away_team": "Celtics",
-  "home_score": 106,
-  "away_score": 103,
+  "game_id": 401584787,
+  "fecha": "2026-02-14",
+  "home_team": "Philadelphia 76ers",
+  "away_team": "Boston Celtics",
+  "home_score": 103,
+  "away_score": 106,
   "home_stats": {
     "PTS": 106,
     "REB": 56,
     "AST": 20,
-    "STL": 7,
+    "STL": 12,
     "BLK": 7,
-    "TO": 12,
+    "TO": 7,
+    "PF": 12,
     "FG%": 44.2,
     "3P%": 26.5,
-    "FT%": 86.7,
-    "PF": 16
+    "FT%": 86.7
   },
   "away_stats": {
     "PTS": 103,
     "REB": 43,
     "AST": 28,
-    "STL": 8,
-    "BLK": 6,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 8,
+    "TO": 6,
+    "PF": 9,
     "FG%": 39.6,
     "3P%": 31.9,
-    "FT%": 84.2,
-    "PF": 13
+    "FT%": 84.2
   }
 }

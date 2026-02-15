@@ -1,32 +1,32 @@
 {
-  "game_id": "401585630",
-  "fecha": "2025-11-09",
-  "home_team": "76ers",
-  "away_team": "Suns",
-  "home_score": 112,
-  "away_score": 100,
+  "game_id": 401585630,
+  "fecha": "2026-02-14",
+  "home_team": "Phoenix Suns",
+  "away_team": "Philadelphia 76ers",
+  "home_score": 102,
+  "away_score": 115,
   "home_stats": {
     "PTS": 115,
     "REB": 55,
     "AST": 34,
-    "STL": 7,
-    "BLK": 12,
-    "TO": 23,
+    "STL": 23,
+    "BLK": 7,
+    "TO": 12,
+    "PF": 14,
     "FG%": 50.0,
     "3P%": 48.7,
-    "FT%": 75.0,
-    "PF": 18
+    "FT%": 75.0
   },
   "away_stats": {
     "PTS": 102,
     "REB": 40,
     "AST": 33,
-    "STL": 12,
-    "BLK": 7,
-    "TO": 9,
+    "STL": 9,
+    "BLK": 12,
+    "TO": 7,
+    "PF": 13,
     "FG%": 43.2,
     "3P%": 35.1,
-    "FT%": 38.9,
-    "PF": 12
+    "FT%": 38.9
   }
 }

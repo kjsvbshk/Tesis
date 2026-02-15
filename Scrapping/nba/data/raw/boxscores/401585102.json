@@ -1,32 +1,32 @@
 {
-  "game_id": "401585102",
-  "fecha": "2025-11-09",
-  "home_team": "Pistons",
-  "away_team": "Jazz",
-  "home_score": 111,
-  "away_score": 119,
+  "game_id": 401585102,
+  "fecha": "2026-02-14",
+  "home_team": "Utah Jazz",
+  "away_team": "Detroit Pistons",
+  "home_score": 148,
+  "away_score": 154,
   "home_stats": {
     "PTS": 154,
     "REB": 43,
     "AST": 28,
-    "STL": 11,
-    "BLK": 8,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 11,
+    "TO": 8,
+    "PF": 15,
     "FG%": 51.5,
     "3P%": 50.0,
-    "FT%": 91.4,
-    "PF": 22
+    "FT%": 91.4
   },
   "away_stats": {
     "PTS": 148,
     "REB": 48,
     "AST": 33,
-    "STL": 5,
-    "BLK": 3,
-    "TO": 17,
+    "STL": 17,
+    "BLK": 5,
+    "TO": 3,
+    "PF": 16,
     "FG%": 53.3,
     "3P%": 46.3,
-    "FT%": 77.3,
-    "PF": 27
+    "FT%": 77.3
   }
 }

@@ -1,32 +1,32 @@
 {
-  "game_id": "401584747",
-  "fecha": "2025-11-09",
-  "home_team": "Heat",
-  "away_team": "Nets",
+  "game_id": 401584747,
+  "fecha": "2026-02-14",
+  "home_team": "Miami Heat",
+  "away_team": "Brooklyn Nets",
   "home_score": 105,
   "away_score": 109,
   "home_stats": {
     "PTS": 105,
     "REB": 46,
     "AST": 22,
-    "STL": 10,
-    "BLK": 5,
-    "TO": 16,
+    "STL": 16,
+    "BLK": 10,
+    "TO": 5,
+    "PF": 11,
     "FG%": 42.9,
     "3P%": 34.2,
-    "FT%": 77.8,
-    "PF": 20
+    "FT%": 77.8
   },
   "away_stats": {
     "PTS": 109,
     "REB": 47,
     "AST": 27,
-    "STL": 11,
-    "BLK": 4,
-    "TO": 18,
+    "STL": 18,
+    "BLK": 11,
+    "TO": 4,
+    "PF": 7,
     "FG%": 45.1,
     "3P%": 44.4,
-    "FT%": 73.1,
-    "PF": 18
+    "FT%": 73.1
   }
 }

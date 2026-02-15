@@ -1,32 +1,32 @@
 {
-  "game_id": "401585525",
-  "fecha": "2025-11-09",
-  "home_team": "Clippers",
-  "away_team": "Rockets",
-  "home_score": 106,
-  "away_score": 100,
+  "game_id": 401585525,
+  "fecha": "2026-02-14",
+  "home_team": "Houston Rockets",
+  "away_team": "LA Clippers",
+  "home_score": 116,
+  "away_score": 122,
   "home_stats": {
     "PTS": 116,
     "REB": 38,
     "AST": 33,
-    "STL": 6,
-    "BLK": 2,
-    "TO": 8,
+    "STL": 8,
+    "BLK": 6,
+    "TO": 2,
+    "PF": 13,
     "FG%": 47.9,
     "3P%": 43.2,
-    "FT%": 58.8,
-    "PF": 21
+    "FT%": 58.8
   },
   "away_stats": {
     "PTS": 122,
     "REB": 41,
     "AST": 19,
-    "STL": 5,
-    "BLK": 8,
-    "TO": 9,
+    "STL": 9,
+    "BLK": 5,
+    "TO": 8,
+    "PF": 8,
     "FG%": 55.0,
     "3P%": 41.4,
-    "FT%": 84.6,
-    "PF": 17
+    "FT%": 84.6
   }
 }

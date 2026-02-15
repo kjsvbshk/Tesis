@@ -1,32 +1,32 @@
 {
-  "game_id": "401585142",
-  "fecha": "2025-11-09",
-  "home_team": "Knicks",
-  "away_team": "Trail Blazers",
-  "home_score": 112,
-  "away_score": 84,
+  "game_id": 401585142,
+  "fecha": "2026-02-14",
+  "home_team": "New York Knicks",
+  "away_team": "Portland Trail Blazers",
+  "home_score": 84,
+  "away_score": 112,
   "home_stats": {
     "PTS": 112,
     "REB": 55,
     "AST": 26,
-    "STL": 11,
-    "BLK": 4,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 11,
+    "TO": 4,
+    "PF": 15,
     "FG%": 41.6,
     "3P%": 37.5,
-    "FT%": 87.0,
-    "PF": 16
+    "FT%": 87.0
   },
   "away_stats": {
     "PTS": 84,
     "REB": 43,
     "AST": 19,
-    "STL": 8,
-    "BLK": 7,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 8,
+    "TO": 7,
+    "PF": 12,
     "FG%": 38.4,
     "3P%": 20.7,
-    "FT%": 66.7,
-    "PF": 17
+    "FT%": 66.7
   }
 }

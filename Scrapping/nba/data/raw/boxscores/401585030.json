@@ -1,32 +1,32 @@
 {
-  "game_id": "401585030",
-  "fecha": "2025-11-09",
-  "home_team": "Nuggets",
-  "away_team": "Warriors",
-  "home_score": 108,
-  "away_score": 105,
+  "game_id": 401585030,
+  "fecha": "2026-02-14",
+  "home_team": "Denver Nuggets",
+  "away_team": "Golden State Warriors",
+  "home_score": 114,
+  "away_score": 120,
   "home_stats": {
     "PTS": 120,
     "REB": 43,
     "AST": 25,
-    "STL": 6,
-    "BLK": 4,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 6,
+    "TO": 4,
+    "PF": 10,
     "FG%": 48.8,
     "3P%": 41.2,
-    "FT%": 81.3,
-    "PF": 17
+    "FT%": 81.2
   },
   "away_stats": {
     "PTS": 114,
     "REB": 39,
     "AST": 23,
-    "STL": 7,
-    "BLK": 3,
-    "TO": 13,
+    "STL": 13,
+    "BLK": 7,
+    "TO": 3,
+    "PF": 9,
     "FG%": 46.0,
     "3P%": 35.0,
-    "FT%": 87.0,
-    "PF": 23
+    "FT%": 87.0
   }
 }

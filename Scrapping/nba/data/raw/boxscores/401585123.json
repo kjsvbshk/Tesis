@@ -1,32 +1,32 @@
 {
-  "game_id": "401585123",
-  "fecha": "2025-11-09",
-  "home_team": "76ers",
-  "away_team": "Jazz",
+  "game_id": 401585123,
+  "fecha": "2026-02-14",
+  "home_team": "Philadelphia 76ers",
+  "away_team": "Utah Jazz",
   "home_score": 109,
   "away_score": 120,
   "home_stats": {
     "PTS": 109,
     "REB": 34,
     "AST": 30,
-    "STL": 12,
-    "BLK": 6,
+    "STL": 6,
+    "BLK": 12,
     "TO": 6,
+    "PF": 15,
     "FG%": 40.4,
     "3P%": 18.4,
-    "FT%": 78.3,
-    "PF": 20
+    "FT%": 78.3
   },
   "away_stats": {
     "PTS": 120,
     "REB": 48,
     "AST": 30,
-    "STL": 4,
+    "STL": 23,
     "BLK": 4,
-    "TO": 23,
+    "TO": 4,
+    "PF": 9,
     "FG%": 57.5,
     "3P%": 26.7,
-    "FT%": 83.3,
-    "PF": 18
+    "FT%": 83.3
   }
 }

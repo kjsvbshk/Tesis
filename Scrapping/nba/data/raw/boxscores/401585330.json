@@ -1,32 +1,32 @@
 {
-  "game_id": "401585330",
-  "fecha": "2025-11-09",
-  "home_team": "Bucks",
-  "away_team": "Mavericks",
-  "home_score": 132,
-  "away_score": 125,
+  "game_id": 401585330,
+  "fecha": "2026-02-14",
+  "home_team": "Dallas Mavericks",
+  "away_team": "Milwaukee Bucks",
+  "home_score": 117,
+  "away_score": 129,
   "home_stats": {
     "PTS": 117,
     "REB": 42,
     "AST": 22,
-    "STL": 9,
-    "BLK": 1,
-    "TO": 21,
+    "STL": 21,
+    "BLK": 9,
+    "TO": 1,
+    "PF": 8,
     "FG%": 49.4,
     "3P%": 41.0,
-    "FT%": 91.3,
-    "PF": 19
+    "FT%": 91.3
   },
   "away_stats": {
     "PTS": 129,
     "REB": 36,
     "AST": 34,
-    "STL": 13,
-    "BLK": 2,
-    "TO": 11,
+    "STL": 11,
+    "BLK": 13,
+    "TO": 2,
+    "PF": 5,
     "FG%": 56.8,
     "3P%": 40.0,
-    "FT%": 68.0,
-    "PF": 21
+    "FT%": 68.0
   }
 }

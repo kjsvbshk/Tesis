@@ -1,32 +1,32 @@
 {
-  "game_id": "401585311",
-  "fecha": "2025-11-09",
-  "home_team": "Bucks",
-  "away_team": "Trail Blazers",
-  "home_score": 108,
-  "away_score": 102,
+  "game_id": 401585311,
+  "fecha": "2026-02-14",
+  "home_team": "Portland Trail Blazers",
+  "away_team": "Milwaukee Bucks",
+  "home_score": 116,
+  "away_score": 119,
   "home_stats": {
     "PTS": 119,
     "REB": 39,
     "AST": 26,
-    "STL": 9,
-    "BLK": 1,
-    "TO": 11,
+    "STL": 11,
+    "BLK": 9,
+    "TO": 1,
+    "PF": 9,
     "FG%": 53.3,
     "3P%": 42.9,
-    "FT%": 100.0,
-    "PF": 20
+    "FT%": 100.0
   },
   "away_stats": {
     "PTS": 116,
     "REB": 39,
     "AST": 27,
-    "STL": 7,
-    "BLK": 5,
-    "TO": 13,
+    "STL": 13,
+    "BLK": 7,
+    "TO": 5,
+    "PF": 10,
     "FG%": 48.9,
     "3P%": 28.9,
-    "FT%": 72.2,
-    "PF": 17
+    "FT%": 72.2
   }
 }

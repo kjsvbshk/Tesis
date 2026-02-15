@@ -1,32 +1,32 @@
 {
-  "game_id": "401585562",
-  "fecha": "2025-11-09",
-  "home_team": "Cavaliers",
-  "away_team": "Suns",
+  "game_id": 401585562,
+  "fecha": "2026-02-14",
+  "home_team": "Cleveland Cavaliers",
+  "away_team": "Phoenix Suns",
   "home_score": 111,
   "away_score": 117,
   "home_stats": {
     "PTS": 111,
     "REB": 37,
     "AST": 30,
-    "STL": 9,
-    "BLK": 0,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 9,
+    "TO": 0,
+    "PF": 10,
     "FG%": 47.6,
     "3P%": 32.6,
-    "FT%": 84.2,
-    "PF": 18
+    "FT%": 84.2
   },
   "away_stats": {
     "PTS": 117,
     "REB": 42,
     "AST": 23,
-    "STL": 8,
-    "BLK": 6,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 8,
+    "TO": 6,
+    "PF": 12,
     "FG%": 54.8,
     "3P%": 37.5,
-    "FT%": 68.4,
-    "PF": 18
+    "FT%": 68.4
   }
 }

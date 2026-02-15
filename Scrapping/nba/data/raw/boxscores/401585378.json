@@ -1,32 +1,32 @@
 {
-  "game_id": "401585378",
-  "fecha": "2025-11-09",
-  "home_team": "Nets",
-  "away_team": "Spurs",
-  "home_score": 123,
-  "away_score": 103,
+  "game_id": 401585378,
+  "fecha": "2026-02-14",
+  "home_team": "Brooklyn Nets",
+  "away_team": "San Antonio Spurs",
+  "home_score": 103,
+  "away_score": 123,
   "home_stats": {
     "PTS": 123,
     "REB": 41,
     "AST": 31,
-    "STL": 8,
-    "BLK": 7,
-    "TO": 11,
+    "STL": 11,
+    "BLK": 8,
+    "TO": 7,
+    "PF": 9,
     "FG%": 56.3,
     "3P%": 50.0,
-    "FT%": 72.7,
-    "PF": 23
+    "FT%": 72.7
   },
   "away_stats": {
     "PTS": 103,
     "REB": 41,
     "AST": 20,
-    "STL": 5,
-    "BLK": 3,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 5,
+    "TO": 3,
+    "PF": 15,
     "FG%": 39.6,
     "3P%": 32.4,
-    "FT%": 95.2,
-    "PF": 11
+    "FT%": 95.2
   }
 }

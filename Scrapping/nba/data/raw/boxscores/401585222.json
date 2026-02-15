@@ -1,32 +1,32 @@
 {
-  "game_id": "401585222",
-  "fecha": "2025-11-09",
-  "home_team": "Wizards",
-  "away_team": "Spurs",
+  "game_id": 401585222,
+  "fecha": "2026-02-14",
+  "home_team": "Washington Wizards",
+  "away_team": "San Antonio Spurs",
   "home_score": 127,
   "away_score": 131,
   "home_stats": {
     "PTS": 127,
     "REB": 46,
     "AST": 28,
-    "STL": 10,
-    "BLK": 4,
-    "TO": 11,
+    "STL": 11,
+    "BLK": 10,
+    "TO": 4,
+    "PF": 14,
     "FG%": 47.6,
     "3P%": 31.0,
-    "FT%": 87.0,
-    "PF": 21
+    "FT%": 87.0
   },
   "away_stats": {
     "PTS": 131,
     "REB": 49,
     "AST": 38,
-    "STL": 6,
-    "BLK": 10,
-    "TO": 17,
+    "STL": 17,
+    "BLK": 6,
+    "TO": 10,
+    "PF": 14,
     "FG%": 53.1,
     "3P%": 38.7,
-    "FT%": 73.9,
-    "PF": 19
+    "FT%": 73.9
   }
 }

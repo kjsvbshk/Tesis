@@ -1,32 +1,32 @@
 {
-  "game_id": "401584736",
-  "fecha": "2025-11-09",
-  "home_team": "Pelicans",
-  "away_team": "Warriors",
+  "game_id": 401584736,
+  "fecha": "2026-02-14",
+  "home_team": "New Orleans Pelicans",
+  "away_team": "Golden State Warriors",
   "home_score": 102,
   "away_score": 130,
   "home_stats": {
     "PTS": 102,
     "REB": 39,
     "AST": 23,
-    "STL": 8,
-    "BLK": 3,
-    "TO": 11,
+    "STL": 11,
+    "BLK": 8,
+    "TO": 3,
+    "PF": 14,
     "FG%": 40.9,
     "3P%": 25.6,
-    "FT%": 61.5,
-    "PF": 18
+    "FT%": 61.5
   },
   "away_stats": {
     "PTS": 130,
     "REB": 64,
     "AST": 28,
-    "STL": 6,
-    "BLK": 7,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 6,
+    "TO": 7,
+    "PF": 21,
     "FG%": 52.0,
     "3P%": 36.6,
-    "FT%": 65.0,
-    "PF": 21
+    "FT%": 65.0
   }
 }

@@ -1,32 +1,32 @@
 {
-  "game_id": "401585707",
-  "fecha": "2025-11-09",
-  "home_team": "Clippers",
-  "away_team": "Hornets",
-  "home_score": 113,
-  "away_score": 104,
+  "game_id": 401585707,
+  "fecha": "2026-02-14",
+  "home_team": "Charlotte Hornets",
+  "away_team": "LA Clippers",
+  "home_score": 118,
+  "away_score": 130,
   "home_stats": {
     "PTS": 118,
     "REB": 31,
     "AST": 32,
-    "STL": 3,
-    "BLK": 2,
-    "TO": 9,
+    "STL": 9,
+    "BLK": 3,
+    "TO": 2,
+    "PF": 5,
     "FG%": 50.0,
     "3P%": 44.2,
-    "FT%": 63.6,
-    "PF": 25
+    "FT%": 63.6
   },
   "away_stats": {
     "PTS": 130,
     "REB": 41,
     "AST": 28,
-    "STL": 4,
-    "BLK": 5,
-    "TO": 8,
+    "STL": 8,
+    "BLK": 4,
+    "TO": 5,
+    "PF": 7,
     "FG%": 57.3,
     "3P%": 48.3,
-    "FT%": 88.2,
-    "PF": 16
+    "FT%": 88.2
   }
 }

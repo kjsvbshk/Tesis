@@ -1,32 +1,32 @@
 {
-  "game_id": "401585070",
-  "fecha": "2025-11-09",
-  "home_team": "76ers",
-  "away_team": "Bulls",
-  "home_score": 104,
-  "away_score": 108,
+  "game_id": 401585070,
+  "fecha": "2026-02-14",
+  "home_team": "Chicago Bulls",
+  "away_team": "Philadelphia 76ers",
+  "home_score": 92,
+  "away_score": 105,
   "home_stats": {
     "PTS": 105,
     "REB": 53,
     "AST": 21,
-    "STL": 5,
+    "STL": 16,
     "BLK": 5,
-    "TO": 16,
+    "TO": 5,
+    "PF": 12,
     "FG%": 50.6,
     "3P%": 28.0,
-    "FT%": 60.0,
-    "PF": 15
+    "FT%": 60.0
   },
   "away_stats": {
     "PTS": 92,
     "REB": 36,
     "AST": 24,
-    "STL": 12,
-    "BLK": 5,
-    "TO": 7,
+    "STL": 7,
+    "BLK": 12,
+    "TO": 5,
+    "PF": 12,
     "FG%": 39.1,
     "3P%": 23.7,
-    "FT%": 73.3,
-    "PF": 22
+    "FT%": 73.3
   }
 }

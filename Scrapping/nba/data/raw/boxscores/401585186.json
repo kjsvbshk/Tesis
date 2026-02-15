@@ -1,32 +1,32 @@
 {
-  "game_id": "401585186",
-  "fecha": "2025-11-09",
-  "home_team": "Pistons",
-  "away_team": "Wizards",
-  "home_score": 107,
-  "away_score": 126,
+  "game_id": 401585186,
+  "fecha": "2026-02-14",
+  "home_team": "Washington Wizards",
+  "away_team": "Detroit Pistons",
+  "home_score": 117,
+  "away_score": 129,
   "home_stats": {
     "PTS": 117,
     "REB": 33,
     "AST": 30,
     "STL": 8,
-    "BLK": 7,
-    "TO": 8,
+    "BLK": 8,
+    "TO": 7,
+    "PF": 8,
     "FG%": 46.3,
     "3P%": 46.3,
-    "FT%": 90.9,
-    "PF": 19
+    "FT%": 90.9
   },
   "away_stats": {
     "PTS": 129,
     "REB": 52,
     "AST": 30,
-    "STL": 4,
-    "BLK": 10,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 4,
+    "TO": 10,
+    "PF": 12,
     "FG%": 55.6,
     "3P%": 38.7,
-    "FT%": 73.9,
-    "PF": 13
+    "FT%": 73.9
   }
 }

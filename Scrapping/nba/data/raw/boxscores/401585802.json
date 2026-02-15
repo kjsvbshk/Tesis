@@ -1,32 +1,32 @@
 {
-  "game_id": "401585802",
-  "fecha": "2025-11-09",
-  "home_team": "Cavaliers",
-  "away_team": "Pacers",
-  "home_score": 113,
-  "away_score": 125,
+  "game_id": 401585802,
+  "fecha": "2026-02-14",
+  "home_team": "Cleveland Cavaliers",
+  "away_team": "Indiana Pacers",
+  "home_score": 120,
+  "away_score": 129,
   "home_stats": {
     "PTS": 129,
     "REB": 41,
     "AST": 28,
     "STL": 9,
-    "BLK": 2,
-    "TO": 9,
+    "BLK": 9,
+    "TO": 2,
+    "PF": 11,
     "FG%": 52.6,
     "3P%": 40.6,
-    "FT%": 69.6,
-    "PF": 14
+    "FT%": 69.6
   },
   "away_stats": {
     "PTS": 120,
     "REB": 39,
     "AST": 37,
-    "STL": 7,
-    "BLK": 2,
-    "TO": 13,
+    "STL": 13,
+    "BLK": 7,
+    "TO": 2,
+    "PF": 7,
     "FG%": 51.7,
     "3P%": 28.1,
-    "FT%": 86.4,
-    "PF": 17
+    "FT%": 86.4
   }
 }

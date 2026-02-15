@@ -1,32 +1,32 @@
 {
-  "game_id": "401585542",
-  "fecha": "2025-11-09",
-  "home_team": "Heat",
-  "away_team": "Thunder",
-  "home_score": 120,
-  "away_score": 128,
+  "game_id": 401585542,
+  "fecha": "2026-02-14",
+  "home_team": "Oklahoma City Thunder",
+  "away_team": "Miami Heat",
+  "home_score": 100,
+  "away_score": 107,
   "home_stats": {
     "PTS": 107,
     "REB": 45,
     "AST": 28,
-    "STL": 5,
-    "BLK": 8,
-    "TO": 9,
+    "STL": 9,
+    "BLK": 5,
+    "TO": 8,
+    "PF": 9,
     "FG%": 47.2,
     "3P%": 31.6,
-    "FT%": 84.6,
-    "PF": 16
+    "FT%": 84.6
   },
   "away_stats": {
     "PTS": 100,
     "REB": 43,
     "AST": 24,
-    "STL": 6,
-    "BLK": 5,
-    "TO": 10,
+    "STL": 10,
+    "BLK": 6,
+    "TO": 5,
+    "PF": 7,
     "FG%": 46.3,
     "3P%": 37.9,
-    "FT%": 72.2,
-    "PF": 16
+    "FT%": 72.2
   }
 }

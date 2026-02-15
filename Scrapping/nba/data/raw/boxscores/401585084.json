@@ -1,32 +1,32 @@
 {
-  "game_id": "401585084",
-  "fecha": "2025-11-09",
-  "home_team": "Suns",
-  "away_team": "Trail Blazers",
-  "home_score": 120,
-  "away_score": 107,
+  "game_id": 401585084,
+  "fecha": "2026-02-14",
+  "home_team": "Phoenix Suns",
+  "away_team": "Portland Trail Blazers",
+  "home_score": 88,
+  "away_score": 109,
   "home_stats": {
     "PTS": 109,
     "REB": 47,
     "AST": 24,
-    "STL": 10,
-    "BLK": 5,
-    "TO": 16,
+    "STL": 16,
+    "BLK": 10,
+    "TO": 5,
+    "PF": 9,
     "FG%": 47.5,
     "3P%": 37.9,
-    "FT%": 66.7,
-    "PF": 20
+    "FT%": 66.7
   },
   "away_stats": {
     "PTS": 88,
     "REB": 36,
     "AST": 21,
-    "STL": 6,
-    "BLK": 10,
-    "TO": 18,
-    "FG%": 41.3,
+    "STL": 18,
+    "BLK": 6,
+    "TO": 10,
+    "PF": 6,
+    "FG%": 41.2,
     "3P%": 26.7,
-    "FT%": 73.7,
-    "PF": 19
+    "FT%": 73.7
   }
 }

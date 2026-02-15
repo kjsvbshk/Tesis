@@ -1,32 +1,32 @@
 {
-  "game_id": "401585637",
-  "fecha": "2025-11-09",
-  "home_team": "Knicks",
-  "away_team": "Nuggets",
-  "home_score": 122,
-  "away_score": 84,
+  "game_id": 401585637,
+  "fecha": "2026-02-14",
+  "home_team": "Denver Nuggets",
+  "away_team": "New York Knicks",
+  "home_score": 100,
+  "away_score": 113,
   "home_stats": {
     "PTS": 113,
     "REB": 42,
     "AST": 31,
-    "STL": 5,
-    "BLK": 4,
-    "TO": 9,
+    "STL": 9,
+    "BLK": 5,
+    "TO": 4,
+    "PF": 9,
     "FG%": 53.6,
     "3P%": 30.0,
-    "FT%": 85.0,
-    "PF": 14
+    "FT%": 85.0
   },
   "away_stats": {
     "PTS": 100,
     "REB": 31,
     "AST": 28,
-    "STL": 6,
+    "STL": 9,
     "BLK": 6,
-    "TO": 9,
+    "TO": 6,
+    "PF": 4,
     "FG%": 48.1,
     "3P%": 35.5,
-    "FT%": 76.5,
-    "PF": 18
+    "FT%": 76.5
   }
 }

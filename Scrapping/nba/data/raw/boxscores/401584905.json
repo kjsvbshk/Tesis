@@ -1,32 +1,32 @@
 {
-  "game_id": "401584905",
-  "fecha": "2025-11-09",
-  "home_team": "Grizzlies",
-  "away_team": "Mavericks",
-  "home_score": 110,
-  "away_score": 125,
+  "game_id": 401584905,
+  "fecha": "2026-02-14",
+  "home_team": "Dallas Mavericks",
+  "away_team": "Memphis Grizzlies",
+  "home_score": 94,
+  "away_score": 108,
   "home_stats": {
     "PTS": 94,
     "REB": 42,
     "AST": 27,
-    "STL": 9,
-    "BLK": 5,
-    "TO": 11,
+    "STL": 11,
+    "BLK": 9,
+    "TO": 5,
+    "PF": 13,
     "FG%": 37.0,
     "3P%": 30.8,
-    "FT%": 66.7,
-    "PF": 13
+    "FT%": 66.7
   },
   "away_stats": {
     "PTS": 108,
     "REB": 52,
     "AST": 27,
-    "STL": 8,
-    "BLK": 12,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 8,
+    "TO": 12,
+    "PF": 13,
     "FG%": 48.9,
     "3P%": 32.4,
-    "FT%": 81.8,
-    "PF": 23
+    "FT%": 81.8
   }
 }

@@ -1,32 +1,32 @@
 {
-  "game_id": "401585538",
-  "fecha": "2025-11-09",
-  "home_team": "Hornets",
-  "away_team": "Wizards",
-  "home_score": 116,
-  "away_score": 132,
+  "game_id": 401585538,
+  "fecha": "2026-02-14",
+  "home_team": "Washington Wizards",
+  "away_team": "Charlotte Hornets",
+  "home_score": 100,
+  "away_score": 112,
   "home_stats": {
     "PTS": 112,
     "REB": 54,
     "AST": 25,
-    "STL": 5,
-    "BLK": 11,
+    "STL": 11,
+    "BLK": 5,
     "TO": 11,
+    "PF": 10,
     "FG%": 49.4,
     "3P%": 18.2,
-    "FT%": 87.0,
-    "PF": 20
+    "FT%": 87.0
   },
   "away_stats": {
     "PTS": 100,
     "REB": 48,
     "AST": 18,
-    "STL": 6,
-    "BLK": 5,
-    "TO": 7,
+    "STL": 7,
+    "BLK": 6,
+    "TO": 5,
+    "PF": 13,
     "FG%": 40.0,
     "3P%": 21.4,
-    "FT%": 73.3,
-    "PF": 19
+    "FT%": 73.3
   }
 }

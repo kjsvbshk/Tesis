@@ -1,32 +1,32 @@
 {
-  "game_id": "401585170",
-  "fecha": "2025-11-09",
-  "home_team": "Celtics",
-  "away_team": "Rockets",
-  "home_score": 145,
-  "away_score": 113,
+  "game_id": 401585170,
+  "fecha": "2026-02-14",
+  "home_team": "Boston Celtics",
+  "away_team": "Houston Rockets",
+  "home_score": 113,
+  "away_score": 145,
   "home_stats": {
     "PTS": 145,
     "REB": 50,
     "AST": 26,
-    "STL": 7,
-    "BLK": 8,
-    "TO": 11,
+    "STL": 11,
+    "BLK": 7,
+    "TO": 8,
+    "PF": 10,
     "FG%": 53.7,
     "3P%": 51.1,
-    "FT%": 76.0,
-    "PF": 21
+    "FT%": 76.0
   },
   "away_stats": {
     "PTS": 113,
     "REB": 50,
     "AST": 20,
-    "STL": 10,
-    "BLK": 3,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 10,
+    "TO": 3,
+    "PF": 15,
     "FG%": 40.4,
     "3P%": 23.3,
-    "FT%": 86.7,
-    "PF": 18
+    "FT%": 86.7
   }
 }

@@ -1,32 +1,32 @@
 {
-  "game_id": "401584101",
-  "fecha": "2025-11-09",
-  "home_team": "Spurs",
-  "away_team": "Timberwolves",
+  "game_id": 401584101,
+  "fecha": "2026-02-14",
+  "home_team": "San Antonio Spurs",
+  "away_team": "Minnesota Timberwolves",
   "home_score": 110,
   "away_score": 117,
   "home_stats": {
     "PTS": 110,
     "REB": 38,
     "AST": 29,
-    "STL": 9,
-    "BLK": 8,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 9,
+    "TO": 8,
+    "PF": 7,
     "FG%": 46.7,
     "3P%": 35.3,
-    "FT%": 63.2,
-    "PF": 21
+    "FT%": 63.2
   },
   "away_stats": {
     "PTS": 117,
     "REB": 51,
     "AST": 23,
-    "STL": 6,
-    "BLK": 4,
-    "TO": 18,
+    "STL": 18,
+    "BLK": 6,
+    "TO": 4,
+    "PF": 13,
     "FG%": 49.4,
     "3P%": 37.0,
-    "FT%": 77.8,
-    "PF": 19
+    "FT%": 77.8
   }
 }

@@ -1,32 +1,32 @@
 {
-  "game_id": "401585169",
-  "fecha": "2025-11-09",
-  "home_team": "Spurs",
-  "away_team": "Hornets",
-  "home_score": 135,
-  "away_score": 99,
+  "game_id": 401585169,
+  "fecha": "2026-02-14",
+  "home_team": "San Antonio Spurs",
+  "away_team": "Charlotte Hornets",
+  "home_score": 99,
+  "away_score": 135,
   "home_stats": {
     "PTS": 135,
     "REB": 45,
     "AST": 31,
-    "STL": 9,
-    "BLK": 7,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 9,
+    "TO": 7,
+    "PF": 7,
     "FG%": 51.7,
     "3P%": 47.4,
-    "FT%": 79.4,
-    "PF": 20
+    "FT%": 79.4
   },
   "away_stats": {
     "PTS": 99,
     "REB": 44,
     "AST": 22,
-    "STL": 11,
-    "BLK": 3,
-    "TO": 19,
+    "STL": 19,
+    "BLK": 11,
+    "TO": 3,
+    "PF": 16,
     "FG%": 36.0,
     "3P%": 29.4,
-    "FT%": 89.3,
-    "PF": 24
+    "FT%": 89.3
   }
 }

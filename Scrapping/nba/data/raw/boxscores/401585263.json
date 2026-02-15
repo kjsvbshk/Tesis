@@ -1,32 +1,32 @@
 {
-  "game_id": "401585263",
-  "fecha": "2025-11-09",
-  "home_team": "Rockets",
-  "away_team": "Hornets",
-  "home_score": 128,
-  "away_score": 119,
+  "game_id": 401585263,
+  "fecha": "2026-02-14",
+  "home_team": "Charlotte Hornets",
+  "away_team": "Houston Rockets",
+  "home_score": 104,
+  "away_score": 138,
   "home_stats": {
     "PTS": 104,
     "REB": 32,
     "AST": 20,
-    "STL": 6,
-    "BLK": 7,
-    "TO": 13,
+    "STL": 13,
+    "BLK": 6,
+    "TO": 7,
+    "PF": 5,
     "FG%": 41.2,
     "3P%": 31.0,
-    "FT%": 78.1,
-    "PF": 25
+    "FT%": 78.1
   },
   "away_stats": {
     "PTS": 138,
     "REB": 53,
     "AST": 34,
-    "STL": 7,
-    "BLK": 10,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 7,
+    "TO": 10,
+    "PF": 11,
     "FG%": 56.2,
     "3P%": 39.4,
-    "FT%": 80.6,
-    "PF": 20
+    "FT%": 80.6
   }
 }

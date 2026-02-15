@@ -1,32 +1,32 @@
 {
-  "game_id": "401585163",
-  "fecha": "2025-11-09",
-  "home_team": "Magic",
-  "away_team": "Heat",
-  "home_score": 106,
-  "away_score": 115,
+  "game_id": 401585163,
+  "fecha": "2026-02-14",
+  "home_team": "Miami Heat",
+  "away_team": "Orlando Magic",
+  "home_score": 96,
+  "away_score": 99,
   "home_stats": {
     "PTS": 99,
     "REB": 41,
     "AST": 23,
-    "STL": 6,
-    "BLK": 1,
-    "TO": 16,
+    "STL": 16,
+    "BLK": 6,
+    "TO": 1,
+    "PF": 12,
     "FG%": 44.6,
     "3P%": 30.8,
-    "FT%": 85.0,
-    "PF": 17
+    "FT%": 85.0
   },
   "away_stats": {
     "PTS": 96,
     "REB": 38,
     "AST": 26,
-    "STL": 10,
-    "BLK": 8,
-    "TO": 11,
+    "STL": 11,
+    "BLK": 10,
+    "TO": 8,
+    "PF": 10,
     "FG%": 43.9,
     "3P%": 30.0,
-    "FT%": 60.0,
-    "PF": 20
+    "FT%": 60.0
   }
 }

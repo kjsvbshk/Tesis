@@ -1,32 +1,32 @@
 {
-  "game_id": "401584988",
-  "fecha": "2025-11-09",
-  "home_team": "Grizzlies",
-  "away_team": "Pelicans",
-  "home_score": 104,
-  "away_score": 111,
+  "game_id": 401584988,
+  "fecha": "2026-02-14",
+  "home_team": "New Orleans Pelicans",
+  "away_team": "Memphis Grizzlies",
+  "home_score": 113,
+  "away_score": 115,
   "home_stats": {
     "PTS": 113,
     "REB": 39,
     "AST": 23,
-    "STL": 4,
-    "BLK": 3,
-    "TO": 11,
+    "STL": 11,
+    "BLK": 4,
+    "TO": 3,
+    "PF": 11,
     "FG%": 47.1,
     "3P%": 44.0,
-    "FT%": 91.7,
-    "PF": 23
+    "FT%": 91.7
   },
   "away_stats": {
     "PTS": 115,
     "REB": 42,
     "AST": 19,
-    "STL": 5,
-    "BLK": 7,
-    "TO": 17,
+    "STL": 17,
+    "BLK": 5,
+    "TO": 7,
+    "PF": 13,
     "FG%": 50.0,
     "3P%": 32.3,
-    "FT%": 79.3,
-    "PF": 19
+    "FT%": 79.3
   }
 }

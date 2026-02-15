@@ -1,32 +1,32 @@
 {
-  "game_id": "401585278",
-  "fecha": "2025-11-09",
-  "home_team": "Warriors",
-  "away_team": "Lakers",
+  "game_id": 401585278,
+  "fecha": "2026-02-14",
+  "home_team": "Golden State Warriors",
+  "away_team": "Los Angeles Lakers",
   "home_score": 144,
   "away_score": 145,
   "home_stats": {
     "PTS": 144,
     "REB": 50,
     "AST": 37,
-    "STL": 11,
-    "BLK": 3,
-    "TO": 17,
+    "STL": 17,
+    "BLK": 11,
+    "TO": 3,
+    "PF": 11,
     "FG%": 46.2,
     "3P%": 39.7,
-    "FT%": 68.8,
-    "PF": 34
+    "FT%": 68.8
   },
   "away_stats": {
     "PTS": 145,
     "REB": 55,
     "AST": 33,
-    "STL": 9,
-    "BLK": 5,
-    "TO": 19,
+    "STL": 19,
+    "BLK": 9,
+    "TO": 5,
+    "PF": 7,
     "FG%": 48.5,
     "3P%": 33.3,
-    "FT%": 88.4,
-    "PF": 21
+    "FT%": 88.4
   }
 }

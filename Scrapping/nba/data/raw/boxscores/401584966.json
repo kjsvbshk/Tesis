@@ -1,32 +1,32 @@
 {
-  "game_id": "401584966",
-  "fecha": "2025-11-09",
-  "home_team": "Timberwolves",
-  "away_team": "Pacers",
-  "home_score": 127,
-  "away_score": 109,
+  "game_id": 401584966,
+  "fecha": "2026-02-14",
+  "home_team": "Minnesota Timberwolves",
+  "away_team": "Indiana Pacers",
+  "home_score": 109,
+  "away_score": 127,
   "home_stats": {
     "PTS": 127,
     "REB": 36,
     "AST": 33,
-    "STL": 10,
-    "BLK": 4,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 10,
+    "TO": 4,
+    "PF": 8,
     "FG%": 55.8,
     "3P%": 60.0,
-    "FT%": 81.3,
-    "PF": 16
+    "FT%": 81.2
   },
   "away_stats": {
     "PTS": 109,
     "REB": 40,
     "AST": 25,
-    "STL": 10,
-    "BLK": 6,
-    "TO": 13,
+    "STL": 13,
+    "BLK": 10,
+    "TO": 6,
+    "PF": 13,
     "FG%": 50.0,
     "3P%": 28.6,
-    "FT%": 81.3,
-    "PF": 15
+    "FT%": 81.2
   }
 }

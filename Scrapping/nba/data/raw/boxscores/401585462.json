@@ -1,32 +1,32 @@
 {
-  "game_id": "401585462",
-  "fecha": "2025-11-09",
-  "home_team": "Warriors",
-  "away_team": "Wizards",
-  "home_score": 129,
-  "away_score": 118,
+  "game_id": 401585462,
+  "fecha": "2026-02-14",
+  "home_team": "Washington Wizards",
+  "away_team": "Golden State Warriors",
+  "home_score": 112,
+  "away_score": 123,
   "home_stats": {
     "PTS": 112,
     "REB": 41,
     "AST": 34,
-    "STL": 5,
+    "STL": 20,
     "BLK": 5,
-    "TO": 20,
+    "TO": 5,
+    "PF": 11,
     "FG%": 49.5,
     "3P%": 34.3,
-    "FT%": 80.0,
-    "PF": 12
+    "FT%": 80.0
   },
   "away_stats": {
     "PTS": 123,
     "REB": 44,
     "AST": 39,
-    "STL": 12,
-    "BLK": 6,
-    "TO": 18,
+    "STL": 18,
+    "BLK": 12,
+    "TO": 6,
+    "PF": 9,
     "FG%": 50.0,
     "3P%": 45.7,
-    "FT%": 72.7,
-    "PF": 11
+    "FT%": 72.7
   }
 }

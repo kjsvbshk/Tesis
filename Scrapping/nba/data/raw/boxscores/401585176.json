@@ -1,32 +1,32 @@
 {
-  "game_id": "401585176",
-  "fecha": "2025-11-09",
-  "home_team": "Spurs",
-  "away_team": "Bulls",
-  "home_score": 112,
-  "away_score": 121,
+  "game_id": 401585176,
+  "fecha": "2026-02-14",
+  "home_team": "San Antonio Spurs",
+  "away_team": "Chicago Bulls",
+  "home_score": 116,
+  "away_score": 122,
   "home_stats": {
     "PTS": 116,
     "REB": 47,
     "AST": 26,
-    "STL": 7,
-    "BLK": 4,
-    "TO": 8,
+    "STL": 8,
+    "BLK": 7,
+    "TO": 4,
+    "PF": 12,
     "FG%": 41.1,
     "3P%": 39.1,
-    "FT%": 87.0,
-    "PF": 19
+    "FT%": 87.0
   },
   "away_stats": {
     "PTS": 122,
     "REB": 47,
     "AST": 31,
-    "STL": 5,
-    "BLK": 8,
-    "TO": 9,
+    "STL": 9,
+    "BLK": 5,
+    "TO": 8,
+    "PF": 7,
     "FG%": 51.1,
     "3P%": 44.1,
-    "FT%": 75.0,
-    "PF": 18
+    "FT%": 75.0
   }
 }

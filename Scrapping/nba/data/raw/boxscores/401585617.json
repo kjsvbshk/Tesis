@@ -1,32 +1,32 @@
 {
-  "game_id": "401585617",
-  "fecha": "2025-11-09",
-  "home_team": "Grizzlies",
-  "away_team": "Kings",
-  "home_score": 92,
-  "away_score": 123,
+  "game_id": 401585617,
+  "fecha": "2026-02-14",
+  "home_team": "Sacramento Kings",
+  "away_team": "Memphis Grizzlies",
+  "home_score": 111,
+  "away_score": 121,
   "home_stats": {
     "PTS": 121,
     "REB": 59,
     "AST": 30,
-    "STL": 7,
-    "BLK": 10,
-    "TO": 17,
+    "STL": 17,
+    "BLK": 7,
+    "TO": 10,
+    "PF": 15,
     "FG%": 44.7,
     "3P%": 31.4,
-    "FT%": 81.3,
-    "PF": 25
+    "FT%": 81.2
   },
   "away_stats": {
     "PTS": 111,
     "REB": 49,
     "AST": 22,
-    "STL": 13,
-    "BLK": 7,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 13,
+    "TO": 7,
+    "PF": 15,
     "FG%": 37.8,
     "3P%": 34.2,
-    "FT%": 80.0,
-    "PF": 23
+    "FT%": 80.0
   }
 }

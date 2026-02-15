@@ -1,32 +1,32 @@
 {
-  "game_id": "401585627",
-  "fecha": "2025-11-09",
-  "home_team": "Kings",
-  "away_team": "Raptors",
-  "home_score": 135,
-  "away_score": 130,
+  "game_id": 401585627,
+  "fecha": "2026-02-14",
+  "home_team": "Toronto Raptors",
+  "away_team": "Sacramento Kings",
+  "home_score": 89,
+  "away_score": 123,
   "home_stats": {
     "PTS": 89,
     "REB": 31,
     "AST": 21,
-    "STL": 11,
-    "BLK": 3,
-    "TO": 21,
-    "FG%": 41.3,
+    "STL": 21,
+    "BLK": 11,
+    "TO": 3,
+    "PF": 11,
+    "FG%": 41.2,
     "3P%": 32.3,
-    "FT%": 72.2,
-    "PF": 15
+    "FT%": 72.2
   },
   "away_stats": {
     "PTS": 123,
     "REB": 53,
     "AST": 32,
-    "STL": 14,
-    "BLK": 6,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 14,
+    "TO": 6,
+    "PF": 18,
     "FG%": 51.6,
     "3P%": 30.0,
-    "FT%": 83.3,
-    "PF": 16
+    "FT%": 83.3
   }
 }

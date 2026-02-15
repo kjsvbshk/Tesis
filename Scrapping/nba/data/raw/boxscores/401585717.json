@@ -1,32 +1,32 @@
 {
-  "game_id": "401585717",
-  "fecha": "2025-11-09",
-  "home_team": "Pacers",
-  "away_team": "Nets",
-  "home_score": 121,
-  "away_score": 100,
+  "game_id": 401585717,
+  "fecha": "2026-02-14",
+  "home_team": "Indiana Pacers",
+  "away_team": "Brooklyn Nets",
+  "home_score": 111,
+  "away_score": 133,
   "home_stats": {
     "PTS": 133,
     "REB": 47,
     "AST": 35,
-    "STL": 6,
-    "BLK": 9,
+    "STL": 9,
+    "BLK": 6,
     "TO": 9,
+    "PF": 14,
     "FG%": 51.5,
     "3P%": 41.9,
-    "FT%": 82.4,
-    "PF": 21
+    "FT%": 82.4
   },
   "away_stats": {
     "PTS": 111,
     "REB": 43,
     "AST": 20,
-    "STL": 3,
-    "BLK": 4,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 3,
+    "TO": 4,
+    "PF": 12,
     "FG%": 47.1,
     "3P%": 38.5,
-    "FT%": 67.9,
-    "PF": 19
+    "FT%": 67.9
   }
 }

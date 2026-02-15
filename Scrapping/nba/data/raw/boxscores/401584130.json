@@ -1,32 +1,32 @@
 {
-  "game_id": "401584130",
-  "fecha": "2025-11-09",
-  "home_team": "Lakers",
-  "away_team": "Jazz",
-  "home_score": 131,
-  "away_score": 99,
+  "game_id": 401584130,
+  "fecha": "2026-02-14",
+  "home_team": "Los Angeles Lakers",
+  "away_team": "Utah Jazz",
+  "home_score": 99,
+  "away_score": 131,
   "home_stats": {
     "PTS": 131,
     "REB": 52,
     "AST": 35,
-    "STL": 6,
-    "BLK": 5,
-    "TO": 13,
+    "STL": 13,
+    "BLK": 6,
+    "TO": 5,
+    "PF": 9,
     "FG%": 57.0,
     "3P%": 37.9,
-    "FT%": 81.5,
-    "PF": 15
+    "FT%": 81.5
   },
   "away_stats": {
     "PTS": 99,
     "REB": 42,
     "AST": 25,
-    "STL": 6,
-    "BLK": 3,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 6,
+    "TO": 3,
+    "PF": 13,
     "FG%": 38.8,
     "3P%": 25.0,
-    "FT%": 75.0,
-    "PF": 22
+    "FT%": 75.0
   }
 }

@@ -1,32 +1,32 @@
 {
-  "game_id": "401585404",
-  "fecha": "2025-11-09",
-  "home_team": "Pistons",
-  "away_team": "Lakers",
-  "home_score": 107,
-  "away_score": 133,
+  "game_id": 401585404,
+  "fecha": "2026-02-14",
+  "home_team": "Los Angeles Lakers",
+  "away_team": "Detroit Pistons",
+  "home_score": 111,
+  "away_score": 125,
   "home_stats": {
     "PTS": 125,
     "REB": 47,
     "AST": 32,
-    "STL": 6,
-    "BLK": 11,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 6,
+    "TO": 11,
+    "PF": 7,
     "FG%": 51.2,
     "3P%": 40.0,
-    "FT%": 83.3,
-    "PF": 14
+    "FT%": 83.3
   },
   "away_stats": {
     "PTS": 111,
     "REB": 50,
     "AST": 30,
-    "STL": 8,
-    "BLK": 2,
-    "TO": 10,
+    "STL": 10,
+    "BLK": 8,
+    "TO": 2,
+    "PF": 17,
     "FG%": 41.7,
     "3P%": 28.6,
-    "FT%": 76.5,
-    "PF": 24
+    "FT%": 76.5
   }
 }

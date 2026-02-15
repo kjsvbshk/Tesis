@@ -1,32 +1,32 @@
 {
-  "game_id": "401585390",
-  "fecha": "2025-11-09",
-  "home_team": "76ers",
-  "away_team": "Cavaliers",
-  "home_score": 119,
-  "away_score": 122,
+  "game_id": 401585390,
+  "fecha": "2026-02-14",
+  "home_team": "Cleveland Cavaliers",
+  "away_team": "Philadelphia 76ers",
+  "home_score": 121,
+  "away_score": 123,
   "home_stats": {
     "PTS": 121,
     "REB": 43,
     "AST": 33,
-    "STL": 6,
-    "BLK": 8,
-    "TO": 10,
+    "STL": 10,
+    "BLK": 6,
+    "TO": 8,
+    "PF": 15,
     "FG%": 47.8,
     "3P%": 35.1,
-    "FT%": 80.0,
-    "PF": 17
+    "FT%": 80.0
   },
   "away_stats": {
     "PTS": 123,
     "REB": 42,
     "AST": 25,
-    "STL": 5,
-    "BLK": 4,
-    "TO": 10,
+    "STL": 10,
+    "BLK": 5,
+    "TO": 4,
+    "PF": 11,
     "FG%": 54.5,
     "3P%": 42.3,
-    "FT%": 84.2,
-    "PF": 22
+    "FT%": 84.2
   }
 }

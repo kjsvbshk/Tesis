@@ -1,32 +1,32 @@
 {
-  "game_id": "401585735",
-  "fecha": "2025-11-09",
-  "home_team": "Grizzlies",
-  "away_team": "Bucks",
-  "home_score": 113,
-  "away_score": 110,
+  "game_id": 401585735,
+  "fecha": "2026-02-14",
+  "home_team": "Milwaukee Bucks",
+  "away_team": "Memphis Grizzlies",
+  "home_score": 101,
+  "away_score": 111,
   "home_stats": {
     "PTS": 101,
     "REB": 44,
     "AST": 26,
-    "STL": 5,
-    "BLK": 10,
-    "TO": 11,
+    "STL": 11,
+    "BLK": 5,
+    "TO": 10,
+    "PF": 13,
     "FG%": 40.0,
     "3P%": 40.9,
-    "FT%": 58.3,
-    "PF": 14
+    "FT%": 58.3
   },
   "away_stats": {
     "PTS": 111,
     "REB": 54,
     "AST": 25,
-    "STL": 5,
-    "BLK": 8,
+    "STL": 8,
+    "BLK": 5,
     "TO": 8,
+    "PF": 13,
     "FG%": 50.5,
     "3P%": 30.4,
-    "FT%": 70.6,
-    "PF": 12
+    "FT%": 70.6
   }
 }

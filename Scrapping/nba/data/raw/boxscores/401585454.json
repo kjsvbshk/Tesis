@@ -1,32 +1,32 @@
 {
-  "game_id": "401585454",
-  "fecha": "2025-11-09",
-  "home_team": "Trail Blazers",
-  "away_team": "Hornets",
+  "game_id": 401585454,
+  "fecha": "2026-02-14",
+  "home_team": "Portland Trail Blazers",
+  "away_team": "Charlotte Hornets",
   "home_score": 80,
   "away_score": 93,
   "home_stats": {
     "PTS": 80,
     "REB": 56,
     "AST": 14,
-    "STL": 11,
-    "BLK": 4,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 11,
+    "TO": 4,
+    "PF": 22,
     "FG%": 34.7,
     "3P%": 9.4,
-    "FT%": 68.8,
-    "PF": 16
+    "FT%": 68.8
   },
   "away_stats": {
     "PTS": 93,
     "REB": 41,
     "AST": 24,
-    "STL": 12,
-    "BLK": 6,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 12,
+    "TO": 6,
+    "PF": 4,
     "FG%": 49.3,
     "3P%": 29.2,
-    "FT%": 70.6,
-    "PF": 12
+    "FT%": 70.6
   }
 }

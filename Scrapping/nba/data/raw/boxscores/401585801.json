@@ -1,32 +1,32 @@
 {
-  "game_id": "401585801",
-  "fecha": "2025-11-09",
-  "home_team": "Hornets",
-  "away_team": "Celtics",
-  "home_score": 121,
-  "away_score": 118,
+  "game_id": 401585801,
+  "fecha": "2026-02-14",
+  "home_team": "Boston Celtics",
+  "away_team": "Charlotte Hornets",
+  "home_score": 98,
+  "away_score": 131,
   "home_stats": {
     "PTS": 131,
     "REB": 53,
     "AST": 34,
-    "STL": 12,
-    "BLK": 1,
-    "TO": 6,
+    "STL": 6,
+    "BLK": 12,
+    "TO": 1,
+    "PF": 16,
     "FG%": 51.9,
     "3P%": 34.1,
-    "FT%": 69.2,
-    "PF": 20
+    "FT%": 69.2
   },
   "away_stats": {
     "PTS": 98,
     "REB": 33,
     "AST": 20,
-    "STL": 3,
-    "BLK": 7,
-    "TO": 19,
+    "STL": 19,
+    "BLK": 3,
+    "TO": 7,
+    "PF": 4,
     "FG%": 42.1,
     "3P%": 42.9,
-    "FT%": 86.4,
-    "PF": 15
+    "FT%": 86.4
   }
 }

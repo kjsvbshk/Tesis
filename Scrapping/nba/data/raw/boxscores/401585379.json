@@ -1,32 +1,32 @@
 {
-  "game_id": "401585379",
-  "fecha": "2025-11-09",
-  "home_team": "Hornets",
-  "away_team": "Grizzlies",
-  "home_score": 115,
-  "away_score": 106,
+  "game_id": 401585379,
+  "fecha": "2026-02-14",
+  "home_team": "Charlotte Hornets",
+  "away_team": "Memphis Grizzlies",
+  "home_score": 106,
+  "away_score": 115,
   "home_stats": {
     "PTS": 115,
     "REB": 43,
     "AST": 30,
-    "STL": 8,
-    "BLK": 4,
-    "TO": 19,
+    "STL": 19,
+    "BLK": 8,
+    "TO": 4,
+    "PF": 5,
     "FG%": 57.3,
     "3P%": 51.6,
-    "FT%": 71.4,
-    "PF": 9
+    "FT%": 71.4
   },
   "away_stats": {
     "PTS": 106,
     "REB": 32,
     "AST": 33,
     "STL": 12,
-    "BLK": 5,
-    "TO": 12,
+    "BLK": 12,
+    "TO": 5,
+    "PF": 9,
     "FG%": 46.7,
     "3P%": 36.4,
-    "FT%": 50.0,
-    "PF": 13
+    "FT%": 50.0
   }
 }

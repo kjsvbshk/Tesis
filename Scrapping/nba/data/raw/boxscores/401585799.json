@@ -1,32 +1,32 @@
 {
-  "game_id": "401585799",
-  "fecha": "2025-11-09",
-  "home_team": "Magic",
-  "away_team": "76ers",
-  "home_score": 92,
-  "away_score": 112,
+  "game_id": 401585799,
+  "fecha": "2026-02-14",
+  "home_team": "Philadelphia 76ers",
+  "away_team": "Orlando Magic",
+  "home_score": 113,
+  "away_score": 125,
   "home_stats": {
     "PTS": 125,
     "REB": 44,
     "AST": 22,
-    "STL": 6,
+    "STL": 11,
     "BLK": 6,
-    "TO": 11,
+    "TO": 6,
+    "PF": 8,
     "FG%": 47.7,
     "3P%": 48.6,
-    "FT%": 82.1,
-    "PF": 20
+    "FT%": 82.1
   },
   "away_stats": {
     "PTS": 113,
     "REB": 45,
     "AST": 25,
-    "STL": 7,
+    "STL": 11,
     "BLK": 7,
-    "TO": 11,
+    "TO": 7,
+    "PF": 10,
     "FG%": 45.3,
     "3P%": 29.6,
-    "FT%": 76.0,
-    "PF": 21
+    "FT%": 76.0
   }
 }

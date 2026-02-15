@@ -1,32 +1,32 @@
 {
-  "game_id": "401585276",
-  "fecha": "2025-11-09",
-  "home_team": "Bucks",
-  "away_team": "Pelicans",
-  "home_score": 141,
-  "away_score": 117,
+  "game_id": 401585276,
+  "fecha": "2026-02-14",
+  "home_team": "Milwaukee Bucks",
+  "away_team": "New Orleans Pelicans",
+  "home_score": 117,
+  "away_score": 141,
   "home_stats": {
     "PTS": 141,
     "REB": 45,
     "AST": 30,
-    "STL": 12,
-    "BLK": 0,
-    "TO": 9,
+    "STL": 9,
+    "BLK": 12,
+    "TO": 0,
+    "PF": 6,
     "FG%": 56.0,
     "3P%": 44.4,
-    "FT%": 76.0,
-    "PF": 25
+    "FT%": 76.0
   },
   "away_stats": {
     "PTS": 117,
     "REB": 43,
     "AST": 20,
-    "STL": 5,
-    "BLK": 3,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 5,
+    "TO": 3,
+    "PF": 9,
     "FG%": 47.1,
     "3P%": 39.1,
-    "FT%": 77.8,
-    "PF": 17
+    "FT%": 77.8
   }
 }

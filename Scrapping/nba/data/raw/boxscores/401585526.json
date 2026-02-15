@@ -1,32 +1,32 @@
 {
-  "game_id": "401585526",
-  "fecha": "2025-11-09",
-  "home_team": "Bulls",
-  "away_team": "Jazz",
-  "home_score": 130,
-  "away_score": 113,
+  "game_id": 401585526,
+  "fecha": "2026-02-14",
+  "home_team": "Utah Jazz",
+  "away_team": "Chicago Bulls",
+  "home_score": 117,
+  "away_score": 119,
   "home_stats": {
     "PTS": 117,
     "REB": 45,
     "AST": 28,
-    "STL": 4,
-    "BLK": 7,
-    "TO": 10,
+    "STL": 10,
+    "BLK": 4,
+    "TO": 7,
+    "PF": 14,
     "FG%": 45.8,
     "3P%": 31.9,
-    "FT%": 87.5,
-    "PF": 14
+    "FT%": 87.5
   },
   "away_stats": {
     "PTS": 119,
     "REB": 39,
     "AST": 29,
     "STL": 7,
-    "BLK": 4,
-    "TO": 7,
+    "BLK": 7,
+    "TO": 4,
+    "PF": 7,
     "FG%": 50.0,
     "3P%": 43.6,
-    "FT%": 80.0,
-    "PF": 13
+    "FT%": 80.0
   }
 }

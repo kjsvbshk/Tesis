@@ -1,32 +1,32 @@
 {
-  "game_id": "401584864",
-  "fecha": "2025-11-09",
-  "home_team": "Warriors",
-  "away_team": "Suns",
-  "home_score": 104,
-  "away_score": 108,
+  "game_id": 401584864,
+  "fecha": "2026-02-14",
+  "home_team": "Phoenix Suns",
+  "away_team": "Golden State Warriors",
+  "home_score": 115,
+  "away_score": 123,
   "home_stats": {
     "PTS": 123,
     "REB": 43,
     "AST": 22,
-    "STL": 9,
-    "BLK": 8,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 9,
+    "TO": 8,
+    "PF": 11,
     "FG%": 44.7,
     "3P%": 39.3,
-    "FT%": 84.6,
-    "PF": 22
+    "FT%": 84.6
   },
   "away_stats": {
     "PTS": 115,
     "REB": 43,
     "AST": 29,
-    "STL": 10,
-    "BLK": 3,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 10,
+    "TO": 3,
+    "PF": 11,
     "FG%": 47.8,
-    "3P%": 31.3,
-    "FT%": 65.5,
-    "PF": 34
+    "3P%": 31.2,
+    "FT%": 65.5
   }
 }

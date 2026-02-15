@@ -1,32 +1,32 @@
 {
-  "game_id": "401584727",
-  "fecha": "2025-11-09",
-  "home_team": "Clippers",
-  "away_team": "Spurs",
-  "home_score": 123,
-  "away_score": 83,
+  "game_id": 401584727,
+  "fecha": "2026-02-14",
+  "home_team": "LA Clippers",
+  "away_team": "San Antonio Spurs",
+  "home_score": 83,
+  "away_score": 123,
   "home_stats": {
     "PTS": 123,
     "REB": 48,
     "AST": 23,
-    "STL": 15,
-    "BLK": 5,
-    "TO": 16,
+    "STL": 16,
+    "BLK": 15,
+    "TO": 5,
+    "PF": 9,
     "FG%": 51.6,
     "3P%": 38.1,
-    "FT%": 61.9,
-    "PF": 16
+    "FT%": 61.9
   },
   "away_stats": {
     "PTS": 83,
     "REB": 37,
     "AST": 21,
-    "STL": 9,
-    "BLK": 6,
-    "TO": 25,
+    "STL": 25,
+    "BLK": 9,
+    "TO": 6,
+    "PF": 6,
     "FG%": 37.5,
     "3P%": 33.3,
-    "FT%": 75.0,
-    "PF": 23
+    "FT%": 75.0
   }
 }

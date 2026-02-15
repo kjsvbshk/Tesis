@@ -1,32 +1,32 @@
 {
-  "game_id": "401585050",
-  "fecha": "2025-11-09",
-  "home_team": "Pacers",
-  "away_team": "Bulls",
-  "home_score": 105,
-  "away_score": 112,
+  "game_id": 401585050,
+  "fecha": "2026-02-14",
+  "home_team": "Chicago Bulls",
+  "away_team": "Indiana Pacers",
+  "home_score": 104,
+  "away_score": 120,
   "home_stats": {
     "PTS": 104,
     "REB": 47,
     "AST": 19,
     "STL": 7,
-    "BLK": 4,
-    "TO": 7,
+    "BLK": 7,
+    "TO": 4,
+    "PF": 13,
     "FG%": 41.2,
     "3P%": 25.9,
-    "FT%": 77.3,
-    "PF": 20
+    "FT%": 77.3
   },
   "away_stats": {
     "PTS": 120,
     "REB": 47,
     "AST": 30,
-    "STL": 6,
-    "BLK": 9,
-    "TO": 13,
+    "STL": 13,
+    "BLK": 6,
+    "TO": 9,
+    "PF": 6,
     "FG%": 50.6,
     "3P%": 45.2,
-    "FT%": 68.2,
-    "PF": 21
+    "FT%": 68.2
   }
 }

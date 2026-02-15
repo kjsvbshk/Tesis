@@ -1,32 +1,32 @@
 {
-  "game_id": "401585716",
-  "fecha": "2025-11-09",
-  "home_team": "Pistons",
-  "away_team": "Grizzlies",
-  "home_score": 102,
-  "away_score": 116,
+  "game_id": 401585716,
+  "fecha": "2026-02-14",
+  "home_team": "Detroit Pistons",
+  "away_team": "Memphis Grizzlies",
+  "home_score": 108,
+  "away_score": 110,
   "home_stats": {
     "PTS": 108,
     "REB": 41,
     "AST": 22,
-    "STL": 7,
-    "BLK": 9,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 7,
+    "TO": 9,
+    "PF": 9,
     "FG%": 50.6,
     "3P%": 39.3,
-    "FT%": 77.3,
-    "PF": 16
+    "FT%": 77.3
   },
   "away_stats": {
     "PTS": 110,
     "REB": 44,
     "AST": 28,
-    "STL": 11,
-    "BLK": 9,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 11,
+    "TO": 9,
+    "PF": 15,
     "FG%": 44.0,
     "3P%": 33.3,
-    "FT%": 82.6,
-    "PF": 18
+    "FT%": 82.6
   }
 }

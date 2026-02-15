@@ -1,32 +1,32 @@
 {
-  "game_id": "401585480",
-  "fecha": "2025-11-09",
-  "home_team": "Knicks",
-  "away_team": "Warriors",
+  "game_id": 401585480,
+  "fecha": "2026-02-14",
+  "home_team": "New York Knicks",
+  "away_team": "Golden State Warriors",
   "home_score": 99,
   "away_score": 110,
   "home_stats": {
     "PTS": 99,
     "REB": 56,
     "AST": 23,
-    "STL": 7,
-    "BLK": 3,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 7,
+    "TO": 3,
+    "PF": 17,
     "FG%": 36.8,
     "3P%": 30.8,
-    "FT%": 70.8,
-    "PF": 15
+    "FT%": 70.8
   },
   "away_stats": {
     "PTS": 110,
     "REB": 53,
     "AST": 26,
-    "STL": 8,
-    "BLK": 5,
-    "TO": 11,
+    "STL": 11,
+    "BLK": 8,
+    "TO": 5,
+    "PF": 16,
     "FG%": 44.9,
     "3P%": 31.8,
-    "FT%": 50.0,
-    "PF": 19
+    "FT%": 50.0
   }
 }

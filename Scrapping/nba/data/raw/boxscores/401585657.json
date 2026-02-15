@@ -1,32 +1,32 @@
 {
-  "game_id": "401585657",
-  "fecha": "2025-11-09",
-  "home_team": "Cavaliers",
-  "away_team": "Heat",
-  "home_score": 96,
-  "away_score": 129,
+  "game_id": 401585657,
+  "fecha": "2026-02-14",
+  "home_team": "Miami Heat",
+  "away_team": "Cleveland Cavaliers",
+  "home_score": 84,
+  "away_score": 121,
   "home_stats": {
     "PTS": 121,
     "REB": 44,
     "AST": 29,
-    "STL": 13,
-    "BLK": 0,
-    "TO": 9,
+    "STL": 9,
+    "BLK": 13,
+    "TO": 0,
+    "PF": 9,
     "FG%": 51.8,
     "3P%": 39.5,
-    "FT%": 87.0,
-    "PF": 17
+    "FT%": 87.0
   },
   "away_stats": {
     "PTS": 84,
     "REB": 30,
     "AST": 24,
-    "STL": 3,
+    "STL": 17,
     "BLK": 3,
-    "TO": 17,
+    "TO": 3,
+    "PF": 4,
     "FG%": 41.7,
     "3P%": 31.0,
-    "FT%": 75.0,
-    "PF": 16
+    "FT%": 75.0
   }
 }

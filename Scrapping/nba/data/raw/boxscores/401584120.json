@@ -1,32 +1,32 @@
 {
-  "game_id": "401584120",
-  "fecha": "2025-11-09",
-  "home_team": "Spurs",
-  "away_team": "Kings",
+  "game_id": 401584120,
+  "fecha": "2026-02-14",
+  "home_team": "San Antonio Spurs",
+  "away_team": "Sacramento Kings",
   "home_score": 120,
   "away_score": 129,
   "home_stats": {
     "PTS": 120,
     "REB": 42,
     "AST": 33,
-    "STL": 7,
-    "BLK": 3,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 7,
+    "TO": 3,
+    "PF": 6,
     "FG%": 46.7,
     "3P%": 41.7,
-    "FT%": 82.6,
-    "PF": 21
+    "FT%": 82.6
   },
   "away_stats": {
     "PTS": 129,
     "REB": 42,
     "AST": 31,
-    "STL": 10,
-    "BLK": 2,
-    "TO": 13,
+    "STL": 13,
+    "BLK": 10,
+    "TO": 2,
+    "PF": 4,
     "FG%": 54.1,
     "3P%": 42.9,
-    "FT%": 79.2,
-    "PF": 22
+    "FT%": 79.2
   }
 }

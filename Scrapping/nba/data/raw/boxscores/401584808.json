@@ -1,32 +1,32 @@
 {
-  "game_id": "401584808",
-  "fecha": "2025-11-09",
-  "home_team": "76ers",
-  "away_team": "Pacers",
-  "home_score": 137,
-  "away_score": 126,
+  "game_id": 401584808,
+  "fecha": "2026-02-14",
+  "home_team": "Philadelphia 76ers",
+  "away_team": "Indiana Pacers",
+  "home_score": 126,
+  "away_score": 137,
   "home_stats": {
     "PTS": 137,
     "REB": 54,
     "AST": 28,
-    "STL": 5,
-    "BLK": 7,
-    "TO": 11,
+    "STL": 11,
+    "BLK": 5,
+    "TO": 7,
+    "PF": 23,
     "FG%": 50.5,
     "3P%": 42.4,
-    "FT%": 85.0,
-    "PF": 15
+    "FT%": 85.0
   },
   "away_stats": {
     "PTS": 126,
     "REB": 32,
     "AST": 31,
-    "STL": 8,
-    "BLK": 9,
-    "TO": 10,
+    "STL": 10,
+    "BLK": 8,
+    "TO": 9,
+    "PF": 8,
     "FG%": 52.2,
     "3P%": 41.0,
-    "FT%": 84.2,
-    "PF": 14
+    "FT%": 84.2
   }
 }

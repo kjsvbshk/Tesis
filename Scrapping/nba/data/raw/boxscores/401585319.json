@@ -1,32 +1,32 @@
 {
-  "game_id": "401585319",
-  "fecha": "2025-11-09",
-  "home_team": "Kings",
-  "away_team": "Pacers",
-  "home_score": 121,
-  "away_score": 126,
+  "game_id": 401585319,
+  "fecha": "2026-02-14",
+  "home_team": "Indiana Pacers",
+  "away_team": "Sacramento Kings",
+  "home_score": 122,
+  "away_score": 133,
   "home_stats": {
     "PTS": 122,
     "REB": 39,
     "AST": 23,
-    "STL": 13,
-    "BLK": 3,
-    "TO": 22,
+    "STL": 22,
+    "BLK": 13,
+    "TO": 3,
+    "PF": 8,
     "FG%": 54.1,
     "3P%": 34.5,
-    "FT%": 83.3,
-    "PF": 20
+    "FT%": 83.3
   },
   "away_stats": {
     "PTS": 133,
     "REB": 38,
     "AST": 26,
-    "STL": 15,
-    "BLK": 3,
-    "TO": 16,
+    "STL": 16,
+    "BLK": 15,
+    "TO": 3,
+    "PF": 9,
     "FG%": 56.7,
     "3P%": 38.2,
-    "FT%": 64.3,
-    "PF": 17
+    "FT%": 64.3
   }
 }

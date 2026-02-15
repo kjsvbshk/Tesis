@@ -1,32 +1,32 @@
 {
-  "game_id": "401585308",
-  "fecha": "2025-11-09",
-  "home_team": "Mavericks",
-  "away_team": "Timberwolves",
-  "home_score": 101,
-  "away_score": 119,
+  "game_id": 401585308,
+  "fecha": "2026-02-14",
+  "home_team": "Minnesota Timberwolves",
+  "away_team": "Dallas Mavericks",
+  "home_score": 87,
+  "away_score": 121,
   "home_stats": {
     "PTS": 121,
     "REB": 45,
     "AST": 31,
-    "STL": 6,
-    "BLK": 4,
-    "TO": 10,
-    "FG%": 56.3,
+    "STL": 10,
+    "BLK": 6,
+    "TO": 4,
+    "PF": 9,
+    "FG%": 56.2,
     "3P%": 43.3,
-    "FT%": 60.0,
-    "PF": 24
+    "FT%": 60.0
   },
   "away_stats": {
     "PTS": 87,
     "REB": 31,
     "AST": 18,
-    "STL": 4,
+    "STL": 16,
     "BLK": 4,
-    "TO": 16,
+    "TO": 4,
+    "PF": 9,
     "FG%": 40.8,
     "3P%": 20.7,
-    "FT%": 73.1,
-    "PF": 24
+    "FT%": 73.1
   }
 }

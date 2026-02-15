@@ -1,32 +1,32 @@
 {
-  "game_id": "401584933",
-  "fecha": "2025-11-09",
-  "home_team": "Celtics",
-  "away_team": "Cavaliers",
-  "home_score": 120,
-  "away_score": 113,
+  "game_id": 401584933,
+  "fecha": "2026-02-14",
+  "home_team": "Boston Celtics",
+  "away_team": "Cleveland Cavaliers",
+  "home_score": 113,
+  "away_score": 120,
   "home_stats": {
     "PTS": 120,
     "REB": 45,
     "AST": 23,
-    "STL": 9,
+    "STL": 13,
     "BLK": 9,
-    "TO": 13,
+    "TO": 9,
+    "PF": 12,
     "FG%": 45.2,
     "3P%": 40.9,
-    "FT%": 100.0,
-    "PF": 13
+    "FT%": 100.0
   },
   "away_stats": {
     "PTS": 113,
     "REB": 35,
     "AST": 27,
-    "STL": 6,
-    "BLK": 4,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 6,
+    "TO": 4,
+    "PF": 6,
     "FG%": 47.8,
     "3P%": 42.2,
-    "FT%": 66.7,
-    "PF": 18
+    "FT%": 66.7
   }
 }

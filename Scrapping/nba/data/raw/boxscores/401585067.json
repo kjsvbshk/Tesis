@@ -1,32 +1,32 @@
 {
-  "game_id": "401585067",
-  "fecha": "2025-11-09",
-  "home_team": "Jazz",
-  "away_team": "Heat",
-  "home_score": 117,
-  "away_score": 109,
+  "game_id": 401585067,
+  "fecha": "2026-02-14",
+  "home_team": "Utah Jazz",
+  "away_team": "Miami Heat",
+  "home_score": 109,
+  "away_score": 117,
   "home_stats": {
     "PTS": 117,
     "REB": 43,
     "AST": 29,
-    "STL": 8,
-    "BLK": 6,
-    "TO": 10,
+    "STL": 10,
+    "BLK": 8,
+    "TO": 6,
+    "PF": 9,
     "FG%": 46.2,
     "3P%": 26.8,
-    "FT%": 71.4,
-    "PF": 25
+    "FT%": 71.4
   },
   "away_stats": {
     "PTS": 109,
     "REB": 46,
     "AST": 20,
-    "STL": 8,
+    "STL": 16,
     "BLK": 8,
-    "TO": 16,
+    "TO": 8,
+    "PF": 8,
     "FG%": 43.6,
     "3P%": 29.0,
-    "FT%": 80.0,
-    "PF": 24
+    "FT%": 80.0
   }
 }

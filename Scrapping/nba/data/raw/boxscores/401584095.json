@@ -1,32 +1,32 @@
 {
-  "game_id": "401584095",
-  "fecha": "2025-11-09",
-  "home_team": "Trail Blazers",
-  "away_team": "Grizzlies",
-  "home_score": 115,
-  "away_score": 113,
+  "game_id": 401584095,
+  "fecha": "2026-02-14",
+  "home_team": "Portland Trail Blazers",
+  "away_team": "Memphis Grizzlies",
+  "home_score": 113,
+  "away_score": 115,
   "home_stats": {
     "PTS": 115,
     "REB": 50,
     "AST": 19,
-    "STL": 12,
-    "BLK": 7,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 12,
+    "TO": 7,
+    "PF": 15,
     "FG%": 40.6,
     "3P%": 28.1,
-    "FT%": 77.8,
-    "PF": 15
+    "FT%": 77.8
   },
   "away_stats": {
     "PTS": 113,
     "REB": 48,
     "AST": 29,
-    "STL": 8,
-    "BLK": 10,
-    "TO": 17,
+    "STL": 17,
+    "BLK": 8,
+    "TO": 10,
+    "PF": 7,
     "FG%": 49.0,
     "3P%": 28.6,
-    "FT%": 69.2,
-    "PF": 25
+    "FT%": 69.2
   }
 }

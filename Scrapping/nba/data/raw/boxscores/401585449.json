@@ -1,32 +1,32 @@
 {
-  "game_id": "401585449",
-  "fecha": "2025-11-09",
-  "home_team": "Magic",
-  "away_team": "Hawks",
-  "home_score": 119,
-  "away_score": 120,
+  "game_id": 401585449,
+  "fecha": "2026-02-14",
+  "home_team": "Atlanta Hawks",
+  "away_team": "Orlando Magic",
+  "home_score": 92,
+  "away_score": 109,
   "home_stats": {
     "PTS": 109,
     "REB": 44,
     "AST": 31,
-    "STL": 10,
-    "BLK": 3,
-    "TO": 9,
+    "STL": 9,
+    "BLK": 10,
+    "TO": 3,
+    "PF": 9,
     "FG%": 45.6,
     "3P%": 41.4,
-    "FT%": 88.2,
-    "PF": 17
+    "FT%": 88.2
   },
   "away_stats": {
     "PTS": 92,
     "REB": 51,
     "AST": 23,
-    "STL": 7,
-    "BLK": 9,
-    "TO": 18,
+    "STL": 18,
+    "BLK": 7,
+    "TO": 9,
+    "PF": 14,
     "FG%": 41.7,
     "3P%": 36.8,
-    "FT%": 44.4,
-    "PF": 19
+    "FT%": 44.4
   }
 }

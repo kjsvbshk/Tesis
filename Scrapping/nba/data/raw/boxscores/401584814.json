@@ -1,32 +1,32 @@
 {
-  "game_id": "401584814",
-  "fecha": "2025-11-09",
-  "home_team": "Warriors",
-  "away_team": "Timberwolves",
+  "game_id": 401584814,
+  "fecha": "2026-02-14",
+  "home_team": "Golden State Warriors",
+  "away_team": "Minnesota Timberwolves",
   "home_score": 110,
   "away_score": 116,
   "home_stats": {
     "PTS": 110,
     "REB": 51,
     "AST": 24,
-    "STL": 9,
-    "BLK": 0,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 9,
+    "TO": 0,
+    "PF": 19,
     "FG%": 38.5,
     "3P%": 27.9,
-    "FT%": 85.7,
-    "PF": 28
+    "FT%": 85.7
   },
   "away_stats": {
     "PTS": 116,
     "REB": 47,
     "AST": 27,
-    "STL": 8,
-    "BLK": 6,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 8,
+    "TO": 6,
+    "PF": 9,
     "FG%": 52.4,
     "3P%": 33.3,
-    "FT%": 70.0,
-    "PF": 19
+    "FT%": 70.0
   }
 }

@@ -1,32 +1,32 @@
 {
-  "game_id": "401585676",
-  "fecha": "2025-11-09",
-  "home_team": "Cavaliers",
-  "away_team": "Hornets",
-  "home_score": 115,
-  "away_score": 92,
+  "game_id": 401585676,
+  "fecha": "2026-02-14",
+  "home_team": "Charlotte Hornets",
+  "away_team": "Cleveland Cavaliers",
+  "home_score": 111,
+  "away_score": 118,
   "home_stats": {
     "PTS": 118,
     "REB": 38,
     "AST": 30,
-    "STL": 8,
-    "BLK": 2,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 8,
+    "TO": 2,
+    "PF": 8,
     "FG%": 57.9,
     "3P%": 39.4,
-    "FT%": 77.3,
-    "PF": 14
+    "FT%": 77.3
   },
   "away_stats": {
     "PTS": 111,
     "REB": 32,
     "AST": 33,
-    "STL": 7,
-    "BLK": 1,
-    "TO": 13,
+    "STL": 13,
+    "BLK": 7,
+    "TO": 1,
+    "PF": 9,
     "FG%": 49.4,
     "3P%": 43.2,
-    "FT%": 57.1,
-    "PF": 21
+    "FT%": 57.1
   }
 }

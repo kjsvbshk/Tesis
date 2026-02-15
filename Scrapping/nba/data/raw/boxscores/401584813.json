@@ -1,32 +1,32 @@
 {
-  "game_id": "401584813",
-  "fecha": "2025-11-09",
-  "home_team": "Suns",
-  "away_team": "Thunder",
+  "game_id": 401584813,
+  "fecha": "2026-02-14",
+  "home_team": "Phoenix Suns",
+  "away_team": "Oklahoma City Thunder",
   "home_score": 99,
   "away_score": 111,
   "home_stats": {
     "PTS": 99,
     "REB": 51,
     "AST": 20,
-    "STL": 4,
-    "BLK": 7,
-    "TO": 17,
+    "STL": 17,
+    "BLK": 4,
+    "TO": 7,
+    "PF": 16,
     "FG%": 38.6,
     "3P%": 31.0,
-    "FT%": 83.9,
-    "PF": 19
+    "FT%": 83.9
   },
   "away_stats": {
     "PTS": 111,
     "REB": 33,
     "AST": 23,
-    "STL": 9,
-    "BLK": 8,
-    "TO": 7,
+    "STL": 7,
+    "BLK": 9,
+    "TO": 8,
+    "PF": 6,
     "FG%": 48.8,
     "3P%": 37.0,
-    "FT%": 84.0,
-    "PF": 21
+    "FT%": 84.0
   }
 }

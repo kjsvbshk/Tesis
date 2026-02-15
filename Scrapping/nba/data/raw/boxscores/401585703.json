@@ -1,32 +1,32 @@
 {
-  "game_id": "401585703",
-  "fecha": "2025-11-09",
-  "home_team": "Grizzlies",
-  "away_team": "Magic",
-  "home_score": 107,
-  "away_score": 106,
+  "game_id": 401585703,
+  "fecha": "2026-02-14",
+  "home_team": "Orlando Magic",
+  "away_team": "Memphis Grizzlies",
+  "home_score": 88,
+  "away_score": 118,
   "home_stats": {
     "PTS": 118,
     "REB": 43,
     "AST": 28,
-    "STL": 8,
+    "STL": 15,
     "BLK": 8,
-    "TO": 15,
+    "TO": 8,
+    "PF": 5,
     "FG%": 48.7,
     "3P%": 50.0,
-    "FT%": 87.0,
-    "PF": 16
+    "FT%": 87.0
   },
   "away_stats": {
     "PTS": 88,
     "REB": 45,
     "AST": 25,
-    "STL": 11,
-    "BLK": 7,
-    "TO": 19,
+    "STL": 19,
+    "BLK": 11,
+    "TO": 7,
+    "PF": 13,
     "FG%": 36.0,
     "3P%": 33.3,
-    "FT%": 82.4,
-    "PF": 19
+    "FT%": 82.4
   }
 }

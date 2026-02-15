@@ -1,32 +1,32 @@
 {
-  "game_id": "401584743",
-  "fecha": "2025-11-09",
-  "home_team": "Pistons",
-  "away_team": "Trail Blazers",
+  "game_id": 401584743,
+  "fecha": "2026-02-14",
+  "home_team": "Detroit Pistons",
+  "away_team": "Portland Trail Blazers",
   "home_score": 101,
   "away_score": 110,
   "home_stats": {
     "PTS": 101,
     "REB": 38,
     "AST": 24,
-    "STL": 12,
-    "BLK": 4,
-    "TO": 18,
+    "STL": 18,
+    "BLK": 12,
+    "TO": 4,
+    "PF": 6,
     "FG%": 44.4,
     "3P%": 37.9,
-    "FT%": 90.9,
-    "PF": 31
+    "FT%": 90.9
   },
   "away_stats": {
     "PTS": 110,
     "REB": 44,
     "AST": 23,
-    "STL": 10,
-    "BLK": 7,
-    "TO": 17,
+    "STL": 17,
+    "BLK": 10,
+    "TO": 7,
+    "PF": 7,
     "FG%": 46.9,
     "3P%": 35.0,
-    "FT%": 81.8,
-    "PF": 15
+    "FT%": 81.8
   }
 }

@@ -1,32 +1,32 @@
 {
-  "game_id": "401585281",
-  "fecha": "2025-11-09",
-  "home_team": "Raptors",
-  "away_team": "Hawks",
-  "home_score": 135,
-  "away_score": 128,
+  "game_id": 401585281,
+  "fecha": "2026-02-14",
+  "home_team": "Atlanta Hawks",
+  "away_team": "Toronto Raptors",
+  "home_score": 125,
+  "away_score": 126,
   "home_stats": {
     "PTS": 126,
     "REB": 51,
     "AST": 27,
-    "STL": 7,
-    "BLK": 4,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 7,
+    "TO": 4,
+    "PF": 20,
     "FG%": 46.3,
     "3P%": 22.2,
-    "FT%": 80.0,
-    "PF": 21
+    "FT%": 80.0
   },
   "away_stats": {
     "PTS": 125,
     "REB": 46,
     "AST": 29,
-    "STL": 12,
-    "BLK": 3,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 12,
+    "TO": 3,
+    "PF": 15,
     "FG%": 46.1,
     "3P%": 48.4,
-    "FT%": 87.5,
-    "PF": 30
+    "FT%": 87.5
   }
 }

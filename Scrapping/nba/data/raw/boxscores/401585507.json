@@ -1,32 +1,32 @@
 {
-  "game_id": "401585507",
-  "fecha": "2025-11-09",
-  "home_team": "Grizzlies",
-  "away_team": "Nets",
-  "home_score": 86,
-  "away_score": 111,
+  "game_id": 401585507,
+  "fecha": "2026-02-14",
+  "home_team": "Brooklyn Nets",
+  "away_team": "Memphis Grizzlies",
+  "home_score": 102,
+  "away_score": 106,
   "home_stats": {
     "PTS": 102,
     "REB": 33,
     "AST": 27,
-    "STL": 10,
-    "BLK": 6,
-    "TO": 13,
+    "STL": 13,
+    "BLK": 10,
+    "TO": 6,
+    "PF": 12,
     "FG%": 44.3,
     "3P%": 35.7,
-    "FT%": 56.7,
-    "PF": 20
+    "FT%": 56.7
   },
   "away_stats": {
     "PTS": 106,
     "REB": 50,
     "AST": 26,
-    "STL": 6,
-    "BLK": 3,
-    "TO": 18,
+    "STL": 18,
+    "BLK": 6,
+    "TO": 3,
+    "PF": 15,
     "FG%": 46.3,
     "3P%": 32.4,
-    "FT%": 81.8,
-    "PF": 22
+    "FT%": 81.8
   }
 }

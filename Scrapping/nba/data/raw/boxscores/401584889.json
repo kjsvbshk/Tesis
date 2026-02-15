@@ -1,32 +1,32 @@
 {
-  "game_id": "401584889",
-  "fecha": "2025-11-09",
-  "home_team": "Jazz",
-  "away_team": "Grizzlies",
-  "home_score": 133,
-  "away_score": 109,
+  "game_id": 401584889,
+  "fecha": "2026-02-14",
+  "home_team": "Memphis Grizzlies",
+  "away_team": "Utah Jazz",
+  "home_score": 91,
+  "away_score": 105,
   "home_stats": {
     "PTS": 105,
     "REB": 51,
     "AST": 26,
-    "STL": 9,
-    "BLK": 10,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 9,
+    "TO": 10,
+    "PF": 12,
     "FG%": 49.4,
     "3P%": 33.3,
-    "FT%": 75.0,
-    "PF": 15
+    "FT%": 75.0
   },
   "away_stats": {
     "PTS": 91,
     "REB": 39,
     "AST": 26,
-    "STL": 8,
+    "STL": 17,
     "BLK": 8,
-    "TO": 17,
+    "TO": 8,
+    "PF": 12,
     "FG%": 37.8,
     "3P%": 41.0,
-    "FT%": 58.3,
-    "PF": 14
+    "FT%": 58.3
   }
 }

@@ -1,32 +1,32 @@
 {
-  "game_id": "401584773",
-  "fecha": "2025-11-09",
-  "home_team": "Pistons",
-  "away_team": "Warriors",
+  "game_id": 401584773,
+  "fecha": "2026-02-14",
+  "home_team": "Detroit Pistons",
+  "away_team": "Golden State Warriors",
   "home_score": 109,
   "away_score": 120,
   "home_stats": {
     "PTS": 109,
     "REB": 39,
     "AST": 23,
-    "STL": 8,
-    "BLK": 2,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 8,
+    "TO": 2,
+    "PF": 7,
     "FG%": 47.5,
     "3P%": 43.3,
-    "FT%": 95.2,
-    "PF": 20
+    "FT%": 95.2
   },
   "away_stats": {
     "PTS": 120,
     "REB": 44,
     "AST": 26,
-    "STL": 8,
-    "BLK": 4,
-    "TO": 11,
+    "STL": 11,
+    "BLK": 8,
+    "TO": 4,
+    "PF": 17,
     "FG%": 47.4,
     "3P%": 29.3,
-    "FT%": 76.2,
-    "PF": 14
+    "FT%": 76.2
   }
 }

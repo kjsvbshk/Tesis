@@ -1,32 +1,32 @@
 {
-  "game_id": "401584836",
-  "fecha": "2025-11-09",
-  "home_team": "Nets",
-  "away_team": "76ers",
+  "game_id": 401584836,
+  "fecha": "2026-02-14",
+  "home_team": "Brooklyn Nets",
+  "away_team": "Philadelphia 76ers",
   "home_score": 99,
   "away_score": 121,
   "home_stats": {
     "PTS": 99,
     "REB": 45,
     "AST": 24,
-    "STL": 2,
-    "BLK": 8,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 2,
+    "TO": 8,
+    "PF": 9,
     "FG%": 46.9,
     "3P%": 39.3,
-    "FT%": 75.0,
-    "PF": 14
+    "FT%": 75.0
   },
   "away_stats": {
     "PTS": 121,
     "REB": 44,
     "AST": 32,
-    "STL": 8,
-    "BLK": 4,
+    "STL": 4,
+    "BLK": 8,
     "TO": 4,
+    "PF": 10,
     "FG%": 46.8,
     "3P%": 45.7,
-    "FT%": 94.4,
-    "PF": 18
+    "FT%": 94.4
   }
 }

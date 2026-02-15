@@ -1,32 +1,32 @@
 {
-  "game_id": "401584852",
-  "fecha": "2025-11-09",
-  "home_team": "Rockets",
-  "away_team": "Warriors",
-  "home_score": 95,
-  "away_score": 106,
+  "game_id": 401584852,
+  "fecha": "2026-02-14",
+  "home_team": "Golden State Warriors",
+  "away_team": "Houston Rockets",
+  "home_score": 116,
+  "away_score": 121,
   "home_stats": {
     "PTS": 121,
     "REB": 43,
     "AST": 26,
-    "STL": 3,
-    "BLK": 1,
-    "TO": 8,
+    "STL": 8,
+    "BLK": 3,
+    "TO": 1,
+    "PF": 8,
     "FG%": 46.8,
     "3P%": 48.8,
-    "FT%": 84.8,
-    "PF": 21
+    "FT%": 84.8
   },
   "away_stats": {
     "PTS": 116,
     "REB": 48,
     "AST": 28,
-    "STL": 6,
-    "BLK": 3,
-    "TO": 8,
+    "STL": 8,
+    "BLK": 6,
+    "TO": 3,
+    "PF": 15,
     "FG%": 46.3,
     "3P%": 31.7,
-    "FT%": 78.9,
-    "PF": 24
+    "FT%": 78.9
   }
 }

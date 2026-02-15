@@ -1,32 +1,32 @@
 {
-  "game_id": "401584997",
-  "fecha": "2025-11-09",
-  "home_team": "Raptors",
-  "away_team": "Nuggets",
+  "game_id": 401584997,
+  "fecha": "2026-02-14",
+  "home_team": "Toronto Raptors",
+  "away_team": "Denver Nuggets",
   "home_score": 104,
   "away_score": 113,
   "home_stats": {
     "PTS": 104,
     "REB": 41,
     "AST": 26,
-    "STL": 3,
-    "BLK": 5,
-    "TO": 11,
+    "STL": 11,
+    "BLK": 3,
+    "TO": 5,
+    "PF": 10,
     "FG%": 47.8,
     "3P%": 33.3,
-    "FT%": 69.2,
-    "PF": 12
+    "FT%": 69.2
   },
   "away_stats": {
     "PTS": 113,
     "REB": 46,
     "AST": 29,
-    "STL": 9,
+    "STL": 8,
     "BLK": 9,
-    "TO": 8,
+    "TO": 9,
+    "PF": 15,
     "FG%": 50.0,
     "3P%": 36.4,
-    "FT%": 42.9,
-    "PF": 13
+    "FT%": 42.9
   }
 }

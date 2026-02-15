@@ -1,32 +1,32 @@
 {
-  "game_id": "401585622",
-  "fecha": "2025-11-09",
-  "home_team": "Spurs",
-  "away_team": "Mavericks",
-  "home_score": 119,
-  "away_score": 126,
+  "game_id": 401585622,
+  "fecha": "2026-02-14",
+  "home_team": "San Antonio Spurs",
+  "away_team": "Dallas Mavericks",
+  "home_score": 107,
+  "away_score": 113,
   "home_stats": {
     "PTS": 107,
     "REB": 48,
     "AST": 31,
-    "STL": 6,
-    "BLK": 10,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 6,
+    "TO": 10,
+    "PF": 9,
     "FG%": 43.8,
     "3P%": 35.9,
-    "FT%": 71.4,
-    "PF": 14
+    "FT%": 71.4
   },
   "away_stats": {
     "PTS": 113,
     "REB": 40,
     "AST": 31,
-    "STL": 6,
-    "BLK": 3,
-    "TO": 9,
+    "STL": 9,
+    "BLK": 6,
+    "TO": 3,
+    "PF": 3,
     "FG%": 48.4,
     "3P%": 33.3,
-    "FT%": 88.2,
-    "PF": 18
+    "FT%": 88.2
   }
 }

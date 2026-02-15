@@ -1,32 +1,32 @@
 {
-  "game_id": "401584847",
-  "fecha": "2025-11-09",
-  "home_team": "Wizards",
-  "away_team": "Bucks",
+  "game_id": 401584847,
+  "fecha": "2026-02-14",
+  "home_team": "Washington Wizards",
+  "away_team": "Milwaukee Bucks",
   "home_score": 129,
   "away_score": 142,
   "home_stats": {
     "PTS": 129,
     "REB": 26,
     "AST": 29,
-    "STL": 6,
-    "BLK": 4,
+    "STL": 4,
+    "BLK": 6,
     "TO": 4,
+    "PF": 5,
     "FG%": 55.6,
     "3P%": 34.5,
-    "FT%": 81.8,
-    "PF": 19
+    "FT%": 81.8
   },
   "away_stats": {
     "PTS": 142,
     "REB": 55,
     "AST": 33,
-    "STL": 3,
-    "BLK": 6,
-    "TO": 13,
+    "STL": 13,
+    "BLK": 3,
+    "TO": 6,
+    "PF": 16,
     "FG%": 58.5,
     "3P%": 37.9,
-    "FT%": 75.0,
-    "PF": 13
+    "FT%": 75.0
   }
 }

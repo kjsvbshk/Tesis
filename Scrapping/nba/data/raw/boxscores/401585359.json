@@ -1,32 +1,32 @@
 {
-  "game_id": "401585359",
-  "fecha": "2025-11-09",
-  "home_team": "Clippers",
-  "away_team": "Pelicans",
+  "game_id": 401585359,
+  "fecha": "2026-02-14",
+  "home_team": "LA Clippers",
+  "away_team": "New Orleans Pelicans",
   "home_score": 106,
-  "away_score": 116,
+  "away_score": 117,
   "home_stats": {
     "PTS": 106,
     "REB": 37,
     "AST": 23,
-    "STL": 7,
-    "BLK": 2,
-    "TO": 19,
+    "STL": 19,
+    "BLK": 7,
+    "TO": 2,
+    "PF": 8,
     "FG%": 46.2,
     "3P%": 37.5,
-    "FT%": 84.6,
-    "PF": 17
+    "FT%": 84.6
   },
   "away_stats": {
     "PTS": 117,
     "REB": 38,
     "AST": 30,
-    "STL": 13,
-    "BLK": 5,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 13,
+    "TO": 5,
+    "PF": 8,
     "FG%": 53.4,
     "3P%": 37.5,
-    "FT%": 68.8,
-    "PF": 17
+    "FT%": 68.8
   }
 }

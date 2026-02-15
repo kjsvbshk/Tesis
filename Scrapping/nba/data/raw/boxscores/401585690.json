@@ -1,32 +1,32 @@
 {
-  "game_id": "401585690",
-  "fecha": "2025-11-09",
-  "home_team": "Warriors",
-  "away_team": "Hornets",
+  "game_id": 401585690,
+  "fecha": "2026-02-14",
+  "home_team": "Charlotte Hornets",
+  "away_team": "Golden State Warriors",
   "home_score": 97,
-  "away_score": 84,
+  "away_score": 115,
   "home_stats": {
     "PTS": 97,
     "REB": 41,
     "AST": 23,
-    "STL": 4,
-    "BLK": 2,
-    "TO": 11,
+    "STL": 11,
+    "BLK": 4,
+    "TO": 2,
+    "PF": 12,
     "FG%": 40.5,
     "3P%": 26.1,
-    "FT%": 70.8,
-    "PF": 10
+    "FT%": 70.8
   },
   "away_stats": {
     "PTS": 115,
     "REB": 50,
     "AST": 35,
-    "STL": 7,
-    "BLK": 5,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 7,
+    "TO": 5,
+    "PF": 11,
     "FG%": 53.9,
     "3P%": 34.4,
-    "FT%": 88.9,
-    "PF": 19
+    "FT%": 88.9
   }
 }

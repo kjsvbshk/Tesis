@@ -1,32 +1,32 @@
 {
-  "game_id": "401585367",
-  "fecha": "2025-11-09",
-  "home_team": "Suns",
-  "away_team": "Jazz",
-  "home_score": 126,
-  "away_score": 104,
+  "game_id": 401585367,
+  "fecha": "2026-02-14",
+  "home_team": "Phoenix Suns",
+  "away_team": "Utah Jazz",
+  "home_score": 115,
+  "away_score": 129,
   "home_stats": {
     "PTS": 129,
     "REB": 37,
     "AST": 37,
-    "STL": 10,
-    "BLK": 7,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 10,
+    "TO": 7,
+    "PF": 5,
     "FG%": 59.1,
     "3P%": 48.3,
-    "FT%": 68.8,
-    "PF": 22
+    "FT%": 68.8
   },
   "away_stats": {
     "PTS": 115,
     "REB": 52,
     "AST": 28,
-    "STL": 7,
+    "STL": 15,
     "BLK": 7,
-    "TO": 15,
+    "TO": 7,
+    "PF": 19,
     "FG%": 43.6,
     "3P%": 34.3,
-    "FT%": 67.7,
-    "PF": 14
+    "FT%": 67.7
   }
 }

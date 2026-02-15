@@ -1,32 +1,32 @@
 {
-  "game_id": "401584999",
-  "fecha": "2025-11-09",
-  "home_team": "Rockets",
-  "away_team": "Hawks",
+  "game_id": 401584999,
+  "fecha": "2026-02-14",
+  "home_team": "Houston Rockets",
+  "away_team": "Atlanta Hawks",
   "home_score": 127,
   "away_score": 134,
   "home_stats": {
     "PTS": 127,
     "REB": 37,
     "AST": 25,
-    "STL": 4,
-    "BLK": 6,
-    "TO": 8,
+    "STL": 8,
+    "BLK": 4,
+    "TO": 6,
+    "PF": 8,
     "FG%": 49.4,
     "3P%": 47.1,
-    "FT%": 100.0,
-    "PF": 23
+    "FT%": 100.0
   },
   "away_stats": {
     "PTS": 134,
     "REB": 44,
     "AST": 31,
-    "STL": 4,
-    "BLK": 3,
-    "TO": 9,
+    "STL": 9,
+    "BLK": 4,
+    "TO": 3,
+    "PF": 12,
     "FG%": 51.6,
     "3P%": 42.5,
-    "FT%": 82.1,
-    "PF": 18
+    "FT%": 82.1
   }
 }

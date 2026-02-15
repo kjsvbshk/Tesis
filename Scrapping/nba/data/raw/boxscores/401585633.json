@@ -1,32 +1,32 @@
 {
-  "game_id": "401585633",
-  "fecha": "2025-11-09",
-  "home_team": "Kings",
-  "away_team": "Wizards",
-  "home_score": 143,
-  "away_score": 131,
+  "game_id": 401585633,
+  "fecha": "2026-02-14",
+  "home_team": "Washington Wizards",
+  "away_team": "Sacramento Kings",
+  "home_score": 102,
+  "away_score": 109,
   "home_stats": {
     "PTS": 109,
     "REB": 45,
     "AST": 20,
-    "STL": 9,
-    "BLK": 3,
-    "TO": 19,
+    "STL": 19,
+    "BLK": 9,
+    "TO": 3,
+    "PF": 10,
     "FG%": 50.6,
     "3P%": 40.0,
-    "FT%": 73.9,
-    "PF": 19
+    "FT%": 73.9
   },
   "away_stats": {
     "PTS": 102,
     "REB": 37,
     "AST": 21,
-    "STL": 12,
-    "BLK": 7,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 12,
+    "TO": 7,
+    "PF": 10,
     "FG%": 43.0,
     "3P%": 28.2,
-    "FT%": 89.5,
-    "PF": 20
+    "FT%": 89.5
   }
 }

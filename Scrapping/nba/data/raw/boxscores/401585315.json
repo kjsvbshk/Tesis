@@ -1,32 +1,32 @@
 {
-  "game_id": "401585315",
-  "fecha": "2025-11-09",
-  "home_team": "Grizzlies",
-  "away_team": "Cavaliers",
+  "game_id": 401585315,
+  "fecha": "2026-02-14",
+  "home_team": "Memphis Grizzlies",
+  "away_team": "Cleveland Cavaliers",
   "home_score": 101,
   "away_score": 108,
   "home_stats": {
     "PTS": 101,
     "REB": 43,
     "AST": 25,
-    "STL": 9,
-    "BLK": 12,
+    "STL": 12,
+    "BLK": 9,
     "TO": 12,
+    "PF": 7,
     "FG%": 41.1,
     "3P%": 31.6,
-    "FT%": 88.2,
-    "PF": 19
+    "FT%": 88.2
   },
   "away_stats": {
     "PTS": 108,
     "REB": 48,
     "AST": 26,
-    "STL": 6,
-    "BLK": 8,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 6,
+    "TO": 8,
+    "PF": 10,
     "FG%": 47.7,
     "3P%": 40.0,
-    "FT%": 66.7,
-    "PF": 16
+    "FT%": 66.7
   }
 }

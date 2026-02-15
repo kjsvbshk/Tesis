@@ -1,32 +1,32 @@
 {
-  "game_id": "401585605",
-  "fecha": "2025-11-09",
-  "home_team": "Heat",
-  "away_team": "Pistons",
-  "home_score": 103,
-  "away_score": 102,
+  "game_id": 401585605,
+  "fecha": "2026-02-14",
+  "home_team": "Detroit Pistons",
+  "away_team": "Miami Heat",
+  "home_score": 101,
+  "away_score": 104,
   "home_stats": {
     "PTS": 101,
     "REB": 44,
     "AST": 24,
-    "STL": 4,
-    "BLK": 7,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 4,
+    "TO": 7,
+    "PF": 7,
     "FG%": 45.8,
     "3P%": 38.9,
-    "FT%": 78.6,
-    "PF": 19
+    "FT%": 78.6
   },
   "away_stats": {
     "PTS": 104,
     "REB": 47,
     "AST": 24,
-    "STL": 7,
-    "BLK": 2,
-    "TO": 9,
+    "STL": 9,
+    "BLK": 7,
+    "TO": 2,
+    "PF": 11,
     "FG%": 44.9,
     "3P%": 34.3,
-    "FT%": 75.0,
-    "PF": 11
+    "FT%": 75.0
   }
 }

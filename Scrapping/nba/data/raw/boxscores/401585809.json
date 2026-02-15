@@ -1,32 +1,32 @@
 {
-  "game_id": "401585809",
-  "fecha": "2025-11-09",
-  "home_team": "Pistons",
-  "away_team": "Mavericks",
-  "home_score": 124,
-  "away_score": 142,
+  "game_id": 401585809,
+  "fecha": "2026-02-14",
+  "home_team": "Dallas Mavericks",
+  "away_team": "Detroit Pistons",
+  "home_score": 89,
+  "away_score": 107,
   "home_stats": {
     "PTS": 89,
     "REB": 49,
     "AST": 20,
-    "STL": 5,
+    "STL": 20,
     "BLK": 5,
-    "TO": 20,
+    "TO": 5,
+    "PF": 9,
     "FG%": 43.4,
     "3P%": 27.6,
-    "FT%": 75.0,
-    "PF": 9
+    "FT%": 75.0
   },
   "away_stats": {
     "PTS": 107,
     "REB": 40,
     "AST": 23,
-    "STL": 11,
-    "BLK": 7,
-    "TO": 6,
+    "STL": 6,
+    "BLK": 11,
+    "TO": 7,
+    "PF": 6,
     "FG%": 48.4,
     "3P%": 25.8,
-    "FT%": 77.8,
-    "PF": 10
+    "FT%": 77.8
   }
 }

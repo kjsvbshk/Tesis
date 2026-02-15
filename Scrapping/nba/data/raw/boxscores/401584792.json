@@ -1,32 +1,32 @@
 {
-  "game_id": "401584792",
-  "fecha": "2025-11-09",
-  "home_team": "Grizzlies",
-  "away_team": "Heat",
+  "game_id": 401584792,
+  "fecha": "2026-02-14",
+  "home_team": "Memphis Grizzlies",
+  "away_team": "Miami Heat",
   "home_score": 102,
   "away_score": 108,
   "home_stats": {
     "PTS": 102,
     "REB": 38,
     "AST": 20,
-    "STL": 10,
-    "BLK": 4,
-    "TO": 13,
+    "STL": 13,
+    "BLK": 10,
+    "TO": 4,
+    "PF": 13,
     "FG%": 38.9,
     "3P%": 29.7,
-    "FT%": 75.0,
-    "PF": 27
+    "FT%": 75.0
   },
   "away_stats": {
     "PTS": 108,
     "REB": 44,
     "AST": 22,
-    "STL": 9,
-    "BLK": 8,
-    "TO": 19,
+    "STL": 19,
+    "BLK": 9,
+    "TO": 8,
+    "PF": 9,
     "FG%": 45.5,
     "3P%": 39.3,
-    "FT%": 84.4,
-    "PF": 24
+    "FT%": 84.4
   }
 }

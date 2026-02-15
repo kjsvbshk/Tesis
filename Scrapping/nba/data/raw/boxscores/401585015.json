@@ -1,32 +1,32 @@
 {
-  "game_id": "401585015",
-  "fecha": "2025-11-09",
-  "home_team": "Suns",
-  "away_team": "Kings",
-  "home_score": 106,
-  "away_score": 114,
+  "game_id": 401585015,
+  "fecha": "2026-02-14",
+  "home_team": "Sacramento Kings",
+  "away_team": "Phoenix Suns",
+  "home_score": 105,
+  "away_score": 120,
   "home_stats": {
     "PTS": 120,
     "REB": 37,
     "AST": 32,
-    "STL": 7,
+    "STL": 12,
     "BLK": 7,
-    "TO": 12,
+    "TO": 7,
+    "PF": 7,
     "FG%": 53.0,
     "3P%": 31.6,
-    "FT%": 76.9,
-    "PF": 24
+    "FT%": 76.9
   },
   "away_stats": {
     "PTS": 105,
     "REB": 45,
     "AST": 19,
-    "STL": 8,
-    "BLK": 4,
-    "TO": 15,
+    "STL": 15,
+    "BLK": 8,
+    "TO": 4,
+    "PF": 15,
     "FG%": 44.3,
     "3P%": 20.0,
-    "FT%": 78.6,
-    "PF": 19
+    "FT%": 78.6
   }
 }

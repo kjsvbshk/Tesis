@@ -1,32 +1,32 @@
 {
-  "game_id": "401585208",
-  "fecha": "2025-11-09",
-  "home_team": "Bulls",
-  "away_team": "Raptors",
-  "home_score": 104,
-  "away_score": 103,
+  "game_id": 401585208,
+  "fecha": "2026-02-14",
+  "home_team": "Toronto Raptors",
+  "away_team": "Chicago Bulls",
+  "home_score": 110,
+  "away_score": 116,
   "home_stats": {
     "PTS": 110,
     "REB": 38,
     "AST": 31,
-    "STL": 7,
-    "BLK": 5,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 7,
+    "TO": 5,
+    "PF": 7,
     "FG%": 50.6,
     "3P%": 26.3,
-    "FT%": 80.0,
-    "PF": 18
+    "FT%": 80.0
   },
   "away_stats": {
     "PTS": 116,
     "REB": 42,
     "AST": 30,
-    "STL": 7,
-    "BLK": 5,
-    "TO": 10,
+    "STL": 10,
+    "BLK": 7,
+    "TO": 5,
+    "PF": 9,
     "FG%": 52.7,
     "3P%": 25.0,
-    "FT%": 82.4,
-    "PF": 22
+    "FT%": 82.4
   }
 }

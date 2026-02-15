@@ -1,32 +1,32 @@
 {
-  "game_id": "401584756",
-  "fecha": "2025-11-09",
-  "home_team": "Raptors",
-  "away_team": "76ers",
-  "home_score": 107,
+  "game_id": 401584756,
+  "fecha": "2026-02-14",
+  "home_team": "Philadelphia 76ers",
+  "away_team": "Toronto Raptors",
+  "home_score": 99,
   "away_score": 114,
   "home_stats": {
     "PTS": 114,
     "REB": 46,
     "AST": 21,
-    "STL": 12,
-    "BLK": 3,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 12,
+    "TO": 3,
+    "PF": 15,
     "FG%": 45.7,
     "3P%": 36.0,
-    "FT%": 84.0,
-    "PF": 19
+    "FT%": 84.0
   },
   "away_stats": {
     "PTS": 99,
     "REB": 41,
     "AST": 30,
-    "STL": 4,
-    "BLK": 3,
-    "TO": 19,
+    "STL": 19,
+    "BLK": 4,
+    "TO": 3,
+    "PF": 9,
     "FG%": 48.1,
     "3P%": 35.7,
-    "FT%": 68.4,
-    "PF": 20
+    "FT%": 68.4
   }
 }

@@ -1,32 +1,32 @@
 {
-  "game_id": "401584145",
-  "fecha": "2025-11-09",
-  "home_team": "Knicks",
-  "away_team": "Hornets",
-  "home_score": 129,
-  "away_score": 107,
+  "game_id": 401584145,
+  "fecha": "2026-02-14",
+  "home_team": "New York Knicks",
+  "away_team": "Charlotte Hornets",
+  "home_score": 91,
+  "away_score": 115,
   "home_stats": {
     "PTS": 115,
     "REB": 54,
     "AST": 21,
-    "STL": 10,
-    "BLK": 7,
-    "TO": 16,
+    "STL": 16,
+    "BLK": 10,
+    "TO": 7,
+    "PF": 15,
     "FG%": 46.6,
     "3P%": 39.5,
-    "FT%": 90.0,
-    "PF": 12
+    "FT%": 90.0
   },
   "away_stats": {
     "PTS": 91,
     "REB": 41,
     "AST": 21,
-    "STL": 8,
-    "BLK": 2,
-    "TO": 17,
+    "STL": 17,
+    "BLK": 8,
+    "TO": 2,
+    "PF": 13,
     "FG%": 41.6,
     "3P%": 41.9,
-    "FT%": 57.1,
-    "PF": 14
+    "FT%": 57.1
   }
 }

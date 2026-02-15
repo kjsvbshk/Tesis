@@ -1,32 +1,32 @@
 {
-  "game_id": "401585196",
-  "fecha": "2025-11-09",
-  "home_team": "Thunder",
-  "away_team": "Clippers",
-  "home_score": 134,
-  "away_score": 115,
+  "game_id": 401585196,
+  "fecha": "2026-02-14",
+  "home_team": "LA Clippers",
+  "away_team": "Oklahoma City Thunder",
+  "home_score": 117,
+  "away_score": 128,
   "home_stats": {
     "PTS": 128,
     "REB": 39,
     "AST": 30,
-    "STL": 5,
-    "BLK": 10,
-    "TO": 9,
+    "STL": 9,
+    "BLK": 5,
+    "TO": 10,
+    "PF": 12,
     "FG%": 54.0,
     "3P%": 46.5,
-    "FT%": 60.9,
-    "PF": 18
+    "FT%": 60.9
   },
   "away_stats": {
     "PTS": 117,
     "REB": 35,
     "AST": 30,
-    "STL": 5,
+    "STL": 12,
     "BLK": 5,
-    "TO": 12,
+    "TO": 5,
+    "PF": 9,
     "FG%": 50.6,
     "3P%": 47.1,
-    "FT%": 85.0,
-    "PF": 19
+    "FT%": 85.0
   }
 }

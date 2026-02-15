@@ -1,32 +1,32 @@
 {
-  "game_id": "401585825",
-  "fecha": "2025-11-09",
-  "home_team": "Pistons",
-  "away_team": "Spurs",
-  "home_score": 108,
-  "away_score": 130,
+  "game_id": 401585825,
+  "fecha": "2026-02-14",
+  "home_team": "San Antonio Spurs",
+  "away_team": "Detroit Pistons",
+  "home_score": 95,
+  "away_score": 123,
   "home_stats": {
     "PTS": 123,
     "REB": 54,
     "AST": 33,
-    "STL": 9,
-    "BLK": 3,
-    "TO": 13,
+    "STL": 13,
+    "BLK": 9,
+    "TO": 3,
+    "PF": 12,
     "FG%": 53.8,
     "3P%": 44.1,
-    "FT%": 71.4,
-    "PF": 17
+    "FT%": 71.4
   },
   "away_stats": {
     "PTS": 95,
     "REB": 40,
     "AST": 17,
-    "STL": 7,
-    "BLK": 3,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 7,
+    "TO": 3,
+    "PF": 11,
     "FG%": 39.1,
     "3P%": 24.2,
-    "FT%": 75.0,
-    "PF": 9
+    "FT%": 75.0
   }
 }

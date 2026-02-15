@@ -1,32 +1,32 @@
 {
-  "game_id": "401585763",
-  "fecha": "2025-11-09",
-  "home_team": "Thunder",
-  "away_team": "Hornets",
-  "home_score": 126,
-  "away_score": 106,
+  "game_id": 401585763,
+  "fecha": "2026-02-14",
+  "home_team": "Charlotte Hornets",
+  "away_team": "Oklahoma City Thunder",
+  "home_score": 118,
+  "away_score": 121,
   "home_stats": {
     "PTS": 118,
     "REB": 36,
     "AST": 29,
-    "STL": 12,
-    "BLK": 9,
-    "TO": 18,
+    "STL": 18,
+    "BLK": 12,
+    "TO": 9,
+    "PF": 7,
     "FG%": 54.2,
     "3P%": 42.5,
-    "FT%": 78.6,
-    "PF": 14
+    "FT%": 78.6
   },
   "away_stats": {
     "PTS": 121,
     "REB": 36,
     "AST": 33,
-    "STL": 14,
-    "BLK": 4,
-    "TO": 16,
+    "STL": 16,
+    "BLK": 14,
+    "TO": 4,
+    "PF": 10,
     "FG%": 51.7,
     "3P%": 50.0,
-    "FT%": 76.5,
-    "PF": 17
+    "FT%": 76.5
   }
 }

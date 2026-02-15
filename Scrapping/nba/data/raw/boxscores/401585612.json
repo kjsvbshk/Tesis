@@ -1,32 +1,32 @@
 {
-  "game_id": "401585612",
-  "fecha": "2025-11-09",
-  "home_team": "Celtics",
-  "away_team": "Pistons",
-  "home_score": 128,
-  "away_score": 122,
+  "game_id": 401585612,
+  "fecha": "2026-02-14",
+  "home_team": "Boston Celtics",
+  "away_team": "Detroit Pistons",
+  "home_score": 94,
+  "away_score": 119,
   "home_stats": {
     "PTS": 119,
     "REB": 53,
     "AST": 30,
-    "STL": 8,
+    "STL": 9,
     "BLK": 8,
-    "TO": 9,
+    "TO": 8,
+    "PF": 15,
     "FG%": 45.3,
     "3P%": 44.9,
-    "FT%": 84.6,
-    "PF": 9
+    "FT%": 84.6
   },
   "away_stats": {
     "PTS": 94,
     "REB": 43,
     "AST": 21,
-    "STL": 6,
-    "BLK": 3,
-    "TO": 12,
+    "STL": 12,
+    "BLK": 6,
+    "TO": 3,
+    "PF": 8,
     "FG%": 42.9,
     "3P%": 31.0,
-    "FT%": 86.7,
-    "PF": 15
+    "FT%": 86.7
   }
 }

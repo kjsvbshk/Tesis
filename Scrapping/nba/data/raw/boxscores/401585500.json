@@ -1,32 +1,32 @@
 {
-  "game_id": "401585500",
-  "fecha": "2025-11-09",
-  "home_team": "Warriors",
-  "away_team": "Celtics",
-  "home_score": 132,
-  "away_score": 126,
+  "game_id": 401585500,
+  "fecha": "2026-02-14",
+  "home_team": "Boston Celtics",
+  "away_team": "Golden State Warriors",
+  "home_score": 88,
+  "away_score": 140,
   "home_stats": {
     "PTS": 140,
     "REB": 51,
     "AST": 35,
-    "STL": 10,
-    "BLK": 5,
-    "TO": 7,
+    "STL": 7,
+    "BLK": 10,
+    "TO": 5,
+    "PF": 7,
     "FG%": 55.2,
     "3P%": 51.0,
-    "FT%": 81.8,
-    "PF": 19
+    "FT%": 81.8
   },
   "away_stats": {
     "PTS": 88,
     "REB": 46,
     "AST": 24,
-    "STL": 2,
-    "BLK": 3,
-    "TO": 17,
+    "STL": 17,
+    "BLK": 2,
+    "TO": 3,
+    "PF": 12,
     "FG%": 39.1,
     "3P%": 17.1,
-    "FT%": 69.2,
-    "PF": 13
+    "FT%": 69.2
   }
 }

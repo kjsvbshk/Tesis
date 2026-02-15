@@ -1,32 +1,32 @@
 {
-  "game_id": "401616461",
-  "fecha": "2025-11-09",
-  "home_team": "Raptors",
-  "away_team": "Heat",
+  "game_id": 401616461,
+  "fecha": "2026-02-14",
+  "home_team": "Toronto Raptors",
+  "away_team": "Miami Heat",
   "home_score": 103,
   "away_score": 112,
   "home_stats": {
     "PTS": 103,
     "REB": 46,
     "AST": 29,
-    "STL": 3,
-    "BLK": 8,
-    "TO": 14,
+    "STL": 14,
+    "BLK": 3,
+    "TO": 8,
+    "PF": 8,
     "FG%": 43.0,
     "3P%": 37.8,
-    "FT%": 88.2,
-    "PF": 18
+    "FT%": 88.2
   },
   "away_stats": {
     "PTS": 112,
     "REB": 44,
     "AST": 33,
-    "STL": 5,
-    "BLK": 4,
-    "TO": 7,
+    "STL": 7,
+    "BLK": 5,
+    "TO": 4,
+    "PF": 8,
     "FG%": 46.1,
     "3P%": 36.8,
-    "FT%": 84.2,
-    "PF": 18
+    "FT%": 84.2
   }
 }

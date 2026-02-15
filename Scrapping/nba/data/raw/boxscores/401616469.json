@@ -1,32 +1,32 @@
 {
-  "game_id": "401616469",
-  "fecha": "2025-11-09",
-  "home_team": "Nuggets",
-  "away_team": "Clippers",
-  "home_score": 111,
-  "away_score": 108,
+  "game_id": 401616469,
+  "fecha": "2026-02-14",
+  "home_team": "LA Clippers",
+  "away_team": "Denver Nuggets",
+  "home_score": 102,
+  "away_score": 111,
   "home_stats": {
     "PTS": 111,
     "REB": 51,
     "AST": 21,
-    "STL": 7,
-    "BLK": 9,
-    "TO": 11,
+    "STL": 11,
+    "BLK": 7,
+    "TO": 9,
+    "PF": 13,
     "FG%": 46.0,
     "3P%": 44.4,
-    "FT%": 76.0,
-    "PF": 14
+    "FT%": 76.0
   },
   "away_stats": {
     "PTS": 102,
     "REB": 46,
     "AST": 29,
-    "STL": 7,
-    "BLK": 5,
-    "TO": 11,
+    "STL": 11,
+    "BLK": 7,
+    "TO": 5,
+    "PF": 14,
     "FG%": 41.8,
     "3P%": 38.7,
-    "FT%": 88.9,
-    "PF": 20
+    "FT%": 88.9
   }
 }

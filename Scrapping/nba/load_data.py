@@ -161,16 +161,15 @@ class DataAnalyzer:
         """Analiza todos los archivos de datos y extrae metadata"""
         print("🔍 Analizando estructura de datos...")
         
-        # self._analyze_processed_dataset()
+        self._analyze_processed_dataset()
         
         # Analizar archivos raw
-        # self._analyze_standings()
-        # self._analyze_team_stats()
-        # self._analyze_team_stats()
-        # self._analyze_player_stats()
+        self._analyze_standings()
+        self._analyze_team_stats()
+        self._analyze_player_stats()
         self._analyze_nba_player_boxscores()
-        # self._analyze_injuries()
-        # self._analyze_odds()
+        self._analyze_injuries()
+        self._analyze_odds()
         
         print(f"✅ {len(self.metadata)} tablas detectadas\n")
         return self.metadata
@@ -480,17 +479,33 @@ class DataAnalyzer:
         if not json_files:
             return
         
-        # Usar el archivo más reciente
-        latest_file = max(json_files, key=lambda p: p.stat().st_mtime)
-        
-        with open(latest_file, 'r') as f:
-            data = json.load(f)
-        
-        if not data:
+        json_files = list(odds_dir.glob('*.json'))
+        if not json_files:
             return
         
-        # Convertir a DataFrame para análisis
-        df = pd.DataFrame(data)
+        # Cargar TODOS los archivos
+        all_data = []
+        for json_file in json_files:
+            try:
+                with open(json_file, 'r') as f:
+                    file_data = json.load(f)
+                    if isinstance(file_data, list):
+                        all_data.extend(file_data)
+                    elif isinstance(file_data, dict):
+                        all_data.append(file_data)
+            except Exception as e:
+                logger.warning(f"⚠️ Error leyendo {json_file.name}: {e}")
+        
+        if not all_data:
+            return
+            
+        # Deduplicar por game_id (si existe) o mantener todo
+        # Convertir a DataFrame
+        df = pd.DataFrame(all_data)
+        
+        # Deduplicar si hay game_id repetido (tomar el más reciente si fuera posible, o cualquiera)
+        if 'game_id' in df.columns:
+            df = df.drop_duplicates(subset=['game_id'])
         
         # Columnas especiales para JSON
         columns = self._infer_columns(df)
@@ -498,17 +513,17 @@ class DataAnalyzer:
             columns['bookmakers']['type'] = 'JSONB'
         
         self.metadata['odds'] = {
-            'source_file': str(latest_file),
-            'source_type': 'json',
+            'source_files': [str(f) for f in json_files], # Lista de archivos
+            'source_type': 'json_multiple', # Nuevo tipo para manejo en loader
             'table_name': 'odds',
             'columns': columns,
             'primary_key': 'game_id',
             'indexes': ['home_team', 'away_team', 'commence_time'],
-            'row_count': len(data),
-            'note': 'Datos actuales - se reemplazan en cada carga'
+            'row_count': len(df),
+            'note': 'Datos históricos completos'
         }
         
-        print(f"  ✓ odds: {len(data)} registros (archivo más reciente)")
+        print(f"  ✓ odds: {len(df)} registros de {len(json_files)} archivos")
     
     def _sanitize_column_name(self, col: str) -> str:
         """
@@ -980,6 +995,8 @@ class DataLoader:
                     self._load_from_multiple_csv(table_name, table_meta)
                 elif table_meta['source_type'] == 'json':
                     self._load_from_json(table_name, table_meta)
+                elif table_meta['source_type'] == 'json_multiple':
+                    self._load_from_multiple_json(table_name, table_meta)
                 
                 # Verificar carga
                 count_after = self._count_records(table_name)
@@ -1065,6 +1082,43 @@ class DataLoader:
         # Para odds, convertir bookmakers a JSON string
         if 'bookmakers' in df.columns:
             df['bookmakers'] = df['bookmakers'].apply(json.dumps)
+        
+        # Limpiar datos
+        df = self._clean_dataframe(df, table_meta)
+        
+        # Usar COPY
+        self._copy_from_dataframe(table_name, df, table_meta['columns'])
+
+    def _load_from_multiple_json(self, table_name: str, table_meta: Dict):
+        """Cargar desde múltiples archivos JSON"""
+        source_files = table_meta['source_files']
+        all_data = []
+
+        for file_path in source_files:
+            try:
+                with open(file_path, 'r') as f:
+                    file_data = json.load(f)
+                    if isinstance(file_data, list):
+                        all_data.extend(file_data)
+                    elif isinstance(file_data, dict):
+                        all_data.append(file_data)
+            except Exception as e:
+                print(f"    ⚠️ Error leyendo JSON {file_path}: {e}")
+
+        if not all_data:
+            print(f"    ⚠️ No se encontraron datos en los archivos JSON para {table_name}")
+            return
+            
+        df = pd.DataFrame(all_data)
+        
+        # Deduplicar por game_id si existe
+        if 'game_id' in df.columns:
+            df = df.drop_duplicates(subset=['game_id'])
+
+        # Para odds, convertir bookmakers a JSON string
+        if 'bookmakers' in df.columns:
+            # Asegurar que sea string JSON válido
+            df['bookmakers'] = df['bookmakers'].apply(lambda x: json.dumps(x) if isinstance(x, (list, dict)) else x)
         
         # Limpiar datos
         df = self._clean_dataframe(df, table_meta)

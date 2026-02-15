@@ -1,0 +1,13 @@
+🔍 ANALYZING DATA STRUCTURES FOR DATE: 2025-10-24
+============================================================
+
+🏀 ESPN GAMES (Target):
+   Cols: game_id, fecha, home_team, away_team
+
+🎲 RAW ODDS (Source):
+   Cols: game_id, commence_time, home_team, away_team
+   Row: ('2115811d6d5915d1d9ab317396776cf7', '2025-10-24T23:00:00Z', 'Orlando Magic', 'Atlanta Hawks')
+   Row: ('600dfc9979b72eeef44b5545ba9fe18f', '2025-10-24T23:30:00Z', 'New York Knicks', 'Boston Celtics')
+   Row: ('af723c8d13c83ededaa33a065f24a5be', '2025-10-24T23:30:00Z', 'Brooklyn Nets', 'Cleveland Cavaliers')
+   Row: ('6f4f9851f7634f0b452c9153373deddf', '2025-10-24T23:30:00Z', 'Toronto Raptors', 'Milwaukee Bucks')
+   Row: ('fb2728391a56d2d12e9375729e1d428b', '2025-10-25T00:00:00Z', 'Houston Rockets', 'Detroit Pistons')

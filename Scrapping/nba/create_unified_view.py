@@ -17,9 +17,9 @@ def create_views():
         view_query = """
         CREATE OR REPLACE VIEW espn.unified_player_boxscores AS
         SELECT 
-            -- Info del Juego (Origen: ESPN)
+            -- Info del Juego (Origen: ESPN y NBA)
             g.game_id AS espn_game_id,
-            g.fecha,
+            COALESCE(g.fecha::text, p.game_date::text) as game_date,
             g.home_team,
             g.away_team,
             g.home_score,

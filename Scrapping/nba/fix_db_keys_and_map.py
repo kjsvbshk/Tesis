@@ -85,6 +85,30 @@ def fix_and_map():
         print(f"   ❌ Error insertando mapping: {e}")
         conn.rollback()
 
+    print("\n4️⃣  Poblando columna 'season' desde espn.games (calculado desde fecha)...")
+    try:
+        # Calcular season basado en fecha:
+        # Si mes >= 10, season = YYYY-(YY+1)
+        # Si mes < 10, season = (YYYY-1)-YY
+        cur.execute("""
+            UPDATE espn.game_id_mapping m
+            SET season = CASE 
+                WHEN EXTRACT(MONTH FROM g.fecha) >= 10 THEN 
+                    TO_CHAR(g.fecha, 'YYYY') || '-' || TO_CHAR(g.fecha + INTERVAL '1 year', 'YY')
+                ELSE 
+                    TO_CHAR(g.fecha - INTERVAL '1 year', 'YYYY') || '-' || TO_CHAR(g.fecha, 'YY')
+            END
+            FROM espn.games g
+            WHERE m.espn_id = g.game_id::text
+            AND m.season IS NULL;
+        """)
+        updated_seasons = cur.rowcount
+        conn.commit()
+        print(f"   ✅ {updated_seasons} temporadas actualizadas.")
+    except Exception as e:
+        print(f"   ❌ Error actualizando temporadas: {e}")
+        conn.rollback()
+
     conn.close()
     print("\n✨ Proceso de integridad finalizado.")
 

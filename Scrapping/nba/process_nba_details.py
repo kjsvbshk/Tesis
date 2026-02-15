@@ -17,10 +17,22 @@ def process_nba_details():
     
     files = list(input_dir.glob('*.json'))
     print(f"📂 Procesando {len(files)} archivos JSON...")
+    # Cargar Schedule para obtener fechas
+    schedule_path = Path('data/nba_com_schedule.json')
+    game_dates = {}
+    if schedule_path.exists():
+        with open(schedule_path, 'r') as f:
+            schedule = json.load(f)
+            # Crear mapa game_id -> game_date_est (cortando fecha ISO)
+            for game in schedule:
+                if 'nba_game_id' in game and 'date' in game:
+                    # nba_game_id ej: "0022300061", date: "2023-10-24"
+                    gid = game['nba_game_id']
+                    game_dates[gid] = game['date']
     
     # Definir columnas del CSV
     fieldnames = [
-        'game_id', 'team_tricode', 'player_id', 'player_name', 
+        'game_id', 'game_date', 'team_tricode', 'player_id', 'player_name', 
         'position', 'starter', 'minutes', 
         'pts', 'reb', 'ast', 'stl', 'blk', 'to', 'pf', 'plus_minus',
         'fgm', 'fga', 'fg_pct', 
@@ -48,15 +60,19 @@ def process_nba_details():
                 if not game_id:
                     continue
                 
+                game_date = game_dates.get(game_id, '') # Obtener la fecha del juego
+                
                 # Procesar Home y Away
                 for side in ['home', 'away']:
                     team_tricode = data.get(f'{side}_team_tricode')
                     players = data.get(f'{side}_players', [])
                     
                     for p in players:
+                        # Campos base
                         row = {
                             'game_id': game_id,
-                            'team_tricode': team_tricode,
+                            'game_date': game_date,
+                            'team_tricode': team_tricode, # Assuming team_code was a typo and should be team_tricode
                             'player_id': p.get('player_id'),
                             'player_name': p.get('player_name'),
                             'position': p.get('position', ''),

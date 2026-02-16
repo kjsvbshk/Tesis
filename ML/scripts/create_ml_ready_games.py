@@ -56,7 +56,11 @@ def create_ml_ready_games_table():
             
             if table_exists:
                 print(f"⚠️  La tabla '{ml_schema}.ml_ready_games' ya existe")
-                response = input("   ¿Deseas eliminarla y recrearla? (s/N): ")
+                if "--force" in sys.argv:
+                    response = 's'
+                else:
+                    response = input("   ¿Deseas eliminarla y recrearla? (s/N): ")
+                
                 if response.lower() != 's':
                     print("   Operación cancelada")
                     return
@@ -118,6 +122,25 @@ def create_ml_ready_games_table():
                     away_injuries_count integer,
                     implied_prob_home double precision,
                     implied_prob_away double precision,
+                    
+                    -- Phase 1.2: Advanced Stats and Context
+                    home_b2b boolean,
+                    away_b2b boolean,
+                    home_pace_rolling double precision,
+                    away_pace_rolling double precision,
+                    home_off_rating_rolling double precision,
+                    away_off_rating_rolling double precision,
+                    home_def_rating_rolling double precision,
+                    away_def_rating_rolling double precision,
+                    
+                    -- Phase 1.2: Differentials
+                    ppg_diff double precision,               -- home_ppg_last5 - away_ppg_last5
+                    net_rating_diff_rolling double precision, -- home_net_rating_rolling - away_net_rating_rolling
+                    pace_diff double precision,
+                    off_rating_diff double precision,
+                    def_rating_diff double precision,
+                    rest_days_diff integer,
+                    injuries_diff integer,
                     
                     created_at timestamp with time zone default now()
                 );
@@ -379,6 +402,11 @@ def main():
         "--populate-only",
         action="store_true",
         help="Solo poblar la tabla (asume que ya existe)"
+    )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Forzar recreación sin preguntar"
     )
     
     args = parser.parse_args()

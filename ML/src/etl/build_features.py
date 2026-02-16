@@ -54,16 +54,66 @@ def build_features():
         )
         print(f"   ✅ {len(games)} partidos cargados")
         
-        print("   Cargando espn.team_stats...")
+        print("   Cargando espn.game_id_mapping...")
         try:
-            team_stats = pd.read_sql(
-                f"SELECT * FROM {espn_schema}.team_stats ORDER BY game_id, team_id",
+            mapping = pd.read_sql(
+                f"SELECT espn_id, nba_id FROM {espn_schema}.game_id_mapping",
                 engine
             )
-            print(f"   ✅ {len(team_stats)} registros de estadísticas de equipos cargados")
+            # Normalizar tipos para join
+            games['game_id_str'] = games['game_id'].astype(str)
+            games = games.merge(mapping, left_on='game_id_str', right_on='espn_id', how='left')
+            print(f"   ✅ Mapeo de IDs cargado y aplicado ({games['nba_id'].count()} coincidencias)")
         except Exception as e:
-            print(f"   ⚠️  No se pudo cargar team_stats: {e}")
-            team_stats = pd.DataFrame()
+            print(f"   ⚠️  No se pudo cargar game_id_mapping: {e}")
+            games['nba_id'] = None
+        
+        print("   Cargando espn.nba_player_boxscores...")
+        try:
+            player_box = pd.read_sql(
+                f"SELECT game_id, team_tricode, pts, fga, fgm, fta, ftm, three_pa, three_pm, oreb, dreb, ast, stl, blk, to_stat as tov FROM {espn_schema}.nba_player_boxscores",
+                engine
+            )
+            # COVERTIR game_id A BIGINT PARA MATCHING
+            player_box['game_id'] = pd.to_numeric(player_box['game_id'], errors='coerce').astype('Int64')
+            print(f"   ✅ {len(player_box)} registros loaded")
+            
+            # Debug: Check a few game IDs
+            print(f"   [DEBUG] Sample Boxscore Game IDs: {player_box['game_id'].dropna().head(3).tolist()}")
+            
+            # Agregar boxscores a nivel de equipo
+            print("   Agregando estadísticas a nivel de equipo...")
+            player_box = player_box.dropna(subset=['game_id'])
+            
+            team_game_stats = player_box.groupby(['game_id', 'team_tricode']).agg({
+                'pts': 'sum',
+                'fga': 'sum',
+                'fgm': 'sum',
+                'fta': 'sum',
+                'ftm': 'sum',
+                'three_pa': 'sum',
+                'three_pm': 'sum',
+                'oreb': 'sum',
+                'dreb': 'sum',
+                'ast': 'sum',
+                'stl': 'sum',
+                'blk': 'sum',
+                'tov': 'sum'
+            }).reset_index()
+            
+            # Calcular posesiones por equipo (fórmula simplificada)
+            # Poss = FGA + 0.44 * FTA - ORB + TOV
+            team_game_stats['poss'] = (
+                team_game_stats['fga'] + 
+                0.44 * team_game_stats['fta'] - 
+                team_game_stats['oreb'] + 
+                team_game_stats['tov']
+            )
+            print(f"   ✅ Estadísticas de equipo calculadas para {len(team_game_stats)} registros")
+        except Exception as e:
+            print(f"   ⚠️  No se pudo cargar o procesar nba_player_boxscores: {e}")
+            print(e)
+            team_game_stats = pd.DataFrame()
         
         print("   Cargando espn.injuries...")
         try:
@@ -78,6 +128,8 @@ def build_features():
         
         print("   Cargando espn.odds...")
         try:
+            # En Neon, ml.ml_ready_games ya tiene las odds si usamos map_odds_to_games
+            # pero aquí build_features calcula features adicionales
             odds = pd.read_sql(
                 f"SELECT * FROM {espn_schema}.odds",
                 engine
@@ -90,14 +142,12 @@ def build_features():
         print()
         
         # 2) Normalizar nombres de equipos
-        # IMPORTANTE: ml_ready_games usa nombres completos, no abreviaciones
         print("📝 Paso 2: Normalizando nombres de equipos...")
         print("-" * 60)
         
-        # Usar nombres completos (home_team, away_team) en lugar de normalized
-        # porque ml_ready_games usa nombres completos
-        games['home_team_norm'] = games['home_team']
-        games['away_team_norm'] = games['away_team']
+        # Mapeo de tricode a nombre de equipo si es necesario
+        # (Aunque nba_player_boxscores usa tricode, games usa nombres completos)
+        # Vamos a usar el mapping que ya existe en la base de datos si es posible
         print("   ✅ Usando nombres completos de equipos (no abreviaciones)")
         print()
         
@@ -105,26 +155,128 @@ def build_features():
         print("📊 Paso 3: Calculando rolling features...")
         print("-" * 60)
         
-        def rolling_stats(df_games):
+        def rolling_stats(df_games, df_team_stats):
             """
             Construye estadísticas rolling por equipo
             """
             rows = []
             
+            # Mapeo de ID (as numeric) a estadísticas de equipo para acceso rápido
+            stats_map = {}
+            if not df_team_stats.empty:
+                for _, row in df_team_stats.iterrows():
+                    try:
+                        gid_num = int(row['game_id'])
+                        stats_map[(gid_num, row['team_tricode'])] = row.to_dict()
+                    except:
+                        continue
+
+            # Mapeo de nombres de equipos a tricodes (aproximado)
+            team_name_to_tricode = {
+                'Atlanta Hawks': 'ATL', 'Boston Celtics': 'BOS', 'Brooklyn Nets': 'BKN',
+                'Charlotte Hornets': 'CHA', 'Chicago Bulls': 'CHI', 'Cleveland Cavaliers': 'CLE',
+                'Dallas Mavericks': 'DAL', 'Denver Nuggets': 'DEN', 'Detroit Pistons': 'DET',
+                'Golden State Warriors': 'GSW', 'Houston Rockets': 'HOU', 'Indiana Pacers': 'IND',
+                'LA Clippers': 'LAC', 'Los Angeles Lakers': 'LAL', 'Memphis Grizzlies': 'MEM',
+                'Miami Heat': 'MIA', 'Milwaukee Bucks': 'MIL', 'Minnesota Timberwolves': 'MIN',
+                'New Orleans Pelicans': 'NOP', 'New York Knicks': 'NYK', 'Oklahoma City Thunder': 'OKC',
+                'Orlando Magic': 'ORL', 'Philadelphia 76ers': 'PHI', 'Phoenix Suns': 'PHX',
+                'Portland Trail Blazers': 'POR', 'Sacramento Kings': 'SAC', 'San Antonio Spurs': 'SAS',
+                'Toronto Raptors': 'TOR', 'Utah Jazz': 'UTA', 'Washington Wizards': 'WAS'
+            }
+            
             for _, r in tqdm(df_games.iterrows(), total=len(df_games), desc="   Procesando partidos"):
                 game_id = r['game_id']
-                home_team = r['home_team_norm']
-                away_team = r['away_team_norm']
+                home_team = r['home_team']
+                away_team = r['away_team']
                 fecha = pd.to_datetime(r['fecha'])
                 
-                # Obtener puntos y net rating
-                home_pts = r.get('home_pts', r.get('home_score', 0))
-                away_pts = r.get('away_pts', r.get('away_score', 0))
+                # FALLBACK PARA SCORE
+                home_pts = r['home_pts'] if pd.notna(r.get('home_pts')) else (r['home_score'] if pd.notna(r.get('home_score')) else 0)
+                away_pts = r['away_pts'] if pd.notna(r.get('away_pts')) else (r['away_score'] if pd.notna(r.get('away_score')) else 0)
                 
-                # Net rating: diferencia de puntos (simplificado)
+                # FALLBACK PARA NET RATING
                 net_rating_diff = r.get('net_rating_diff', 0)
                 if pd.isna(net_rating_diff):
+                    net_rating_diff = home_pts - away_pts # Simple diff if net_rating missing
+                if pd.isna(net_rating_diff):
                     net_rating_diff = 0
+                
+                # Buscar stats avanzadas
+                home_tricode = team_name_to_tricode.get(home_team)
+                away_tricode = team_name_to_tricode.get(away_team)
+                
+                # NORMALIZAR lookup_id A NUMERIC
+                lookup_id = None
+                if pd.notna(r.get('nba_id')):
+                    try:
+                        lookup_id = int(r['nba_id'])
+                    except:
+                        lookup_id = int(game_id)
+                else:
+                    lookup_id = int(game_id)
+                
+                home_stats = stats_map.get((lookup_id, home_tricode), {})
+                away_stats = stats_map.get((lookup_id, away_tricode), {})
+                
+                home_poss = home_stats.get('poss', None)
+                away_poss = away_stats.get('poss', None)
+
+                # Base Stats extraction
+                def get_stat(stats, key, default=0):
+                    return stats.get(key, default)
+                
+                # Rebounds
+                h_oreb = get_stat(home_stats, 'oreb')
+                h_dreb = get_stat(home_stats, 'dreb')
+                h_reb = h_oreb + h_dreb
+                
+                a_oreb = get_stat(away_stats, 'oreb')
+                a_dreb = get_stat(away_stats, 'dreb')
+                a_reb = a_oreb + a_dreb
+                
+                # Assists, Steals, Blocks, TOV
+                h_ast = get_stat(home_stats, 'ast')
+                h_stl = get_stat(home_stats, 'stl')
+                h_blk = get_stat(home_stats, 'blk')
+                h_tov = get_stat(home_stats, 'tov')
+                
+                a_ast = get_stat(away_stats, 'ast')
+                a_stl = get_stat(away_stats, 'stl')
+                a_blk = get_stat(away_stats, 'blk')
+                a_tov = get_stat(away_stats, 'tov')
+                
+                # Percentages
+                h_fgm = get_stat(home_stats, 'fgm')
+                h_fga = get_stat(home_stats, 'fga')
+                h_fg_pct = (h_fgm / h_fga) if h_fga > 0 else 0.0
+                
+                a_fgm = get_stat(away_stats, 'fgm')
+                a_fga = get_stat(away_stats, 'fga')
+                a_fg_pct = (a_fgm / a_fga) if a_fga > 0 else 0.0
+                
+                h_fg3m = get_stat(home_stats, 'three_pm')
+                h_fg3a = get_stat(home_stats, 'three_pa')
+                h_fg3_pct = (h_fg3m / h_fg3a) if h_fg3a > 0 else 0.0
+                
+                a_fg3m = get_stat(away_stats, 'three_pm')
+                a_fg3a = get_stat(away_stats, 'three_pa')
+                a_fg3_pct = (a_fg3m / a_fg3a) if a_fg3a > 0 else 0.0
+                
+                h_ftm = get_stat(home_stats, 'ftm')
+                h_fta = get_stat(home_stats, 'fta')
+                h_ft_pct = (h_ftm / h_fta) if h_fta > 0 else 0.0
+                
+                a_ftm = get_stat(away_stats, 'ftm')
+                a_fta = get_stat(away_stats, 'fta')
+                a_ft_pct = (a_ftm / a_fta) if a_fta > 0 else 0.0
+                
+                # Si tenemos posesiones, calculamos ratings individuales de este partido
+                home_off_rtg = (home_pts / home_poss * 100) if home_poss and home_poss > 0 else None
+                away_off_rtg = (away_pts / away_poss * 100) if away_poss and away_poss > 0 else None
+                
+                # Pace (partido individual)
+                game_pace = (home_poss + away_poss) / 2 if home_poss and away_poss else None
                 
                 rows.append({
                     'game_id': game_id,
@@ -132,7 +284,13 @@ def build_features():
                     'team': home_team,
                     'is_home': True,
                     'pts': home_pts,
-                    'net_rating': net_rating_diff
+                    'opp_pts': away_pts,
+                    'net_rating': net_rating_diff,
+                    'poss': home_poss,
+                    'off_rtg': home_off_rtg,
+                    'pace': game_pace,
+                    'fg_pct': h_fg_pct, 'fg3_pct': h_fg3_pct, 'ft_pct': h_ft_pct,
+                    'reb': h_reb, 'ast': h_ast, 'stl': h_stl, 'blk': h_blk, 'tov': h_tov
                 })
                 
                 rows.append({
@@ -141,36 +299,53 @@ def build_features():
                     'team': away_team,
                     'is_home': False,
                     'pts': away_pts,
-                    'net_rating': -net_rating_diff  # Negativo para el visitante
+                    'opp_pts': home_pts,
+                    'net_rating': -net_rating_diff,
+                    'poss': away_poss,
+                    'off_rtg': away_off_rtg,
+                    'pace': game_pace,
+                    'fg_pct': a_fg_pct, 'fg3_pct': a_fg3_pct, 'ft_pct': a_ft_pct,
+                    'reb': a_reb, 'ast': a_ast, 'stl': a_stl, 'blk': a_blk, 'tov': a_tov
                 })
             
             tt = pd.DataFrame(rows).sort_values(['team', 'fecha', 'game_id'])
             
-            # Rolling 5 partidos para puntos
-            print("   Calculando PPG últimos 5 partidos...")
+            # Rolling averages
+            # PPG
             tt['pts_last5'] = tt.groupby('team')['pts'].transform(
-                lambda x: x.rolling(window=5, min_periods=1).mean()
+                lambda x: x.shift(1).rolling(window=5, min_periods=1).mean()
             )
-            
-            # Rolling 10 partidos para net rating
-            print("   Calculando Net Rating últimos 10 partidos...")
+            # Net Rating
             tt['net_last10'] = tt.groupby('team')['net_rating'].transform(
-                lambda x: x.rolling(window=10, min_periods=1).mean()
+                lambda x: x.shift(1).rolling(window=10, min_periods=1).mean()
             )
+            # Pace
+            tt['pace_last5'] = tt.groupby('team')['pace'].transform(
+                lambda x: x.shift(1).rolling(window=5, min_periods=1).mean()
+            )
+            # Offensive Rating
+            tt['off_rtg_last5'] = tt.groupby('team')['off_rtg'].transform(
+                lambda x: x.shift(1).rolling(window=5, min_periods=1).mean()
+            )
+            # Defensive Rating (Points allowed / Possessions)
+            # Simplified: Use opp_pts rolling / poss rolling
+            tt['opp_pts_last5'] = tt.groupby('team')['opp_pts'].transform(
+                lambda x: x.shift(1).rolling(window=5, min_periods=1).sum()
+            )
+            tt['poss_last5'] = tt.groupby('team')['poss'].transform(
+                lambda x: x.shift(1).rolling(window=5, min_periods=1).sum()
+            )
+            tt['def_rtg_last5'] = (tt['opp_pts_last5'] / tt['poss_last5'] * 100).where(tt['poss_last5'] > 0, None)
             
             return tt
         
-        tt = rolling_stats(games)
+        tt = rolling_stats(games, team_game_stats)
         print(f"   ✅ Rolling features calculadas para {len(tt)} registros")
         print()
         
         # 4) Merge rolling features back into ml_ready_games
         print("🔄 Paso 4: Aplicando rolling features a ml_ready_games...")
         print("-" * 60)
-        
-        # Crear mapeo: (game_id, team) -> pts_last5, net_last10
-        map_last5 = tt.set_index(['game_id', 'team'])['pts_last5'].to_dict()
-        map_net10 = tt.set_index(['game_id', 'team'])['net_last10'].to_dict()
         
         # Leer ml_ready_games
         print("   Cargando ml_ready_games...")
@@ -180,42 +355,59 @@ def build_features():
         )
         print(f"   ✅ {len(ml)} registros cargados")
         
-        # Aplicar features
-        print("   Aplicando rolling features...")
-        def get_feat(game_row):
-            gid = game_row['game_id']
-            home = game_row.get('home_team', game_row.get('home_team_norm'))
-            away = game_row.get('away_team', game_row.get('away_team_norm'))
-            
-            r = {}
-            r['home_ppg_last5'] = map_last5.get((gid, home), None)
-            r['away_ppg_last5'] = map_last5.get((gid, away), None)
-            r['home_net_rating_last10'] = map_net10.get((gid, home), None)
-            r['away_net_rating_last10'] = map_net10.get((gid, away), None)
-            return pd.Series(r)
+        # Merge tt with ml
+        tt_home = tt[tt['is_home'] == True].rename(columns={
+            'pts_last5': 'home_ppg_last5',
+            'net_last10': 'home_net_rating_last10',
+            'pace_last5': 'home_pace_rolling',
+            'off_rtg_last5': 'home_off_rating_rolling',
+            'def_rtg_last5': 'home_def_rating_rolling',
+            'fg_pct': 'home_fg_pct', 'fg3_pct': 'home_3p_pct', 'ft_pct': 'home_ft_pct',
+            'reb': 'home_reb', 'ast': 'home_ast', 'stl': 'home_stl', 'blk': 'home_blk', 'tov': 'home_to'
+        })[['game_id', 'home_ppg_last5', 'home_net_rating_last10', 'home_pace_rolling', 'home_off_rating_rolling', 'home_def_rating_rolling',
+            'home_fg_pct', 'home_3p_pct', 'home_ft_pct', 'home_reb', 'home_ast', 'home_stl', 'home_blk', 'home_to']]
         
-        feat_df = ml.apply(get_feat, axis=1)
-        ml[['home_ppg_last5', 'away_ppg_last5', 'home_net_rating_last10', 'away_net_rating_last10']] = feat_df
+        tt_away = tt[tt['is_home'] == False].rename(columns={
+            'pts_last5': 'away_ppg_last5',
+            'net_last10': 'away_net_rating_last10',
+            'pace_last5': 'away_pace_rolling',
+            'off_rtg_last5': 'away_off_rating_rolling',
+            'def_rtg_last5': 'away_def_rating_rolling',
+            'fg_pct': 'away_fg_pct', 'fg3_pct': 'away_3p_pct', 'ft_pct': 'away_ft_pct',
+            'reb': 'away_reb', 'ast': 'away_ast', 'stl': 'away_stl', 'blk': 'away_blk', 'tov': 'away_to'
+        })[['game_id', 'away_ppg_last5', 'away_net_rating_last10', 'away_pace_rolling', 'away_off_rating_rolling', 'away_def_rating_rolling',
+            'away_fg_pct', 'away_3p_pct', 'away_ft_pct', 'away_reb', 'away_ast', 'away_stl', 'away_blk', 'away_to']]
+        
+        # Limpiar ml de columnas que vamos a sobreescribir para evitar duplicados en el merge
+        cols_to_drop = ['home_ppg_last5', 'away_ppg_last5', 'home_net_rating_last10', 'away_net_rating_last10',
+                        'home_pace_rolling', 'away_pace_rolling', 'home_off_rating_rolling', 'away_off_rating_rolling',
+                        'home_def_rating_rolling', 'away_def_rating_rolling',
+                        'home_fg_pct', 'home_3p_pct', 'home_ft_pct', 'home_reb', 'home_ast', 'home_stl', 'home_blk', 'home_to',
+                        'away_fg_pct', 'away_3p_pct', 'away_ft_pct', 'away_reb', 'away_ast', 'away_stl', 'away_blk', 'away_to']
+        ml = ml.drop(columns=[c for c in cols_to_drop if c in ml.columns])
+        
+        ml = ml.merge(tt_home, on='game_id', how='left')
+        ml = ml.merge(tt_away, on='game_id', how='left')
+        
         print("   ✅ Rolling features aplicadas")
         print()
         
-        # 5) Rest days (diferencia entre fecha actual y último partido de cada equipo)
-        print("📅 Paso 5: Calculando días de descanso...")
+        # 5) Rest days and B2B
+        print("📅 Paso 5: Calculando días de descanso y B2B...")
         print("-" * 60)
         
-        games_dates = games[['game_id', 'fecha', 'home_team_norm', 'away_team_norm']].copy()
+        games_dates = games[['game_id', 'fecha', 'home_team', 'away_team']].copy()
         games_dates['fecha'] = pd.to_datetime(games_dates['fecha'])
         games_dates = games_dates.sort_values('fecha')
         
-        # Construir última fecha de partido por equipo
         last_dates = {}
         rest_home = []
         rest_away = []
         
         for _, row in tqdm(games_dates.iterrows(), total=len(games_dates), desc="   Calculando rest days"):
             gid = row['game_id']
-            home = row['home_team_norm']
-            away = row['away_team_norm']
+            home = row['home_team']
+            away = row['away_team']
             date = row['fecha']
             
             last_home = last_dates.get(home, None)
@@ -227,350 +419,217 @@ def build_features():
             last_dates[home] = date
             last_dates[away] = date
         
-        # Crear DataFrame temporal para merge
         rest_df = pd.DataFrame({
             'game_id': games_dates['game_id'].values,
             'home_rest_days': rest_home,
             'away_rest_days': rest_away
         })
         
-        # Convertir NaN a None para que se manejen correctamente
-        rest_df['home_rest_days'] = rest_df['home_rest_days'].where(pd.notna(rest_df['home_rest_days']), None)
-        rest_df['away_rest_days'] = rest_df['away_rest_days'].where(pd.notna(rest_df['away_rest_days']), None)
+        # B2B logic
+        rest_df['home_b2b'] = rest_df['home_rest_days'] == 1
+        rest_df['away_b2b'] = rest_df['away_rest_days'] == 1
         
-        # Asegurarse de que ml tenga game_id como columna (no índice)
-        if 'game_id' not in ml.columns:
-            ml = ml.reset_index()
-        
-        # Hacer merge asegurando que los tipos de game_id coincidan
-        rest_df['game_id'] = rest_df['game_id'].astype(ml['game_id'].dtype)
+        # Merge
+        ml = ml.drop(columns=['home_rest_days', 'away_rest_days', 'home_b2b', 'away_b2b'], errors='ignore')
         ml = ml.merge(rest_df, on='game_id', how='left')
         
-        # Si el merge no funcionó, intentar asignar directamente
-        if 'home_rest_days_x' in ml.columns or 'home_rest_days_y' in ml.columns:
-            # Hubo conflicto de nombres, usar los nuevos
-            if 'home_rest_days_y' in ml.columns:
-                ml['home_rest_days'] = ml['home_rest_days_y']
-                ml['away_rest_days'] = ml['away_rest_days_y']
-                ml = ml.drop(columns=['home_rest_days_x', 'away_rest_days_x', 'home_rest_days_y', 'away_rest_days_y'], errors='ignore')
-        
-        # Asegurarse de que las columnas existan
-        if 'home_rest_days' not in ml.columns:
-            ml['home_rest_days'] = None
-        if 'away_rest_days' not in ml.columns:
-            ml['away_rest_days'] = None
-        
-        # Verificar cuántos se aplicaron
-        rest_applied = ml['home_rest_days'].notna().sum()
-        print(f"   ✅ Días de descanso calculados ({rest_applied}/{len(ml)} aplicados)")
+        print(f"   ✅ Días de descanso y B2B calculados")
         print()
         
-        # 6) Injuries count por equipo en la fecha del partido
+        # 6) Contar lesiones
         print("🏥 Paso 6: Contando lesiones...")
         print("-" * 60)
         
         if not injuries.empty:
-            # Si hay columna de fecha, filtrar por fecha del partido
-            if 'injury_date' in injuries.columns or 'date' in injuries.columns:
-                date_col = 'injury_date' if 'injury_date' in injuries.columns else 'date'
-                injuries[date_col] = pd.to_datetime(injuries[date_col], errors='coerce')
-            
-            # Mapear lesiones por equipo
-            # Si hay columna 'team', usarla; si no, intentar otras
-            team_col = None
-            for col in ['team', 'team_name', 'team_id']:
-                if col in injuries.columns:
-                    team_col = col
-                    break
-            
+            team_col = next((c for c in ['team', 'team_name', 'team_id'] if c in injuries.columns), None)
             if team_col:
-                # Contar lesiones activas por equipo (simplificado: todas las lesiones)
-                inj_counts = injuries.groupby(team_col).size().to_dict()
+                # Mapping of nicknames (from injuries table) to full names (for matching ml_ready_games)
+                nickname_to_fullname = {
+                    '76ers': 'Philadelphia 76ers', 'Bucks': 'Milwaukee Bucks', 'Bulls': 'Chicago Bulls',
+                    'Cavaliers': 'Cleveland Cavaliers', 'Celtics': 'Boston Celtics', 'Clippers': 'LA Clippers',
+                    'Grizzlies': 'Memphis Grizzlies', 'Hawks': 'Atlanta Hawks', 'Heat': 'Miami Heat',
+                    'Hornets': 'Charlotte Hornets', 'Jazz': 'Utah Jazz', 'Kings': 'Sacramento Kings',
+                    'Knicks': 'New York Knicks', 'Lakers': 'Los Angeles Lakers', 'Magic': 'Orlando Magic',
+                    'Mavericks': 'Dallas Mavericks', 'Nets': 'Brooklyn Nets', 'Nuggets': 'Denver Nuggets',
+                    'Pacers': 'Indiana Pacers', 'Pelicans': 'New Orleans Pelicans', 'Pistons': 'Detroit Pistons',
+                    'Raptors': 'Toronto Raptors', 'Rockets': 'Houston Rockets', 'Spurs': 'San Antonio Spurs',
+                    'Suns': 'Phoenix Suns', 'Thunder': 'Oklahoma City Thunder', 'Timberwolves': 'Minnesota Timberwolves',
+                    'Trail Blazers': 'Portland Trail Blazers', 'Warriors': 'Golden State Warriors', 'Wizards': 'Washington Wizards'
+                }
+
+                # Apply mapping
+                injuries['mapped_team'] = injuries[team_col].map(nickname_to_fullname).fillna(injuries[team_col])
                 
-                ml['home_injuries_count'] = ml['home_team'].map(
-                    lambda t: inj_counts.get(t, 0) if pd.notna(t) else 0
-                )
-                ml['away_injuries_count'] = ml['away_team'].map(
-                    lambda t: inj_counts.get(t, 0) if pd.notna(t) else 0
-                )
-                print(f"   ✅ Lesiones contadas para {len(inj_counts)} equipos")
+                inj_counts = injuries.groupby('mapped_team').size().to_dict()
+                ml['home_injuries_count'] = ml['home_team'].map(lambda t: inj_counts.get(t, 0) if pd.notna(t) else 0)
+                ml['away_injuries_count'] = ml['away_team'].map(lambda t: inj_counts.get(t, 0) if pd.notna(t) else 0)
             else:
-                print("   ⚠️  No se encontró columna de equipo en injuries")
                 ml['home_injuries_count'] = 0
                 ml['away_injuries_count'] = 0
         else:
-            print("   ⚠️  Tabla injuries vacía o no disponible")
             ml['home_injuries_count'] = 0
             ml['away_injuries_count'] = 0
         print()
         
-        # 7) Implied probability desde tabla odds (JSON bookmakers)
-        print("💰 Paso 7: Calculando probabilidades implícitas desde odds...")
+        # 7) Calcular Diferenciales Finales
+        print("🧮 Paso 7: Calculando diferenciales finales...")
         print("-" * 60)
         
-        if not odds.empty and 'bookmakers' in odds.columns:
-            try:
-                import json
-                
-                def extract_implied_probs(row):
-                    """
-                    Extrae probabilidades implícitas desde bookmakers JSON
-                    """
-                    home_team = row.get('home_team')
-                    away_team = row.get('away_team')
-                    bookmakers = row.get('bookmakers')
-                    
-                    if not bookmakers:
-                        return None, None
-                    
-                    # Parsear JSON si es string
-                    if isinstance(bookmakers, str):
-                        try:
-                            bookmakers = json.loads(bookmakers)
-                        except:
-                            return None, None
-                    
-                    if not isinstance(bookmakers, list) or len(bookmakers) == 0:
-                        return None, None
-                    
-                    # Usar el primer bookmaker disponible
-                    # Buscar market "h2h" (head-to-head)
-                    home_odds_list = []
-                    away_odds_list = []
-                    
-                    for bookmaker in bookmakers:
-                        if 'markets' not in bookmaker:
-                            continue
-                        
-                        for market in bookmaker['markets']:
-                            if market.get('key') != 'h2h':
-                                continue
-                            
-                            if 'outcomes' not in market:
-                                continue
-                            
-                            for outcome in market['outcomes']:
-                                name = outcome.get('name', '')
-                                price = outcome.get('price')
-                                
-                                if price and price > 0:
-                                    # Intentar mapear por nombre de equipo (coincidencia flexible)
-                                    name_lower = name.lower()
-                                    if home_team:
-                                        home_lower = home_team.lower()
-                                        # Coincidencia exacta o parcial
-                                        if (home_lower in name_lower or 
-                                            name_lower in home_lower or
-                                            any(word in name_lower for word in home_lower.split() if len(word) > 3)):
-                                            home_odds_list.append(price)
-                                    if away_team:
-                                        away_lower = away_team.lower()
-                                        # Coincidencia exacta o parcial
-                                        if (away_lower in name_lower or 
-                                            name_lower in away_lower or
-                                            any(word in name_lower for word in away_lower.split() if len(word) > 3)):
-                                            away_odds_list.append(price)
-                    
-                    # Calcular promedio de odds si hay múltiples
-                    home_odds = np.mean(home_odds_list) if home_odds_list else None
-                    away_odds = np.mean(away_odds_list) if away_odds_list else None
-                    
-                    # Calcular probabilidad implícita
-                    home_prob = 1.0 / home_odds if home_odds and home_odds > 0 else None
-                    away_prob = 1.0 / away_odds if away_odds and away_odds > 0 else None
-                    
-                    return home_prob, away_prob
-                
-                # Mapear odds por home_team y away_team (ya que game_id puede no coincidir)
-                print("   Extrayendo probabilidades desde bookmakers JSON...")
-                odds_probs = {}
-                
-                for _, odds_row in tqdm(odds.iterrows(), total=len(odds), desc="   Procesando odds"):
-                    home_team = odds_row.get('home_team')
-                    away_team = odds_row.get('away_team')
-                    
-                    if home_team and away_team:
-                        home_prob, away_prob = extract_implied_probs(odds_row)
-                        key = (home_team, away_team)
-                        odds_probs[key] = (home_prob, away_prob)
-                
-                print(f"   ✅ {len(odds_probs)} partidos con odds procesados")
-                
-                # Aplicar a ml_ready_games con mapeo flexible
-                def get_implied_prob_for_game(game_row):
-                    home_team = game_row.get('home_team')
-                    away_team = game_row.get('away_team')
-                    
-                    # Buscar coincidencia exacta primero
-                    key = (home_team, away_team)
-                    if key in odds_probs:
-                        return pd.Series({
-                            'implied_prob_home': odds_probs[key][0],
-                            'implied_prob_away': odds_probs[key][1]
-                        })
-                    
-                    # Buscar coincidencia flexible (solo home o away)
-                    for (odds_home, odds_away), (home_prob, away_prob) in odds_probs.items():
-                        home_match = (home_team and (
-                            home_team.lower() in odds_home.lower() or 
-                            odds_home.lower() in home_team.lower() or
-                            any(word in odds_home.lower() for word in home_team.lower().split() if len(word) > 3)
-                        ))
-                        away_match = (away_team and (
-                            away_team.lower() in odds_away.lower() or 
-                            odds_away.lower() in away_team.lower() or
-                            any(word in odds_away.lower() for word in away_team.lower().split() if len(word) > 3)
-                        ))
-                        
-                        if home_match and away_match:
-                            return pd.Series({
-                                'implied_prob_home': home_prob,
-                                'implied_prob_away': away_prob
-                            })
-                    
-                    return pd.Series({
-                        'implied_prob_home': None,
-                        'implied_prob_away': None
-                    })
-                
-                prob_df = ml.apply(get_implied_prob_for_game, axis=1)
-                ml[['implied_prob_home', 'implied_prob_away']] = prob_df
-                
-                applied_count = ml['implied_prob_home'].notna().sum()
-                print(f"   ✅ Probabilidades aplicadas a {applied_count} partidos")
-                
-            except Exception as e:
-                print(f"   ⚠️  Error al calcular probabilidades: {e}")
-                import traceback
-                traceback.print_exc()
-                ml['implied_prob_home'] = None
-                ml['implied_prob_away'] = None
-        else:
-            print("   ⚠️  Tabla odds vacía o no tiene columna bookmakers")
-            ml['implied_prob_home'] = None
-            ml['implied_prob_away'] = None
+        ml['ppg_diff'] = ml['home_ppg_last5'] - ml['away_ppg_last5']
+        ml['net_rating_diff_rolling'] = ml['home_net_rating_last10'] - ml['away_net_rating_last10']
+        ml['pace_diff'] = ml['home_pace_rolling'] - ml['away_pace_rolling']
+        ml['off_rating_diff'] = ml['home_off_rating_rolling'] - ml['away_off_rating_rolling']
+        ml['def_rating_diff'] = ml['home_def_rating_rolling'] - ml['away_def_rating_rolling']
+        
+        # Base Stat Differentials
+        ml['reb_diff'] = ml['home_reb'] - ml['away_reb']
+        ml['ast_diff'] = ml['home_ast'] - ml['away_ast']
+        ml['tov_diff'] = ml['home_to'] - ml['away_to']
+        # Also could enable others if column exists in table (e.g. stl_diff) but sticking to schema for now
+        ml['rest_days_diff'] = (ml['home_rest_days'].fillna(3) - ml['away_rest_days'].fillna(3)).astype(int)
+        ml['injuries_diff'] = ml['home_injuries_count'] - ml['away_injuries_count']
+        
+        print("   ✅ Diferenciales calculados")
         print()
         
-        # 8) Escribir de vuelta a la BD: actualizar filas en ml.ml_ready_games
-        print("💾 Paso 8: Actualizando ml_ready_games en la base de datos...")
+        # 8) Odds Probs (si no están ya mapeadas)
+        # Probabilidades implícitas si existen
+        # (Omitimos el mapeo JSON manual si ya está en espn.game_odds)
+        
+        # Escribir a BD
+        print("💾 Paso 8: Actualizando ml_ready_games en Neon...")
         print("-" * 60)
         
-        # Asegurarse de que todas las columnas necesarias existan
-        required_cols = [
-            'home_ppg_last5', 'away_ppg_last5', 
+        # Seleccionar columnas finales
+        # Seleccionar columnas finales
+        final_cols = [
+            'game_id', 'home_ppg_last5', 'away_ppg_last5', 
             'home_net_rating_last10', 'away_net_rating_last10',
             'home_rest_days', 'away_rest_days',
             'home_injuries_count', 'away_injuries_count',
-            'implied_prob_home', 'implied_prob_away'
+            'home_b2b', 'away_b2b',
+            'home_pace_rolling', 'away_pace_rolling',
+            'home_off_rating_rolling', 'away_off_rating_rolling',
+            'home_def_rating_rolling', 'away_def_rating_rolling',
+            'home_fg_pct', 'away_fg_pct', 'home_3p_pct', 'away_3p_pct',
+            'home_ft_pct', 'away_ft_pct', 'home_reb', 'away_reb',
+            'home_ast', 'away_ast', 'home_stl', 'away_stl',
+            'home_blk', 'away_blk', 'home_to', 'away_to',
+            'home_pts', 'away_pts', 'point_diff',
+            'ppg_diff', 'net_rating_diff_rolling', 'pace_diff',
+            'off_rating_diff', 'def_rating_diff', 'rest_days_diff', 'injuries_diff',
+            'reb_diff', 'ast_diff', 'tov_diff'
         ]
         
-        for col in required_cols:
-            if col not in ml.columns:
-                ml[col] = None
-                print(f"   ⚠️  Columna {col} no encontrada, se agregará como NULL")
+        # Ensure target columns are populated from the dataframe
+        # Note: 'ml' dataframe comes from ml_ready_games. We need to ensure we have the target values.
+        # 'tt_home' and 'tt_away' have 'pts' and 'tov' (boxscore stats for THIS game).
+        # We need to map them to home_pts, away_pts, home_to, away_to.
         
-        # Seleccionar solo las columnas que necesitamos actualizar + game_id
-        update_cols = ['game_id'] + required_cols
-        ml_update = ml[update_cols].copy()
+        # Re-merge target stats (pts, tov, net_rating) from tt to ml to ensure we have the actual game stats
+        target_home = tt[tt['is_home'] == True][['game_id', 'pts', 'tov', 'net_rating']].rename(columns={'pts': 'home_pts_target', 'tov': 'home_to_target', 'net_rating': 'net_rating_diff_target'})
+        target_away = tt[tt['is_home'] == False][['game_id', 'pts', 'tov']].rename(columns={'pts': 'away_pts_target', 'tov': 'away_to_target'})
         
-        # Asegurar tipos de datos correctos
-        # double precision columns
-        float_cols = ['home_ppg_last5', 'away_ppg_last5', 
-                     'home_net_rating_last10', 'away_net_rating_last10',
-                     'implied_prob_home', 'implied_prob_away']
-        for col in float_cols:
-            if col in ml_update.columns:
-                ml_update[col] = pd.to_numeric(ml_update[col], errors='coerce').astype('float64')
+        ml = ml.merge(target_home, on='game_id', how='left')
+        ml = ml.merge(target_away, on='game_id', how='left')
         
-        # integer columns
-        int_cols = ['home_rest_days', 'away_rest_days',
-                   'home_injuries_count', 'away_injuries_count']
-        for col in int_cols:
-            if col in ml_update.columns:
-                ml_update[col] = pd.to_numeric(ml_update[col], errors='coerce').astype('Int64')  # Nullable integer
+        # Update target columns
+        ml['home_pts'] = ml['home_pts_target']
+        ml['away_pts'] = ml['away_pts_target']
+        ml['home_to'] = ml['home_to_target']
+        ml['away_to'] = ml['away_to_target']
+        ml['point_diff'] = ml['home_pts'] - ml['away_pts']
+        # net_rating_diff calculation from home team perspective (it's already diff in build_features logic)
+        ml['net_rating_diff'] = ml['net_rating_diff_target']
         
-        # Crear tabla temporal
+        # Drop temp columns
+        ml = ml.drop(columns=['home_pts_target', 'away_pts_target', 'home_to_target', 'away_to_target', 'net_rating_diff_target'])
+
+        # Ensure all columns exist
+        for c in final_cols:
+            if c not in ml.columns:
+                print(f"Adding missing column {c} with nulls")
+                ml[c] = None
+        
+        # Add net_rating_diff to final_cols explicitly (it was missing from previous list or just passed through)
+        if 'net_rating_diff' not in final_cols:
+            final_cols.append('net_rating_diff')
+
+        ml_final = ml[final_cols].copy()
+        
+        # Crear tabla temporal y actualizar
         temp_table = f"{ml_schema}.ml_ready_games_temp"
-        ml_update.to_sql(
-            'ml_ready_games_temp',
-            engine,
-            schema=ml_schema,
-            if_exists='replace',
-            index=False
-        )
-        print("   ✅ Tabla temporal creada")
+        ml_final.to_sql('ml_ready_games_temp', engine, schema=ml_schema, if_exists='replace', index=False)
         
-        # Verificar columnas en tabla temporal
-        with engine.connect() as conn:
-            conn.execute(text(f"SET search_path TO {ml_schema}, public"))
-            conn.commit()
-            check_cols = conn.execute(text("""
-                SELECT column_name 
-                FROM information_schema.columns 
-                WHERE table_schema = 'ml' 
-                AND table_name = 'ml_ready_games_temp'
-                ORDER BY ordinal_position
-            """))
-            temp_cols = [row[0] for row in check_cols.fetchall()]
-            print(f"   Columnas en tabla temporal: {', '.join(temp_cols[:10])}...")
-        
-        # Actualizar tabla principal con casts explícitos
         with engine.begin() as conn:
             update_query = text(f"""
                 UPDATE {ml_schema}.ml_ready_games m
                 SET 
-                    home_ppg_last5 = t.home_ppg_last5::double precision,
-                    away_ppg_last5 = t.away_ppg_last5::double precision,
-                    home_net_rating_last10 = t.home_net_rating_last10::double precision,
-                    away_net_rating_last10 = t.away_net_rating_last10::double precision,
-                    home_rest_days = t.home_rest_days::integer,
-                    away_rest_days = t.away_rest_days::integer,
-                    home_injuries_count = t.home_injuries_count::integer,
-                    away_injuries_count = t.away_injuries_count::integer,
-                    implied_prob_home = t.implied_prob_home::double precision,
-                    implied_prob_away = t.implied_prob_away::double precision
+                    home_ppg_last5 = t.home_ppg_last5,
+                    away_ppg_last5 = t.away_ppg_last5,
+                    home_net_rating_last10 = t.home_net_rating_last10,
+                    away_net_rating_last10 = t.away_net_rating_last10,
+                    
+                    home_rest_days = t.home_rest_days,
+                    away_rest_days = t.away_rest_days,
+                    home_injuries_count = t.home_injuries_count,
+                    away_injuries_count = t.away_injuries_count,
+                    home_b2b = t.home_b2b,
+                    away_b2b = t.away_b2b,
+                    
+                    home_pace_rolling = t.home_pace_rolling,
+                    away_pace_rolling = t.away_pace_rolling,
+                    home_off_rating_rolling = t.home_off_rating_rolling,
+                    away_off_rating_rolling = t.away_off_rating_rolling,
+                    home_def_rating_rolling = t.home_def_rating_rolling,
+                    away_def_rating_rolling = t.away_def_rating_rolling,
+                    
+                    home_fg_pct = t.home_fg_pct,
+                    away_fg_pct = t.away_fg_pct,
+                    home_3p_pct = t.home_3p_pct,
+                    away_3p_pct = t.away_3p_pct,
+                    home_ft_pct = t.home_ft_pct,
+                    away_ft_pct = t.away_ft_pct,
+                    home_reb = t.home_reb,
+                    away_reb = t.away_reb,
+                    home_ast = t.home_ast,
+                    away_ast = t.away_ast,
+                    home_stl = t.home_stl,
+                    away_stl = t.away_stl,
+                    home_blk = t.home_blk,
+                    away_blk = t.away_blk,
+                    home_to = t.home_to,
+                    away_to = t.away_to,
+                    
+                    home_pts = t.home_pts,
+                    away_pts = t.away_pts,
+                    point_diff = t.point_diff,
+                    net_rating_diff = t.net_rating_diff,
+
+                    ppg_diff = t.ppg_diff,
+                    net_rating_diff_rolling = t.net_rating_diff_rolling,
+                    pace_diff = t.pace_diff,
+                    off_rating_diff = t.off_rating_diff,
+                    def_rating_diff = t.def_rating_diff,
+                    rest_days_diff = t.rest_days_diff,
+                    injuries_diff = t.injuries_diff,
+                    reb_diff = t.reb_diff,
+                    ast_diff = t.ast_diff,
+                    tov_diff = t.tov_diff
                 FROM {ml_schema}.ml_ready_games_temp t
                 WHERE m.game_id = t.game_id
             """)
             conn.execute(update_query)
-            print("   ✅ Tabla ml_ready_games actualizada")
-            
-            # Eliminar tabla temporal
             conn.execute(text(f"DROP TABLE IF EXISTS {ml_schema}.ml_ready_games_temp"))
-            print("   ✅ Tabla temporal eliminada")
         
-        print()
-        print("=" * 60)
-        print("✅ Features construidas y actualizadas exitosamente")
-        print("=" * 60)
-        print()
+        print("✅ Features construidas y tabla ml_ready_games actualizada.")
+
+        # Delete unused table
+        print("🗑️ Eliminando tabla espn.team_stats_game (no utilizada)...")
+        with engine.begin() as conn:
+            conn.execute(text(f"DROP TABLE IF EXISTS {espn_schema}.team_stats_game"))
+        print("✅ Tabla espn.team_stats_game eliminada.")
         
-        # Verificación
-        print("📊 Verificación:")
-        print("-" * 60)
-        with engine.connect() as conn:
-            conn.execute(text(f"SET search_path TO {ml_schema}, public"))
-            conn.commit()
-            
-            # Contar NULLs
-            result = conn.execute(text("""
-                SELECT 
-                    COUNT(*) as total,
-                    COUNT(home_ppg_last5) as with_ppg,
-                    COUNT(home_rest_days) as with_rest,
-                    COUNT(home_injuries_count) as with_injuries,
-                    COUNT(implied_prob_home) as with_odds
-                FROM ml.ml_ready_games
-            """))
-            row = result.fetchone()
-            
-            print(f"   Total de registros: {row[0]}")
-            print(f"   Con PPG last 5: {row[1]} ({100*row[1]/row[0]:.1f}%)")
-            print(f"   Con rest days: {row[2]} ({100*row[2]/row[0]:.1f}%)")
-            print(f"   Con injuries count: {row[3]} ({100*row[3]/row[0]:.1f}%)")
-            print(f"   Con implied prob: {row[4]} ({100*row[4]/row[0]:.1f}%)")
-            print()
-            
     except Exception as e:
         print(f"❌ Error: {e}")
         import traceback
@@ -580,4 +639,3 @@ def build_features():
 
 if __name__ == "__main__":
     build_features()
-

@@ -254,6 +254,28 @@ async def place_bet(
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Error placing bet: {str(e)}")
 
+@router.get("/stats/summary")
+async def get_betting_stats(
+    current_user: UserAccount = Depends(get_current_user),
+    db: Session = Depends(get_sys_db),
+    espn_db: Session = Depends(get_espn_db)
+):
+    """Get user's betting statistics"""
+    try:
+        bet_service = BetService(db, espn_db)
+        stats = await bet_service.get_user_betting_stats(current_user.id)
+        return stats
+    except Exception as e:
+        import traceback
+        error_detail = str(e)
+        traceback_str = traceback.format_exc()
+        print(f"Error in get_betting_stats: {error_detail}")
+        print(f"Traceback: {traceback_str}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error fetching betting stats: {error_detail}"
+        )
+
 @router.get("/{bet_id}", response_model=BetResponse)
 async def get_bet(
     bet_id: int,
@@ -311,25 +333,3 @@ async def cancel_bet(
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error cancelling bet: {str(e)}")
-
-@router.get("/stats/summary")
-async def get_betting_stats(
-    current_user: UserAccount = Depends(get_current_user),
-    db: Session = Depends(get_sys_db),
-    espn_db: Session = Depends(get_espn_db)
-):
-    """Get user's betting statistics"""
-    try:
-        bet_service = BetService(db, espn_db)
-        stats = await bet_service.get_user_betting_stats(current_user.id)
-        return stats
-    except Exception as e:
-        import traceback
-        error_detail = str(e)
-        traceback_str = traceback.format_exc()
-        print(f"Error in get_betting_stats: {error_detail}")
-        print(f"Traceback: {traceback_str}")
-        raise HTTPException(
-            status_code=500,
-            detail=f"Error fetching betting stats: {error_detail}"
-        )

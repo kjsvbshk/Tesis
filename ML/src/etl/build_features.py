@@ -336,7 +336,25 @@ def build_features():
                 lambda x: x.shift(1).rolling(window=5, min_periods=1).sum()
             )
             tt['def_rtg_last5'] = (tt['opp_pts_last5'] / tt['poss_last5'] * 100).where(tt['poss_last5'] > 0, None)
-            
+
+            # Rolling reb / ast / tov — shift(1) garantiza que solo se usan partidos ANTERIORES
+            # (home_reb/ast/tov sin rolling son del partido actual → leakage)
+            tt['reb_last5'] = tt.groupby('team')['reb'].transform(
+                lambda x: x.shift(1).rolling(window=5, min_periods=1).mean()
+            )
+            tt['ast_last5'] = tt.groupby('team')['ast'].transform(
+                lambda x: x.shift(1).rolling(window=5, min_periods=1).mean()
+            )
+            tt['tov_last5'] = tt.groupby('team')['tov'].transform(
+                lambda x: x.shift(1).rolling(window=5, min_periods=1).mean()
+            )
+
+            # Win rate rolling (tasa de victorias en últimos 10 partidos)
+            tt['win'] = (tt['pts'] > tt['opp_pts']).astype(int)
+            tt['win_rate_last10'] = tt.groupby('team')['win'].transform(
+                lambda x: x.shift(1).rolling(window=10, min_periods=1).mean()
+            )
+
             return tt
         
         tt = rolling_stats(games, team_game_stats)
@@ -363,10 +381,15 @@ def build_features():
             'off_rtg_last5': 'home_off_rating_rolling',
             'def_rtg_last5': 'home_def_rating_rolling',
             'fg_pct': 'home_fg_pct', 'fg3_pct': 'home_3p_pct', 'ft_pct': 'home_ft_pct',
-            'reb': 'home_reb', 'ast': 'home_ast', 'stl': 'home_stl', 'blk': 'home_blk', 'tov': 'home_to'
+            'reb': 'home_reb', 'ast': 'home_ast', 'stl': 'home_stl', 'blk': 'home_blk', 'tov': 'home_to',
+            'reb_last5': 'home_reb_rolling',
+            'ast_last5': 'home_ast_rolling',
+            'tov_last5': 'home_tov_rolling',
+            'win_rate_last10': 'home_win_rate_last10',
         })[['game_id', 'home_ppg_last5', 'home_net_rating_last10', 'home_pace_rolling', 'home_off_rating_rolling', 'home_def_rating_rolling',
-            'home_fg_pct', 'home_3p_pct', 'home_ft_pct', 'home_reb', 'home_ast', 'home_stl', 'home_blk', 'home_to']]
-        
+            'home_fg_pct', 'home_3p_pct', 'home_ft_pct', 'home_reb', 'home_ast', 'home_stl', 'home_blk', 'home_to',
+            'home_reb_rolling', 'home_ast_rolling', 'home_tov_rolling', 'home_win_rate_last10']]
+
         tt_away = tt[tt['is_home'] == False].rename(columns={
             'pts_last5': 'away_ppg_last5',
             'net_last10': 'away_net_rating_last10',
@@ -374,16 +397,23 @@ def build_features():
             'off_rtg_last5': 'away_off_rating_rolling',
             'def_rtg_last5': 'away_def_rating_rolling',
             'fg_pct': 'away_fg_pct', 'fg3_pct': 'away_3p_pct', 'ft_pct': 'away_ft_pct',
-            'reb': 'away_reb', 'ast': 'away_ast', 'stl': 'away_stl', 'blk': 'away_blk', 'tov': 'away_to'
+            'reb': 'away_reb', 'ast': 'away_ast', 'stl': 'away_stl', 'blk': 'away_blk', 'tov': 'away_to',
+            'reb_last5': 'away_reb_rolling',
+            'ast_last5': 'away_ast_rolling',
+            'tov_last5': 'away_tov_rolling',
+            'win_rate_last10': 'away_win_rate_last10',
         })[['game_id', 'away_ppg_last5', 'away_net_rating_last10', 'away_pace_rolling', 'away_off_rating_rolling', 'away_def_rating_rolling',
-            'away_fg_pct', 'away_3p_pct', 'away_ft_pct', 'away_reb', 'away_ast', 'away_stl', 'away_blk', 'away_to']]
-        
+            'away_fg_pct', 'away_3p_pct', 'away_ft_pct', 'away_reb', 'away_ast', 'away_stl', 'away_blk', 'away_to',
+            'away_reb_rolling', 'away_ast_rolling', 'away_tov_rolling', 'away_win_rate_last10']]
+
         # Limpiar ml de columnas que vamos a sobreescribir para evitar duplicados en el merge
         cols_to_drop = ['home_ppg_last5', 'away_ppg_last5', 'home_net_rating_last10', 'away_net_rating_last10',
                         'home_pace_rolling', 'away_pace_rolling', 'home_off_rating_rolling', 'away_off_rating_rolling',
                         'home_def_rating_rolling', 'away_def_rating_rolling',
                         'home_fg_pct', 'home_3p_pct', 'home_ft_pct', 'home_reb', 'home_ast', 'home_stl', 'home_blk', 'home_to',
-                        'away_fg_pct', 'away_3p_pct', 'away_ft_pct', 'away_reb', 'away_ast', 'away_stl', 'away_blk', 'away_to']
+                        'away_fg_pct', 'away_3p_pct', 'away_ft_pct', 'away_reb', 'away_ast', 'away_stl', 'away_blk', 'away_to',
+                        'home_reb_rolling', 'home_ast_rolling', 'home_tov_rolling', 'home_win_rate_last10',
+                        'away_reb_rolling', 'away_ast_rolling', 'away_tov_rolling', 'away_win_rate_last10']
         ml = ml.drop(columns=[c for c in cols_to_drop if c in ml.columns])
         
         ml = ml.merge(tt_home, on='game_id', how='left')
@@ -481,11 +511,17 @@ def build_features():
         ml['off_rating_diff'] = ml['home_off_rating_rolling'] - ml['away_off_rating_rolling']
         ml['def_rating_diff'] = ml['home_def_rating_rolling'] - ml['away_def_rating_rolling']
         
-        # Base Stat Differentials
+        # Base Stat Differentials (current-game stats — kept for reference/XGBoost)
         ml['reb_diff'] = ml['home_reb'] - ml['away_reb']
         ml['ast_diff'] = ml['home_ast'] - ml['away_ast']
         ml['tov_diff'] = ml['home_to'] - ml['away_to']
-        # Also could enable others if column exists in table (e.g. stl_diff) but sticking to schema for now
+
+        # Rolling Stat Differentials — usa promedios de partidos ANTERIORES (sin leakage)
+        ml['reb_rolling_diff'] = ml['home_reb_rolling'] - ml['away_reb_rolling']
+        ml['ast_rolling_diff'] = ml['home_ast_rolling'] - ml['away_ast_rolling']
+        ml['tov_rolling_diff'] = ml['home_tov_rolling'] - ml['away_tov_rolling']
+        ml['win_rate_diff'] = ml['home_win_rate_last10'] - ml['away_win_rate_last10']
+
         ml['rest_days_diff'] = (ml['home_rest_days'].fillna(3) - ml['away_rest_days'].fillna(3)).astype(int)
         ml['injuries_diff'] = ml['home_injuries_count'] - ml['away_injuries_count']
         
@@ -501,9 +537,8 @@ def build_features():
         print("-" * 60)
         
         # Seleccionar columnas finales
-        # Seleccionar columnas finales
         final_cols = [
-            'game_id', 'home_ppg_last5', 'away_ppg_last5', 
+            'game_id', 'home_ppg_last5', 'away_ppg_last5',
             'home_net_rating_last10', 'away_net_rating_last10',
             'home_rest_days', 'away_rest_days',
             'home_injuries_count', 'away_injuries_count',
@@ -512,13 +547,24 @@ def build_features():
             'home_off_rating_rolling', 'away_off_rating_rolling',
             'home_def_rating_rolling', 'away_def_rating_rolling',
             'home_fg_pct', 'away_fg_pct', 'home_3p_pct', 'away_3p_pct',
-            'home_ft_pct', 'away_ft_pct', 'home_reb', 'away_reb',
-            'home_ast', 'away_ast', 'home_stl', 'away_stl',
-            'home_blk', 'away_blk', 'home_to', 'away_to',
+            'home_ft_pct', 'away_ft_pct',
+            # Current-game boxscore stats (no usar como features de clasificación)
+            'home_reb', 'away_reb', 'home_ast', 'away_ast',
+            'home_stl', 'away_stl', 'home_blk', 'away_blk', 'home_to', 'away_to',
+            # Rolling stats por equipo (shift(1) → sin leakage)
+            'home_reb_rolling', 'away_reb_rolling',
+            'home_ast_rolling', 'away_ast_rolling',
+            'home_tov_rolling', 'away_tov_rolling',
+            'home_win_rate_last10', 'away_win_rate_last10',
+            # Scores y diferencial
             'home_pts', 'away_pts', 'point_diff',
+            # Diferenciales para entrenamiento
             'ppg_diff', 'net_rating_diff_rolling', 'pace_diff',
             'off_rating_diff', 'def_rating_diff', 'rest_days_diff', 'injuries_diff',
-            'reb_diff', 'ast_diff', 'tov_diff'
+            # Diferenciales de boxscore actuales (tienen leakage, no usar en clasificación)
+            'reb_diff', 'ast_diff', 'tov_diff',
+            # Diferenciales rolling (sin leakage — usar estos en entrenamiento)
+            'reb_rolling_diff', 'ast_rolling_diff', 'tov_rolling_diff', 'win_rate_diff',
         ]
         
         # Ensure target columns are populated from the dataframe
@@ -557,33 +603,56 @@ def build_features():
 
         ml_final = ml[final_cols].copy()
         
+        # Agregar columnas nuevas a la tabla si no existen (rolling sin leakage + win_rate)
+        new_columns_ddl = [
+            ("home_reb_rolling",   "FLOAT"),
+            ("away_reb_rolling",   "FLOAT"),
+            ("home_ast_rolling",   "FLOAT"),
+            ("away_ast_rolling",   "FLOAT"),
+            ("home_tov_rolling",   "FLOAT"),
+            ("away_tov_rolling",   "FLOAT"),
+            ("home_win_rate_last10", "FLOAT"),
+            ("away_win_rate_last10", "FLOAT"),
+            ("reb_rolling_diff",   "FLOAT"),
+            ("ast_rolling_diff",   "FLOAT"),
+            ("tov_rolling_diff",   "FLOAT"),
+            ("win_rate_diff",      "FLOAT"),
+        ]
+        with engine.begin() as conn:
+            for col_name, col_type in new_columns_ddl:
+                try:
+                    conn.execute(text(
+                        f"ALTER TABLE {ml_schema}.ml_ready_games ADD COLUMN IF NOT EXISTS {col_name} {col_type}"
+                    ))
+                except Exception:
+                    pass  # columna ya existe
+
         # Crear tabla temporal y actualizar
-        temp_table = f"{ml_schema}.ml_ready_games_temp"
         ml_final.to_sql('ml_ready_games_temp', engine, schema=ml_schema, if_exists='replace', index=False)
-        
+
         with engine.begin() as conn:
             update_query = text(f"""
                 UPDATE {ml_schema}.ml_ready_games m
-                SET 
+                SET
                     home_ppg_last5 = t.home_ppg_last5,
                     away_ppg_last5 = t.away_ppg_last5,
                     home_net_rating_last10 = t.home_net_rating_last10,
                     away_net_rating_last10 = t.away_net_rating_last10,
-                    
+
                     home_rest_days = t.home_rest_days,
                     away_rest_days = t.away_rest_days,
                     home_injuries_count = t.home_injuries_count,
                     away_injuries_count = t.away_injuries_count,
                     home_b2b = t.home_b2b,
                     away_b2b = t.away_b2b,
-                    
+
                     home_pace_rolling = t.home_pace_rolling,
                     away_pace_rolling = t.away_pace_rolling,
                     home_off_rating_rolling = t.home_off_rating_rolling,
                     away_off_rating_rolling = t.away_off_rating_rolling,
                     home_def_rating_rolling = t.home_def_rating_rolling,
                     away_def_rating_rolling = t.away_def_rating_rolling,
-                    
+
                     home_fg_pct = t.home_fg_pct,
                     away_fg_pct = t.away_fg_pct,
                     home_3p_pct = t.home_3p_pct,
@@ -600,7 +669,16 @@ def build_features():
                     away_blk = t.away_blk,
                     home_to = t.home_to,
                     away_to = t.away_to,
-                    
+
+                    home_reb_rolling = t.home_reb_rolling,
+                    away_reb_rolling = t.away_reb_rolling,
+                    home_ast_rolling = t.home_ast_rolling,
+                    away_ast_rolling = t.away_ast_rolling,
+                    home_tov_rolling = t.home_tov_rolling,
+                    away_tov_rolling = t.away_tov_rolling,
+                    home_win_rate_last10 = t.home_win_rate_last10,
+                    away_win_rate_last10 = t.away_win_rate_last10,
+
                     home_pts = t.home_pts,
                     away_pts = t.away_pts,
                     point_diff = t.point_diff,
@@ -615,7 +693,11 @@ def build_features():
                     injuries_diff = t.injuries_diff,
                     reb_diff = t.reb_diff,
                     ast_diff = t.ast_diff,
-                    tov_diff = t.tov_diff
+                    tov_diff = t.tov_diff,
+                    reb_rolling_diff = t.reb_rolling_diff,
+                    ast_rolling_diff = t.ast_rolling_diff,
+                    tov_rolling_diff = t.tov_rolling_diff,
+                    win_rate_diff = t.win_rate_diff
                 FROM {ml_schema}.ml_ready_games_temp t
                 WHERE m.game_id = t.game_id
             """)

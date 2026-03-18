@@ -29,49 +29,62 @@ class SessionService:
         location: Optional[str] = None
     ) -> UserSession:
         """
-        Create a session record.
+        Crea o reutiliza una sesión para el dispositivo del usuario.
 
-        Current behavior: if the same user logs in again from the same browser/device
-        (same `user_agent` + `device_info`) and there is an active session, we update
-        that existing row instead of creating a new one. This avoids duplicates in
-        \"Sesiones Activas\" for the same device.
+        Estrategia de reutilización:
+        - Se busca una sesión existente del mismo usuario y tipo de dispositivo
+          (device_info: "Chrome", "Firefox", etc.) que no haya sido revocada
+          explícitamente, sin importar si está expirada o activa.
+        - Si se encuentra, se actualiza con el nuevo token y se reactiva.
+        - Si no se encuentra, se crea una fila nueva.
+
+        Por qué NO se usa user_agent exacto para el match:
+          El string de User-Agent incluye la versión del navegador
+          (ej: Chrome/131.0.0.0). Con cada actualización del navegador ese
+          string cambia y el match falla, generando una fila nueva por cada
+          actualización aunque sea el mismo dispositivo.
+
+        Por qué NO se usa SKIP LOCKED:
+          with_for_update(skip_locked=True) devuelve None si la fila está
+          bloqueada por una transacción concurrente, lo que fuerza la creación
+          de una sesión duplicada innecesariamente.
+
+        Sesiones revocadas explícitamente (revoked_at IS NOT NULL) nunca se
+        reutilizan para preservar la intención de seguridad del usuario.
         """
         token_hash = self.hash_token(token)
-        
-        # Calculate expiration time
+
         now_utc = datetime.now(timezone.utc)
         expires_at = now_utc + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
 
-        # Reuse existing active session for same device (best-effort).
-        # NOTE:
-        # - IP is NOT reliable (can change), so we key primarily by user_agent/device_info.
-        # - If User-Agent is missing, we DO NOT reuse sessions because multiple different
-        #   clients could share device_info="Unknown" and user_agent=None, causing collisions.
-        # - Bug 1 fix: Use row-level locking with SKIP LOCKED to prevent race conditions.
-        #   If a session is locked by another concurrent request, skip it and create a new one.
-        #   This ensures both requests get valid tokens instead of one overwriting the other.
-        # - Bug 2 fix: Only reuse sessions that are not expired (expires_at > now_utc).
+        # Determinar el criterio de búsqueda según la información disponible.
+        # Para navegadores conocidos usamos device_info (estable entre versiones).
+        # Para navegadores desconocidos usamos user_agent exacto como fallback.
         existing = None
-        if user_agent:
-            q = self.db.query(UserSession).filter(
+        known_browsers = {"Chrome", "Firefox", "Safari", "Edge", "Opera"}
+
+        if device_info and device_info in known_browsers:
+            existing = self.db.query(UserSession).filter(
                 UserSession.user_account_id == user_id,
-                UserSession.is_active == True,
-                UserSession.expires_at > now_utc,  # Bug 2: Don't reuse expired sessions
-            )
-            # Require an exact match on both user_agent and device_info.
-            q = q.filter(UserSession.user_agent == user_agent)
-            q = q.filter(UserSession.device_info == device_info)
-            # Bug 1: Lock with SKIP LOCKED - if row is locked by concurrent request,
-            # skip it (returns None) and we'll create a new session instead.
-            # This prevents the second request from overwriting the first request's token.
-            existing = q.order_by(UserSession.created_at.desc()).with_for_update(skip_locked=True).first()
+                UserSession.device_info == device_info,
+                UserSession.revoked_at == None,
+            ).order_by(UserSession.created_at.desc()).first()
+        elif user_agent:
+            existing = self.db.query(UserSession).filter(
+                UserSession.user_account_id == user_id,
+                UserSession.user_agent == user_agent,
+                UserSession.revoked_at == None,
+            ).order_by(UserSession.created_at.desc()).first()
 
         if existing:
             existing.token_hash = token_hash
             existing.ip_address = ip_address
+            existing.user_agent = user_agent  # actualizar por si cambió la versión
             existing.location = location
+            existing.is_active = True         # reactivar si estaba expirada
             existing.expires_at = expires_at
             existing.last_activity = now_utc
+            existing.revoked_at = None
             self.db.commit()
             self.db.refresh(existing)
             return existing
@@ -104,13 +117,18 @@ class SessionService:
     
     async def get_user_sessions(self, user_id: int, include_revoked: bool = False) -> List[UserSession]:
         """Get all sessions for a user"""
+        now_utc = datetime.now(timezone.utc)
         query = self.db.query(UserSession).filter(
             UserSession.user_account_id == user_id
         )
-        
+
         if not include_revoked:
-            query = query.filter(UserSession.is_active == True)
-        
+            # Solo sesiones activas y no expiradas
+            query = query.filter(
+                UserSession.is_active == True,
+                UserSession.expires_at > now_utc,
+            )
+
         return query.order_by(UserSession.created_at.desc()).all()
     
     async def revoke_session(self, session_id: int, user_id: int) -> bool:

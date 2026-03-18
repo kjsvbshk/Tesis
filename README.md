@@ -205,4 +205,17 @@ Base BD:  PostgreSQL (Neon) — schemas: espn · ml · app/sys
 
 ---
 
-**Tesis — Sistemas de Información / Ingeniería** · 2025-2026
+## Autores
+
+**Irving Rios Ramirez** · **Jhon Edison Montaño Parra**
+Trabajo de Grado — Universidad Manuela Beltrán (UMB), Bogotá, Colombia · 2026
+
+---
+
+## Licencia
+
+El código fuente de este proyecto está licenciado bajo la **MIT License** — ver [`LICENSE`](./LICENSE).
+La documentación está licenciada bajo **CC BY 4.0** — ver [`LICENSE-CC`](./LICENSE-CC).
+Los avisos de atribución a terceros se encuentran en [`NOTICE.md`](./NOTICE.md).
+
+> Trabajo desarrollado con fines exclusivamente académicos. No involucra dinero real ni fomenta el juego.

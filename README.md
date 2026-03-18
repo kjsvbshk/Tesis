@@ -1,4 +1,4 @@
-# Sistema de Predicciones y Apuestas Virtuales NBA
+# Sistema de Predicciones y Apuestas - HAW
 
 Proyecto de tesis que implementa un sistema completo de predicciones deportivas con machine learning aplicado a la NBA. Permite a usuarios registrados visualizar predicciones generadas por modelos ML y realizar apuestas virtuales sobre resultados de partidos.
 

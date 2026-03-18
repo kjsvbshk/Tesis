@@ -1,313 +1,361 @@
-# Sistema de Scraping - Guía de Comandos
+# Scrapping — Sistema de Extracción de Datos
 
-Este directorio contiene los sistemas de extracción de datos para diferentes ligas deportivas. Actualmente incluye sistemas para **NBA** y **Premier League**.
+Módulo de extracción, transformación y carga (ETL) de datos deportivos desde ESPN hacia PostgreSQL (Neon). Es el primer eslabón del pipeline de datos del sistema.
+
+---
+
+## Posición en el Sistema
+
+```
+ESPN (web) → Scrapers → data/raw/ → ETL → data/processed/ → load_data.py → Neon (schema espn)
+                                                                                    ↓
+                                                                             ML module
+                                                                             Backend API
+```
+
+---
 
 ## Estructura del Proyecto
 
 ```
 Scrapping/
-├── nba/                    # Sistema de scraping para NBA
-│   ├── espn/              # Scrapers de ESPN
-│   ├── etl/               # Procesamiento de datos
-│   ├── data/              # Datos extraídos
-│   └── ...
+├── README.md
 │
-└── premier_league/         # Sistema de scraping para Premier League (en desarrollo)
+├── nba/                                 # Sistema NBA (activo)
+│   ├── main.py                          # Scheduler APScheduler (cron diario 3:00 AM)
+│   ├── load_data.py                     # Carga inteligente a PostgreSQL
+│   ├── update_injuries_odds.py          # Actualización diaria de lesiones y cuotas
+│   ├── config.yaml                      # Credenciales de base de datos
+│   ├── requirements.txt
+│   │
+│   ├── espn/                            # Scrapers por tipo de dato
+│   │   ├── espn_scraper.py              # Boxscores de partidos individuales
+│   │   ├── espn_schedule_scraper.py     # Calendario de partidos
+│   │   ├── player_stats_scraper.py      # Estadísticas de jugadores (Selenium)
+│   │   ├── team_stats_scraper.py        # Estadísticas de equipos (Selenium)
+│   │   └── injuries_scraper.py          # Reportes de lesiones
+│   │
+│   ├── etl/
+│   │   └── transform_consolidate.py     # Consolida todos los datos en un CSV único
+│   │
+│   ├── utils/
+│   │   └── db.py                        # Utilidades de conexión a PostgreSQL
+│   │
+│   ├── data/
+│   │   ├── raw/
+│   │   │   ├── boxscores/               # JSON por partido
+│   │   │   ├── player_stats/            # CSV por temporada/tipo
+│   │   │   ├── team_stats/              # CSV por temporada/tipo
+│   │   │   ├── standings/               # CSV de clasificaciones
+│   │   │   ├── injuries/                # CSV de lesiones activas
+│   │   │   └── odds/                    # JSON de cuotas
+│   │   └── processed/
+│   │       └── nba_full_dataset.csv     # Dataset consolidado
+│   │
+│   └── logs/                            # Logs de ejecución
+│
+└── premier_league/                      # Sistema Premier League (en desarrollo)
 ```
 
 ---
 
-## 🏀 NBA - Comandos Disponibles
+## Scrapers — Descripción Técnica
 
-### 📍 Ubicación
-Todos los comandos de NBA deben ejecutarse desde el directorio `nba/`:
+### `espn_scraper.py` — Boxscores de Partidos
+
+**Tecnología**: `requests` + `BeautifulSoup`
+**Fuente**: Páginas individuales de partidos en ESPN
+**Trigger**: Scheduler automático (3:00 AM) o manual
+
+Datos extraídos por partido:
+- Fecha, equipos, puntuaciones finales
+- Estadísticas de box (puntos, rebotes, asistencias, robos, bloqueos, porcentajes de tiro)
+- Cuartos individuales
+- Minutos jugados por jugador
+
+Output: archivos JSON en `data/raw/boxscores/`
+
+### `espn_schedule_scraper.py` — Calendario
+
+**Tecnología**: `requests` + `BeautifulSoup`
+**Fuente**: Página de calendario ESPN
+
+Datos extraídos:
+- `game_id` de ESPN
+- Fecha y hora del partido
+- Equipos local y visitante
+- Estado (scheduled / in_progress / final)
+
+### `player_stats_scraper.py` — Estadísticas de Jugadores
+
+**Tecnología**: `Selenium` + ChromeDriver
+**Fuente**: Tablas de estadísticas ESPN (requiere JavaScript)
+
+Extrae top 50 jugadores por categoría:
+- Puntos, rebotes, asistencias, robos, bloqueos
+- Porcentajes de tiro (FG%, 3P%, FT%)
+- Minutos por partido
+
+**Nota**: Requiere Chrome/Chromium instalado en el sistema.
+
+### `team_stats_scraper.py` — Estadísticas de Equipos
+
+**Tecnología**: `Selenium` + ChromeDriver
+**Fuente**: Tablas de estadísticas de equipos ESPN
+
+Datos por equipo:
+- Estadísticas ofensivas: PPG (puntos por partido), FG%, 3P%, rebotes ofensivos
+- Estadísticas defensivas: puntos permitidos, robos, bloqueos
+- Neto: diferencial de puntos, pace
+
+### `injuries_scraper.py` — Reportes de Lesiones
+
+**Tecnología**: `requests` + `BeautifulSoup`
+**Fuente**: Página de lesiones ESPN
+
+Datos por lesión:
+- Jugador y equipo afectado
+- Tipo de lesión
+- Estado (Out / Questionable / Day-to-Day)
+- Fecha estimada de regreso
+
+---
+
+## ETL — Transformación y Consolidación
+
+### `etl/transform_consolidate.py`
+
+Combina todas las fuentes en un único dataset analítico:
+
+```
+espn.games + espn.team_stats + espn.standings
+        ↓
+Calcula variables derivadas:
+  - home_win (booleano)
+  - point_diff (home_score - away_score)
+  - home_rest_days / away_rest_days
+  - win_streak por equipo
+        ↓
+data/processed/nba_full_dataset.csv
+```
+
+---
+
+## Carga a Base de Datos
+
+### `load_data.py` — Carga Inteligente
+
+Proceso automatizado que no requiere schema previo:
+
+1. **Detección automática de estructura**: analiza los CSV/JSON y determina tipos de columnas
+2. **Creación de tablas**: crea las tablas en Neon si no existen, con tipos correctos
+3. **Deduplicación**: detecta registros existentes por primary key y los omite
+4. **Carga masiva**: usa `COPY` nativo de PostgreSQL para máximo rendimiento
+5. **Reporte**: muestra conteo de registros insertados vs. omitidos por tabla
+
+Tablas que gestiona en el schema `espn`:
+
+| Tabla | Descripción | Frecuencia de actualización |
+|-------|-------------|----------------------------|
+| `games` | Resultados de partidos | Diaria (post-partido) |
+| `player_stats` | Stats de jugadores | Por temporada |
+| `team_stats` | Stats de equipos | Por temporada |
+| `standings` | Clasificaciones | Diaria |
+| `injuries` | Lesiones activas | Diaria |
+| `odds` | Cuotas de apuestas | Pre-partido |
+
+---
+
+## Scheduler Automático
+
+`main.py` implementa un daemon con **APScheduler**:
+
+```python
+# Configuración del cron
+scheduler.add_job(
+    scrape_daily_games,
+    'cron',
+    hour=3,
+    minute=0
+)
+```
+
+Se ejecuta a las **3:00 AM** diariamente para scrapear los boxscores de los partidos del día anterior.
+
+Para ejecutarlo como daemon:
 ```bash
 cd Scrapping/nba
-```
-
----
-
-### 1. Scraping de Datos
-
-#### 1.1. Scraping Principal (Boxscores)
-Ejecuta el scraping de boxscores de juegos individuales:
-
-```bash
-# Ejecución manual (scraping inmediato)
 python main.py
-
-# Nota: main.py ejecuta un scheduler que corre diariamente a las 3:00 AM
-# Para detenerlo, presiona Ctrl+C
+# Ctrl+C para detener
 ```
-
-#### 1.2. Estadísticas de Jugadores
-Extrae estadísticas de los top 50 jugadores por categoría:
-
-```bash
-# Temporada regular 2023-24
-python -m espn.player_stats_scraper --season "2023-24" --type "regular"
-
-# Playoffs 2023-24
-python -m espn.player_stats_scraper --season "2023-24" --type "playoffs"
-
-# Temporada regular 2024-25
-python -m espn.player_stats_scraper --season "2024-25" --type "regular"
-
-# Playoffs 2024-25
-python -m espn.player_stats_scraper --season "2024-25" --type "playoffs"
-```
-
-#### 1.3. Estadísticas de Equipos
-Extrae estadísticas ofensivas y defensivas de equipos:
-
-```bash
-# Temporada regular 2023-24
-python -m espn.team_stats_scraper --season "2023-24" --type "regular"
-
-# Playoffs 2023-24
-python -m espn.team_stats_scraper --season "2023-24" --type "playoffs"
-
-# Temporada regular 2024-25
-python -m espn.team_stats_scraper --season "2024-25" --type "regular"
-
-# Playoffs 2024-25
-python -m espn.team_stats_scraper --season "2024-25" --type "playoffs"
-```
-
-#### 1.4. Actualizar Injuries y Odds
-Actualiza reportes de lesiones y cuotas de apuestas (datos diarios):
-
-```bash
-# Actualizar ambos (injuries y odds) - solo archivos
-python update_injuries_odds.py
-
-# Actualizar ambos y cargar a la base de datos
-python update_injuries_odds.py --load-db
-
-# Actualizar solo reportes de lesiones
-python update_injuries_odds.py --injuries
-
-# Actualizar solo cuotas de apuestas
-python update_injuries_odds.py --odds
-
-# Actualizar injuries y cargar a la base de datos
-python update_injuries_odds.py --injuries --load-db
-
-# Actualizar odds y cargar a la base de datos
-python update_injuries_odds.py --odds --load-db
-```
-
-**Nota:** Por defecto, `update_injuries_odds.py` solo actualiza los archivos CSV/JSON. Usa `--load-db` para actualizar también la base de datos.
 
 ---
 
-### 2. Procesamiento de Datos (ETL)
+## Flujos de Trabajo
 
-#### 2.1. Consolidar Datos
-Combina todos los datos extraídos en un dataset consolidado:
-
-```bash
-# Desde Python
-python -c "from etl.transform_consolidate import run_etl_pipeline; run_etl_pipeline()"
-
-# O importar y usar en un script
-from etl.transform_consolidate import consolidate_nba_data
-df = consolidate_nba_data()
-```
-
-Este proceso:
-- Lee boxscores, team_stats y standings
-- Calcula variables derivadas (home_win, point_diff, etc.)
-- Genera `data/processed/nba_full_dataset.csv`
-
----
-
-### 3. Carga de Datos a Base de Datos
-
-#### 3.1. Cargar Todos los Datos
-Carga todos los datos extraídos a PostgreSQL:
+### Primera vez (setup completo)
 
 ```bash
-python load_data.py
-```
+cd Scrapping/nba
+pip install -r requirements.txt
 
-Este script:
-1. Analiza automáticamente la estructura de los datos
-2. Detecta tipos de datos, primary keys y foreign keys
-3. Crea las tablas necesarias en la base de datos
-4. Carga todos los datos usando COPY nativo de PostgreSQL
-5. Omite duplicados automáticamente
-6. Muestra un resumen de lo que se cargó
-
-**Tablas que se cargan:**
-- `games` - Partidos y resultados
-- `player_stats` - Estadísticas de jugadores
-- `team_stats` - Estadísticas de equipos
-- `standings` - Clasificaciones
-- `injuries` - Lesiones
-- `odds` - Cuotas de apuestas
-
----
-
-### 4. Flujo de Trabajo Completo
-
-#### Flujo Típico de Actualización Diaria
-
-```bash
-# 1. Actualizar injuries y odds (datos que cambian diariamente)
-python update_injuries_odds.py --load-db
-
-# 2. Ejecutar scraping de boxscores (si hay juegos nuevos)
-python main.py
-# (Presionar Ctrl+C después de que termine)
-
-# 3. Si hay nuevos datos, ejecutar ETL
-python -c "from etl.transform_consolidate import run_etl_pipeline; run_etl_pipeline()"
-
-# 4. Cargar todos los datos actualizados a la base de datos
-python load_data.py
-```
-
-#### Flujo de Scraping Completo (Primera Vez)
-
-```bash
-# 1. Scrapear estadísticas de jugadores (4 temporadas)
+# 1. Estadísticas de jugadores (requiere Chrome)
 python -m espn.player_stats_scraper --season "2023-24" --type "regular"
 python -m espn.player_stats_scraper --season "2023-24" --type "playoffs"
 python -m espn.player_stats_scraper --season "2024-25" --type "regular"
-python -m espn.player_stats_scraper --season "2024-25" --type "playoffs"
 
-# 2. Scrapear estadísticas de equipos (4 temporadas)
+# 2. Estadísticas de equipos (requiere Chrome)
 python -m espn.team_stats_scraper --season "2023-24" --type "regular"
 python -m espn.team_stats_scraper --season "2023-24" --type "playoffs"
 python -m espn.team_stats_scraper --season "2024-25" --type "regular"
-python -m espn.team_stats_scraper --season "2024-25" --type "playoffs"
 
-# 3. Actualizar injuries y odds
+# 3. Lesiones y cuotas
 python update_injuries_odds.py --load-db
 
-# 4. Ejecutar ETL para consolidar datos
+# 4. ETL — consolidar en CSV
 python -c "from etl.transform_consolidate import run_etl_pipeline; run_etl_pipeline()"
 
-# 5. Cargar todos los datos a la base de datos
+# 5. Cargar todo a Neon
 python load_data.py
+```
+
+### Actualización diaria
+
+```bash
+cd Scrapping/nba
+
+# 1. Datos que cambian diariamente
+python update_injuries_odds.py --load-db
+
+# 2. Boxscores de partidos nuevos
+python main.py
+# (Ctrl+C una vez que termine)
+
+# 3. ETL si hay nuevos datos
+python -c "from etl.transform_consolidate import run_etl_pipeline; run_etl_pipeline()"
+
+# 4. Sincronizar con Neon
+python load_data.py
+```
+
+### Opciones de `update_injuries_odds.py`
+
+```bash
+python update_injuries_odds.py              # Actualiza archivos CSV/JSON solamente
+python update_injuries_odds.py --load-db    # Actualiza archivos + carga a BD
+python update_injuries_odds.py --injuries   # Solo lesiones
+python update_injuries_odds.py --odds       # Solo cuotas
+python update_injuries_odds.py --injuries --load-db   # Lesiones + carga a BD
+python update_injuries_odds.py --odds --load-db       # Cuotas + carga a BD
 ```
 
 ---
 
-## 📋 Resumen de Comandos por Categoría
+## Referencia de Comandos
 
 ### Scraping
 | Comando | Descripción |
 |---------|-------------|
-| `python main.py` | Scraping de boxscores (scheduler diario) |
-| `python -m espn.player_stats_scraper --season "YYYY-YY" --type "regular\|playoffs"` | Estadísticas de jugadores |
-| `python -m espn.team_stats_scraper --season "YYYY-YY" --type "regular\|playoffs"` | Estadísticas de equipos |
-| `python update_injuries_odds.py` | Actualizar injuries y odds (solo archivos) |
-| `python update_injuries_odds.py --load-db` | Actualizar injuries y odds (archivos + DB) |
+| `python main.py` | Boxscores — scheduler diario (3 AM) |
+| `python -m espn.player_stats_scraper --season "YYYY-YY" --type "regular\|playoffs"` | Stats de jugadores |
+| `python -m espn.team_stats_scraper --season "YYYY-YY" --type "regular\|playoffs"` | Stats de equipos |
+| `python update_injuries_odds.py [--injuries] [--odds] [--load-db]` | Lesiones y cuotas |
 
-### Procesamiento (ETL)
+### ETL
 | Comando | Descripción |
 |---------|-------------|
 | `python -c "from etl.transform_consolidate import run_etl_pipeline; run_etl_pipeline()"` | Consolidar todos los datos |
 
-### Carga de Datos
+### Carga a BD
 | Comando | Descripción |
 |---------|-------------|
-| `python load_data.py` | Cargar todos los datos a PostgreSQL |
+| `python load_data.py` | Cargar todos los datos a Neon (schema espn) |
 
 ---
 
-## 🔧 Configuración
+## Configuración
 
-### Requisitos Previos
-- Python 3.11 o superior
-- PostgreSQL 15 o superior
-- Chrome o Chromium (para scraping de estadísticas de jugadores)
+### Requisitos del Sistema
+
+- Python 3.11+
+- Chrome o Chromium (para scrapers con Selenium)
+- Conexión a internet para acceder a ESPN
 
 ### Instalación
 
-1. **Instalar dependencias:**
-   ```bash
-   cd Scrapping/nba
-   pip install -r requirements.txt
-   ```
+```bash
+cd Scrapping/nba
+pip install -r requirements.txt
+```
 
-2. **Configurar base de datos:**
-   Edita `nba/config.yaml` con tus credenciales:
-   ```yaml
-   DATABASE_URL: postgresql://usuario:contraseña@localhost:5432/nba_data
-   DB_SCHEMA: espn
-   ```
+ChromeDriver se instala automáticamente con `webdriver-manager` (incluido en `requirements.txt`). Solo es necesario tener Chrome instalado.
 
----
+### Configuración de Base de Datos
 
-## 📁 Estructura de Datos
+Editar `nba/config.yaml`:
+```yaml
+DATABASE_URL: postgresql://usuario:contraseña@host:5432/nombre_bd
+DB_SCHEMA: espn
+```
 
-### Archivos Raw (`nba/data/raw/`)
-- `boxscores/` - Resultados de partidos (JSON)
-- `player_stats/` - Estadísticas de jugadores (CSV)
-- `team_stats/` - Estadísticas de equipos (CSV)
-- `standings/` - Clasificaciones (CSV)
-- `injuries/` - Reportes de lesiones (CSV)
-- `odds/` - Cuotas de apuestas (JSON)
-
-### Archivos Procesados (`nba/data/processed/`)
-- `nba_full_dataset.csv` - Dataset consolidado con todos los datos
-
-### Base de Datos (PostgreSQL - Esquema `espn`)
-- `games` - Partidos y resultados
-- `player_stats` - Estadísticas de jugadores
-- `team_stats` - Estadísticas de equipos
-- `standings` - Clasificaciones
-- `injuries` - Lesiones
-- `odds` - Cuotas de apuestas
+O usar variables de entorno `NEON_*` del `.env` compartido en la raíz del repositorio.
 
 ---
 
-## 📝 Notas Importantes
+## Estructura de los Datos Raw
 
-1. **Scraping de Jugadores y Equipos:** Requiere Chrome/Chromium instalado (usa Selenium)
+### Boxscores (JSON)
+```json
+{
+  "game_id": "401585...",
+  "date": "2024-01-15",
+  "home_team": "LAL",
+  "away_team": "GSW",
+  "home_score": 112,
+  "away_score": 107,
+  "quarters": [28, 31, 27, 26],
+  "player_stats": [...]
+}
+```
 
-2. **Actualización de Injuries y Odds:** Estos datos cambian diariamente. Usa `update_injuries_odds.py` para mantenerlos actualizados.
-
-3. **Carga de Datos:** El script `load_data.py` detecta automáticamente la estructura de los datos y crea las tablas necesarias. No necesitas crear las tablas manualmente.
-
-4. **Duplicados:** El sistema omite duplicados automáticamente. Puedes ejecutar los scripts múltiples veces sin preocuparte por datos duplicados.
-
-5. **Logs:** Todos los procesos guardan logs en `nba/logs/` para monitoreo y debugging.
-
----
-
-## 🆘 Solución de Problemas
-
-### Error de conexión a base de datos
-- Verifica que PostgreSQL esté corriendo
-- Revisa las credenciales en `nba/config.yaml`
-- Asegúrate de que la base de datos `nba_data` exista
-
-### Error al scrapear estadísticas de jugadores
-- Asegúrate de tener Chrome o Chromium instalado
-- ChromeDriver se instala automáticamente, pero verifica que Chrome esté en el PATH
-
-### Los datos no se cargan correctamente
-- Revisa los logs en `nba/logs/`
-- Verifica que los archivos de datos existan en `nba/data/raw/`
-- Asegúrate de que la base de datos tenga espacio suficiente
-
----
-
-## 📚 Documentación Adicional
-
-- **NBA:** Ver `nba/README.md` para documentación detallada del sistema NBA
-- **Premier League:** Ver `premier_league/README.md` (en desarrollo)
+### Odds (JSON)
+```json
+{
+  "game_id": "401585...",
+  "date": "2024-01-15",
+  "home_team": "LAL",
+  "away_team": "GSW",
+  "home_odds": -150,
+  "away_odds": +130,
+  "over_under": 224.5
+}
+```
 
 ---
 
-## 🚀 Próximos Pasos
+## Logs y Monitoreo
 
-Este sistema de scraping alimenta:
-- Backend que usa estos datos para hacer predicciones
-- Frontend que muestra las predicciones y permite hacer apuestas virtuales
-- Modelos de machine learning que aprenden de estos datos históricos
+Todos los procesos generan logs en `nba/logs/`:
+- `scraper_YYYY-MM-DD.log` — actividad del scraper
+- `load_data_YYYY-MM-DD.log` — resumen de carga a BD
 
+---
+
+## Solución de Problemas
+
+| Problema | Causa probable | Solución |
+|----------|---------------|---------|
+| Error de conexión a BD | Credenciales incorrectas | Verificar `config.yaml` o variables `NEON_*` |
+| Error en scraper de jugadores | Chrome no encontrado | Instalar Chrome y verificar que esté en PATH |
+| Datos no aparecen en Neon | ETL no ejecutado | Correr `run_etl_pipeline()` antes de `load_data.py` |
+| Duplicados ignorados en carga | Comportamiento esperado | El sistema deduplica automáticamente |
+| Rate limit de ESPN | Demasiadas peticiones | Agregar delays entre requests (`time.sleep`) |
+
+---
+
+## Notas Importantes
+
+1. **Datos públicos**: El scraping utiliza únicamente datos públicos de ESPN disponibles sin autenticación.
+2. **Idempotencia**: `load_data.py` puede ejecutarse múltiples veces — los registros ya existentes se omiten automáticamente.
+3. **Scheduler vs. manual**: `main.py` inicia un proceso daemon. Para scraping puntual, ejecutar directamente los scripts de cada scraper.
+4. **Premier League**: El sistema para Premier League está en desarrollo. La estructura es análoga a NBA.

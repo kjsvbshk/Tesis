@@ -1,322 +1,267 @@
-# Aplicación Web de Predicciones y Apuestas Virtuales NBA
+# Frontend — Aplicación Web NBA Bets
 
-## ¿Qué es esta aplicación?
+Aplicación web SPA (Single Page Application) construida con **React 19 + TypeScript + Vite**. Provee la interfaz de usuario para visualizar predicciones ML, gestionar apuestas virtuales y administrar el perfil de cuenta.
 
-Esta es la aplicación web que los usuarios ven y usan. Es la "cara" del proyecto - una interfaz visual donde los usuarios pueden:
+---
 
-- **Ver partidos** de la NBA que están por jugarse
-- **Obtener predicciones** sobre quién ganará usando inteligencia artificial
-- **Hacer apuestas virtuales** usando créditos (no dinero real)
-- **Ver su historial** de apuestas y resultados
-- **Gestionar su perfil** y créditos
+## Stack Tecnológico
 
-Piensa en esto como una aplicación web moderna y fácil de usar que se conecta con el backend para obtener predicciones y gestionar apuestas.
+| Tecnología | Versión | Rol |
+|-----------|---------|-----|
+| React | 19.1.1 | Framework de UI |
+| TypeScript | ~5.9.3 | Tipado estático |
+| Vite | 7.1.7 | Build tool y dev server |
+| React Router | 7.9.4 | Enrutamiento client-side |
+| Zustand | 5.0.8 | Estado global (apuestas activas) |
+| Tailwind CSS | 3.4.13 | Estilos utilitarios |
+| Radix UI / shadcn/ui | — | Componentes accesibles |
+| ESLint | — | Calidad de código |
 
-## ¿Qué hace la aplicación?
-
-### 1. Página de Inicio (Home)
-- Muestra los partidos más importantes del día
-- Predicciones destacadas
-- Resumen de tus apuestas activas
-
-### 2. Partidos (Matches)
-- Lista completa de todos los partidos disponibles
-- Filtros para buscar partidos por fecha, equipo, etc.
-- Información detallada de cada partido:
-  - Equipos que juegan
-  - Fecha y hora
-  - Estadísticas de los equipos
-  - Predicciones de IA
-
-### 3. Apuestas (Bets)
-- Ver todas tus apuestas activas
-- Historial de apuestas pasadas
-- Resultados de apuestas ganadas o perdidas
-- Detalles de cada apuesta
-
-### 4. Historial (History)
-- Registro completo de todas tus actividades
-- Apuestas realizadas
-- Créditos ganados o perdidos
-- Estadísticas de tu rendimiento
-
-### 5. Perfil (Profile)
-- Información de tu cuenta
-- Saldo de créditos virtuales
-- Configuración de perfil
-- Estadísticas personales
-
-## ¿Cómo funciona la aplicación?
-
-La aplicación funciona así:
-
-1. **El usuario abre la aplicación** en su navegador
-2. **Se registra o inicia sesión** para crear una cuenta
-3. **Navega por las diferentes páginas** para ver partidos, predicciones, etc.
-4. **Hace una apuesta** seleccionando un partido y eligiendo quién cree que ganará
-5. **El sistema procesa la apuesta** y deduce créditos de su cuenta
-6. **Cuando termina el partido**, el sistema verifica si acertó
-7. **Si acertó**, recibe créditos según las probabilidades
-
-Todo esto sucede de forma visual e interactiva, sin necesidad de escribir código o usar comandos complicados.
-
-## Tecnologías Utilizadas
-
-Esta aplicación está construida con tecnologías modernas:
-
-- **React**: Framework para crear interfaces de usuario interactivas
-- **TypeScript**: Lenguaje que añade seguridad de tipos a JavaScript
-- **Vite**: Herramienta rápida para desarrollar y construir la aplicación
-- **Tailwind CSS**: Framework para diseñar la interfaz de forma rápida y consistente
-- **React Router**: Para navegar entre diferentes páginas
-- **Zustand**: Para gestionar el estado de la aplicación (como las apuestas activas)
+---
 
 ## Estructura del Proyecto
 
 ```
 Frontend/
 ├── src/
-│   ├── pages/              # Páginas principales de la aplicación
-│   │   ├── HomePage.tsx    # Página de inicio
-│   │   ├── MatchesPage.tsx # Página de partidos
-│   │   ├── BetsPage.tsx    # Página de apuestas
-│   │   ├── HistoryPage.tsx # Página de historial
-│   │   └── ProfilePage.tsx # Página de perfil
+│   ├── main.tsx                    # Punto de entrada: React root, Router, AuthContext
+│   ├── App.tsx                     # Árbol de rutas principal
 │   │
-│   ├── components/          # Componentes reutilizables
-│   │   ├── MatchCard.tsx   # Tarjeta que muestra un partido
-│   │   ├── MatchList.tsx   # Lista de partidos
-│   │   ├── BetSlip.tsx     # Panel de apuestas
-│   │   ├── layout/         # Componentes de diseño
-│   │   │   └── SidebarLayout.tsx  # Barra lateral de navegación
-│   │   └── ui/             # Componentes de interfaz básicos
-│   │       ├── button.tsx  # Botones
-│   │       ├── card.tsx    # Tarjetas
-│   │       ├── input.tsx   # Campos de entrada
-│   │       └── ...         # Otros componentes
+│   ├── pages/                      # Componentes de página (uno por ruta)
+│   │   ├── HomePage.tsx            # Dashboard: partidos del día, predicciones destacadas
+│   │   ├── LoginPage.tsx           # Formulario de login, manejo de JWT
+│   │   ├── RegisterPage.tsx        # Registro de usuario + flujo de verificación OTP
+│   │   ├── MatchesPage.tsx         # Listado de partidos con filtros
+│   │   ├── PredictionsPage.tsx     # Predicciones ML detalladas por partido
+│   │   ├── BetsPage.tsx            # Apuestas activas y pendientes
+│   │   ├── HistoryPage.tsx         # Historial completo de apuestas
+│   │   └── ProfilePage.tsx         # Perfil, saldo de créditos, configuración
 │   │
-│   ├── store/              # Gestión de estado
-│   │   └── bets.ts         # Estado de las apuestas
+│   ├── components/
+│   │   ├── MatchCard.tsx           # Tarjeta de partido con predicción integrada
+│   │   ├── MatchList.tsx           # Contenedor de lista de partidos
+│   │   ├── BetSlip.tsx             # Panel lateral para crear apuesta
+│   │   ├── ProtectedRoute.tsx      # Guard: redirige a /login si no hay JWT
+│   │   ├── RoleProtectedRoute.tsx  # Guard: verifica rol del usuario (RBAC)
+│   │   ├── layout/
+│   │   │   └── SidebarLayout.tsx   # Layout con sidebar de navegación
+│   │   └── ui/                     # Componentes base (shadcn/ui)
+│   │       ├── button.tsx
+│   │       ├── card.tsx
+│   │       ├── input.tsx
+│   │       ├── toast.tsx
+│   │       └── ...
 │   │
-│   ├── hooks/              # Funciones reutilizables
-│   │   └── use-toast.ts    # Para mostrar notificaciones
+│   ├── contexts/
+│   │   └── AuthContext.tsx         # Contexto global de autenticación
 │   │
-│   ├── lib/                # Utilidades
-│   │   └── utils.ts        # Funciones útiles
+│   ├── store/
+│   │   └── bets.ts                 # Store Zustand: estado de apuestas activas
 │   │
-│   ├── App.tsx             # Componente principal
-│   └── main.tsx            # Punto de entrada
+│   ├── services/                   # Capa de integración con la API
+│   │   ├── api.ts                  # Cliente axios/fetch base con interceptores
+│   │   ├── auth.service.ts         # Login, registro, verificación OTP
+│   │   ├── matches.service.ts      # Consultas de partidos
+│   │   ├── predictions.service.ts  # Solicitudes de predicción ML
+│   │   └── bets.service.ts         # Creación y consulta de apuestas
+│   │
+│   ├── hooks/
+│   │   ├── useAuth.ts              # Hook para consumir AuthContext
+│   │   └── use-toast.ts            # Sistema de notificaciones (toasts)
+│   │
+│   └── lib/
+│       └── utils.ts                # cn() para clases Tailwind, formatters
 │
-├── public/                 # Archivos públicos (imágenes, etc.)
-├── package.json            # Dependencias del proyecto
-└── vite.config.ts          # Configuración de Vite
+├── public/                         # Assets estáticos
+├── vercel.json                     # Configuración de routing SPA para Vercel
+├── vite.config.ts                  # Configuración de Vite y proxy de desarrollo
+├── tailwind.config.js
+├── tsconfig.json
+└── package.json
 ```
+
+---
+
+## Arquitectura de la Aplicación
+
+### Flujo de Autenticación
+
+```
+Usuario → LoginPage
+  → auth.service.ts POST /api/v1/users/login
+  → Recibe { access_token, token_type }
+  → AuthContext.setToken(token)
+    → localStorage.setItem("token", token)
+    → Decodifica JWT → extrae user_id, role, exp
+  → React Router navega a /home
+
+En cada request:
+  → api.ts interceptor agrega Header: Authorization: Bearer {token}
+  → Si 401 → AuthContext.logout() → navega a /login
+```
+
+### Gestión de Estado
+
+```
+AuthContext (React Context)
+  ├── token: string | null
+  ├── user: { id, email, role, credits }
+  ├── isAuthenticated: boolean
+  ├── login(token) / logout()
+  └── refreshUser()
+
+Zustand Store (bets.ts)
+  ├── activeBets: Bet[]
+  ├── addBet(bet)
+  ├── removeBet(betId)
+  └── clearBets()
+```
+
+El estado de autenticación vive en `AuthContext` (React Context API). El estado de apuestas activas en el BetSlip vive en Zustand para permitir acceso desde cualquier componente sin prop drilling.
+
+### Rutas y Guards
+
+```
+/ → redirige a /home
+
+Rutas públicas:
+  /login        → LoginPage
+  /register     → RegisterPage
+
+Rutas protegidas (ProtectedRoute — requieren JWT válido):
+  /home         → HomePage
+  /matches      → MatchesPage
+  /predictions  → PredictionsPage
+  /bets         → BetsPage
+  /history      → HistoryPage
+  /profile      → ProfilePage
+
+Rutas con rol (RoleProtectedRoute):
+  /admin        → Panel de administración (rol: admin)
+```
+
+### Capa de Servicios
+
+Todos los módulos de `services/` usan el cliente base `api.ts` que:
+1. Configura `baseURL` desde `VITE_API_BASE_URL`
+2. Adjunta el JWT en el header `Authorization`
+3. Maneja errores 401 (token expirado → logout automático)
+4. Serializa/deserializa JSON
+
+---
 
 ## Instalación y Configuración
 
-### Requisitos Previos
+### Requisitos
+- Node.js 18+
+- Backend corriendo y accesible
 
-- Node.js 18 o superior
-- npm o yarn
-
-### Pasos de Instalación
-
-1. **Instalar las dependencias:**
-   ```bash
-   cd Frontend
-   npm install
-   ```
-
-2. **Configurar la conexión al backend:**
-   - Asegúrate de que el backend esté corriendo en http://localhost:8000
-   - Si el backend está en otra dirección, edita los archivos que hacen peticiones a la API
-
-3. **Ejecutar la aplicación en modo desarrollo:**
-   ```bash
-   npm run dev
-   ```
-
-   La aplicación estará disponible en: http://localhost:5173
-
-### Comandos Disponibles
+### Instalación
 
 ```bash
-# Ejecutar en modo desarrollo (con recarga automática)
-npm run dev
+cd Frontend
+npm install
+```
 
-# Construir la aplicación para producción
+### Variables de entorno
+
+Crear archivo `.env` en `Frontend/`:
+```bash
+VITE_API_BASE_URL=http://localhost:8000/api/v1
+```
+
+Para producción, apuntar al backend en Render:
+```bash
+VITE_API_BASE_URL=https://tu-backend.onrender.com/api/v1
+```
+
+### Proxy de desarrollo
+
+`vite.config.ts` puede configurar un proxy para evitar CORS durante desarrollo:
+```ts
+server: {
+  proxy: {
+    '/api': 'http://localhost:8000'
+  }
+}
+```
+
+---
+
+## Comandos Disponibles
+
+```bash
+# Servidor de desarrollo con HMR (Hot Module Replacement)
+npm run dev
+# → http://localhost:5173
+
+# Build de producción (output en dist/)
 npm run build
 
-# Previsualizar la versión de producción
+# Preview del build de producción
 npm run preview
 
-# Verificar calidad del código
+# Linter
 npm run lint
 ```
 
-## Cómo Usar la Aplicación
+---
 
-### Primera Vez
+## Flujos de Usuario
 
-1. **Abre la aplicación** en tu navegador (http://localhost:5173)
-2. **Regístrate** creando una cuenta nueva
-3. **Inicia sesión** con tus credenciales
-4. **Recibirás créditos iniciales** para empezar a apostar
+### Registro y activación
+1. `POST /users/register` — crea cuenta inactiva
+2. Email con código OTP de 6 dígitos (TTL 15 min)
+3. `POST /users/verify-email` — activa cuenta y asigna créditos iniciales
+4. Login automático
 
-### Ver Partidos y Predicciones
+### Ver predicción de un partido
+1. Navegar a **Partidos** → seleccionar partido
+2. `MatchCard` solicita `GET /predictions/game/{game_id}`
+3. Backend consulta modelo ML → retorna probabilidades, scores esperados, confianza
+4. Predicción visible en la tarjeta del partido
 
-1. **Ve a la página "Partidos"** desde el menú lateral
-2. **Selecciona un partido** que te interese
-3. **Verás la información del partido**:
-   - Equipos que juegan
-   - Fecha y hora
-   - Estadísticas de los equipos
-4. **Haz clic en "Ver Predicción"** para obtener la predicción de IA
-5. **La predicción mostrará**:
-   - Probabilidad de victoria de cada equipo
-   - Puntuación esperada
-   - Nivel de confianza
+### Crear apuesta
+1. En `MatchCard` → clic en equipo ganador → se abre `BetSlip`
+2. Ingresar monto de créditos
+3. `bets.service.ts POST /bets` — verifica saldo, crea apuesta, deduce créditos
+4. Toast de confirmación
+5. Apuesta visible en `/bets`
 
-### Hacer una Apuesta
-
-1. **Selecciona un partido** de la lista
-2. **Elige quién crees que ganará** (equipo local o visitante)
-3. **Ingresa la cantidad de créditos** que quieres apostar
-4. **Haz clic en "Confirmar Apuesta"**
-5. **Los créditos se deducirán** de tu cuenta
-6. **La apuesta aparecerá** en tu página de apuestas
-
-### Ver Mis Apuestas
-
-1. **Ve a la página "Apuestas"** desde el menú
-2. **Verás todas tus apuestas activas** y pasadas
-3. **Cada apuesta muestra**:
-   - Partido sobre el que apostaste
-   - Tu predicción
-   - Cantidad apostada
-   - Estado (pendiente, ganada, perdida)
-   - Créditos ganados o perdidos
-
-### Ver Mi Historial
-
-1. **Ve a la página "Historial"** desde el menú
-2. **Verás un registro completo** de todas tus actividades
-3. **Puedes filtrar** por fecha, tipo de apuesta, etc.
-
-### Gestionar Mi Perfil
-
-1. **Ve a la página "Perfil"** desde el menú
-2. **Verás tu información**:
-   - Nombre de usuario
-   - Email
-   - Saldo de créditos
-   - Estadísticas de apuestas
-3. **Puedes actualizar** tu información si es necesario
-
-## Características de la Interfaz
-
-### Diseño Moderno
-- Interfaz limpia y fácil de usar
-- Diseño responsivo (funciona en móviles y tablets)
-- Animaciones suaves para mejor experiencia
-
-### Navegación Intuitiva
-- Menú lateral para navegar fácilmente
-- Páginas claramente organizadas
-- Búsqueda y filtros para encontrar información rápidamente
-
-### Notificaciones
-- Notificaciones cuando haces una apuesta
-- Alertas cuando ganas o pierdes
-- Confirmaciones para acciones importantes
-
-### Actualización en Tiempo Real
-- Los partidos se actualizan automáticamente
-- Las predicciones se recalculan cuando hay nueva información
-- El saldo de créditos se actualiza en tiempo real
-
-## Desarrollo
-
-### Estructura del Código
-
-El código está organizado de forma clara:
-
-- **pages/**: Cada página de la aplicación es un componente separado
-- **components/**: Componentes que se reutilizan en múltiples páginas
-- **store/**: Estado global de la aplicación (como las apuestas activas)
-- **hooks/**: Funciones reutilizables que pueden usarse en cualquier componente
-
-### Agregar una Nueva Página
-
-1. Crea un nuevo archivo en `src/pages/`
-2. Crea el componente de la página
-3. Agrega la ruta en el router principal
-4. Agrega un enlace en el menú de navegación
-
-### Agregar un Nuevo Componente
-
-1. Crea el componente en `src/components/`
-2. Exporta el componente
-3. Úsalo en las páginas que lo necesiten
-
-## Solución de Problemas
-
-### La aplicación no inicia
-- Verifica que Node.js esté instalado: `node --version`
-- Asegúrate de haber instalado las dependencias: `npm install`
-- Revisa que el puerto 5173 no esté en uso
-
-### No puedo conectarme al backend
-- Verifica que el backend esté corriendo en http://localhost:8000
-- Revisa la consola del navegador para ver errores específicos
-- Asegúrate de que la URL de la API sea correcta
-
-### Los datos no se cargan
-- Verifica que el backend esté funcionando correctamente
-- Revisa la consola del navegador para errores
-- Asegúrate de estar autenticado si es necesario
-
-### La aplicación se ve mal
-- Limpia la caché del navegador
-- Asegúrate de que todas las dependencias estén instaladas
-- Verifica que Tailwind CSS esté configurado correctamente
-
-## Notas Importantes
-
-- **Créditos Virtuales**: Todo el sistema usa créditos virtuales, no dinero real. Es solo para fines educativos y de entretenimiento.
+---
 
 ## Deployment en Vercel
-
-### Configuración Requerida
 
 1. **Framework Preset**: Vite
 2. **Root Directory**: `Frontend`
 3. **Build Command**: `npm run build`
 4. **Output Directory**: `dist`
-5. **Install Command**: `npm install`
+5. **Variable de entorno**: `VITE_API_BASE_URL=https://tu-backend.onrender.com/api/v1`
 
-### Environment Variables
+El archivo `vercel.json` configura rewrite de todas las rutas a `index.html` para que React Router funcione correctamente en producción:
 
-Configurar en Vercel → Settings → Environment Variables:
+```json
+{
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+}
+```
 
-- `VITE_API_BASE_URL`: URL del backend (ej: `https://tesis-waun.onrender.com/api/v1`)
+---
 
-### Archivo vercel.json
+## Solución de Problemas Comunes
 
-El proyecto incluye `vercel.json` para configurar el routing de SPA (Single Page Application), permitiendo que todas las rutas redirijan a `index.html` para que React Router funcione correctamente.
+| Problema | Causa probable | Solución |
+|----------|---------------|---------|
+| App no inicia | Dependencias no instaladas | `npm install` |
+| Error 401 en todas las rutas | Token expirado o incorrecto | Cerrar sesión y volver a iniciar |
+| Datos no cargan | Backend no accesible | Verificar `VITE_API_BASE_URL` y que el backend esté corriendo |
+| Rutas 404 en producción | SPA routing no configurado | Verificar `vercel.json` |
+| CORS error en desarrollo | Proxy no configurado | Verificar proxy en `vite.config.ts` |
 
-## Documentación Adicional
+---
 
-- `COMPONENT_DOCUMENTATION.md`: Documentación de componentes y arquitectura
+## Notas de Diseño
 
-- **Predicciones Educativas**: Las predicciones son generadas por modelos de IA. No son garantía de resultados reales.
-
-- **Desarrollo Local**: Esta aplicación está diseñada para conectarse con el backend local. En producción, necesitarías configurar las URLs correctas.
-
-## Próximos Pasos
-
-Esta aplicación se conecta con:
-- **Backend API**: Para obtener predicciones y gestionar apuestas
-- **Sistema de Scraping**: Que proporciona los datos para las predicciones
-
-Juntos forman un sistema completo de predicciones y apuestas virtuales NBA.
+- **Créditos virtuales**: El sistema no maneja dinero real. Los créditos son un mecanismo lúdico con propósito educativo.
+- **Predicciones educativas**: Los outputs del modelo ML son probabilísticos y no constituyen asesoramiento de apuestas reales.
+- **TypeScript estricto**: El proyecto usa `strict: true` en `tsconfig.json`. Todos los tipos de respuesta de la API están definidos en los archivos de servicios.

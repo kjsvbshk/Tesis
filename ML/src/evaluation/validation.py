@@ -48,8 +48,8 @@ def temporal_train_test_split(
 
     cutoff_date = df_sorted[date_col].iloc[split_idx]
     print(f"Split temporal:")
-    print(f"  Train: {len(df_train)} partidos ({df_sorted[date_col].iloc[0]} → {df_sorted[date_col].iloc[split_idx-1]})")
-    print(f"  Test:  {len(df_test)} partidos  ({cutoff_date} → {df_sorted[date_col].iloc[-1]})")
+    print(f"  Train: {len(df_train)} partidos ({df_sorted[date_col].iloc[0]} -> {df_sorted[date_col].iloc[split_idx-1]})")
+    print(f"  Test:  {len(df_test)} partidos  ({cutoff_date} -> {df_sorted[date_col].iloc[-1]})")
 
     return df_train, df_test
 

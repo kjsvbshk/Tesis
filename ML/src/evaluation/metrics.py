@@ -170,6 +170,32 @@ def print_metrics_report(metrics: dict):
 # Métricas económicas (backtesting)
 # ---------------------------------------------------------------------------
 
+def compute_kelly_fraction(
+    p: float, odds_decimal: float, fraction: float = 0.25
+) -> float:
+    """
+    Kelly Criterion con fracción de seguridad.
+
+    Calcula el tamaño óptimo de apuesta como proporción del bankroll.
+
+    f* = (p × o - 1) / (o - 1)
+    Apuesta = fraction × f*
+
+    Args:
+        p:             probabilidad estimada de ganar
+        odds_decimal:  cuota decimal (ej: 1.85)
+        fraction:      fracción de Kelly a usar (default 0.25 = quarter-Kelly)
+
+    Returns:
+        Fracción del bankroll a apostar. 0.0 si no hay edge.
+    """
+    edge = p * odds_decimal - 1.0
+    if edge <= 0 or odds_decimal <= 1.0:
+        return 0.0
+    f_star = edge / (odds_decimal - 1.0)
+    return max(0.0, fraction * f_star)
+
+
 def compute_expected_value(p_home: float, odds_decimal: float) -> float:
     """
     Valor esperado de una apuesta al equipo local.
@@ -230,8 +256,9 @@ def compute_economic_metrics(
 
     y_bet = y_true[bet_mask]
     odds_bet = odds[bet_mask]
+    proba_bet = y_proba[bet_mask]
 
-    # Ganancias por apuesta: si gana → (odds - 1) * stake; si pierde → -stake
+    # Ganancias por apuesta (stake fijo): si gana → (odds - 1) * stake; si pierde → -stake
     profits = np.where(y_bet == 1, (odds_bet - 1.0) * stake, -stake)
     cumulative = np.cumsum(profits)
     total_staked = n_bets * stake
@@ -247,6 +274,21 @@ def compute_economic_metrics(
     max_drawdown = float(drawdowns.max())
     max_drawdown_pct = max_drawdown / total_staked if total_staked > 0 else 0.0
 
+    # Kelly fraccional (quarter-Kelly)
+    kelly_stakes = np.array([
+        compute_kelly_fraction(p, o, fraction=0.25)
+        for p, o in zip(proba_bet, odds_bet)
+    ])
+    kelly_profits = np.where(
+        y_bet == 1, kelly_stakes * (odds_bet - 1.0), -kelly_stakes
+    )
+    kelly_total_staked = float(kelly_stakes.sum())
+    kelly_total_profit = float(kelly_profits.sum())
+    kelly_roi = (
+        kelly_total_profit / kelly_total_staked
+        if kelly_total_staked > 0 else 0.0
+    )
+
     return {
         "n_bets": n_bets,
         "win_rate": round(win_rate, 4),
@@ -255,6 +297,10 @@ def compute_economic_metrics(
         "max_drawdown_pct": round(max_drawdown_pct, 4),
         "total_profit": round(total_profit, 4),
         "total_staked": round(total_staked, 4),
+        "kelly_total_staked": round(kelly_total_staked, 4),
+        "kelly_total_profit": round(kelly_total_profit, 4),
+        "kelly_roi": round(kelly_roi, 4),
+        "avg_kelly_stake": round(float(kelly_stakes.mean()), 4),
         # Criterios de aceptación (model spec §8.2)
         "passes_roi": roi > 0.0,
         "passes_drawdown": max_drawdown_pct < 0.30,
@@ -280,4 +326,12 @@ def print_economic_report(eco: dict):
     print(f"  {roi_status} ROI (> 0%):           {eco['roi']:.2%}")
     print(f"  {dd_status} Drawdown máx (< 30%): {eco['max_drawdown_pct']:.2%}")
     print(f"  Ganancia total:           {eco['total_profit']:+.2f} unidades")
+
+    if eco.get("kelly_roi") is not None:
+        print(f"  {'─'*51}")
+        print(f"  Kelly fraccional (25%):")
+        print(f"    Stake promedio:         {eco['avg_kelly_stake']:.4f}")
+        print(f"    ROI Kelly:              {eco['kelly_roi']:.2%}")
+        print(f"    Ganancia Kelly:         {eco['kelly_total_profit']:+.4f} unidades")
+
     print(f"{'='*55}\n")

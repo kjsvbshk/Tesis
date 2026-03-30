@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find:*)",
+      "Bash(cd:*)",
+      "Bash(python:*)",
+      "Bash(grep -E \"\\\\.py$\")",
+      "Bash(xargs -I {} basename {})",
+      "Bash(find /c/Users/Kjsvb/OneDrive/Documentos/Tesis/Tesis -type f \\\\\\(-name *.ipynb -o -name *eval* -o -name *analys* \\\\\\))",
+      "Bash(grep -r \"Kelly\\\\|kelly\\\\|stake\\\\|staking\\\\|kelly_criterion\" /c/Users/Kjsvb/OneDrive/Documentos/Tesis/Tesis/ML --include=*.py)",
+      "Bash(pip install:*)",
+      "Bash(ls -la /c/Users/Kjsvb/OneDrive/Documentos/Tesis/Tesis/ML/reports/*.json)",
+      "Bash(sort -k2)",
+      "Bash(xargs grep:*)",
+      "Bash(grep -A 10 \"CREATE TABLE.*game_id_mapping\\\\|game_id VARCHAR\\\\|game_id BIGINT\" /c/Users/Kjsvb/OneDrive/Documentos/Tesis/Tesis/Scrapping/nba/*.py)"
+    ]
+  }
+}

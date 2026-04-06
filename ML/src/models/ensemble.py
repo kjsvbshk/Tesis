@@ -27,6 +27,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.isotonic import IsotonicRegression
 from .random_forest import NBARandomForest
 from .xgboost_model import NBAXGBoost
+from .margin_model import NBAMarginModel
+from .total_model import NBATotalModel
 
 
 class NBAEnsemble:
@@ -46,10 +48,14 @@ class NBAEnsemble:
         self,
         rf_model: NBARandomForest = None,
         xgb_model: NBAXGBoost = None,
+        margin_model: NBAMarginModel = None,
+        total_model: NBATotalModel = None,
         n_folds: int = 5,
     ):
         self.rf = rf_model or NBARandomForest()
         self.xgb = xgb_model or NBAXGBoost()
+        self.margin_model = margin_model or NBAMarginModel()
+        self.total_model = total_model or NBATotalModel()
         self.meta_learner = LogisticRegression(C=0.5, random_state=42, max_iter=1000)
         self.calibrator = None          # IsotonicRegression sobre OOF predictions
         self.n_folds = n_folds
@@ -62,7 +68,9 @@ class NBAEnsemble:
         score_diff = self.xgb.predict_score_diff(X).reshape(-1, 1)
         return np.hstack([rf_proba, score_diff])
 
-    def fit(self, X, y, y_home_score: np.ndarray, y_away_score: np.ndarray, feature_names: list = None):
+    def fit(self, X, y, y_home_score: np.ndarray, y_away_score: np.ndarray,
+            y_margin: np.ndarray = None, y_total: np.ndarray = None,
+            feature_names: list = None):
         """
         Entrena el ensemble con OOF temporal stacking:
 
@@ -70,19 +78,26 @@ class NBAEnsemble:
         Etapa 2: Meta-learner entrenado sobre todos los OOF meta-features.
         Etapa 3: Isotonic regression calibration sobre OOF predictions.
         Etapa 4: Re-entrena RF+XGB sobre el dataset completo.
+        Etapa 5: Entrena modelos dedicados de margen y total.
 
         Args:
             X:             matriz de features de entrenamiento (ordenada por fecha)
             y:             target binario (home_win)
             y_home_score:  puntuaciones reales del equipo local
             y_away_score:  puntuaciones reales del equipo visitante
+            y_margin:      point_diff real (home - away), derivado si None
+            y_total:       total real (home + away), derivado si None
             feature_names: nombres de las columnas (opcional)
         """
         self.feature_names = feature_names
         n = len(X)
 
+        if y_margin is None:
+            y_margin = y_home_score - y_away_score
+        if y_total is None:
+            y_total = y_home_score + y_away_score
+
         # Etapa 1 — OOF stacking temporal
-        # Las predicciones OOF son unbiased: el modelo nunca vio el fold de validación
         oof_meta_X = np.zeros((n, 2))   # [rf_proba, score_diff] para cada muestra
         fold_size = n // self.n_folds
 
@@ -122,6 +137,12 @@ class NBAEnsemble:
         self.rf.fit(X, y, feature_names=feature_names)
         self.xgb.fit(X, y_home_score, y_away_score)
 
+        # Etapa 5 — modelos dedicados de margen y total
+        print("  Entrenando modelo de margen dedicado...")
+        self.margin_model.fit(X, y_margin)
+        print("  Entrenando modelo de total dedicado...")
+        self.total_model.fit(X, y_total)
+
         self.is_fitted = True
         return self
 
@@ -153,24 +174,25 @@ class NBAEnsemble:
     def predict_full(self, X) -> dict:
         """
         Retorna un diccionario con todas las salidas del ensemble:
-          - home_win_probability
-          - away_win_probability
-          - predicted_home_score
-          - predicted_away_score
-          - predicted_total
-          - score_diff
+          - home_win_probability / away_win_probability
+          - predicted_margin (modelo dedicado)
+          - predicted_total (modelo dedicado)
+          - predicted_home_score / predicted_away_score (XGBoost legacy)
           - rf_probability (señal base del RF)
         """
         home_proba = self.predict_home_win_proba(X)
         home_score, away_score = self.xgb.predict_scores(X)
         rf_proba = self.rf.predict_home_win_proba(X)
+        margin = self.margin_model.predict_margin(X) if self.margin_model.is_fitted else home_score - away_score
+        total = self.total_model.predict_total(X) if self.total_model.is_fitted else home_score + away_score
 
         return {
             "home_win_probability": home_proba,
             "away_win_probability": 1.0 - home_proba,
+            "predicted_margin": margin,
+            "predicted_total": total,
             "predicted_home_score": home_score,
             "predicted_away_score": away_score,
-            "predicted_total": home_score + away_score,
             "score_diff": home_score - away_score,
             "rf_probability": rf_proba,
         }

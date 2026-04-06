@@ -32,7 +32,7 @@ from src.config import db_config
 from src.models.random_forest import NBARandomForest
 from src.models.xgboost_model import NBAXGBoost
 from src.models.ensemble import NBAEnsemble
-from src.evaluation.metrics import evaluate_classifier, compute_economic_metrics, print_metrics_report, print_economic_report
+from src.evaluation.metrics import evaluate_classifier, evaluate_regressor, compute_economic_metrics, print_metrics_report, print_regressor_report, print_economic_report
 from src.evaluation.validation import temporal_train_test_split
 
 
@@ -51,10 +51,18 @@ DIFF_FEATURES = [
     "pace_diff",
     "off_rating_diff",
     "def_rating_diff",
-    "reb_rolling_diff",   # rolling last-5 (sin leakage)
-    "ast_rolling_diff",   # rolling last-5 (sin leakage)
-    "tov_rolling_diff",   # rolling last-5 (sin leakage)
-    "win_rate_diff",      # tasa de victorias last-10 (sin leakage)
+    "reb_rolling_diff",       # rolling last-5 (sin leakage)
+    "ast_rolling_diff",       # rolling last-5 (sin leakage)
+    "tov_rolling_diff",       # rolling last-5 (sin leakage)
+    "win_rate_diff",          # tasa de victorias last-10 (sin leakage)
+    # Nuevas features v2
+    "efg_pct_diff",           # EFG% diferencial
+    "tov_rate_diff",          # Turnover rate diferencial
+    "oreb_pct_diff",          # Offensive rebound % diferencial
+    "dreb_pct_diff",          # Defensive rebound % diferencial
+    "elo_diff",               # Elo rating diferencial
+    "streak_diff",            # Racha diferencial
+    "home_away_split_diff",   # Home/Away win rate diferencial
 ]
 
 # Features individuales que complementan (cuando el diferencial no es suficiente)
@@ -69,6 +77,12 @@ INDIVIDUAL_FEATURES = [
     "away_injuries_count",
     "home_win_rate_last10",   # tasa de victorias individual (sin leakage)
     "away_win_rate_last10",
+    # Nuevas features v2
+    "home_elo",
+    "away_elo",
+    "home_streak",
+    "away_streak",
+    "h2h_home_advantage",
 ]
 
 # Features de odds (baja cobertura ~1%, se excluyen por defecto)
@@ -78,6 +92,7 @@ ODDS_FEATURES = [
 ]
 
 TARGET = "home_win"
+TARGET_MARGIN = "point_diff"
 DATE_COL = "fecha"
 
 
@@ -147,6 +162,14 @@ def build_feature_matrix(df: pd.DataFrame, use_odds: bool = False) -> tuple:
     X = df_clean[feature_cols].values
     y = df_clean[TARGET].values
 
+    # Targets de regresión
+    score_col_home = next((c for c in ['home_pts', 'home_score'] if c in df_clean.columns), None)
+    score_col_away = next((c for c in ['away_pts', 'away_score'] if c in df_clean.columns), None)
+    if score_col_home and score_col_away:
+        home_pts = df_clean[score_col_home].fillna(0).values
+        away_pts = df_clean[score_col_away].fillna(0).values
+        df_clean['_total_points'] = home_pts + away_pts
+
     print(f"  Features: {len(feature_cols)}")
     print(f"  Muestras: {len(y)} (home_win={y.mean():.2%})")
 
@@ -176,11 +199,17 @@ def train_xgboost(X_train, df_train) -> NBAXGBoost:
 
 
 def train_ensemble(X_train, y_train, df_train, feature_cols) -> NBAEnsemble:
-    print("\nEntrenando Ensemble (RF + XGBoost → LogisticRegression)...")
-    y_home = df_train["home_score"].fillna(df_train["home_score"].median()).values
-    y_away = df_train["away_score"].fillna(df_train["away_score"].median()).values
+    print("\nEntrenando Ensemble (RF + XGBoost + Margin + Total)...")
+    score_col_h = next((c for c in ['home_pts', 'home_score'] if c in df_train.columns), 'home_score')
+    score_col_a = next((c for c in ['away_pts', 'away_score'] if c in df_train.columns), 'away_score')
+    y_home = df_train[score_col_h].fillna(df_train[score_col_h].median()).values
+    y_away = df_train[score_col_a].fillna(df_train[score_col_a].median()).values
+    y_margin = (y_home - y_away).astype(float)
+    y_total = (y_home + y_away).astype(float)
     model = NBAEnsemble()
-    model.fit(X_train, y_train, y_home, y_away, feature_names=feature_cols)
+    model.fit(X_train, y_train, y_home, y_away,
+              y_margin=y_margin, y_total=y_total,
+              feature_names=feature_cols)
     print("  Ensemble entrenado.")
     return model
 
@@ -192,7 +221,7 @@ def train_ensemble(X_train, y_train, df_train, feature_cols) -> NBAEnsemble:
 def print_calibration_curve(y_test, y_proba, n_bins=10):
     """Imprime la curva de calibración bin a bin para diagnóstico."""
     bins = np.linspace(0.0, 1.0, n_bins + 1)
-    print("\n  Curva de calibración (predicted → actual):")
+    print("\n  Curva de calibracion (predicted -> actual):")
     print(f"  {'Bin':<14} {'n':>5} {'Pred':>7} {'Actual':>8} {'Gap':>8}")
     print("  " + "-" * 44)
     for i in range(n_bins):
@@ -220,10 +249,28 @@ def evaluate(model, X_test, y_test, df_test, model_name: str) -> dict:
     print_metrics_report(pred_metrics)
     print_calibration_curve(y_test, y_proba)
 
+    # Métricas de regresión para margen y total (solo ensemble)
+    reg_metrics = {}
+    if hasattr(model, "predict_full"):
+        score_col_h = next((c for c in ['home_pts', 'home_score'] if c in df_test.columns), None)
+        score_col_a = next((c for c in ['away_pts', 'away_score'] if c in df_test.columns), None)
+        if score_col_h and score_col_a:
+            full = model.predict_full(X_test)
+            y_margin_true = (df_test[score_col_h].values - df_test[score_col_a].values).astype(float)
+            y_total_true = (df_test[score_col_h].values + df_test[score_col_a].values).astype(float)
+
+            # Filtrar juegos con score 0-0
+            valid = y_total_true > 0
+            if valid.sum() > 0:
+                margin_metrics = evaluate_regressor(y_margin_true[valid], full["predicted_margin"][valid], label="margin")
+                total_metrics = evaluate_regressor(y_total_true[valid], full["predicted_total"][valid], label="total")
+                print_regressor_report(margin_metrics, "Margen (home - away)")
+                print_regressor_report(total_metrics, "Total puntos")
+                reg_metrics = {"margin": margin_metrics, "total": total_metrics}
+
     # Métricas económicas si hay odds disponibles
     eco_metrics = {}
     if "implied_prob_home" in df_test.columns:
-        # Convertir a float manejando None y NaN (la columna puede tener ~1% cobertura)
         import pandas as pd
         implied = pd.to_numeric(df_test["implied_prob_home"], errors="coerce").values
         valid_odds = ~np.isnan(implied) & (implied > 0)
@@ -236,7 +283,7 @@ def evaluate(model, X_test, y_test, df_test, model_name: str) -> dict:
             )
             print_economic_report(eco_metrics)
 
-    return {**pred_metrics, **eco_metrics}
+    return {**pred_metrics, **eco_metrics, **reg_metrics}
 
 
 # ---------------------------------------------------------------------------

@@ -1,16 +1,16 @@
-# Variables del Modelo — v1.6.0
+# Variables del Modelo — v2.0.0
 
 ## Resumen
 
-El modelo utiliza **21 features** organizadas en dos categorías:
-- **11 features diferenciales**: `home_value - away_value`, reducen dimensionalidad e incrementan interpretabilidad
-- **10 features individuales**: valores absolutos cuando el diferencial no es suficiente
+El modelo utiliza **33 features** organizadas en dos categorías:
+- **18 features diferenciales**: `home_value - away_value`, reducen dimensionalidad e incrementan interpretabilidad
+- **15 features individuales**: valores absolutos cuando el diferencial no es suficiente
 
 Todas las features de tipo rolling utilizan `shift(1)` para garantizar que solo se usan datos de partidos **anteriores**, previniendo data leakage.
 
-## Variables actuales (v1.6.0)
+## Variables actuales (v2.0.0)
 
-### Features diferenciales (11)
+### Features diferenciales (18)
 
 | Feature | Ventana | Fórmula | Justificación |
 |---------|---------|---------|--------------|
@@ -25,8 +25,15 @@ Todas las features de tipo rolling utilizan `shift(1)` para garantizar que solo 
 | `ast_rolling_diff` | 5 juegos | `home_ast_rolling - away_ast_rolling` | Proxy de juego en equipo y creación de tiros de calidad. |
 | `tov_rolling_diff` | 5 juegos | `home_tov_rolling - away_tov_rolling` | Turnovers regalan posesiones al rival. Menos turnovers = más eficiencia. |
 | `win_rate_diff` | 10 juegos | `home_win_rate_last10 - away_win_rate_last10` | Forma reciente del equipo. Captura momentum y tendencia de resultados. |
+| `efg_pct_diff` | 5 juegos | `home_efg_pct_rolling - away_efg_pct_rolling` | EFG% (Effective FG%) pondera triples con +50%. Mejor indicador de eficiencia de tiro que FG% simple. |
+| `tov_rate_diff` | 5 juegos | `home_tov_rate_rolling - away_tov_rate_rolling` | Turnover Rate = TOV / (FGA + 0.44×FTA + TOV). Normaliza pérdidas por posesiones usadas. |
+| `oreb_pct_diff` | 5 juegos | `home_oreb_pct_rolling - away_oreb_pct_rolling` | OReb% = OREB / (OREB + OPP_DREB). Capacidad de generar segundas oportunidades. |
+| `dreb_pct_diff` | 5 juegos | `home_dreb_pct_rolling - away_dreb_pct_rolling` | DReb% = DREB / (DREB + OPP_OREB). Capacidad de negar segundas oportunidades al rival. |
+| `elo_diff` | Acumulativo | `home_elo - away_elo` | Rating Elo (K=20, home_adv=100). Incorpora toda la historia de resultados, convergente y auto-correctivo. |
+| `streak_diff` | N/A | `home_streak - away_streak` | Racha actual: positivo=victorias consecutivas, negativo=derrotas. Captura momentum. |
+| `home_away_split_diff` | 10 juegos | `home_home_win_rate - away_away_win_rate` | Win rate específico por localía. Algunos equipos rinden muy diferente en casa vs fuera. |
 
-### Features individuales (10)
+### Features individuales (15)
 
 | Feature | Ventana | Justificación |
 |---------|---------|--------------|
@@ -40,6 +47,11 @@ Todas las features de tipo rolling utilizan `shift(1)` para garantizar que solo 
 | `away_injuries_count` | N/A | Número de jugadores lesionados del visitante. |
 | `home_win_rate_last10` | 10 juegos | Porcentaje de victorias del local en últimos 10 juegos. Valor absoluto muestra si el equipo está en racha. |
 | `away_win_rate_last10` | 10 juegos | Porcentaje de victorias del visitante en últimos 10 juegos. |
+| `home_elo` | Acumulativo | Rating Elo del local entrando al juego. Sistema acumulativo con K=20 y home advantage=100. |
+| `away_elo` | Acumulativo | Rating Elo del visitante entrando al juego. |
+| `home_streak` | N/A | Racha del local antes del juego. +N = N victorias consecutivas, -N = N derrotas. |
+| `away_streak` | N/A | Racha del visitante antes del juego. |
+| `h2h_home_advantage` | 5 enfrentamientos | Fracción de victorias del local en los últimos 5 enfrentamientos directos entre estos dos equipos (normalizado 0-1). |
 
 ## Fórmulas clave
 
@@ -54,6 +66,32 @@ Offensive Rating = (Points / Possessions) × 100
 Defensive Rating = (Opponent Points / Possessions) × 100
 Net Rating       = Offensive Rating - Defensive Rating
 ```
+
+### Effective Field Goal % (EFG%)
+```
+EFG% = (FGM + 0.5 × 3PM) / FGA
+```
+Pondera triples como 1.5 tiros de campo, reflejando su mayor valor. Es un mejor indicador de eficiencia de tiro que FG% simple.
+
+### Turnover Rate
+```
+Turnover Rate = TOV / (FGA + 0.44 × FTA + TOV)
+```
+Normaliza las pérdidas por el número de posesiones usadas, no por juego. El factor 0.44 ajusta los tiros libres por posesión.
+
+### Rebound Percentages
+```
+OReb% = OREB / (OREB + OPP_DREB)
+DReb% = DREB / (DREB + OPP_OREB)
+```
+Miden la capacidad de capturar rebotes como porcentaje de los rebotes disponibles, no en valor absoluto.
+
+### Elo Rating
+```
+Expected = 1 / (1 + 10^((Opp_Elo - Elo - Home_Adv) / 400))
+New_Elo = Old_Elo + K × (Actual - Expected)
+```
+Con K=20, Home_Advantage=100, Elo_inicial=1500. Se calcula cronológicamente sobre toda la historia; el Elo entrando a un juego solo refleja resultados anteriores (sin leakage por diseño).
 
 ### Anti-leakage
 Todas las features rolling se calculan con `shift(1)`:
@@ -71,14 +109,17 @@ Las siguientes columnas existen en `ml.ml_ready_games` pero **NO se usan** como 
 
 Estas se mantienen en la tabla para el regresor XGBoost (que predice scores) y para análisis post-partido.
 
-## Variables planeadas para futuras versiones (experimental)
+## Variables planeadas para futuras versiones
 
 | Feature | Versión | Justificación | Bloqueante |
 |---------|---------|---------------|-----------|
-| Racha de victorias/derrotas | v1.7.0 | Momentum psicológico; equipos en racha tienden a mantenerla | Fácil de implementar |
-| Historial H2H (últimos 5 enfrentamientos) | v1.7.0 | Matchups específicos entre equipos; ciertos estilos dominan a otros | Requiere query adicional |
-| Cuotas históricas del mercado | v1.8.0 | La sabiduría colectiva del mercado como feature predictiva | Solo ~1% de cobertura actual |
-| Distancia de viaje | v1.8.0 | Fatiga acumulada por viajes; relevante para B2B en costa opuesta | Requiere geocodificación de arenas |
-| Minutos de jugadores clave | v2.0.0 | Rotaciones y minutos de estrellas impactan resultado | Requiere boxscores más completos |
+| Cuotas históricas del mercado | v2.1.0 | La sabiduría colectiva del mercado como feature predictiva | Solo ~1% de cobertura actual |
+| Distancia de viaje | v2.1.0 | Fatiga acumulada por viajes; relevante para B2B en costa opuesta | Requiere geocodificación de arenas |
+| Minutos de jugadores clave | v3.0.0 | Rotaciones y minutos de estrellas impactan resultado | Requiere pipeline de player props |
 
-Estas variables **no forman parte del baseline v1.6.0** y su implementación es experimental.
+## Changelog de features
+
+| Versión | Cambios |
+|---------|---------|
+| v1.6.0 | 21 features base (11 diff + 10 individual). Baseline congelado. |
+| v2.0.0 | +12 features: EFG%, TOV Rate, OReb%, DReb%, Elo, Streak, H/A splits, H2H (7 diff + 5 individual). Total: 33 features. |

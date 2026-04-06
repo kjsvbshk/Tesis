@@ -1,5 +1,5 @@
 """
-Backtesting de rentabilidad simulada - Ensemble v1.6.0
+Backtesting de rentabilidad simulada - Ensemble v2.0.0
 
 Simula tres estrategias de apuesta sobre el test set:
   1. Stake fijo con filtro EV (regla del model spec §5.2)
@@ -137,8 +137,8 @@ def run_backtesting():
     X_test = df_test[feature_cols].values
     y_test = df_test[TARGET].astype(int).values
 
-    # Cargar modelo v1.6.0
-    model_path = Path(__file__).parent.parent / "models" / "nba_prediction_model_v1.6.0.joblib"
+    # Cargar modelo v2.0.0
+    model_path = Path(__file__).parent.parent / "models" / "nba_prediction_model_v2.0.0.joblib"
     if not model_path.exists():
         print(f"ERROR: No se encontró {model_path}")
         sys.exit(1)
@@ -204,7 +204,7 @@ def run_backtesting():
     # 5. Imprimir resultados
     # ------------------------------------------------------------------
     print("\n" + "=" * 95)
-    print("  BACKTESTING DE RENTABILIDAD - Ensemble v1.6.0")
+    print("  BACKTESTING DE RENTABILIDAD - Ensemble v2.0.0")
     if using_simulated:
         print("  (Odds simuladas - resultados indicativos)")
     print("=" * 95)
@@ -229,10 +229,10 @@ def run_backtesting():
     # ------------------------------------------------------------------
     reports_dir = Path(__file__).parent.parent / "reports"
     reports_dir.mkdir(exist_ok=True)
-    output_path = reports_dir / "backtesting_results.json"
+    output_path = reports_dir / "backtesting_results_v3.json"
 
     output = {
-        "model_version": "v1.6.0",
+        "model_version": "v2.0.0",
         "test_size": len(y_test),
         "using_simulated_odds": using_simulated,
         "n_real_odds": n_real_odds,

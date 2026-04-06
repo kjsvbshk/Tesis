@@ -1,5 +1,5 @@
 """
-Visualización de calibración y diagnóstico — Ensemble v1.6.0
+Visualización de calibración y diagnóstico — Ensemble v2.0.0
 
 Genera 4 gráficas:
   1. Reliability diagram del ensemble
@@ -133,7 +133,7 @@ def plot_confidence_histogram(y_proba, output_path):
 
     ax.set_xlabel("P(home_win)", fontsize=12)
     ax.set_ylabel("Frecuencia", fontsize=12)
-    ax.set_title("Distribución de confianza — Ensemble v1.6.0", fontsize=14)
+    ax.set_title("Distribución de confianza — Ensemble v2.0.0", fontsize=14)
     ax.legend(fontsize=10)
     ax.grid(True, alpha=0.3)
 
@@ -158,7 +158,7 @@ def plot_confusion_matrix(y_true, y_proba, output_path, threshold=0.5):
         xticks=[0, 1], yticks=[0, 1],
         xticklabels=labels, yticklabels=labels,
         xlabel="Predicho", ylabel="Real",
-        title=f"Matriz de confusión — Ensemble v1.6.0 (umbral={threshold})",
+        title=f"Matriz de confusión — Ensemble v2.0.0 (umbral={threshold})",
     )
 
     # Anotar valores
@@ -195,8 +195,8 @@ def main():
     X_test = df_test[feature_cols].values
     y_test = df_test[TARGET].astype(int).values
 
-    # Ensemble v1.6.0
-    model_path = Path(__file__).parent.parent / "models" / "nba_prediction_model_v1.6.0.joblib"
+    # Ensemble v2.0.0
+    model_path = Path(__file__).parent.parent / "models" / "nba_prediction_model_v2.0.0.joblib"
     if not model_path.exists():
         print(f"ERROR: No se encontró {model_path}")
         sys.exit(1)
@@ -221,23 +221,23 @@ def main():
 
     plot_reliability_diagram(
         y_test, y_proba_ens, ece_ens,
-        "Curva de calibración — Ensemble v1.6.0",
-        FIGURES_DIR / "calibration_v160.png",
+        "Curva de calibración — Ensemble v2.0.0",
+        FIGURES_DIR / "calibration_v160_v3.png",
     )
 
     plot_calibration_comparison(
         y_test, y_proba_rf, y_proba_ens, ece_rf, ece_ens,
-        FIGURES_DIR / "calibration_comparison.png",
+        FIGURES_DIR / "calibration_comparison_v3.png",
     )
 
     plot_confidence_histogram(
         y_proba_ens,
-        FIGURES_DIR / "confidence_histogram.png",
+        FIGURES_DIR / "confidence_histogram_v3.png",
     )
 
     plot_confusion_matrix(
         y_test, y_proba_ens,
-        FIGURES_DIR / "confusion_matrix.png",
+        FIGURES_DIR / "confusion_matrix_v3.png",
     )
 
     print(f"\n  Todas las gráficas guardadas en: {FIGURES_DIR}")

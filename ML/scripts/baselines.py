@@ -1,5 +1,5 @@
 """
-Comparación de baselines contra el modelo Ensemble v1.6.0.
+Comparación de baselines contra el modelo Ensemble v2.0.0.
 
 Demuestra que el ensemble supera enfoques simples (heurísticas)
 y modelos individuales (LR, RF solo, XGB solo).
@@ -39,7 +39,7 @@ from src.models.random_forest import NBARandomForest
 
 def run_baselines():
     # ------------------------------------------------------------------
-    # 1. Cargar datos y construir features (misma partición que v1.6.0)
+    # 1. Cargar datos y construir features (misma partición que v2.0.0)
     # ------------------------------------------------------------------
     df = load_ml_ready_games()
     X, y, feature_cols, df_clean = build_feature_matrix(df)
@@ -139,15 +139,15 @@ def run_baselines():
     results.append(metrics)
 
     # ------------------------------------------------------------------
-    # Modelo 7: Ensemble v1.6.0 (oficial)
+    # Modelo 7: Ensemble v2.0.0 (33 features)
     # ------------------------------------------------------------------
-    print("[7/7] Cargando: Ensemble v1.6.0...")
-    model_path = Path(__file__).parent.parent / "models" / "nba_prediction_model_v1.6.0.joblib"
+    print("[7/7] Cargando: Ensemble v2.0.0...")
+    model_path = Path(__file__).parent.parent / "models" / "nba_prediction_model_v2.0.0.joblib"
     if model_path.exists():
         ensemble = joblib.load(model_path)
         y_proba_ens = ensemble.predict_home_win_proba(X_test)
-        metrics = evaluate_classifier(y_test, y_proba_ens, label="Ensemble v1.6.0")
-        metrics["model"] = "Ensemble v1.6.0"
+        metrics = evaluate_classifier(y_test, y_proba_ens, label="Ensemble v2.0.0")
+        metrics["model"] = "Ensemble v2.0.0"
         results.append(metrics)
     else:
         print(f"  ADVERTENCIA: No se encontró {model_path}")
@@ -155,8 +155,8 @@ def run_baselines():
         from src.training.train import train_ensemble
         ensemble = train_ensemble(X_train, y_train, df_train, feature_cols)
         y_proba_ens = ensemble.predict_home_win_proba(X_test)
-        metrics = evaluate_classifier(y_test, y_proba_ens, label="Ensemble (fresco)")
-        metrics["model"] = "Ensemble (fresco)"
+        metrics = evaluate_classifier(y_test, y_proba_ens, label="Ensemble v2.0.0")
+        metrics["model"] = "Ensemble v2.0.0"
         results.append(metrics)
 
     # ------------------------------------------------------------------
@@ -187,7 +187,7 @@ def run_baselines():
     # ------------------------------------------------------------------
     reports_dir = Path(__file__).parent.parent / "reports"
     reports_dir.mkdir(exist_ok=True)
-    output_path = reports_dir / "baselines_comparison.json"
+    output_path = reports_dir / "baselines_comparison_v3.json"
 
     # Limpiar para JSON (convertir numpy types)
     clean_results = []

@@ -29,7 +29,7 @@ COLORS = {
 
 
 def load_backtesting_results():
-    path = REPORTS_DIR / "backtesting_results.json"
+    path = REPORTS_DIR / "backtesting_results_v3.json"
     if not path.exists():
         print(f"ERROR: No se encontró {path}")
         print("  Ejecuta primero: python -m scripts.backtesting")
@@ -54,7 +54,7 @@ def plot_cumulative_profit(strategies, using_simulated, output_path):
     ax.axhline(y=0, color="black", linewidth=0.8, alpha=0.3)
     ax.set_xlabel("Apuesta #", fontsize=12)
     ax.set_ylabel("Profit acumulado (unidades)", fontsize=12)
-    title = "Profit acumulado — Ensemble v1.6.0"
+    title = "Profit acumulado — Ensemble v2.0.0"
     if using_simulated:
         title += " (odds simuladas)"
     ax.set_title(title, fontsize=14)
@@ -87,7 +87,7 @@ def plot_drawdown(strategies, using_simulated, output_path):
     ax.axhline(y=0, color="black", linewidth=0.8, alpha=0.3)
     ax.set_xlabel("Apuesta #", fontsize=12)
     ax.set_ylabel("Drawdown (unidades)", fontsize=12)
-    title = "Drawdown — Ensemble v1.6.0"
+    title = "Drawdown — Ensemble v2.0.0"
     if using_simulated:
         title += " (odds simuladas)"
     ax.set_title(title, fontsize=14)
@@ -142,17 +142,17 @@ def main():
 
     plot_cumulative_profit(
         strategies, using_simulated,
-        FIGURES_DIR / "cumulative_profit.png",
+        FIGURES_DIR / "cumulative_profit_v3.png",
     )
 
     plot_drawdown(
         strategies, using_simulated,
-        FIGURES_DIR / "drawdown.png",
+        FIGURES_DIR / "drawdown_v3.png",
     )
 
     plot_ev_distribution(
         data["ev_distribution"],
-        FIGURES_DIR / "ev_distribution.png",
+        FIGURES_DIR / "ev_distribution_v3.png",
     )
 
     print(f"\n  Todas las gráficas guardadas en: {FIGURES_DIR}")

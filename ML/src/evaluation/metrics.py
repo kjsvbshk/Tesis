@@ -25,6 +25,8 @@ from sklearn.metrics import (
     brier_score_loss,
     roc_auc_score,
     accuracy_score,
+    mean_absolute_error,
+    mean_squared_error,
 )
 
 
@@ -156,14 +158,64 @@ def print_metrics_report(metrics: dict):
         "ECE        (< 0.05)": (metrics["ece"],         metrics["passes_ece"]),
     }
     for name, (value, passes) in checks.items():
-        status = "✅" if passes else "❌"
+        status = "[OK]" if passes else "[X]"
         print(f"  {status} {name}: {value:.4f}")
 
-    print(f"  {'─'*51}")
+    print(f"  {'-'*51}")
     print(f"  Accuracy:                     {metrics['accuracy']:.4f}")
-    overall = "✅ PASA criterios" if metrics["passes_all"] else "❌ NO pasa todos los criterios"
+    overall = "[OK] PASA criterios" if metrics["passes_all"] else "[X] NO pasa todos los criterios"
     print(f"\n  Resultado: {overall}")
     print(f"{'='*55}\n")
+
+
+# ---------------------------------------------------------------------------
+# Métricas de regresión (margen y total)
+# ---------------------------------------------------------------------------
+
+def evaluate_regressor(
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+    label: str = "test",
+) -> dict:
+    """
+    Calcula métricas de regresión para margen o total de puntos.
+
+    Criterios de aceptación:
+      - Margen MAE < 10.0 puntos
+      - Total MAE < 15.0 puntos
+
+    Args:
+        y_true: valores reales
+        y_pred: valores predichos
+        label:  etiqueta (ej: "margin", "total")
+
+    Returns:
+        Diccionario con MAE, RMSE, bias, correlación.
+    """
+    mae = mean_absolute_error(y_true, y_pred)
+    rmse = np.sqrt(mean_squared_error(y_true, y_pred))
+    bias = float(np.mean(y_pred - y_true))
+    corr = float(np.corrcoef(y_true, y_pred)[0, 1]) if len(y_true) > 1 else 0.0
+
+    return {
+        "split": label,
+        "n_samples": int(len(y_true)),
+        "mae": round(mae, 2),
+        "rmse": round(rmse, 2),
+        "bias": round(bias, 2),
+        "correlation": round(corr, 4),
+        "passes_mae_margin": mae < 10.0,
+        "passes_mae_total": mae < 15.0,
+    }
+
+
+def print_regressor_report(metrics: dict, title: str = "Regresión"):
+    """Imprime un reporte legible de métricas de regresión."""
+    print(f"\n  --- {title} (n={metrics['n_samples']}) ---")
+    print(f"  MAE:          {metrics['mae']:.2f} pts")
+    print(f"  RMSE:         {metrics['rmse']:.2f} pts")
+    print(f"  Bias:         {metrics['bias']:+.2f} pts")
+    print(f"  Correlación:  {metrics['correlation']:.4f}")
 
 
 # ---------------------------------------------------------------------------
@@ -328,7 +380,7 @@ def print_economic_report(eco: dict):
     print(f"  Ganancia total:           {eco['total_profit']:+.2f} unidades")
 
     if eco.get("kelly_roi") is not None:
-        print(f"  {'─'*51}")
+        print(f"  {'-'*51}")
         print(f"  Kelly fraccional (25%):")
         print(f"    Stake promedio:         {eco['avg_kelly_stake']:.4f}")
         print(f"    ROI Kelly:              {eco['kelly_roi']:.2%}")

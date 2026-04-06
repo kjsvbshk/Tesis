@@ -12,7 +12,10 @@
       "Bash(ls -la /c/Users/Kjsvb/OneDrive/Documentos/Tesis/Tesis/ML/reports/*.json)",
       "Bash(sort -k2)",
       "Bash(xargs grep:*)",
-      "Bash(grep -A 10 \"CREATE TABLE.*game_id_mapping\\\\|game_id VARCHAR\\\\|game_id BIGINT\" /c/Users/Kjsvb/OneDrive/Documentos/Tesis/Tesis/Scrapping/nba/*.py)"
+      "Bash(grep -A 10 \"CREATE TABLE.*game_id_mapping\\\\|game_id VARCHAR\\\\|game_id BIGINT\" /c/Users/Kjsvb/OneDrive/Documentos/Tesis/Tesis/Scrapping/nba/*.py)",
+      "Bash(python -c \":*)",
+      "Bash(find C:/Users/Kjsvb/OneDrive/Documentos/Tesis/Tesis -type f \\\\\\(-name *v2* -o -name *_new* -o -name *_report* -o -name *_analysis* \\\\\\))",
+      "Bash(grep -E \"\\\\.\\(py|sql\\)$\")"
     ]
   }
 }

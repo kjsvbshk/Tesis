@@ -59,19 +59,37 @@ export function LoginPage() {
       {/* Visual Side */}
       <div className="hidden lg:flex w-1/2 bg-metal-900 flex-col justify-between p-12 relative overflow-hidden border-r border-border">
         <div className="scanlines absolute inset-0 opacity-10" />
-        <div className="z-10">
-          <h1 className="text-4xl font-display font-bold text-white mb-2">HOUSE ALWAYS<br /><span className="text-acid-500">WINS</span></h1>
-          <div className="h-1 w-20 bg-acid-500" />
+
+        {/* Animated circles — centered */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] border border-acid-500/10 rounded-full animate-pulse-glow" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[540px] h-[540px] border border-acid-500/15 rounded-full animate-pulse-glow" style={{ animationDelay: '0.5s' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[380px] h-[380px] border border-acid-500/20 rotate-45" />
+
+        {/* Text content — centered over circles */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 text-center w-72">
+          <h1 className="text-8xl font-display font-black text-white leading-none mb-3">HAW</h1>
+          <p className="text-xl font-display font-bold text-white mb-2">House Always Wins</p>
+          <p className="text-muted-foreground text-xs leading-relaxed mb-6">
+            Únete a la comunidad de predicciones NBA
+          </p>
+          <div className="space-y-2">
+            {[
+              'Registro gratuito',
+              '1,000 créditos de inicio',
+              'Sin dinero real',
+            ].map((item) => (
+              <div key={item} className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
+                <span className="text-acid-500 font-bold">✓</span>
+                <span>{item}</span>
+              </div>
+            ))}
+          </div>
         </div>
 
-        <div className="z-10 font-mono text-muted-foreground text-sm">
-          :: SYSTEM ACCESS TERMINAL<br />
-          :: v2.0.4 [STABLE]
+        {/* Bottom version tag */}
+        <div className="z-10 mt-auto font-mono text-muted-foreground/40 text-xs">
+          v2.0.4
         </div>
-
-        {/* Abstract Deco */}
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] border border-acid-500/10 rounded-full animate-pulse-glow" />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] border border-acid-500/20 rotate-45" />
       </div>
 
       {/* Form Side */}

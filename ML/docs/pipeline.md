@@ -15,10 +15,12 @@ El pipeline está diseñado para **prevenir data leakage** en cada etapa: las fe
 **Fuentes**: ESPN API (schedule, boxscores, standings, injuries), NBA.com (boxscores complementarios)
 
 **Cobertura**: 3 temporadas NBA
-- 2023-24: 1,322 partidos
-- 2024-25: 1,329 partidos
-- 2025-26: 1,244 partidos (temporada en curso)
+- 2023-24: 1,322 partidos (regular + playoffs)
+- 2024-25: 1,329 partidos (regular + playoffs)
+- 2025-26: 1,244 partidos (temporada en curso hasta marzo 2026)
 - **Total**: 3,895 registros en `espn.games`
+- **Con boxscore**: 3,750+ juegos (96.2% de juegos jugados)
+- **Mappings ESPN→NBA**: 3,755 (tras recuperación de 242 juegos faltantes)
 
 **Tablas de origen** (schema `espn` en Neon PostgreSQL):
 | Tabla | Contenido | Script principal |
@@ -35,11 +37,12 @@ El pipeline está diseñado para **prevenir data leakage** en cada etapa: las fe
 
 2. **Normalización de equipos**: `normalize_team()` en `map_odds_to_games.py` estandariza nombres (ej: "76ers" → "Philadelphia 76ers", "LA Clippers" → "Los Angeles Clippers").
 
-3. **Resolución de IDs**: ESPN usa IDs de 9 dígitos; NBA Stats usa IDs de 8 dígitos. `espn.game_id_mapping` vincula ambos sistemas. Cobertura: 94.1% (3,455/3,670 juegos jugados).
+3. **Resolución de IDs**: ESPN usa IDs de 9 dígitos; NBA Stats usa IDs de 8 dígitos. `espn.game_id_mapping` vincula ambos sistemas. Cobertura: 99.7% (3,755/3,765 juegos jugados). Se utilizan dos scrapers complementarios: `scrape_missing_2026_boxscores.py` (con mapping existente) y `scrape_new_boxscores.py` (sin mapping, usa CDN de NBA.com).
 
 4. **Filtrado de datos inválidos**:
    - Juegos con score 0-0: partidos futuros o sin procesar → excluidos del entrenamiento
-   - 18 juegos sin datos disponibles en ESPN (cancelados, LA wildfires) → filtrados
+   - 130 juegos con score 0-0: futuros, postponed o sin datos → filtrados
+   - 15 juegos con score pero sin boxscore recuperable (errores de red/API) → features calculadas sin boxscore (NaN en rolling stats)
 
 ## 3. Ingeniería de variables
 
@@ -64,7 +67,7 @@ Def Rating = (Puntos rival / Posesiones) × 100
 Net Rating = Off Rating - Def Rating
 ```
 
-**Tabla de salida**: `ml.ml_ready_games` (~3,670 juegos jugados con features completas)
+**Tabla de salida**: `ml.ml_ready_games` (3,895 registros; 3,875 con features completas, 20 sin features por ser primeros de temporada)
 
 ## 4. Entrenamiento
 
@@ -106,7 +109,7 @@ Calibración final: Isotonic Regression sobre predicciones OOF
 
 **Split principal**: 80% train / 20% test, ordenado cronológicamente.
 - Train: juegos más antiguos
-- Test: juegos más recientes (734 partidos en v1.6.0)
+- Test: juegos más recientes (753 partidos en evaluación v2)
 
 **Expanding Window Cross-Validation** (5 folds):
 ```
@@ -128,7 +131,7 @@ La calibración es crucial para apuestas: las probabilidades predichas deben ref
 1. **RandomForest**: `CalibratedClassifierCV` con método isotónico y cv=5 interno.
 2. **Ensemble**: Isotonic Regression entrenada sobre predicciones OOF (out-of-fold), no sobre predicciones del train set. Esto previene sobreajuste en la calibración.
 
-**Resultado**: ECE = 0.0363 (objetivo < 0.05), indicando que cuando el modelo dice "60% probabilidad", gana el local ~60% de las veces.
+**Resultado**: ECE = 0.0834 en evaluación v2 (objetivo < 0.05). La calibración se degrada en datos más recientes (test set dic 2025 - mar 2026), sugiriendo necesidad de re-entrenamiento periódico. En el test set original, ECE era 0.0363.
 
 ## 7. Exportación
 

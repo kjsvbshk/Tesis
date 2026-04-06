@@ -22,7 +22,7 @@ def build_features():
     Construye features de ingeniería para ml_ready_games
     """
     print("=" * 60)
-    print("🔧 FASE 2: Feature Engineering Básico y Rolling Features")
+    print("[*] FASE 2: Feature Engineering Básico y Rolling Features")
     print("=" * 60)
     print()
     
@@ -43,7 +43,7 @@ def build_features():
             conn.execute(text(f"SET search_path TO {ml_schema}, {espn_schema}, public"))
             conn.commit()
         
-        print("📥 Paso 1: Cargando datos desde Neon...")
+        print("[>] Paso 1: Cargando datos desde Neon...")
         print("-" * 60)
         
         # 1) Cargar games y otras tablas necesarias
@@ -52,7 +52,7 @@ def build_features():
             f"SELECT * FROM {espn_schema}.games ORDER BY fecha",
             engine
         )
-        print(f"   ✅ {len(games)} partidos cargados")
+        print(f"   [OK] {len(games)} partidos cargados")
         
         print("   Cargando espn.game_id_mapping...")
         try:
@@ -63,9 +63,9 @@ def build_features():
             # Normalizar tipos para join
             games['game_id_str'] = games['game_id'].astype(str)
             games = games.merge(mapping, left_on='game_id_str', right_on='espn_id', how='left')
-            print(f"   ✅ Mapeo de IDs cargado y aplicado ({games['nba_id'].count()} coincidencias)")
+            print(f"   [OK] Mapeo de IDs cargado y aplicado ({games['nba_id'].count()} coincidencias)")
         except Exception as e:
-            print(f"   ⚠️  No se pudo cargar game_id_mapping: {e}")
+            print(f"   [!]  No se pudo cargar game_id_mapping: {e}")
             games['nba_id'] = None
         
         print("   Cargando espn.nba_player_boxscores...")
@@ -76,7 +76,7 @@ def build_features():
             )
             # COVERTIR game_id A BIGINT PARA MATCHING
             player_box['game_id'] = pd.to_numeric(player_box['game_id'], errors='coerce').astype('Int64')
-            print(f"   ✅ {len(player_box)} registros loaded")
+            print(f"   [OK] {len(player_box)} registros loaded")
             
             # Debug: Check a few game IDs
             print(f"   [DEBUG] Sample Boxscore Game IDs: {player_box['game_id'].dropna().head(3).tolist()}")
@@ -109,9 +109,9 @@ def build_features():
                 team_game_stats['oreb'] + 
                 team_game_stats['tov']
             )
-            print(f"   ✅ Estadísticas de equipo calculadas para {len(team_game_stats)} registros")
+            print(f"   [OK] Estadísticas de equipo calculadas para {len(team_game_stats)} registros")
         except Exception as e:
-            print(f"   ⚠️  No se pudo cargar o procesar nba_player_boxscores: {e}")
+            print(f"   [!]  No se pudo cargar o procesar nba_player_boxscores: {e}")
             print(e)
             team_game_stats = pd.DataFrame()
         
@@ -121,9 +121,9 @@ def build_features():
                 f"SELECT * FROM {espn_schema}.injuries",
                 engine
             )
-            print(f"   ✅ {len(injuries)} registros de lesiones cargados")
+            print(f"   [OK] {len(injuries)} registros de lesiones cargados")
         except Exception as e:
-            print(f"   ⚠️  No se pudo cargar injuries: {e}")
+            print(f"   [!]  No se pudo cargar injuries: {e}")
             injuries = pd.DataFrame()
         
         print("   Cargando espn.odds...")
@@ -134,27 +134,66 @@ def build_features():
                 f"SELECT * FROM {espn_schema}.odds",
                 engine
             )
-            print(f"   ✅ {len(odds)} registros de cuotas cargados")
+            print(f"   [OK] {len(odds)} registros de cuotas cargados")
         except Exception as e:
-            print(f"   ⚠️  No se pudo cargar odds: {e}")
+            print(f"   [!]  No se pudo cargar odds: {e}")
             odds = pd.DataFrame()
         
         print()
         
         # 2) Normalizar nombres de equipos
-        print("📝 Paso 2: Normalizando nombres de equipos...")
+        print("[>] Paso 2: Normalizando nombres de equipos...")
         print("-" * 60)
         
         # Mapeo de tricode a nombre de equipo si es necesario
         # (Aunque nba_player_boxscores usa tricode, games usa nombres completos)
         # Vamos a usar el mapping que ya existe en la base de datos si es posible
-        print("   ✅ Usando nombres completos de equipos (no abreviaciones)")
+        print("   [OK] Usando nombres completos de equipos (no abreviaciones)")
         print()
         
         # 3) Helper: construir rolling aggregates por equipo
-        print("📊 Paso 3: Calculando rolling features...")
+        print("[>] Paso 3: Calculando rolling features...")
         print("-" * 60)
-        
+
+        def compute_elo(df_games, K=20, home_advantage=100, initial=1500):
+            """Calcula Elo rating para cada equipo ANTES de cada juego."""
+            elo = {}
+            game_elos = {}
+            for _, row in df_games.sort_values('fecha').iterrows():
+                home, away = row['home_team'], row['away_team']
+                gid = row['game_id']
+                h_elo = elo.get(home, initial)
+                a_elo = elo.get(away, initial)
+                game_elos[(gid, home)] = h_elo
+                game_elos[(gid, away)] = a_elo
+                h_pts = row.get('home_pts') or row.get('home_score') or 0
+                a_pts = row.get('away_pts') or row.get('away_score') or 0
+                if h_pts == 0 and a_pts == 0:
+                    continue
+                exp_h = 1 / (1 + 10 ** ((a_elo - h_elo - home_advantage) / 400))
+                actual_h = 1.0 if h_pts > a_pts else 0.0
+                elo[home] = h_elo + K * (actual_h - exp_h)
+                elo[away] = a_elo + K * ((1 - actual_h) - (1 - exp_h))
+            return game_elos
+
+        def compute_h2h(df_games, n_recent=5):
+            """Para cada juego, calcula wins del home en últimos n_recent enfrentamientos."""
+            h2h = {}
+            matchup_history = {}
+            for _, row in df_games.sort_values('fecha').iterrows():
+                home, away, gid = row['home_team'], row['away_team'], row['game_id']
+                key = tuple(sorted([home, away]))
+                history = matchup_history.get(key, [])
+                recent = history[-n_recent:] if history else []
+                home_wins = sum(1 for _, w in recent if w == home)
+                h2h[gid] = home_wins / max(len(recent), 1)
+                h_pts = row.get('home_pts') or row.get('home_score') or 0
+                a_pts = row.get('away_pts') or row.get('away_score') or 0
+                if h_pts > 0 or a_pts > 0:
+                    winner = home if h_pts > a_pts else away
+                    matchup_history.setdefault(key, []).append((row['fecha'], winner))
+            return h2h
+
         def rolling_stats(df_games, df_team_stats):
             """
             Construye estadísticas rolling por equipo
@@ -218,58 +257,62 @@ def build_features():
                 
                 home_stats = stats_map.get((lookup_id, home_tricode), {})
                 away_stats = stats_map.get((lookup_id, away_tricode), {})
-                
+                home_has_box = bool(home_stats)
+                away_has_box = bool(away_stats)
+
                 home_poss = home_stats.get('poss', None)
                 away_poss = away_stats.get('poss', None)
 
-                # Base Stats extraction
-                def get_stat(stats, key, default=0):
-                    return stats.get(key, default)
+                # Base Stats extraction [?] NaN when no boxscore data
+                def get_stat(stats, key, has_box):
+                    if not has_box:
+                        return np.nan
+                    return stats.get(key, 0)
                 
                 # Rebounds
-                h_oreb = get_stat(home_stats, 'oreb')
-                h_dreb = get_stat(home_stats, 'dreb')
+                h_oreb = get_stat(home_stats, 'oreb', home_has_box)
+                h_dreb = get_stat(home_stats, 'dreb', home_has_box)
                 h_reb = h_oreb + h_dreb
-                
-                a_oreb = get_stat(away_stats, 'oreb')
-                a_dreb = get_stat(away_stats, 'dreb')
+
+                a_oreb = get_stat(away_stats, 'oreb', away_has_box)
+                a_dreb = get_stat(away_stats, 'dreb', away_has_box)
                 a_reb = a_oreb + a_dreb
-                
+
                 # Assists, Steals, Blocks, TOV
-                h_ast = get_stat(home_stats, 'ast')
-                h_stl = get_stat(home_stats, 'stl')
-                h_blk = get_stat(home_stats, 'blk')
-                h_tov = get_stat(home_stats, 'tov')
-                
-                a_ast = get_stat(away_stats, 'ast')
-                a_stl = get_stat(away_stats, 'stl')
-                a_blk = get_stat(away_stats, 'blk')
-                a_tov = get_stat(away_stats, 'tov')
-                
-                # Percentages
-                h_fgm = get_stat(home_stats, 'fgm')
-                h_fga = get_stat(home_stats, 'fga')
-                h_fg_pct = (h_fgm / h_fga) if h_fga > 0 else 0.0
-                
-                a_fgm = get_stat(away_stats, 'fgm')
-                a_fga = get_stat(away_stats, 'fga')
-                a_fg_pct = (a_fgm / a_fga) if a_fga > 0 else 0.0
-                
-                h_fg3m = get_stat(home_stats, 'three_pm')
-                h_fg3a = get_stat(home_stats, 'three_pa')
-                h_fg3_pct = (h_fg3m / h_fg3a) if h_fg3a > 0 else 0.0
-                
-                a_fg3m = get_stat(away_stats, 'three_pm')
-                a_fg3a = get_stat(away_stats, 'three_pa')
-                a_fg3_pct = (a_fg3m / a_fg3a) if a_fg3a > 0 else 0.0
-                
-                h_ftm = get_stat(home_stats, 'ftm')
-                h_fta = get_stat(home_stats, 'fta')
-                h_ft_pct = (h_ftm / h_fta) if h_fta > 0 else 0.0
-                
-                a_ftm = get_stat(away_stats, 'ftm')
-                a_fta = get_stat(away_stats, 'fta')
-                a_ft_pct = (a_ftm / a_fta) if a_fta > 0 else 0.0
+                h_ast = get_stat(home_stats, 'ast', home_has_box)
+                h_stl = get_stat(home_stats, 'stl', home_has_box)
+                h_blk = get_stat(home_stats, 'blk', home_has_box)
+                h_tov = get_stat(home_stats, 'tov', home_has_box)
+
+                a_ast = get_stat(away_stats, 'ast', away_has_box)
+                a_stl = get_stat(away_stats, 'stl', away_has_box)
+                a_blk = get_stat(away_stats, 'blk', away_has_box)
+                a_tov = get_stat(away_stats, 'tov', away_has_box)
+
+                # Percentages [?] NaN when no boxscore
+                h_fgm = get_stat(home_stats, 'fgm', home_has_box)
+                h_fga = get_stat(home_stats, 'fga', home_has_box)
+                h_fg_pct = (h_fgm / h_fga) if (home_has_box and h_fga > 0) else np.nan if not home_has_box else 0.0
+
+                a_fgm = get_stat(away_stats, 'fgm', away_has_box)
+                a_fga = get_stat(away_stats, 'fga', away_has_box)
+                a_fg_pct = (a_fgm / a_fga) if (away_has_box and a_fga > 0) else np.nan if not away_has_box else 0.0
+
+                h_fg3m = get_stat(home_stats, 'three_pm', home_has_box)
+                h_fg3a = get_stat(home_stats, 'three_pa', home_has_box)
+                h_fg3_pct = (h_fg3m / h_fg3a) if (home_has_box and h_fg3a > 0) else np.nan if not home_has_box else 0.0
+
+                a_fg3m = get_stat(away_stats, 'three_pm', away_has_box)
+                a_fg3a = get_stat(away_stats, 'three_pa', away_has_box)
+                a_fg3_pct = (a_fg3m / a_fg3a) if (away_has_box and a_fg3a > 0) else np.nan if not away_has_box else 0.0
+
+                h_ftm = get_stat(home_stats, 'ftm', home_has_box)
+                h_fta = get_stat(home_stats, 'fta', home_has_box)
+                h_ft_pct = (h_ftm / h_fta) if (home_has_box and h_fta > 0) else np.nan if not home_has_box else 0.0
+
+                a_ftm = get_stat(away_stats, 'ftm', away_has_box)
+                a_fta = get_stat(away_stats, 'fta', away_has_box)
+                a_ft_pct = (a_ftm / a_fta) if (away_has_box and a_fta > 0) else np.nan if not away_has_box else 0.0
                 
                 # Si tenemos posesiones, calculamos ratings individuales de este partido
                 home_off_rtg = (home_pts / home_poss * 100) if home_poss and home_poss > 0 else None
@@ -278,10 +321,29 @@ def build_features():
                 # Pace (partido individual)
                 game_pace = (home_poss + away_poss) / 2 if home_poss and away_poss else None
                 
+                # EFG%: (FGM + 0.5 * 3PM) / FGA
+                h_efg_pct = ((h_fgm + 0.5 * h_fg3m) / h_fga) if (home_has_box and not np.isnan(h_fga) and h_fga > 0) else np.nan
+                a_efg_pct = ((a_fgm + 0.5 * a_fg3m) / a_fga) if (away_has_box and not np.isnan(a_fga) and a_fga > 0) else np.nan
+
+                # Turnover Rate: TOV / (FGA + 0.44*FTA + TOV)
+                h_tov_denom = h_fga + 0.44 * h_fta + h_tov if home_has_box else np.nan
+                h_tov_rate = (h_tov / h_tov_denom) if (home_has_box and not np.isnan(h_tov_denom) and h_tov_denom > 0) else np.nan
+                a_tov_denom = a_fga + 0.44 * a_fta + a_tov if away_has_box else np.nan
+                a_tov_rate = (a_tov / a_tov_denom) if (away_has_box and not np.isnan(a_tov_denom) and a_tov_denom > 0) else np.nan
+
+                # OReb%: OREB / (OREB + OPP_DREB)
+                h_oreb_pct = (h_oreb / (h_oreb + a_dreb)) if (home_has_box and away_has_box and not np.isnan(h_oreb) and (h_oreb + a_dreb) > 0) else np.nan
+                a_oreb_pct = (a_oreb / (a_oreb + h_dreb)) if (away_has_box and home_has_box and not np.isnan(a_oreb) and (a_oreb + h_dreb) > 0) else np.nan
+
+                # DReb%: DREB / (DREB + OPP_OREB)
+                h_dreb_pct = (h_dreb / (h_dreb + a_oreb)) if (home_has_box and away_has_box and not np.isnan(h_dreb) and (h_dreb + a_oreb) > 0) else np.nan
+                a_dreb_pct = (a_dreb / (a_dreb + h_oreb)) if (away_has_box and home_has_box and not np.isnan(a_dreb) and (a_dreb + h_oreb) > 0) else np.nan
+
                 rows.append({
                     'game_id': game_id,
                     'fecha': fecha,
                     'team': home_team,
+                    'opponent': away_team,
                     'is_home': True,
                     'pts': home_pts,
                     'opp_pts': away_pts,
@@ -290,13 +352,16 @@ def build_features():
                     'off_rtg': home_off_rtg,
                     'pace': game_pace,
                     'fg_pct': h_fg_pct, 'fg3_pct': h_fg3_pct, 'ft_pct': h_ft_pct,
-                    'reb': h_reb, 'ast': h_ast, 'stl': h_stl, 'blk': h_blk, 'tov': h_tov
+                    'reb': h_reb, 'ast': h_ast, 'stl': h_stl, 'blk': h_blk, 'tov': h_tov,
+                    'efg_pct': h_efg_pct, 'tov_rate': h_tov_rate,
+                    'oreb_pct': h_oreb_pct, 'dreb_pct': h_dreb_pct,
                 })
-                
+
                 rows.append({
                     'game_id': game_id,
                     'fecha': fecha,
                     'team': away_team,
+                    'opponent': home_team,
                     'is_home': False,
                     'pts': away_pts,
                     'opp_pts': home_pts,
@@ -305,7 +370,9 @@ def build_features():
                     'off_rtg': away_off_rtg,
                     'pace': game_pace,
                     'fg_pct': a_fg_pct, 'fg3_pct': a_fg3_pct, 'ft_pct': a_ft_pct,
-                    'reb': a_reb, 'ast': a_ast, 'stl': a_stl, 'blk': a_blk, 'tov': a_tov
+                    'reb': a_reb, 'ast': a_ast, 'stl': a_stl, 'blk': a_blk, 'tov': a_tov,
+                    'efg_pct': a_efg_pct, 'tov_rate': a_tov_rate,
+                    'oreb_pct': a_oreb_pct, 'dreb_pct': a_dreb_pct,
                 })
             
             tt = pd.DataFrame(rows).sort_values(['team', 'fecha', 'game_id'])
@@ -337,8 +404,8 @@ def build_features():
             )
             tt['def_rtg_last5'] = (tt['opp_pts_last5'] / tt['poss_last5'] * 100).where(tt['poss_last5'] > 0, None)
 
-            # Rolling reb / ast / tov — shift(1) garantiza que solo se usan partidos ANTERIORES
-            # (home_reb/ast/tov sin rolling son del partido actual → leakage)
+            # Rolling reb / ast / tov [?] shift(1) garantiza que solo se usan partidos ANTERIORES
+            # (home_reb/ast/tov sin rolling son del partido actual -> leakage)
             tt['reb_last5'] = tt.groupby('team')['reb'].transform(
                 lambda x: x.shift(1).rolling(window=5, min_periods=1).mean()
             )
@@ -355,14 +422,78 @@ def build_features():
                 lambda x: x.shift(1).rolling(window=10, min_periods=1).mean()
             )
 
+            # === NUEVAS FEATURES v2 ===
+
+            # EFG% rolling (últimos 5 partidos)
+            tt['efg_pct_last5'] = tt.groupby('team')['efg_pct'].transform(
+                lambda x: x.shift(1).rolling(window=5, min_periods=1).mean()
+            )
+
+            # Turnover Rate rolling (últimos 5 partidos)
+            tt['tov_rate_last5'] = tt.groupby('team')['tov_rate'].transform(
+                lambda x: x.shift(1).rolling(window=5, min_periods=1).mean()
+            )
+
+            # OReb% rolling (últimos 5 partidos)
+            tt['oreb_pct_last5'] = tt.groupby('team')['oreb_pct'].transform(
+                lambda x: x.shift(1).rolling(window=5, min_periods=1).mean()
+            )
+
+            # DReb% rolling (últimos 5 partidos)
+            tt['dreb_pct_last5'] = tt.groupby('team')['dreb_pct'].transform(
+                lambda x: x.shift(1).rolling(window=5, min_periods=1).mean()
+            )
+
+            # Streak: rachas consecutivas de victorias (+) o derrotas (-)
+            def compute_streak(wins):
+                streak = []
+                current = 0
+                for w in wins:
+                    if pd.isna(w):
+                        streak.append(0)
+                        continue
+                    current = max(0, current) + 1 if w == 1 else min(0, current) - 1
+                    streak.append(current)
+                return pd.Series(streak, index=wins.index)
+
+            tt['streak'] = tt.groupby('team')['win'].transform(
+                lambda x: compute_streak(x).shift(1).fillna(0)
+            )
+
+            # Home/Away splits: win rate solo en partidos como local o visitante
+            tt['home_game_win'] = tt['win'].where(tt['is_home'], np.nan)
+            tt['away_game_win'] = tt['win'].where(~tt['is_home'], np.nan)
+            tt['home_win_rate_split'] = tt.groupby('team')['home_game_win'].transform(
+                lambda x: x.shift(1).rolling(window=10, min_periods=3).mean()
+            )
+            tt['away_win_rate_split'] = tt.groupby('team')['away_game_win'].transform(
+                lambda x: x.shift(1).rolling(window=10, min_periods=3).mean()
+            )
+
             return tt
         
         tt = rolling_stats(games, team_game_stats)
-        print(f"   ✅ Rolling features calculadas para {len(tt)} registros")
+        print(f"   [OK] Rolling features calculadas para {len(tt)} registros")
+
+        # Elo ratings (cumulative, leakage-free by design)
+        print("   Calculando Elo ratings...")
+        elo_map = compute_elo(games)
+        tt['elo'] = tt.apply(lambda r: elo_map.get((r['game_id'], r['team']), 1500), axis=1)
+        print(f"   [OK] Elo calculado para {tt['elo'].notna().sum()} registros")
+
+        # H2H (home team advantage in last 5 matchups)
+        print("   Calculando H2H...")
+        h2h_map = compute_h2h(games)
+        # H2H solo se asigna al row del home team; away se calcula como inverso
+        tt['h2h_home_wins_last5'] = tt.apply(
+            lambda r: h2h_map.get(r['game_id'], 0.5) if r['is_home'] else (1.0 - h2h_map.get(r['game_id'], 0.5)),
+            axis=1
+        )
+        print(f"   [OK] H2H calculado")
         print()
         
         # 4) Merge rolling features back into ml_ready_games
-        print("🔄 Paso 4: Aplicando rolling features a ml_ready_games...")
+        print("[>] Paso 4: Aplicando rolling features a ml_ready_games...")
         print("-" * 60)
         
         # Leer ml_ready_games
@@ -371,10 +502,10 @@ def build_features():
             f"SELECT * FROM {ml_schema}.ml_ready_games",
             engine
         )
-        print(f"   ✅ {len(ml)} registros cargados")
+        print(f"   [OK] {len(ml)} registros cargados")
         
         # Merge tt with ml
-        tt_home = tt[tt['is_home'] == True].rename(columns={
+        home_rename = {
             'pts_last5': 'home_ppg_last5',
             'net_last10': 'home_net_rating_last10',
             'pace_last5': 'home_pace_rolling',
@@ -386,11 +517,20 @@ def build_features():
             'ast_last5': 'home_ast_rolling',
             'tov_last5': 'home_tov_rolling',
             'win_rate_last10': 'home_win_rate_last10',
-        })[['game_id', 'home_ppg_last5', 'home_net_rating_last10', 'home_pace_rolling', 'home_off_rating_rolling', 'home_def_rating_rolling',
-            'home_fg_pct', 'home_3p_pct', 'home_ft_pct', 'home_reb', 'home_ast', 'home_stl', 'home_blk', 'home_to',
-            'home_reb_rolling', 'home_ast_rolling', 'home_tov_rolling', 'home_win_rate_last10']]
+            # Nuevas features v2
+            'efg_pct_last5': 'home_efg_pct_rolling',
+            'tov_rate_last5': 'home_tov_rate_rolling',
+            'oreb_pct_last5': 'home_oreb_pct_rolling',
+            'dreb_pct_last5': 'home_dreb_pct_rolling',
+            'elo': 'home_elo',
+            'streak': 'home_streak',
+            'home_win_rate_split': 'home_home_win_rate',
+            'h2h_home_wins_last5': 'h2h_home_advantage',
+        }
+        home_cols = ['game_id'] + list(home_rename.values())
+        tt_home = tt[tt['is_home'] == True].rename(columns=home_rename)[home_cols]
 
-        tt_away = tt[tt['is_home'] == False].rename(columns={
+        away_rename = {
             'pts_last5': 'away_ppg_last5',
             'net_last10': 'away_net_rating_last10',
             'pace_last5': 'away_pace_rolling',
@@ -402,28 +542,32 @@ def build_features():
             'ast_last5': 'away_ast_rolling',
             'tov_last5': 'away_tov_rolling',
             'win_rate_last10': 'away_win_rate_last10',
-        })[['game_id', 'away_ppg_last5', 'away_net_rating_last10', 'away_pace_rolling', 'away_off_rating_rolling', 'away_def_rating_rolling',
-            'away_fg_pct', 'away_3p_pct', 'away_ft_pct', 'away_reb', 'away_ast', 'away_stl', 'away_blk', 'away_to',
-            'away_reb_rolling', 'away_ast_rolling', 'away_tov_rolling', 'away_win_rate_last10']]
+            # Nuevas features v2
+            'efg_pct_last5': 'away_efg_pct_rolling',
+            'tov_rate_last5': 'away_tov_rate_rolling',
+            'oreb_pct_last5': 'away_oreb_pct_rolling',
+            'dreb_pct_last5': 'away_dreb_pct_rolling',
+            'elo': 'away_elo',
+            'streak': 'away_streak',
+            'away_win_rate_split': 'away_away_win_rate',
+        }
+        away_cols = ['game_id'] + [v for v in away_rename.values()]
+        tt_away = tt[tt['is_home'] == False].rename(columns=away_rename)[away_cols]
 
         # Limpiar ml de columnas que vamos a sobreescribir para evitar duplicados en el merge
-        cols_to_drop = ['home_ppg_last5', 'away_ppg_last5', 'home_net_rating_last10', 'away_net_rating_last10',
-                        'home_pace_rolling', 'away_pace_rolling', 'home_off_rating_rolling', 'away_off_rating_rolling',
-                        'home_def_rating_rolling', 'away_def_rating_rolling',
-                        'home_fg_pct', 'home_3p_pct', 'home_ft_pct', 'home_reb', 'home_ast', 'home_stl', 'home_blk', 'home_to',
-                        'away_fg_pct', 'away_3p_pct', 'away_ft_pct', 'away_reb', 'away_ast', 'away_stl', 'away_blk', 'away_to',
-                        'home_reb_rolling', 'home_ast_rolling', 'home_tov_rolling', 'home_win_rate_last10',
-                        'away_reb_rolling', 'away_ast_rolling', 'away_tov_rolling', 'away_win_rate_last10']
+        cols_to_drop = list(set(
+            list(home_rename.values()) + [v for v in away_rename.values()]
+        ))
         ml = ml.drop(columns=[c for c in cols_to_drop if c in ml.columns])
         
         ml = ml.merge(tt_home, on='game_id', how='left')
         ml = ml.merge(tt_away, on='game_id', how='left')
         
-        print("   ✅ Rolling features aplicadas")
+        print("   [OK] Rolling features aplicadas")
         print()
         
         # 5) Rest days and B2B
-        print("📅 Paso 5: Calculando días de descanso y B2B...")
+        print("[>] Paso 5: Calculando días de descanso y B2B...")
         print("-" * 60)
         
         games_dates = games[['game_id', 'fecha', 'home_team', 'away_team']].copy()
@@ -463,11 +607,11 @@ def build_features():
         ml = ml.drop(columns=['home_rest_days', 'away_rest_days', 'home_b2b', 'away_b2b'], errors='ignore')
         ml = ml.merge(rest_df, on='game_id', how='left')
         
-        print(f"   ✅ Días de descanso y B2B calculados")
+        print(f"   [OK] Días de descanso y B2B calculados")
         print()
         
         # 6) Contar lesiones
-        print("🏥 Paso 6: Contando lesiones...")
+        print("[>] Paso 6: Contando lesiones...")
         print("-" * 60)
         
         if not injuries.empty:
@@ -502,7 +646,7 @@ def build_features():
         print()
         
         # 7) Calcular Diferenciales Finales
-        print("🧮 Paso 7: Calculando diferenciales finales...")
+        print("[>] Paso 7: Calculando diferenciales finales...")
         print("-" * 60)
         
         ml['ppg_diff'] = ml['home_ppg_last5'] - ml['away_ppg_last5']
@@ -511,21 +655,30 @@ def build_features():
         ml['off_rating_diff'] = ml['home_off_rating_rolling'] - ml['away_off_rating_rolling']
         ml['def_rating_diff'] = ml['home_def_rating_rolling'] - ml['away_def_rating_rolling']
         
-        # Base Stat Differentials (current-game stats — kept for reference/XGBoost)
+        # Base Stat Differentials (current-game stats [?] kept for reference/XGBoost)
         ml['reb_diff'] = ml['home_reb'] - ml['away_reb']
         ml['ast_diff'] = ml['home_ast'] - ml['away_ast']
         ml['tov_diff'] = ml['home_to'] - ml['away_to']
 
-        # Rolling Stat Differentials — usa promedios de partidos ANTERIORES (sin leakage)
+        # Rolling Stat Differentials [?] usa promedios de partidos ANTERIORES (sin leakage)
         ml['reb_rolling_diff'] = ml['home_reb_rolling'] - ml['away_reb_rolling']
         ml['ast_rolling_diff'] = ml['home_ast_rolling'] - ml['away_ast_rolling']
         ml['tov_rolling_diff'] = ml['home_tov_rolling'] - ml['away_tov_rolling']
         ml['win_rate_diff'] = ml['home_win_rate_last10'] - ml['away_win_rate_last10']
 
         ml['rest_days_diff'] = (ml['home_rest_days'].fillna(3) - ml['away_rest_days'].fillna(3)).astype(int)
+
+        # Nuevos diferenciales v2
+        ml['efg_pct_diff'] = ml['home_efg_pct_rolling'] - ml['away_efg_pct_rolling']
+        ml['tov_rate_diff'] = ml['home_tov_rate_rolling'] - ml['away_tov_rate_rolling']
+        ml['oreb_pct_diff'] = ml['home_oreb_pct_rolling'] - ml['away_oreb_pct_rolling']
+        ml['dreb_pct_diff'] = ml['home_dreb_pct_rolling'] - ml['away_dreb_pct_rolling']
+        ml['elo_diff'] = ml['home_elo'] - ml['away_elo']
+        ml['streak_diff'] = ml['home_streak'] - ml['away_streak']
+        ml['home_away_split_diff'] = ml['home_home_win_rate'] - ml['away_away_win_rate']
         ml['injuries_diff'] = ml['home_injuries_count'] - ml['away_injuries_count']
         
-        print("   ✅ Diferenciales calculados")
+        print("   [OK] Diferenciales calculados")
         print()
         
         # 8) Odds Probs (si no están ya mapeadas)
@@ -533,7 +686,7 @@ def build_features():
         # (Omitimos el mapeo JSON manual si ya está en espn.game_odds)
         
         # Escribir a BD
-        print("💾 Paso 8: Actualizando ml_ready_games en Neon...")
+        print("[>] Paso 8: Actualizando ml_ready_games en Neon...")
         print("-" * 60)
         
         # Seleccionar columnas finales
@@ -551,11 +704,20 @@ def build_features():
             # Current-game boxscore stats (no usar como features de clasificación)
             'home_reb', 'away_reb', 'home_ast', 'away_ast',
             'home_stl', 'away_stl', 'home_blk', 'away_blk', 'home_to', 'away_to',
-            # Rolling stats por equipo (shift(1) → sin leakage)
+            # Rolling stats por equipo (shift(1) -> sin leakage)
             'home_reb_rolling', 'away_reb_rolling',
             'home_ast_rolling', 'away_ast_rolling',
             'home_tov_rolling', 'away_tov_rolling',
             'home_win_rate_last10', 'away_win_rate_last10',
+            # Nuevas features v2 (rolling, sin leakage)
+            'home_efg_pct_rolling', 'away_efg_pct_rolling',
+            'home_tov_rate_rolling', 'away_tov_rate_rolling',
+            'home_oreb_pct_rolling', 'away_oreb_pct_rolling',
+            'home_dreb_pct_rolling', 'away_dreb_pct_rolling',
+            'home_elo', 'away_elo',
+            'home_streak', 'away_streak',
+            'home_home_win_rate', 'away_away_win_rate',
+            'h2h_home_advantage',
             # Scores y diferencial
             'home_pts', 'away_pts', 'point_diff',
             # Diferenciales para entrenamiento
@@ -563,8 +725,11 @@ def build_features():
             'off_rating_diff', 'def_rating_diff', 'rest_days_diff', 'injuries_diff',
             # Diferenciales de boxscore actuales (tienen leakage, no usar en clasificación)
             'reb_diff', 'ast_diff', 'tov_diff',
-            # Diferenciales rolling (sin leakage — usar estos en entrenamiento)
+            # Diferenciales rolling (sin leakage)
             'reb_rolling_diff', 'ast_rolling_diff', 'tov_rolling_diff', 'win_rate_diff',
+            # Nuevos diferenciales v2
+            'efg_pct_diff', 'tov_rate_diff', 'oreb_pct_diff', 'dreb_pct_diff',
+            'elo_diff', 'streak_diff', 'home_away_split_diff',
         ]
         
         # Ensure target columns are populated from the dataframe
@@ -603,7 +768,7 @@ def build_features():
 
         ml_final = ml[final_cols].copy()
         
-        # Agregar columnas nuevas a la tabla si no existen (rolling sin leakage + win_rate)
+        # Agregar columnas nuevas a la tabla si no existen
         new_columns_ddl = [
             ("home_reb_rolling",   "FLOAT"),
             ("away_reb_rolling",   "FLOAT"),
@@ -617,6 +782,29 @@ def build_features():
             ("ast_rolling_diff",   "FLOAT"),
             ("tov_rolling_diff",   "FLOAT"),
             ("win_rate_diff",      "FLOAT"),
+            # Nuevas columnas v2
+            ("home_efg_pct_rolling", "FLOAT"),
+            ("away_efg_pct_rolling", "FLOAT"),
+            ("home_tov_rate_rolling", "FLOAT"),
+            ("away_tov_rate_rolling", "FLOAT"),
+            ("home_oreb_pct_rolling", "FLOAT"),
+            ("away_oreb_pct_rolling", "FLOAT"),
+            ("home_dreb_pct_rolling", "FLOAT"),
+            ("away_dreb_pct_rolling", "FLOAT"),
+            ("home_elo",           "FLOAT"),
+            ("away_elo",           "FLOAT"),
+            ("home_streak",        "FLOAT"),
+            ("away_streak",        "FLOAT"),
+            ("home_home_win_rate", "FLOAT"),
+            ("away_away_win_rate", "FLOAT"),
+            ("h2h_home_advantage", "FLOAT"),
+            ("efg_pct_diff",       "FLOAT"),
+            ("tov_rate_diff",      "FLOAT"),
+            ("oreb_pct_diff",      "FLOAT"),
+            ("dreb_pct_diff",      "FLOAT"),
+            ("elo_diff",           "FLOAT"),
+            ("streak_diff",        "FLOAT"),
+            ("home_away_split_diff", "FLOAT"),
         ]
         with engine.begin() as conn:
             for col_name, col_type in new_columns_ddl:
@@ -697,23 +885,46 @@ def build_features():
                     reb_rolling_diff = t.reb_rolling_diff,
                     ast_rolling_diff = t.ast_rolling_diff,
                     tov_rolling_diff = t.tov_rolling_diff,
-                    win_rate_diff = t.win_rate_diff
+                    win_rate_diff = t.win_rate_diff,
+
+                    home_efg_pct_rolling = t.home_efg_pct_rolling,
+                    away_efg_pct_rolling = t.away_efg_pct_rolling,
+                    home_tov_rate_rolling = t.home_tov_rate_rolling,
+                    away_tov_rate_rolling = t.away_tov_rate_rolling,
+                    home_oreb_pct_rolling = t.home_oreb_pct_rolling,
+                    away_oreb_pct_rolling = t.away_oreb_pct_rolling,
+                    home_dreb_pct_rolling = t.home_dreb_pct_rolling,
+                    away_dreb_pct_rolling = t.away_dreb_pct_rolling,
+                    home_elo = t.home_elo,
+                    away_elo = t.away_elo,
+                    home_streak = t.home_streak,
+                    away_streak = t.away_streak,
+                    home_home_win_rate = t.home_home_win_rate,
+                    away_away_win_rate = t.away_away_win_rate,
+                    h2h_home_advantage = t.h2h_home_advantage,
+                    efg_pct_diff = t.efg_pct_diff,
+                    tov_rate_diff = t.tov_rate_diff,
+                    oreb_pct_diff = t.oreb_pct_diff,
+                    dreb_pct_diff = t.dreb_pct_diff,
+                    elo_diff = t.elo_diff,
+                    streak_diff = t.streak_diff,
+                    home_away_split_diff = t.home_away_split_diff
                 FROM {ml_schema}.ml_ready_games_temp t
                 WHERE m.game_id = t.game_id
             """)
             conn.execute(update_query)
             conn.execute(text(f"DROP TABLE IF EXISTS {ml_schema}.ml_ready_games_temp"))
         
-        print("✅ Features construidas y tabla ml_ready_games actualizada.")
+        print("[OK] Features construidas y tabla ml_ready_games actualizada.")
 
         # Delete unused table
-        print("🗑️ Eliminando tabla espn.team_stats_game (no utilizada)...")
+        print("[>] Eliminando tabla espn.team_stats_game (no utilizada)...")
         with engine.begin() as conn:
             conn.execute(text(f"DROP TABLE IF EXISTS {espn_schema}.team_stats_game"))
-        print("✅ Tabla espn.team_stats_game eliminada.")
+        print("[OK] Tabla espn.team_stats_game eliminada.")
         
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f"[X] Error: {e}")
         import traceback
         traceback.print_exc()
         raise

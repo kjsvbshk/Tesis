@@ -113,7 +113,7 @@ export function PredictionsPage() {
               </div>
             </div>
             <Button
-              onClick={handleGetPrediction}
+              onClick={() => handleGetPrediction()}
               disabled={loading}
               className="h-12 px-8 bg-acid-500 text-black hover:bg-white font-mono font-bold uppercase tracking-wider min-w-[180px]"
             >

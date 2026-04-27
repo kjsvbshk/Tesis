@@ -78,8 +78,14 @@ async def get_today_matches(db: Session = Depends(get_espn_db)):
         # Función para obtener partidos de la base de datos
         async def fetch_today_matches():
             match_service = MatchService(db)
-            # No filtrar por fecha - obtener todos los partidos disponibles
-            matches = await match_service.get_matches(limit=50)
+            # Intentar obtener partidos desde hoy en adelante primero
+            today = date.today()
+            matches = await match_service.get_matches(date_from=today, limit=50)
+            
+            # Si no hay partidos hoy/futuros, obtener los más recientes (fallback)
+            if not matches:
+                matches = await match_service.get_matches(limit=50)
+                
             return [MatchResponse(**match) for match in matches]
         
         # Obtener del caché o de la base de datos

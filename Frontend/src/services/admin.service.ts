@@ -31,7 +31,31 @@ export interface UserRole {
   role?: Role
 }
 
+export interface ModelVersion {
+  id: number
+  version: string
+  is_active: boolean
+  model_metadata: any
+  created_at: string
+}
+
 class AdminService {
+  /**
+   * Get all ML models
+   */
+  async getModels(): Promise<ModelVersion[]> {
+    return apiRequest<ModelVersion[]>('/admin/models')
+  }
+
+  /**
+   * Activate a specific model version
+   */
+  async activateModel(versionId: number): Promise<{ message: string; version: string }> {
+    return apiRequest<{ message: string; version: string }>(`/admin/models/${versionId}/activate`, {
+      method: 'POST',
+    })
+  }
+
   /**
    * Get all roles
    */

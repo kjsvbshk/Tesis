@@ -31,6 +31,7 @@ import { MetricsDashboardPage } from '@/pages/admin/MetricsDashboardPage'
 import { AuditManagementPage } from '@/pages/admin/AuditManagementPage'
 import { AdvancedSearchPage } from '@/pages/admin/AdvancedSearchPage'
 import { MonitoringPage } from '@/pages/admin/MonitoringPage'
+import SettingsPage from '@/pages/admin/SettingsPage'
 import { OperatorHomePage } from '@/pages/operator/OperatorHomePage'
 import { ProvidersManagementPage } from '@/pages/operator/ProvidersManagementPage'
 import { IntegrationMonitoringPage } from '@/pages/operator/IntegrationMonitoringPage'
@@ -109,7 +110,7 @@ const routerWithAuth = createBrowserRouter([
           { path: 'buscar', element: <AdvancedSearchPage /> },
           { path: 'proveedores', element: <div>Providers Management (to be created)</div> },
           { path: 'monitoreo', element: <MonitoringPage /> },
-          { path: 'configuracion', element: <div>Configuration (to be created)</div> },
+          { path: 'configuracion', element: <SettingsPage /> },
         ],
       },
       // Operator routes

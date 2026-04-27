@@ -7,12 +7,13 @@ from sqlalchemy.orm import Session
 from typing import List
 
 from app.core.database import get_sys_db
-from app.models import UserAccount, Provider, ProviderEndpoint
+from app.models import UserAccount, Provider, ProviderEndpoint, ModelVersion
 from app.services.auth_service import get_current_user
 from app.services.role_service import RoleService
 from app.services.permission_service import PermissionService
 from app.services.provider_orchestrator import ProviderOrchestrator
 from app.services.user_type_service import UserTypeService
+from app.schemas.model_version import ModelVersionResponse
 from app.schemas.role import RoleCreate, RoleUpdate, RoleResponse
 from app.schemas.permission import PermissionCreate, PermissionUpdate, PermissionResponse
 from app.schemas.provider import (
@@ -1061,4 +1062,41 @@ async def check_permission(
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error checking permission: {str(e)}")
+# ========== ML Models Management ==========
+@router.get("/models", response_model=List[ModelVersionResponse])
+async def get_all_model_versions(
+    admin_user: UserAccount = Depends(require_admin_permission),
+    db: Session = Depends(get_sys_db)
+):
+    """Get all ML model versions (admin only)"""
+    try:
+        models = db.query(ModelVersion).order_by(ModelVersion.version.desc()).all()
+        return models
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching models: {str(e)}")
 
+@router.post("/models/{version_id}/activate")
+async def activate_model_version(
+    version_id: int,
+    admin_user: UserAccount = Depends(require_admin_permission),
+    db: Session = Depends(get_sys_db)
+):
+    """Set a specific model version as active (admin only)"""
+    try:
+        model = db.query(ModelVersion).filter(ModelVersion.id == version_id).first()
+        if not model:
+            raise HTTPException(status_code=404, detail="Model version not found")
+        
+        # Desactivar todos los modelos
+        db.query(ModelVersion).update({ModelVersion.is_active: False})
+        
+        # Activar el modelo seleccionado
+        model.is_active = True
+        db.commit()
+        
+        return {"message": f"Model {model.version} activated successfully", "version": model.version}
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error activating model: {str(e)}")

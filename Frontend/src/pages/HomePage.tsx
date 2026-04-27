@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { FaWallet, FaBullseye, FaTrophy, FaChartLine, FaFire } from 'react-icons/fa'
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import { betsService } from '@/services/bets.service'
 import { matchesService } from '@/services/matches.service'
@@ -10,11 +11,16 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 
 export function HomePage() {
+  const navigate = useNavigate()
   const { user } = useAuth()
   const { toast } = useToast()
   const [stats, setStats] = useState<any>(null)
   const [todayMatches, setTodayMatches] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+
+  const handleAnalyze = (matchId: number) => {
+    navigate(`/predicciones?game_id=${matchId}`)
+  }
 
   useEffect(() => {
     loadData()
@@ -195,7 +201,12 @@ export function HomePage() {
                             </span>
                           </div>
                         </div>
-                        <Button variant="outline" size="sm" className="hidden sm:flex">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="hidden sm:flex border-acid-500/30 hover:bg-acid-500 hover:text-black transition-all"
+                          onClick={() => handleAnalyze(match.id)}
+                        >
                           ANALYZE
                         </Button>
                       </div>

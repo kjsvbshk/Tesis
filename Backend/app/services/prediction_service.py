@@ -344,8 +344,13 @@ class PredictionService:
         if self.model_version_obj and self.model_version_obj.model_metadata:
             raw = self.model_version_obj.model_metadata
             meta = raw if isinstance(raw, dict) else {}
-            metrics = {k: meta[k] for k in ("log_loss", "brier_score", "roc_auc", "ece", "accuracy",
-                                              "mae_margin", "mae_total") if k in meta}
+            
+            # Las métricas pueden estar en la raíz o dentro de una clave "metrics"
+            metrics_source = meta.get("metrics", meta) if isinstance(meta.get("metrics"), dict) else meta
+            
+            metrics = {k: metrics_source[k] for k in ("log_loss", "brier_score", "roc_auc", "ece", "accuracy",
+                                              "mae_margin", "mae_total") if k in metrics_source}
+            
             trained_at = meta.get("trained_at") or (
                 self.model_version_obj.created_at.isoformat()
                 if self.model_version_obj.created_at else None

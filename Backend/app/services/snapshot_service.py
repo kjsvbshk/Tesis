@@ -47,7 +47,6 @@ class SnapshotService:
             odds_line = OddsLine(
                 snapshot_id=snapshot.id,
                 provider_id=None,  # Viene de espn, no de provider externo
-                source="espn",
                 line_code=odds_line_data["line_code"],
                 price=odds_line_data["price"],
                 line_metadata=json.dumps(odds_line_data.get("metadata", {}))
@@ -91,10 +90,9 @@ class SnapshotService:
                 # PASO 1: Buscar mapeo en odds_event_game_map
                 mapping_result = conn.execute(
                     text("""
-                        SELECT external_event_id, resolution_confidence
+                        SELECT odds_id
                         FROM espn.odds_event_game_map
                         WHERE game_id = :game_id
-                        ORDER BY last_verified_at DESC NULLS LAST, created_at DESC
                         LIMIT 1
                     """),
                     {"game_id": game_id}
@@ -103,8 +101,7 @@ class SnapshotService:
                 external_event_id = None
                 if mapping_result:
                     external_event_id = mapping_result[0]
-                    resolution_confidence = mapping_result[1] if len(mapping_result) > 1 else None
-                    print(f"✅ Mapeo encontrado: game_id={game_id} → external_event_id={external_event_id} (confianza: {resolution_confidence})")
+                    print(f"✅ Mapeo encontrado: game_id={game_id} → odds_id={external_event_id}")
                 
                 # PASO 2: Si hay mapeo, buscar odds usando external_event_id
                 if external_event_id and odds_external_event_id_col:
@@ -163,20 +160,20 @@ class SnapshotService:
                                             # Verificar si ya existe mapping
                                             existing_mapping = conn.execute(
                                                 text("""
-                                                    SELECT id, game_id, resolution_confidence, needs_review
+                                                    SELECT game_id
                                                     FROM espn.odds_event_game_map
-                                                    WHERE external_event_id = :external_event_id
+                                                    WHERE odds_id = :odds_id
                                                 """),
-                                                {"external_event_id": external_event_id_from_odds}
+                                                {"odds_id": external_event_id_from_odds}
                                             ).fetchone()
                                             
                                             if existing_mapping:
                                                 # Mapping existe: NO actualizar automáticamente (política FASE 4.1)
-                                                existing_game_id = existing_mapping[1]
+                                                existing_game_id = existing_mapping[0]
                                                 if existing_game_id != game_id:
                                                     print(f"⚠️  Mapping existente con game_id diferente: {existing_game_id} vs {game_id}. NO se actualiza automáticamente.")
                                                 else:
-                                                    print(f"ℹ️  Mapping ya existe: external_event_id={external_event_id_from_odds} → game_id={game_id}")
+                                                    print(f"ℹ️  Mapping ya existe: odds_id={external_event_id_from_odds} → game_id={game_id}")
                                             else:
                                                 # Mapping no existe: crear nuevo
                                                 # Calcular confianza basada en método de resolución
@@ -188,20 +185,16 @@ class SnapshotService:
                                                 conn.execute(
                                                     text("""
                                                         INSERT INTO espn.odds_event_game_map 
-                                                        (external_event_id, game_id, resolved_by, resolution_method, resolution_confidence, resolution_metadata)
-                                                        VALUES (:external_event_id, :game_id, :resolved_by, :resolution_method, :confidence, :metadata)
+                                                        (odds_id, game_id)
+                                                        VALUES (:odds_id, :game_id)
                                                     """),
                                                     {
-                                                        "external_event_id": external_event_id_from_odds,
-                                                        "game_id": game_id,
-                                                        "resolved_by": "date_teams" if has_teams else "date",
-                                                        "resolution_method": resolution_method,
-                                                        "confidence": resolution_confidence,
-                                                        "metadata": f'{{"game_date": "{game_date}", "home_team": "{game_home_team}", "away_team": "{game_away_team}"}}'
+                                                        "odds_id": external_event_id_from_odds,
+                                                        "game_id": game_id
                                                     }
                                                 )
                                                 conn.commit()
-                                                print(f"✅ Mapeo creado: external_event_id={external_event_id_from_odds} → game_id={game_id} (método: {resolution_method}, confianza: {resolution_confidence})")
+                                                print(f"✅ Mapeo creado: odds_id={external_event_id_from_odds} → game_id={game_id}")
                                         except Exception as e:
                                             print(f"⚠️  Error creando mapeo: {e}")
                                             conn.rollback()

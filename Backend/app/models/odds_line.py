@@ -16,7 +16,6 @@ class OddsLine(SysBase):
     id = Column(Integer, primary_key=True, index=True)
     snapshot_id = Column(Integer, ForeignKey("app.odds_snapshots.id", ondelete="CASCADE"), nullable=False, index=True)
     provider_id = Column(Integer, ForeignKey("app.providers.id", ondelete="RESTRICT"), nullable=True, index=True)  # Nullable porque puede venir de espn
-    source = Column(String(50), nullable=False, default="espn")  # "espn", "provider_code", etc.
     line_code = Column(String(100), nullable=False)  # e.g., "home_win", "away_win", "over_2.5"
     price = Column(Numeric(10, 4), nullable=False)  # Decimal odds
     line_metadata = Column(Text, nullable=True)  # JSON con metadatos adicionales

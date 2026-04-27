@@ -10,8 +10,9 @@ from datetime import datetime
 from typing import Dict, Any
 
 from app.core.database import get_sys_db, sys_engine, espn_engine
-from app.models import Request, AuditLog, Outbox, Prediction
+from app.models import Request, AuditLog, Outbox, Prediction, UserAccount
 from app.services.cache_service import cache_service
+from app.api.v1.endpoints.admin import require_staff_permission
 
 router = APIRouter()
 
@@ -123,7 +124,10 @@ async def readiness_check(db: Session = Depends(get_sys_db)):
 
 
 @router.get("/metrics")
-async def get_metrics(db: Session = Depends(get_sys_db)):
+async def get_metrics(
+    admin_user: UserAccount = Depends(require_staff_permission),
+    db: Session = Depends(get_sys_db)
+):
     """
     Metrics endpoint
     RF-14: Expone métricas clave del sistema
@@ -192,6 +196,7 @@ async def get_metrics(db: Session = Depends(get_sys_db)):
 async def get_request_metrics(
     date_from: datetime = None,
     date_to: datetime = None,
+    admin_user: UserAccount = Depends(require_staff_permission),
     db: Session = Depends(get_sys_db)
 ):
     """

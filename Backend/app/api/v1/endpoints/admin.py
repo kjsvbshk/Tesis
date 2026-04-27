@@ -37,14 +37,28 @@ def require_admin_permission(current_user: UserAccount = Depends(get_current_use
 
 def require_staff_permission(current_user: UserAccount = Depends(get_current_user), db: Session = Depends(get_sys_db)):
     """Dependency to require admin or operator permission"""
+    from app.models import UserRole, Role
+    
+    # 1. Try by permissions first
     user_permissions = get_user_permissions(db, current_user.id)
-    # Allows both admin:write and operator:write
-    if not (has_permission("admin:write", user_permissions) or has_permission("operator:write", user_permissions)):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Staff permission (Admin or Operator) required"
-        )
-    return current_user
+    staff_permissions = ["admin:write", "admin:read", "operator:write", "operator:read", "staff:access"]
+    if any(has_permission(p, user_permissions) for p in staff_permissions):
+        return current_user
+        
+    # 2. Fallback: check by role code directly (case-insensitive)
+    user_roles = db.query(Role).join(UserRole).filter(
+        UserRole.user_id == current_user.id,
+        UserRole.is_active == True
+    ).all()
+    
+    staff_role_codes = ['admin', 'operator', 'staff']
+    if any(role.code.lower() in staff_role_codes for role in user_roles):
+        return current_user
+        
+    raise HTTPException(
+        status_code=status.HTTP_403_FORBIDDEN,
+        detail="Staff permission (Admin or Operator) required"
+    )
 
 # ========== Roles ==========
 

@@ -37,16 +37,6 @@ class PredictionResponse(BaseModel):
     # Additional features
     features_used: Optional[Dict[str, Any]] = None
 
-
-class ModelStatusResponse(BaseModel):
-    model_loaded: bool
-    model_version: Optional[str] = None
-    model_type: str
-    trained_at: Optional[str] = None
-    metrics: Optional[Dict[str, Any]] = None
-    status: str
-    using_real_predictions: bool = False
-    
     @field_serializer('game_date')
     def serialize_game_date(self, value: Optional[datetime]) -> Optional[str]:
         """Serializar game_date a ISO format string"""
@@ -94,3 +84,12 @@ class ModelStatusResponse(BaseModel):
         if 'mode' not in kwargs:
             kwargs['mode'] = 'json'
         return self.model_dump(**kwargs)
+
+class ModelStatusResponse(BaseModel):
+    model_loaded: bool
+    model_version: Optional[str] = None
+    model_type: str
+    trained_at: Optional[str] = None
+    metrics: Optional[Dict[str, Any]] = None
+    status: str
+    using_real_predictions: bool = False

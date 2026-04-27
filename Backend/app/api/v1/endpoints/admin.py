@@ -35,6 +35,17 @@ def require_admin_permission(current_user: UserAccount = Depends(get_current_use
         )
     return current_user
 
+def require_staff_permission(current_user: UserAccount = Depends(get_current_user), db: Session = Depends(get_sys_db)):
+    """Dependency to require admin or operator permission"""
+    user_permissions = get_user_permissions(db, current_user.id)
+    # Allows both admin:write and operator:write
+    if not (has_permission("admin:write", user_permissions) or has_permission("operator:write", user_permissions)):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Staff permission (Admin or Operator) required"
+        )
+    return current_user
+
 # ========== Roles ==========
 
 @router.post("/roles", response_model=RoleResponse, status_code=status.HTTP_201_CREATED)
@@ -790,7 +801,7 @@ async def get_user_roles(
 @router.post("/providers", response_model=ProviderResponse, status_code=status.HTTP_201_CREATED)
 async def create_provider(
     provider: ProviderCreate,
-    admin_user: UserAccount = Depends(require_admin_permission),
+    admin_user: UserAccount = Depends(require_staff_permission),
     db: Session = Depends(get_sys_db)
 ):
     """Create a new provider (admin/operator only)"""
@@ -821,7 +832,7 @@ async def create_provider(
 
 @router.get("/providers", response_model=List[ProviderResponse])
 async def get_all_providers(
-    admin_user: UserAccount = Depends(require_admin_permission),
+    admin_user: UserAccount = Depends(require_staff_permission),
     db: Session = Depends(get_sys_db)
 ):
     """Get all providers (admin/operator only)"""
@@ -834,7 +845,7 @@ async def get_all_providers(
 @router.get("/providers/{provider_id}", response_model=ProviderResponse)
 async def get_provider(
     provider_id: int,
-    admin_user: UserAccount = Depends(require_admin_permission),
+    admin_user: UserAccount = Depends(require_staff_permission),
     db: Session = Depends(get_sys_db)
 ):
     """Get a specific provider (admin/operator only)"""
@@ -852,7 +863,7 @@ async def get_provider(
 async def update_provider(
     provider_id: int,
     provider_update: ProviderUpdate,
-    admin_user: UserAccount = Depends(require_admin_permission),
+    admin_user: UserAccount = Depends(require_staff_permission),
     db: Session = Depends(get_sys_db)
 ):
     """Update a provider (admin/operator only)"""
@@ -878,7 +889,7 @@ async def update_provider(
 @router.delete("/providers/{provider_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_provider(
     provider_id: int,
-    admin_user: UserAccount = Depends(require_admin_permission),
+    admin_user: UserAccount = Depends(require_staff_permission),
     db: Session = Depends(get_sys_db)
 ):
     """Delete a provider (admin/operator only)"""
@@ -900,7 +911,7 @@ async def delete_provider(
 @router.get("/providers/{provider_id}/endpoints", response_model=List[ProviderEndpointResponse])
 async def get_provider_endpoints(
     provider_id: int,
-    admin_user: UserAccount = Depends(require_admin_permission),
+    admin_user: UserAccount = Depends(require_staff_permission),
     db: Session = Depends(get_sys_db)
 ):
     """Get all endpoints for a provider (admin/operator only)"""
@@ -920,7 +931,7 @@ async def get_provider_endpoints(
 async def create_provider_endpoint(
     provider_id: int,
     endpoint: ProviderEndpointCreate,
-    admin_user: UserAccount = Depends(require_admin_permission),
+    admin_user: UserAccount = Depends(require_staff_permission),
     db: Session = Depends(get_sys_db)
 ):
     """Create a new endpoint for a provider (admin/operator only)"""
@@ -952,7 +963,7 @@ async def update_provider_endpoint(
     provider_id: int,
     endpoint_id: int,
     endpoint_update: ProviderEndpointUpdate,
-    admin_user: UserAccount = Depends(require_admin_permission),
+    admin_user: UserAccount = Depends(require_staff_permission),
     db: Session = Depends(get_sys_db)
 ):
     """Update a provider endpoint (admin/operator only)"""
@@ -982,7 +993,7 @@ async def update_provider_endpoint(
 async def delete_provider_endpoint(
     provider_id: int,
     endpoint_id: int,
-    admin_user: UserAccount = Depends(require_admin_permission),
+    admin_user: UserAccount = Depends(require_staff_permission),
     db: Session = Depends(get_sys_db)
 ):
     """Delete a provider endpoint (admin/operator only)"""
@@ -1007,7 +1018,7 @@ async def delete_provider_endpoint(
 @router.get("/providers/{provider_code}/status", response_model=ProviderStatusResponse)
 async def get_provider_status(
     provider_code: str,
-    admin_user: UserAccount = Depends(require_admin_permission),
+    admin_user: UserAccount = Depends(require_staff_permission),
     db: Session = Depends(get_sys_db)
 ):
     """Get provider status including circuit breaker state (admin/operator only)"""
@@ -1026,7 +1037,7 @@ async def get_provider_status(
 async def test_provider_endpoint(
     provider_code: str,
     test_request: dict,
-    admin_user: UserAccount = Depends(require_admin_permission),
+    admin_user: UserAccount = Depends(require_staff_permission),
     db: Session = Depends(get_sys_db)
 ):
     """Test a provider endpoint (admin/operator only)"""

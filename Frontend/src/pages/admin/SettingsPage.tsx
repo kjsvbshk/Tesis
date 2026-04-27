@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Settings, Database, CheckCircle2, AlertCircle, RefreshCw, Activity, Cpu } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { adminService, ModelVersion } from '@/services/admin.service'
+import { adminService, type ModelVersion } from '@/services/admin.service'
 
 const SettingsPage: React.FC = () => {
   const [models, setModels] = useState<ModelVersion[]>([])

@@ -108,7 +108,7 @@ const routerWithAuth = createBrowserRouter([
           { path: 'metricas', element: <MetricsDashboardPage /> },
           { path: 'auditoria', element: <AuditManagementPage /> },
           { path: 'buscar', element: <AdvancedSearchPage /> },
-          { path: 'proveedores', element: <div>Providers Management (to be created)</div> },
+          { path: 'proveedores', element: <ProvidersManagementPage /> },
           { path: 'monitoreo', element: <MonitoringPage /> },
           { path: 'configuracion', element: <SettingsPage /> },
         ],

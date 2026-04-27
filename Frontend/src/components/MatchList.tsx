@@ -63,8 +63,18 @@ export function MatchList() {
     }
   }
 
-  const todayMatchesConverted = todayMatches.map(convertToMatch)
-  const upcomingMatchesConverted = upcomingMatches.map(convertToMatch)
+  const todayMatchesConverted = todayMatches
+    .filter(m => m.home_team?.name !== 'TBD' && m.away_team?.name !== 'TBD')
+    .map(convertToMatch)
+  
+  // Deduplicate by team names and IDs for safety
+  const uniqueUpcoming = Array.from(new Map(
+    upcomingMatches
+      .filter(m => m.home_team?.name !== 'TBD' && m.away_team?.name !== 'TBD')
+      .map(m => [m.id, m])
+  ).values())
+  
+  const upcomingMatchesConverted = uniqueUpcoming.map(convertToMatch)
 
   if (loading) {
     return (

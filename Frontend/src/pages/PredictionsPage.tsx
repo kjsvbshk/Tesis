@@ -3,7 +3,8 @@
  * User page to request and view predictions
  */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Target, Users, Zap, Cpu, Search, AlertTriangle } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -16,20 +17,16 @@ import type { PredictionResponse, ModelStatus } from '@/services/predictions.ser
 import { useToast } from '@/hooks/use-toast'
 
 export function PredictionsPage() {
+  const [searchParams] = useSearchParams()
   const [gameId, setGameId] = useState('')
   const [loading, setLoading] = useState(false)
   const [prediction, setPrediction] = useState<PredictionResponse | null>(null)
   const [modelStatus, setModelStatus] = useState<ModelStatus | null>(null)
   const { toast } = useToast()
 
-  useEffect(() => {
-    predictionsService.getModelStatus()
-      .then(setModelStatus)
-      .catch(() => setModelStatus(null))
-  }, [])
-
-  const handleGetPrediction = async () => {
-    if (!gameId) {
+  const handleGetPrediction = useCallback(async (idToUse?: string) => {
+    const targetId = idToUse || gameId
+    if (!targetId) {
       toast({
         title: 'INPUT REQUIRED',
         description: 'Please input a valid Game Identifier.',
@@ -40,7 +37,7 @@ export function PredictionsPage() {
 
     try {
       setLoading(true)
-      const result = await predictionsService.getGamePrediction(parseInt(gameId))
+      const result = await predictionsService.getGamePrediction(parseInt(targetId))
       setPrediction(result)
       toast({
         title: 'ANALYSIS COMPLETE',
@@ -55,7 +52,20 @@ export function PredictionsPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [gameId, toast])
+
+  useEffect(() => {
+    predictionsService.getModelStatus()
+      .then(setModelStatus)
+      .catch(() => setModelStatus(null))
+
+    // Check for game_id in URL
+    const idFromUrl = searchParams.get('game_id')
+    if (idFromUrl) {
+      setGameId(idFromUrl)
+      handleGetPrediction(idFromUrl)
+    }
+  }, [searchParams, handleGetPrediction])
 
   return (
     <div className="space-y-8 max-w-5xl mx-auto pb-10">

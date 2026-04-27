@@ -1,34 +1,52 @@
 """
-Ensemble de apilamiento (Stacking) para predicción NBA.
+Ensemble de apilamiento (Stacking) para predicción NBA — v2.1.2.
 
-Combina las salidas del RandomForest calibrado y del XGBoost regresor
-en un meta-modelo (LogisticRegression) que produce la predicción final.
+Diferencia con v2.1.0:
+    El Bivariate Poisson NO entra al meta-learner como una probabilidad.
+    Entra como features estructurales (μ_diff y σ_diff) que aportan
+    "magnitud + incertidumbre" sin imponer una decisión probabilística.
 
-Arquitectura:
-    Capa 1 — RandomForest  → P(home_win) calibrada
-    Capa 1 — XGBoost       → score_diff predicho (home - away)
-    Capa 2 — LogRegression → P_final(home_win) usando ambas salidas
+Razón del cambio (v2.1.0 → v2.1.2):
+    En v2.1.0 metíamos `[rf_proba, score_diff, poisson_proba]` al
+    LogisticRegression. Eso mezclaba dos probabilidades con regímenes
+    de calibración incompatibles:
+      - rf_proba: discriminativa, calibrada vía CalibratedClassifierCV.
+      - poisson_proba: estructural, derivada de E[D]/σ — tendencia a
+        extremos, no optimizada para classification log-loss.
+    El meta-learner aprendía a confiar en la señal más extrema
+    (Poisson) y la isotónica 1D no compensaba el sesgo. Resultado:
+    overconfidence en bins [0.7, 0.9) y ECE 0.084 en NBA real.
 
-Calibración con Out-Of-Fold (OOF) Stacking:
-    Para evitar el leakage de calibración (meta-learner entrenado sobre los
-    mismos datos de los que predice), se usa OOF stacking temporal:
-      1. Dividir training en K=5 folds temporales (sin datos del futuro)
-      2. Para cada fold k, entrenar RF+XGB en los k-1 folds anteriores
-         → obtener predicciones en el fold k (out-of-fold)
-      3. Construir el meta-training set concatenando todos los OOF predictions
-      4. Entrenar meta-learner sobre el meta-training set completo (OOF)
-      5. Aplicar isotonic regression calibration sobre OOF predictions
-         (las OOF son unbiased → la calibración no tiene leakage)
-      6. Re-entrenar RF+XGB en el dataset completo para la predicción final
+Arquitectura v2.1.2:
+    Capa 1 — RandomForest      → rf_proba ∈ [0, 1]            (calibrada)
+    Capa 1 — XGBoost           → score_diff (puntos)          (regresivo)
+    Capa 1 — Bivariate Poisson → mu_diff, sigma_diff (puntos) (estructural)
+    Capa 2 — StandardScaler + LogRegression → P(home_win)
+    Capa 3 — IsotonicRegression sobre OOF (anti-leakage)
+
+OOF stacking temporal (sin cambios desde v2.1.0):
+    K=5 folds temporales; cada fold reentrena los 3 base learners en los
+    k-1 folds previos y predice el fold k. La isotónica se ajusta sobre
+    las OOF predictions (unbiased) y los base learners se reentrenan al
+    final sobre el dataset completo para la predicción en producción.
 """
 
 import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.isotonic import IsotonicRegression
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
 from .random_forest import NBARandomForest
 from .xgboost_model import NBAXGBoost
+from .poisson_model import NBABivariatePoisson
 from .margin_model import NBAMarginModel
 from .total_model import NBATotalModel
+
+
+# Dimensión del vector de meta-features de Capa 2.
+# v2.1.0 — [rf_proba, score_diff, poisson_proba]                        (3D)
+# v2.1.2 — [rf_proba, score_diff, poisson_mu_diff, poisson_sigma_diff]  (4D)
+META_FEATURE_DIM = 4
 
 
 class NBAEnsemble:
@@ -36,8 +54,9 @@ class NBAEnsemble:
     Meta-modelo de stacking con OOF temporal y calibración isotónica.
 
     El meta-learner (LogisticRegression) recibe:
-        - rf_proba:   P(home_win) del RandomForest calibrado
-        - score_diff: home_score_pred - away_score_pred del XGBoost
+        - rf_proba:      P(home_win) del RandomForest calibrado
+        - score_diff:    home_score_pred - away_score_pred del XGBoost
+        - poisson_proba: P(home_win) del Bivariate Poisson (v2.1.0)
 
     OOF stacking elimina el leakage de calibración porque las predicciones
     del meta-learner en training son genuinamente out-of-fold (el modelo
@@ -48,25 +67,68 @@ class NBAEnsemble:
         self,
         rf_model: NBARandomForest = None,
         xgb_model: NBAXGBoost = None,
+        poisson_model: NBABivariatePoisson = None,
         margin_model: NBAMarginModel = None,
         total_model: NBATotalModel = None,
         n_folds: int = 5,
     ):
         self.rf = rf_model or NBARandomForest()
         self.xgb = xgb_model or NBAXGBoost()
+        self.poisson = poisson_model or NBABivariatePoisson()
         self.margin_model = margin_model or NBAMarginModel()
         self.total_model = total_model or NBATotalModel()
-        self.meta_learner = LogisticRegression(C=0.5, random_state=42, max_iter=1000)
+        # v2.1.2: meta-learner como Pipeline(StandardScaler → LogReg).
+        # Las 4 meta-features viven en escalas distintas:
+        #   rf_proba ∈ [0, 1], score_diff ∈ [-25, 25],
+        #   mu_diff ∈ [-25, 25], sigma_diff ∈ [10, 18].
+        # Sin estandarización, score_diff/mu_diff dominan por mayor varianza
+        # absoluta y aplastan a rf_proba en la regresión logística.
+        # C=0.1 mantiene la regularización L2 fuerte para reducir
+        # overconfidence (lección de v2.1.0).
+        self.meta_learner = Pipeline([
+            ("scaler", StandardScaler()),
+            ("logreg", LogisticRegression(C=0.1, random_state=42, max_iter=1000)),
+        ])
         self.calibrator = None          # IsotonicRegression sobre OOF predictions
         self.n_folds = n_folds
         self.is_fitted = False
         self.feature_names = None
 
+    def _poisson_meta_signals(self, X):
+        """Devuelve (mu_diff, sigma_diff) del Bivariate Poisson como
+        features estructurales para el meta-learner.
+
+        - mu_diff    = E[X1 - X2] = λ1 - λ2          (ventaja esperada)
+        - sigma_diff = √Var(X1 - X2) = √(λ1 + λ2)    (incertidumbre)
+
+        Estas son cantidades en la escala original de puntos NBA. NO se
+        transforman a probabilidad antes de entrar al meta-learner para
+        evitar el problema de calibración mixta de v2.1.0.
+        """
+        lambdas = self.poisson.predict_lambdas(X)
+        mu_diff = lambdas["lambda1"] - lambdas["lambda2"]
+        sigma_diff = np.sqrt(np.clip(lambdas["lambda1"] + lambdas["lambda2"], 1e-9, None))
+        return mu_diff, sigma_diff
+
     def _build_meta_features(self, X) -> np.ndarray:
-        """Construye la matriz de features para el meta-learner."""
+        """Construye la matriz de meta-features para el meta-learner.
+
+        v2.1.2: 4D = [rf_proba, score_diff, poisson_mu_diff, poisson_sigma_diff].
+
+        Razón: el Poisson aporta *estructura* (magnitud esperada e
+        incertidumbre) en lugar de una decisión probabilística rival.
+        El StandardScaler interno del Pipeline deja a las 4 columnas en
+        la misma escala antes del LogReg.
+        """
         rf_proba = self.rf.predict_home_win_proba(X).reshape(-1, 1)
         score_diff = self.xgb.predict_score_diff(X).reshape(-1, 1)
-        return np.hstack([rf_proba, score_diff])
+        mu_diff, sigma_diff = self._poisson_meta_signals(X)
+        return np.hstack([
+            rf_proba,
+            score_diff,
+            mu_diff.reshape(-1, 1),
+            sigma_diff.reshape(-1, 1),
+        ])
 
     def fit(self, X, y, y_home_score: np.ndarray, y_away_score: np.ndarray,
             y_margin: np.ndarray = None, y_total: np.ndarray = None,
@@ -98,10 +160,13 @@ class NBAEnsemble:
             y_total = y_home_score + y_away_score
 
         # Etapa 1 — OOF stacking temporal
-        oof_meta_X = np.zeros((n, 2))   # [rf_proba, score_diff] para cada muestra
+        # v2.1.2: meta-features = [rf_proba, score_diff, poisson_mu_diff, poisson_sigma_diff]
+        oof_meta_X = np.zeros((n, META_FEATURE_DIM))
         fold_size = n // self.n_folds
 
-        print(f"  OOF stacking ({self.n_folds} folds temporales)...")
+        print(f"  OOF stacking ({self.n_folds} folds temporales, "
+              f"{META_FEATURE_DIM} meta-features: "
+              f"rf_proba | xgb_score_diff | poisson_mu_diff | poisson_sigma_diff)...")
         for k in range(self.n_folds):
             val_start = k * fold_size
             val_end   = (k + 1) * fold_size if k < self.n_folds - 1 else n
@@ -115,13 +180,26 @@ class NBAEnsemble:
             ya_fold_tr = y_away_score[train_mask]
             X_fold_val = X[val_start:val_end]
 
-            rf_fold  = NBARandomForest()
-            xgb_fold = NBAXGBoost()
+            rf_fold      = NBARandomForest()
+            xgb_fold     = NBAXGBoost()
+            poisson_fold = NBABivariatePoisson()
             rf_fold.fit(X_fold_tr, y_fold_tr, feature_names=feature_names)
             xgb_fold.fit(X_fold_tr, yh_fold_tr, ya_fold_tr)
+            poisson_fold.fit(X_fold_tr, yh_fold_tr, ya_fold_tr,
+                             feature_names=feature_names)
 
+            # rf_proba ∈ [0, 1]
             oof_meta_X[val_start:val_end, 0] = rf_fold.predict_home_win_proba(X_fold_val)
+            # XGBoost score_diff (puntos)
             oof_meta_X[val_start:val_end, 1] = xgb_fold.predict_score_diff(X_fold_val)
+            # Bivariate Poisson como features estructurales (NO probabilidad)
+            poisson_lambdas = poisson_fold.predict_lambdas(X_fold_val)
+            oof_meta_X[val_start:val_end, 2] = (
+                poisson_lambdas["lambda1"] - poisson_lambdas["lambda2"]
+            )
+            oof_meta_X[val_start:val_end, 3] = np.sqrt(np.clip(
+                poisson_lambdas["lambda1"] + poisson_lambdas["lambda2"], 1e-9, None
+            ))
             print(f"    Fold {k+1}/{self.n_folds}: val [{val_start}, {val_end})")
 
         # Etapa 2 — meta-learner sobre OOF meta-features (sin leakage)
@@ -136,6 +214,8 @@ class NBAEnsemble:
         # Etapa 4 — re-entrenamiento de los modelos base sobre el dataset completo
         self.rf.fit(X, y, feature_names=feature_names)
         self.xgb.fit(X, y_home_score, y_away_score)
+        self.poisson.fit(X, y_home_score, y_away_score, feature_names=feature_names)
+        print(f"  [Poisson] λ3 estimado: {self.poisson.lambda3_:.4f}")
 
         # Etapa 5 — modelos dedicados de margen y total
         print("  Entrenando modelo de margen dedicado...")
@@ -174,17 +254,24 @@ class NBAEnsemble:
     def predict_full(self, X) -> dict:
         """
         Retorna un diccionario con todas las salidas del ensemble:
-          - home_win_probability / away_win_probability
+          - home_win_probability / away_win_probability (calibrada)
           - predicted_margin (modelo dedicado)
           - predicted_total (modelo dedicado)
           - predicted_home_score / predicted_away_score (XGBoost legacy)
           - rf_probability (señal base del RF)
+          - poisson_probability (señal del Bivariate Poisson, v2.1.0)
+          - poisson_lambda1 / lambda2 / lambda3 (parámetros Karlis-Ntzoufras)
+          - poisson_home_score / poisson_away_score (E[X1], E[X2])
         """
         home_proba = self.predict_home_win_proba(X)
         home_score, away_score = self.xgb.predict_scores(X)
         rf_proba = self.rf.predict_home_win_proba(X)
         margin = self.margin_model.predict_margin(X) if self.margin_model.is_fitted else home_score - away_score
         total = self.total_model.predict_total(X) if self.total_model.is_fitted else home_score + away_score
+
+        # Señales del Bivariate Poisson (v2.1.0)
+        poisson_proba = self.poisson.predict_home_win_proba(X)
+        poisson_lambdas = self.poisson.predict_lambdas(X)
 
         return {
             "home_win_probability": home_proba,
@@ -195,4 +282,10 @@ class NBAEnsemble:
             "predicted_away_score": away_score,
             "score_diff": home_score - away_score,
             "rf_probability": rf_proba,
+            "poisson_probability": poisson_proba,
+            "poisson_lambda1": poisson_lambdas["lambda1"],
+            "poisson_lambda2": poisson_lambdas["lambda2"],
+            "poisson_lambda3": poisson_lambdas["lambda3"],
+            "poisson_home_score": poisson_lambdas["mu_home"],
+            "poisson_away_score": poisson_lambdas["mu_away"],
         }

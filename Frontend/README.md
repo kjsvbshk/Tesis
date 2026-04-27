@@ -59,10 +59,10 @@ Frontend/
 │   │   └── bets.ts                 # Store Zustand: estado de apuestas activas
 │   │
 │   ├── services/                   # Capa de integración con la API
-│   │   ├── api.ts                  # Cliente axios/fetch base con interceptores
+│   │   ├── api.ts                  # Cliente fetch base con interceptores JWT
 │   │   ├── auth.service.ts         # Login, registro, verificación OTP
 │   │   ├── matches.service.ts      # Consultas de partidos
-│   │   ├── predictions.service.ts  # Solicitudes de predicción ML
+│   │   ├── predictions.service.ts  # Predicciones ML (PredictionResponse, ModelStatus)
 │   │   └── bets.service.ts         # Creación y consulta de apuestas
 │   │
 │   ├── hooks/
@@ -216,10 +216,12 @@ npm run lint
 4. Login automático
 
 ### Ver predicción de un partido
-1. Navegar a **Partidos** → seleccionar partido
-2. `MatchCard` solicita `GET /predictions/game/{game_id}`
-3. Backend consulta modelo ML → retorna probabilidades, scores esperados, confianza
-4. Predicción visible en la tarjeta del partido
+1. Navegar a **Predicciones** → ingresar el `game_id` del partido
+2. `PredictionsPage` solicita `GET /predictions/game/{game_id}`
+3. Backend consulta modelo ML → retorna probabilidades, scores esperados, margen y confianza
+4. La página muestra el estado del modelo activo (`ModelStatus`), incluyendo si usa predicciones reales o modo dummy
+
+También disponible desde **Partidos** → `MatchCard` integra la predicción directamente.
 
 ### Crear apuesta
 1. En `MatchCard` → clic en equipo ganador → se abre `BetSlip`

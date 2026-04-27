@@ -163,6 +163,10 @@ class Settings(BaseSettings):
     SMTP_FROM_EMAIL: Optional[str] = None
     SMTP_USE_TLS: bool = True
     
+    # ML Model Configuration
+    MODEL_DIR: str = "../ML/models"  # Ruta al directorio de modelos (relativa a Backend/ o absoluta)
+    ML_SCHEMA: str = "ml"            # Schema de ml_ready_games en Neon
+
     # Redis Configuration
     REDIS_URL: Optional[str] = None  # Full Redis URL (e.g., redis://:password@host:port/db)
     REDIS_HOST: str = "localhost"

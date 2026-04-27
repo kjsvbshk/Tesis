@@ -25,6 +25,11 @@ Scrapping/
 │   ├── main.py                          # Scheduler APScheduler (cron diario 3:00 AM)
 │   ├── load_data.py                     # Carga inteligente a PostgreSQL
 │   ├── update_injuries_odds.py          # Actualización diaria de lesiones y cuotas
+│   ├── scrape_new_boxscores.py          # Scrapear boxscores nuevos (incremental)
+│   ├── scrape_missing_2026_boxscores.py # Boxscores faltantes temporada 2025-26
+│   ├── recover_scores.py                # Recuperar scores faltantes en la BD
+│   ├── fix_game_id_mapping.py           # Corrección de mapeo de game IDs
+│   ├── audit_full_coverage.py           # Auditoría de cobertura del dataset
 │   ├── config.yaml                      # Credenciales de base de datos
 │   ├── requirements.txt
 │   │
@@ -33,7 +38,12 @@ Scrapping/
 │   │   ├── espn_schedule_scraper.py     # Calendario de partidos
 │   │   ├── player_stats_scraper.py      # Estadísticas de jugadores (Selenium)
 │   │   ├── team_stats_scraper.py        # Estadísticas de equipos (Selenium)
-│   │   └── injuries_scraper.py          # Reportes de lesiones
+│   │   ├── team_scraper.py              # Scraper alternativo de equipos
+│   │   ├── standings_scraper.py         # Clasificaciones
+│   │   ├── injuries_scraper.py          # Reportes de lesiones
+│   │   ├── odds_scraper.py              # Cuotas de apuestas
+│   │   ├── populate_all_games.py        # Poblar historial completo de partidos
+│   │   └── recover_missing_scores.py    # Recuperar scores faltantes desde ESPN
 │   │
 │   ├── etl/
 │   │   └── transform_consolidate.py     # Consolida todos los datos en un CSV único
@@ -199,23 +209,24 @@ python main.py
 cd Scrapping/nba
 pip install -r requirements.txt
 
-# 1. Estadísticas de jugadores (requiere Chrome)
+# 1. Poblar historial completo de partidos
+python espn/populate_all_games.py
+
+# 2. Estadísticas de jugadores (requiere Chrome)
 python -m espn.player_stats_scraper --season "2023-24" --type "regular"
-python -m espn.player_stats_scraper --season "2023-24" --type "playoffs"
 python -m espn.player_stats_scraper --season "2024-25" --type "regular"
 
-# 2. Estadísticas de equipos (requiere Chrome)
+# 3. Estadísticas de equipos (requiere Chrome)
 python -m espn.team_stats_scraper --season "2023-24" --type "regular"
-python -m espn.team_stats_scraper --season "2023-24" --type "playoffs"
 python -m espn.team_stats_scraper --season "2024-25" --type "regular"
 
-# 3. Lesiones y cuotas
+# 4. Lesiones y cuotas
 python update_injuries_odds.py --load-db
 
-# 4. ETL — consolidar en CSV
+# 5. ETL — consolidar en CSV
 python -c "from etl.transform_consolidate import run_etl_pipeline; run_etl_pipeline()"
 
-# 5. Cargar todo a Neon
+# 6. Cargar todo a Neon
 python load_data.py
 ```
 
@@ -227,9 +238,8 @@ cd Scrapping/nba
 # 1. Datos que cambian diariamente
 python update_injuries_odds.py --load-db
 
-# 2. Boxscores de partidos nuevos
-python main.py
-# (Ctrl+C una vez que termine)
+# 2. Boxscores de partidos nuevos (incremental)
+python scrape_new_boxscores.py
 
 # 3. ETL si hay nuevos datos
 python -c "from etl.transform_consolidate import run_etl_pipeline; run_etl_pipeline()"

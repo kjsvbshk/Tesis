@@ -21,6 +21,7 @@ export interface PredictionResponse {
   predicted_home_score: number
   predicted_away_score: number
   predicted_total: number
+  predicted_margin?: number
   recommended_bet: string
   expected_value: number
   confidence_score: number
@@ -32,11 +33,12 @@ export interface PredictionResponse {
 
 export interface ModelStatus {
   model_loaded: boolean
-  model_version: string
+  model_version: string | null
   model_type: string
-  last_trained: string
-  accuracy: number
+  trained_at: string | null
+  metrics: Record<string, number> | null
   status: string
+  using_real_predictions: boolean
 }
 
 class PredictionsService {

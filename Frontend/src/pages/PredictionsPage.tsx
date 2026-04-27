@@ -3,23 +3,30 @@
  * User page to request and view predictions
  */
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Target, Users, Zap, Cpu, Search } from 'lucide-react'
+import { Target, Users, Zap, Cpu, Search, AlertTriangle } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { predictionsService } from '@/services/predictions.service'
-import type { PredictionResponse } from '@/services/predictions.service'
+import type { PredictionResponse, ModelStatus } from '@/services/predictions.service'
 import { useToast } from '@/hooks/use-toast'
 
 export function PredictionsPage() {
   const [gameId, setGameId] = useState('')
   const [loading, setLoading] = useState(false)
   const [prediction, setPrediction] = useState<PredictionResponse | null>(null)
+  const [modelStatus, setModelStatus] = useState<ModelStatus | null>(null)
   const { toast } = useToast()
+
+  useEffect(() => {
+    predictionsService.getModelStatus()
+      .then(setModelStatus)
+      .catch(() => setModelStatus(null))
+  }, [])
 
   const handleGetPrediction = async () => {
     if (!gameId) {
@@ -68,6 +75,12 @@ export function PredictionsPage() {
         <p className="text-muted-foreground font-mono uppercase tracking-wide max-w-lg">
           Execute Neural Network models to probability outcomes for upcoming matches.
         </p>
+        {modelStatus && !modelStatus.using_real_predictions && (
+          <div className="flex items-center gap-2 mt-3 px-3 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded text-yellow-400 font-mono text-xs uppercase tracking-widest w-fit">
+            <AlertTriangle size={12} />
+            <span>MODO SIMULADO — predicciones dummy, modelo no cargado</span>
+          </div>
+        )}
       </motion.div>
 
       {/* Input Section */}
@@ -164,6 +177,17 @@ export function PredictionsPage() {
                 <StatCard label="TOTAL POINTS" value={prediction.predicted_total?.toFixed(1) || 'N/A'} sub="Over/Under Line" highlight />
                 <StatCard label="PREDICTED AWAY" value={prediction.predicted_away_score?.toFixed(1) || 'N/A'} sub="Expected Points" />
               </div>
+
+              {/* Predicted Margin */}
+              {prediction.predicted_margin !== undefined && prediction.predicted_margin !== null && (
+                <div className="grid grid-cols-1 gap-4">
+                  <MarginCard
+                    margin={prediction.predicted_margin}
+                    homeName={prediction.home_team_name}
+                    awayName={prediction.away_team_name}
+                  />
+                </div>
+              )}
             </div>
 
             {/* Sidebar - Recommendation */}
@@ -210,7 +234,7 @@ export function PredictionsPage() {
                 <CardContent className="space-y-4 font-mono text-xs">
                   <div className="flex justify-between border-b border-white/5 pb-2">
                     <span className="text-muted-foreground">VERSION</span>
-                    <span className="text-white">{prediction.model_version || 'v1.0.0'}</span>
+                    <span className="text-white">{prediction.model_version || 'N/A'}</span>
                   </div>
                   <div className="flex justify-between border-b border-white/5 pb-2">
                     <span className="text-muted-foreground">CONFIDENCE</span>
@@ -220,10 +244,33 @@ export function PredictionsPage() {
                     <span className="text-muted-foreground">LATENCY</span>
                     <span className="text-white">{prediction.latency_ms || 0}ms</span>
                   </div>
-                  <div className="flex justify-between pt-1">
+                  <div className="flex justify-between border-b border-white/5 pb-2">
                     <span className="text-muted-foreground">TIMESTAMP</span>
                     <span className="text-white">{new Date(prediction.prediction_timestamp || Date.now()).toLocaleTimeString()}</span>
                   </div>
+                  {modelStatus?.using_real_predictions === false && (
+                    <div className="flex justify-between pt-1">
+                      <span className="text-muted-foreground">MODE</span>
+                      <span className="text-yellow-400 font-bold">SIMULADO</span>
+                    </div>
+                  )}
+                  {modelStatus?.trained_at && (
+                    <div className="flex justify-between pt-1">
+                      <span className="text-muted-foreground">TRAINED</span>
+                      <span className="text-white">{new Date(modelStatus.trained_at).toLocaleDateString()}</span>
+                    </div>
+                  )}
+                  {modelStatus?.metrics && (
+                    <div className="pt-2 space-y-1 border-t border-white/5">
+                      <div className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2">Metrics</div>
+                      {Object.entries(modelStatus.metrics).map(([k, v]) => (
+                        <div key={k} className="flex justify-between">
+                          <span className="text-muted-foreground">{k.toUpperCase()}</span>
+                          <span className="text-white">{typeof v === 'number' ? v.toFixed(4) : v}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </div>
@@ -241,6 +288,28 @@ function StatCard({ label, value, sub, highlight }: { label: string; value: stri
         <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest mb-1">{label}</span>
         <span className={`text-3xl lg:text-4xl font-mono font-bold ${highlight ? 'text-acid-500' : 'text-white'} tracking-tighter`}>{value}</span>
         <span className="text-[10px] text-white/30 mt-1">{sub}</span>
+      </CardContent>
+    </Card>
+  )
+}
+
+function MarginCard({ margin, homeName, awayName }: { margin: number; homeName: string; awayName: string }) {
+  const isHomeWin = margin > 0
+  const displayMargin = margin > 0 ? `+${margin.toFixed(1)}` : margin.toFixed(1)
+  const favored = isHomeWin ? homeName : awayName
+  return (
+    <Card className={`border-white/10 bg-metal-900/50`}>
+      <CardContent className="p-4 flex items-center justify-between">
+        <div>
+          <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest block mb-1">Predicted Margin</span>
+          <span className={`text-3xl font-mono font-bold tracking-tighter ${isHomeWin ? 'text-acid-500' : 'text-electric-violet'}`}>
+            {displayMargin}
+          </span>
+        </div>
+        <div className="text-right">
+          <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest block mb-1">Favored</span>
+          <span className="text-sm font-mono text-white font-bold">{favored}</span>
+        </div>
       </CardContent>
     </Card>
   )

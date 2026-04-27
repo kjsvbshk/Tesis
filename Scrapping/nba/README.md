@@ -2,98 +2,81 @@
 
 ## ¿Qué hace este sistema?
 
-Este sistema automatiza la recolección de información de la NBA desde ESPN. En lugar de copiar datos manualmente, el sistema visita las páginas web de ESPN, extrae la información que necesitamos y la guarda de forma organizada en archivos y en una base de datos.
+Este sistema automatiza la recolección de información de la NBA desde ESPN. El sistema visita las páginas web de ESPN, extrae la información que necesitamos y la guarda de forma organizada en archivos y en una base de datos PostgreSQL (Neon).
 
-Imagina que necesitas información sobre todos los partidos de la NBA, las estadísticas de cada jugador, los equipos, las lesiones, las cuotas de apuestas, etc. Este sistema hace todo eso automáticamente, todos los días, sin que tengas que hacer nada.
+Extrae boxscores, estadísticas de jugadores y equipos, lesiones, cuotas y el calendario de partidos. También incluye scripts para recuperar datos históricos faltantes y auditar la cobertura del dataset.
 
 ## ¿Qué datos extrae el sistema?
 
-El sistema recolecta varios tipos de información:
-
 ### 1. **Partidos y Resultados** (`boxscores`)
-   - Información detallada de cada partido: quién jugó, cuántos puntos anotó cada jugador, qué equipos ganaron, etc.
-   - Se guarda un archivo por cada partido con toda la información del juego.
+   - Información detallada de cada partido: equipos, puntuaciones, estadísticas por jugador.
+   - Se guarda un archivo JSON por cada partido.
 
 ### 2. **Estadísticas de Jugadores** (`player_stats`)
-   - Puntos, asistencias, rebotes, bloqueos, robos, triples anotados por cada jugador.
+   - Puntos, asistencias, rebotes, bloqueos, robos, porcentajes de tiro.
    - Datos organizados por temporada (Regular y Playoffs).
    - Extrae los top 50 jugadores en cada categoría estadística.
 
 ### 3. **Estadísticas de Equipos** (`team_stats`)
-   - Rendimiento general de cada equipo: porcentaje de victorias, puntos promedio, eficiencia ofensiva y defensiva.
+   - Rendimiento general: PPG, FG%, 3P%, eficiencia ofensiva y defensiva, diferencial de puntos.
    - Un archivo por cada equipo de la NBA.
 
 ### 4. **Clasificaciones** (`standings`)
-   - Posición de cada equipo en la tabla de clasificación.
-   - Partidos ganados, perdidos, diferencia de juegos, etc.
-   - Datos por temporada.
+   - Posición de cada equipo, partidos ganados, perdidos, diferencia de juegos.
 
 ### 5. **Lesiones** (`injuries`)
-   - Reportes diarios de jugadores lesionados.
-   - Estado de cada lesión y cuándo se espera que el jugador regrese.
+   - Reportes diarios de jugadores lesionados, estado y fecha estimada de regreso.
 
 ### 6. **Cuotas de Apuestas** (`odds`)
-   - Probabilidades de victoria de cada equipo según casas de apuestas.
-   - Datos actualizados diariamente desde una API externa.
-
-## ¿Cómo funciona el sistema?
-
-El sistema funciona en varios pasos:
-
-### Paso 1: Extracción de Datos (Scraping)
-El sistema visita las páginas de ESPN y extrae la información. Cada tipo de dato tiene su propio "scraper" (extractor):
-- `espn_schedule_scraper.py` - Obtiene los IDs de los partidos
-- `espn_scraper.py` - Extrae los resultados detallados de cada partido
-- `player_stats_scraper.py` - Extrae estadísticas de jugadores
-- `team_scraper.py` - Extrae estadísticas de equipos
-- `standings_scraper.py` - Extrae las clasificaciones
-- `injuries_scraper.py` - Extrae reportes de lesiones
-- `odds_scraper.py` - Obtiene cuotas de apuestas desde una API
-
-### Paso 2: Almacenamiento Temporal
-Los datos extraídos se guardan primero en archivos CSV y JSON en la carpeta `data/raw/`. Esto permite revisar los datos antes de procesarlos.
-
-### Paso 3: Procesamiento y Consolidación (ETL)
-El sistema toma todos los archivos individuales y los combina en un solo archivo maestro (`nba_full_dataset.csv`) que contiene toda la información relacionada. Este proceso se llama ETL (Extract, Transform, Load).
-
-### Paso 4: Carga a Base de Datos
-Finalmente, el sistema carga todos los datos a una base de datos PostgreSQL usando un sistema inteligente que:
-- Detecta automáticamente qué tipo de datos son (números, texto, fechas, etc.)
-- Crea las tablas necesarias automáticamente
-- Evita duplicados
-- Relaciona los datos entre sí (por ejemplo, qué jugadores pertenecen a qué equipos)
+   - Probabilidades de victoria desde una API externa, actualizadas diariamente.
 
 ## Estructura del Proyecto
 
 ```
 nba/
-├── espn/                    # Extractores de datos de ESPN
-│   ├── espn_schedule_scraper.py    # Obtiene IDs de partidos
-│   ├── espn_scraper.py             # Extrae resultados de partidos
-│   ├── player_stats_scraper.py     # Extrae estadísticas de jugadores
-│   ├── team_scraper.py             # Extrae estadísticas de equipos
-│   ├── standings_scraper.py        # Extrae clasificaciones
-│   ├── injuries_scraper.py         # Extrae reportes de lesiones
-│   └── odds_scraper.py             # Obtiene cuotas de apuestas
+├── main.py                          # Scheduler APScheduler (cron diario 3:00 AM)
+├── load_data.py                     # Carga inteligente a PostgreSQL (Neon)
+├── update_injuries_odds.py          # Actualización diaria de lesiones y cuotas
+├── config.yaml                      # Configuración de base de datos
+├── requirements.txt
 │
-├── etl/                     # Procesamiento y consolidación de datos
-│   └── transform_consolidate.py   # Combina todos los datos en uno solo
+├── espn/                            # Scrapers por tipo de dato
+│   ├── espn_scraper.py              # Boxscores de partidos individuales
+│   ├── espn_schedule_scraper.py     # Calendario de partidos
+│   ├── player_stats_scraper.py      # Estadísticas de jugadores (Selenium)
+│   ├── team_stats_scraper.py        # Estadísticas de equipos (Selenium)
+│   ├── team_scraper.py              # Scraper alternativo de equipos
+│   ├── standings_scraper.py         # Clasificaciones
+│   ├── injuries_scraper.py          # Reportes de lesiones
+│   ├── odds_scraper.py              # Cuotas de apuestas
+│   ├── populate_all_games.py        # Poblar historial completo de partidos ESPN
+│   └── recover_missing_scores.py   # Recuperar scores faltantes desde ESPN
 │
-├── utils/                   # Herramientas compartidas
-│   ├── db.py               # Conexión a base de datos
-│   ├── logger.py           # Sistema de registro de actividades
-│   └── common.py           # Funciones útiles compartidas
+├── etl/
+│   └── transform_consolidate.py     # Consolida todos los datos en un CSV único
 │
-├── data/                    # Datos extraídos
-│   ├── raw/                 # Datos sin procesar (CSV, JSON)
-│   └── processed/           # Datos procesados y consolidados
+├── utils/
+│   └── db.py                        # Utilidades de conexión a PostgreSQL
 │
-├── logs/                    # Registros de actividades del sistema
+├── audit_full_coverage.py           # Auditoria de cobertura del dataset
+├── fix_game_id_mapping.py           # Corrección de mapeo de game IDs entre fuentes
+├── recover_scores.py                # Recuperar scores faltantes en la BD
+├── scrape_missing_2026_boxscores.py # Scrapear boxscores faltantes temporada 2025-26
+├── scrape_new_boxscores.py          # Scrapear boxscores nuevos (incremental)
+├── inspect_schema.py                # Inspeccionar esquema de tablas en Neon
 │
-├── main.py                  # Programa principal que ejecuta todo
-├── load_data.py             # Carga los datos a la base de datos
-├── config.yaml              # Configuración del sistema
-└── requirements.txt         # Librerías necesarias
+├── data/
+│   ├── raw/
+│   │   ├── boxscores/               # JSON por partido
+│   │   ├── player_stats/            # CSV por temporada/tipo
+│   │   ├── team_stats/              # CSV por temporada/tipo
+│   │   ├── standings/               # CSV de clasificaciones
+│   │   ├── injuries/                # CSV de lesiones activas
+│   │   └── odds/                    # JSON de cuotas
+│   └── processed/
+│       └── nba_full_dataset.csv     # Dataset consolidado
+│
+└── logs/                            # Logs de ejecución
 ```
 
 ## Instalación y Configuración
@@ -101,8 +84,8 @@ nba/
 ### Requisitos Previos
 
 - Python 3.11 o superior
-- PostgreSQL 15 o superior
-- Chrome o Chromium (para extraer estadísticas de jugadores)
+- Chrome o Chromium (para scrapers de jugadores y equipos con Selenium)
+- Cuenta en Neon PostgreSQL
 
 ### Pasos de Instalación
 
@@ -111,166 +94,153 @@ nba/
    cd Scrapping/nba
    pip install -r requirements.txt
    ```
+   ChromeDriver se instala automáticamente con `webdriver-manager`.
 
 2. **Configurar la base de datos:**
-   - Crea un archivo `.env` en el directorio `Scrapping/nba/` con las siguientes variables:
-     ```env
-     NEON_DB_HOST=tu-host.neon.tech
-     NEON_DB_PORT=5432
-     NEON_DB_NAME=tu-base-de-datos
-     NEON_DB_USER=tu-usuario
-     NEON_DB_PASSWORD=tu-contraseña
-     NEON_DB_SSLMODE=require
-     NEON_DB_CHANNEL_BINDING=require
-     DB_SCHEMA=espn
-     ```
-   - **IMPORTANTE:** El archivo `.env` contiene credenciales sensibles y NO debe subirse a Git. Ya está incluido en `.gitignore`.
-   - Alternativamente, puedes usar un archivo `config.yaml` (no recomendado para producción):
-     ```yaml
-     DATABASE_URL: ${DATABASE_URL}
-     DB_SCHEMA: espn
-     ```
-
-3. **Verificar que todo funciona:**
-   ```bash
-   python main.py
+   Crear un archivo `.env` en la raíz del repositorio con las variables `NEON_*`, o editar `config.yaml`:
+   ```yaml
+   DATABASE_URL: postgresql://usuario:contraseña@host:5432/nombre_bd
+   DB_SCHEMA: espn
    ```
 
 ## Cómo Usar el Sistema
 
-### Ejecutar el Sistema Completo
-
-El sistema puede ejecutarse de dos formas:
-
-**Opción 1: Ejecución Manual**
-```bash
-python main.py
-```
-
-**Opción 2: Ejecución Automática Programada**
-El sistema está configurado para ejecutarse automáticamente todos los días a las 3:00 AM. Solo necesitas dejar el programa corriendo:
-```bash
-python main.py
-```
-El sistema se ejecutará automáticamente cada día a la hora programada.
-
-### Extraer Estadísticas de Jugadores Específicas
-
-Si solo quieres extraer estadísticas de jugadores para una temporada específica:
+### Primera vez — setup completo
 
 ```bash
-# Temporada regular 2023-24
+cd Scrapping/nba
+pip install -r requirements.txt
+
+# 1. Estadísticas de jugadores (requiere Chrome)
+python -m espn.player_stats_scraper --season "2024-25" --type "regular"
 python -m espn.player_stats_scraper --season "2023-24" --type "regular"
 
-# Playoffs 2023-24
-python -m espn.player_stats_scraper --season "2023-24" --type "playoffs"
+# 2. Estadísticas de equipos (requiere Chrome)
+python -m espn.team_stats_scraper --season "2024-25" --type "regular"
+python -m espn.team_stats_scraper --season "2023-24" --type "regular"
 
-# Temporada regular 2024-25
-python -m espn.player_stats_scraper --season "2024-25" --type "regular"
+# 3. Poblar historial completo de partidos
+python espn/populate_all_games.py
 
-# Playoffs 2024-25
-python -m espn.player_stats_scraper --season "2024-25" --type "playoffs"
-```
-
-### Actualizar Injuries y Odds
-
-Para actualizar los reportes de lesiones y cuotas de apuestas (datos que cambian diariamente):
-
-```bash
-# Actualizar ambos (injuries y odds) - solo archivos
-python update_injuries_odds.py
-
-# Actualizar ambos y cargar a la base de datos
+# 4. Lesiones y cuotas
 python update_injuries_odds.py --load-db
 
-# Actualizar solo reportes de lesiones
-python update_injuries_odds.py --injuries
+# 5. ETL — consolidar en CSV
+python -c "from etl.transform_consolidate import run_etl_pipeline; run_etl_pipeline()"
 
-# Actualizar solo cuotas de apuestas
-python update_injuries_odds.py --odds
-
-# Actualizar injuries y cargar a la base de datos
-python update_injuries_odds.py --injuries --load-db
-
-# Actualizar odds y cargar a la base de datos
-python update_injuries_odds.py --odds --load-db
-```
-
-Este script es útil para mantener actualizados los datos de lesiones y cuotas de apuestas sin necesidad de ejecutar todo el sistema de scraping.
-
-**Nota:** Por defecto, el script solo actualiza los archivos CSV/JSON. Si quieres que también actualice la base de datos, usa la opción `--load-db`.
-
-### Cargar Datos a la Base de Datos
-
-Una vez que tengas los datos extraídos, puedes cargarlos a la base de datos:
-
-```bash
+# 6. Cargar todo a Neon
 python load_data.py
 ```
 
-Este script:
-1. Analiza todos los archivos de datos
-2. Detecta automáticamente la estructura de los datos
-3. Crea las tablas necesarias en la base de datos
-4. Carga todos los datos
-5. Muestra un resumen de lo que se cargó
+### Actualización diaria
+
+```bash
+cd Scrapping/nba
+
+# 1. Datos que cambian diariamente
+python update_injuries_odds.py --load-db
+
+# 2. Boxscores nuevos (incremental)
+python scrape_new_boxscores.py
+
+# 3. ETL si hay nuevos datos
+python -c "from etl.transform_consolidate import run_etl_pipeline; run_etl_pipeline()"
+
+# 4. Sincronizar con Neon
+python load_data.py
+```
+
+### Scheduler automático (daemon)
+
+`main.py` inicia un proceso daemon con APScheduler que ejecuta el scraping a las **3:00 AM** diariamente:
+
+```bash
+python main.py
+# Ctrl+C para detener
+```
+
+### Recuperar datos históricos faltantes
+
+```bash
+# Recuperar scores faltantes en la BD
+python recover_scores.py
+
+# Recuperar scores desde ESPN directamente
+python espn/recover_missing_scores.py
+
+# Scrapear boxscores faltantes de la temporada 2025-26
+python scrape_missing_2026_boxscores.py
+```
+
+### Auditoría de cobertura
+
+```bash
+# Ver cobertura completa del dataset
+python audit_full_coverage.py
+
+# Inspeccionar esquema de tablas en Neon
+python inspect_schema.py
+
+# Corregir mapeo de game IDs
+python fix_game_id_mapping.py
+```
+
+### Opciones de `update_injuries_odds.py`
+
+```bash
+python update_injuries_odds.py              # Actualiza archivos CSV/JSON solamente
+python update_injuries_odds.py --load-db    # Actualiza archivos + carga a BD
+python update_injuries_odds.py --injuries   # Solo lesiones
+python update_injuries_odds.py --odds       # Solo cuotas
+python update_injuries_odds.py --injuries --load-db
+python update_injuries_odds.py --odds --load-db
+```
 
 ## ¿Dónde se Guardan los Datos?
 
 ### Archivos Locales
 
 - **Datos sin procesar:** `data/raw/`
-  - `boxscores/` - Resultados de partidos (JSON)
-  - `player_stats/` - Estadísticas de jugadores (CSV)
-  - `team_stats/` - Estadísticas de equipos (CSV)
-  - `standings/` - Clasificaciones (CSV)
-  - `injuries/` - Reportes de lesiones (CSV)
-  - `odds/` - Cuotas de apuestas (JSON)
+  - `boxscores/` — Resultados de partidos (JSON)
+  - `player_stats/` — Estadísticas de jugadores (CSV)
+  - `team_stats/` — Estadísticas de equipos (CSV)
+  - `standings/` — Clasificaciones (CSV)
+  - `injuries/` — Reportes de lesiones (CSV)
+  - `odds/` — Cuotas de apuestas (JSON)
 
 - **Datos procesados:** `data/processed/`
-  - `nba_full_dataset.csv` - Archivo maestro con todos los datos combinados
+  - `nba_full_dataset.csv` — Archivo maestro consolidado
 
-### Base de Datos
+### Base de Datos (Neon — schema `espn`)
 
-Los datos también se cargan en PostgreSQL en el esquema `espn` con las siguientes tablas:
-- `games` - Partidos y resultados
-- `player_stats` - Estadísticas de jugadores
-- `team_stats` - Estadísticas de equipos
-- `standings` - Clasificaciones
-- `injuries` - Lesiones
-- `odds` - Cuotas de apuestas
+| Tabla | Descripción | Frecuencia |
+|-------|-------------|-----------|
+| `games` | Partidos y resultados | Diaria |
+| `player_stats` | Estadísticas de jugadores | Por temporada |
+| `team_stats` | Estadísticas de equipos | Por temporada |
+| `standings` | Clasificaciones | Diaria |
+| `injuries` | Lesiones activas | Diaria |
+| `odds` | Cuotas de apuestas | Pre-partido |
 
 ## Monitoreo y Logs
 
-El sistema guarda un registro de todas sus actividades en la carpeta `logs/`. Cada vez que el sistema ejecuta una tarea, guarda:
-- Qué datos extrajo
-- Si hubo algún error
-- Cuánto tiempo tardó
-- Cuántos registros procesó
-
-Puedes revisar estos logs para ver qué está haciendo el sistema y si hay algún problema.
+El sistema guarda registros en la carpeta `logs/`:
+- `scraper_YYYY-MM-DD.log` — actividad del scraper
+- `load_data_YYYY-MM-DD.log` — resumen de carga a BD
 
 ## Solución de Problemas
 
-### El sistema no puede conectarse a la base de datos
-- Verifica que PostgreSQL esté corriendo
-- Revisa las credenciales en `config.yaml`
-- Asegúrate de que la base de datos `nba_data` exista
+| Problema | Causa probable | Solución |
+|----------|---------------|---------|
+| Error de conexión a BD | Credenciales incorrectas | Verificar `config.yaml` o variables `NEON_*` |
+| Error en scraper de jugadores | Chrome no encontrado | Instalar Chrome y verificar que esté en PATH |
+| Datos no aparecen en Neon | ETL no ejecutado | Correr `run_etl_pipeline()` antes de `load_data.py` |
+| Duplicados ignorados en carga | Comportamiento esperado | El sistema deduplica automáticamente |
+| Scores faltantes en BD | Partidos sin boxscore | Ejecutar `recover_scores.py` o `scrape_missing_2026_boxscores.py` |
 
-### No se pueden extraer estadísticas de jugadores
-- Asegúrate de tener Chrome o Chromium instalado
-- El sistema usa Selenium que requiere ChromeDriver (se instala automáticamente)
+## Notas Importantes
 
-### Los datos no se cargan correctamente
-- Revisa los logs en `logs/` para ver qué error específico ocurrió
-- Verifica que los archivos de datos existan en `data/raw/`
-- Asegúrate de que la base de datos tenga espacio suficiente
-
-## Próximos Pasos
-
-Este sistema es parte de un proyecto más grande que incluye:
-- Un backend que usa estos datos para hacer predicciones
-- Un frontend que muestra las predicciones y permite hacer apuestas virtuales
-- Modelos de machine learning que aprenden de estos datos históricos
-
-Los datos extraídos por este sistema alimentan todo el resto del proyecto.
+1. **Datos públicos**: El scraping utiliza únicamente datos públicos de ESPN disponibles sin autenticación.
+2. **Idempotencia**: `load_data.py` puede ejecutarse múltiples veces — los registros ya existentes se omiten automáticamente.
+3. **Scripts de recuperación**: Los scripts `recover_*.py` y `scrape_missing_*.py` permiten rellenar huecos en el historial sin re-scrapear todo.
+4. **Premier League**: El sistema para Premier League está en `Scrapping/premier_league/`. La estructura es análoga a NBA pero en estado de desarrollo inicial.

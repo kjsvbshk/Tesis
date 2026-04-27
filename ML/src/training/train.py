@@ -31,6 +31,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from src.config import db_config
 from src.models.random_forest import NBARandomForest
 from src.models.xgboost_model import NBAXGBoost
+from src.models.poisson_model import NBABivariatePoisson
 from src.models.ensemble import NBAEnsemble
 from src.evaluation.metrics import evaluate_classifier, evaluate_regressor, compute_economic_metrics, print_metrics_report, print_regressor_report, print_economic_report
 from src.evaluation.validation import temporal_train_test_split
@@ -195,6 +196,23 @@ def train_xgboost(X_train, df_train) -> NBAXGBoost:
     model = NBAXGBoost()
     model.fit(X_train, y_home, y_away)
     print("  XGBoost entrenado.")
+    return model
+
+
+def train_poisson(X_train, df_train, feature_cols) -> NBABivariatePoisson:
+    """
+    Entrena el modelo Bivariate Poisson aislado (Karlis & Ntzoufras, 2003).
+
+    Útil para benchmarking del Poisson contra el ensemble completo.
+    """
+    print("\nEntrenando Bivariate Poisson (Karlis & Ntzoufras, 2003)...")
+    score_col_h = next((c for c in ['home_pts', 'home_score'] if c in df_train.columns), 'home_score')
+    score_col_a = next((c for c in ['away_pts', 'away_score'] if c in df_train.columns), 'away_score')
+    y_home = df_train[score_col_h].fillna(df_train[score_col_h].median()).values
+    y_away = df_train[score_col_a].fillna(df_train[score_col_a].median()).values
+    model = NBABivariatePoisson()
+    model.fit(X_train, y_home, y_away, feature_names=feature_cols)
+    print(f"  Bivariate Poisson entrenado (λ3 global = {model.lambda3_:.4f}).")
     return model
 
 
@@ -370,11 +388,17 @@ def train_model(version: str = "v1.0.0", model_type: str = "ensemble", use_odds:
     elif model_type == "xgb":
         model = train_xgboost(X_train, df_train)
         model_name = "XGBoost"
+    elif model_type == "poisson":
+        model = train_poisson(X_train, df_train, feature_cols)
+        model_name = "BivariatePoisson"
     elif model_type == "ensemble":
         model = train_ensemble(X_train, y_train, df_train, feature_cols)
-        model_name = "Ensemble (RF+XGB)"
+        model_name = "Ensemble (RF+XGB+Poisson)"
     else:
-        raise ValueError(f"model_type debe ser 'rf', 'xgb' o 'ensemble'. Recibido: {model_type}")
+        raise ValueError(
+            f"model_type debe ser 'rf', 'xgb', 'poisson' o 'ensemble'. "
+            f"Recibido: {model_type}"
+        )
 
     # 5. Evaluar
     metrics = evaluate(model, X_test, y_test, df_test, model_name)
@@ -395,8 +419,10 @@ def train_model(version: str = "v1.0.0", model_type: str = "ensemble", use_odds:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Entrenamiento del modelo NBA")
-    parser.add_argument("--version",    default="v1.0.0",   help="Versión del modelo (ej: v1.0.0)")
-    parser.add_argument("--model",      default="ensemble",  help="Tipo: rf | xgb | ensemble")
+    parser.add_argument("--version",    default="v2.1.0",
+                        help="Versión del modelo (ej: v2.1.0). Default v2.1.0 incluye Bivariate Poisson.")
+    parser.add_argument("--model",      default="ensemble",
+                        help="Tipo: rf | xgb | poisson | ensemble")
     parser.add_argument("--use-odds",   action="store_true", help="Incluir features de odds")
     args = parser.parse_args()
 

@@ -28,6 +28,7 @@ from app.models.team import Team
 from app.models import ModelVersion, Prediction, Request
 from app.schemas.prediction import PredictionResponse
 from app.services.match_service import MatchService
+from app.core.config import settings
 import time
 
 class PredictionService:
@@ -56,17 +57,23 @@ class PredictionService:
             return
         
         try:
-            # Intentar cargar modelo desde archivo
-            model_path = os.path.join("ml", "models", f"nba_prediction_model_{self.model_version_obj.version}.joblib")
+            # Resolver MODEL_DIR como ruta absoluta relativa a este archivo si es relativa
+            model_dir = settings.MODEL_DIR
+            if not os.path.isabs(model_dir):
+                # Relativo al directorio raíz del Backend (dos niveles arriba de este archivo)
+                backend_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+                model_dir = os.path.normpath(os.path.join(backend_root, model_dir))
+
+            model_path = os.path.join(model_dir, f"nba_prediction_model_{self.model_version_obj.version}.joblib")
             if not os.path.exists(model_path):
                 # Fallback a nombre genérico
-                model_path = os.path.join("ml", "models", "nba_prediction_model.joblib")
-            
+                model_path = os.path.join(model_dir, "nba_prediction_model.joblib")
+
             if os.path.exists(model_path):
                 self.model = joblib.load(model_path)
-                print(f"✅ ML model loaded successfully (version: {self.model_version_obj.version})")
+                print(f"✅ ML model loaded successfully (version: {self.model_version_obj.version}, path: {model_path})")
             else:
-                print(f"⚠️ ML model not found for version {self.model_version_obj.version}, using dummy predictions")
+                print(f"⚠️ ML model not found at {model_path}, using dummy predictions")
                 self.model = None
         except Exception as e:
             print(f"❌ Error loading ML model: {e}")
@@ -332,13 +339,26 @@ class PredictionService:
     
     async def get_model_status(self) -> Dict[str, Any]:
         """Get ML model status and information"""
+        metrics = None
+        trained_at = None
+        if self.model_version_obj and self.model_version_obj.model_metadata:
+            raw = self.model_version_obj.model_metadata
+            meta = raw if isinstance(raw, dict) else {}
+            metrics = {k: meta[k] for k in ("log_loss", "brier_score", "roc_auc", "ece", "accuracy",
+                                              "mae_margin", "mae_total") if k in meta}
+            trained_at = meta.get("trained_at") or (
+                self.model_version_obj.created_at.isoformat()
+                if self.model_version_obj.created_at else None
+            )
+
         return {
             "model_loaded": self.model is not None,
             "model_version": self.model_version_obj.version if self.model_version_obj else None,
-            "model_type": "RandomForest + XGBoost Ensemble" if self.model else "Dummy Predictor",
-            "last_trained": "2024-01-01",  # Would be actual timestamp
-            "accuracy": 0.65 if self.model else 0.0,  # Would be actual accuracy
-            "status": "ready" if self.model else "dummy_mode"
+            "model_type": type(self.model).__name__ if self.model else "DummyPredictor",
+            "trained_at": trained_at,
+            "metrics": metrics,
+            "status": "ready" if self.model else "dummy_mode",
+            "using_real_predictions": self.model is not None,
         }
     
     async def retrain_model(self) -> Dict[str, Any]:

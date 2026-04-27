@@ -23,6 +23,7 @@ class PredictionResponse(BaseModel):
     predicted_home_score: float
     predicted_away_score: float
     predicted_total: float
+    predicted_margin: Optional[float] = None  # home_score - away_score; positivo = local gana
     
     # Betting recommendations
     recommended_bet: Optional[str] = None  # "home", "away", "over", "under", "none"
@@ -35,6 +36,16 @@ class PredictionResponse(BaseModel):
     
     # Additional features
     features_used: Optional[Dict[str, Any]] = None
+
+
+class ModelStatusResponse(BaseModel):
+    model_loaded: bool
+    model_version: Optional[str] = None
+    model_type: str
+    trained_at: Optional[str] = None
+    metrics: Optional[Dict[str, Any]] = None
+    status: str
+    using_real_predictions: bool = False
     
     @field_serializer('game_date')
     def serialize_game_date(self, value: Optional[datetime]) -> Optional[str]:

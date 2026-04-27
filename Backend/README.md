@@ -353,9 +353,24 @@ Backend/ml/models/nba_prediction_model_{version}.joblib
 La versión activa se determina consultando la tabla `sys.model_versions` donde `is_active = True`. El flujo de actualización de un modelo es:
 
 1. Entrenar modelo en `ML/`
-2. Copiar el `.joblib` generado a `Backend/ml/models/`
-3. Registrar la nueva versión en la tabla `model_versions`
-4. Marcar como activa (`is_active = True`)
+2. Ejecutar `ML/scripts/deploy_model.py --version vX.X.X --activate` (copia + registra + activa)
+3. Reiniciar el Backend para que cargue el nuevo modelo
+
+**Versión activa en producción**: v1.6.0 (Ensemble RF+XGBoost, 21 features, pasa todos los criterios de aceptación).
+
+### `PredictionResponse` — campos retornados
+
+| Campo | Tipo | Descripción |
+|-------|------|-------------|
+| `home_win_probability` | float | Probabilidad victoria local (0.0–1.0) |
+| `away_win_probability` | float | Probabilidad victoria visitante |
+| `predicted_home_score` | float | Puntuación esperada equipo local |
+| `predicted_away_score` | float | Puntuación esperada equipo visitante |
+| `predicted_total` | float | Total puntos esperados |
+| `predicted_margin` | float | Margen esperado (home − away) |
+| `recommended_bet` | str | `"home"` \| `"away"` \| `"over"` \| `"under"` \| `"none"` |
+| `confidence_score` | float | Confianza de la predicción (0.0–1.0) |
+| `model_version` | str | Versión del modelo usado |
 
 ---
 

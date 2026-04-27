@@ -69,8 +69,9 @@ El sistema usa **Neon PostgreSQL** (cloud) con tres schemas separados:
    Features: rolling stats, rest days, injury counts, implied probabilities
 
 3. ENTRENAMIENTO (por temporada)
-   ml.ml_ready_games → RandomForest + XGBoost → nba_prediction_model_vX.X.X.joblib
-   → Backend/ml/models/ + registro en sys.model_versions
+   ml.ml_ready_games → Ensemble (RF + XGBoost → Isotonic) + MarginModel + TotalModel
+   → nba_prediction_model_vX.X.X.joblib → Backend/ml/models/ + registro en sys.model_versions
+   Versión activa: v1.6.0 (pasa todos los criterios). v2.0.0 entrenada, pendiente integración.
 
 4. PREDICCIÓN EN TIEMPO REAL
    Usuario → Frontend → Backend → carga modelo .joblib → predict() → PredictionResponse
@@ -125,6 +126,7 @@ cd Scrapping/nba
 pip install -r requirements.txt
 
 # Primera carga completa
+python espn/populate_all_games.py
 python -m espn.player_stats_scraper --season "2024-25" --type "regular"
 python -m espn.team_stats_scraper --season "2024-25" --type "regular"
 python update_injuries_odds.py --load-db
@@ -142,7 +144,9 @@ python scripts/init_ml_schema.py
 python scripts/create_ml_ready_games.py
 python src/etl/build_features.py
 python src/etl/validate_data_quality.py
-# Luego entrenar y exportar modelo a Backend/ml/models/
+
+# Entrenar modelo y exportar a Backend/ml/models/
+# python scripts/deploy_model.py --version v1.6.0 --activate
 ```
 
 ### 4. Backend — iniciar API

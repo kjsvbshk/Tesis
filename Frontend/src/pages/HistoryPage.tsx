@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { LazyMotion, domAnimation, m } from 'framer-motion'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { RefreshCw } from 'lucide-react'
@@ -80,15 +80,16 @@ export function HistoryPage() {
   }
 
   return (
+    <LazyMotion features={domAnimation}>
     <div className="space-y-6">
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         className="flex items-center justify-between"
       >
         <div>
-          <h1 className="text-4xl font-heading font-bold bg-gradient-to-r from-[#00FF73] to-[#FFD700] bg-clip-text text-transparent mb-2">
+          <h1 className="text-4xl font-heading font-semibold text-violet-600 mb-2">
             Historial de Apuestas
           </h1>
           <p className="text-[#B0B3C5]">Revisa todas tus apuestas pasadas y actuales</p>
@@ -103,12 +104,12 @@ export function HistoryPage() {
           <RefreshCw size={16} className={`mr-2 ${loading ? 'animate-spin' : ''}`} />
           Actualizar
         </Button>
-      </motion.div>
+      </m.div>
 
       <div className="rounded-lg border border-[#1C2541]/50 overflow-x-auto bg-[#1C2541] card-glow">
         {loading ? (
           <div className="flex items-center justify-center h-64">
-            <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-[#00FF73] border-r-transparent"></div>
+            <div className="inline-block size-8 animate-spin rounded-full border-4 border-solid border-[#00FF73] border-r-transparent"></div>
           </div>
         ) : bets.length === 0 ? (
           <div className="text-center py-8 text-[#B0B3C5]">
@@ -135,7 +136,7 @@ export function HistoryPage() {
                     key={bet.id} 
                     className={`border-[#1C2541] hover:bg-[#1C2541]/30 ${profit > 0 ? 'win-highlight' : profit < 0 ? 'loss-highlight' : ''}`}
                   >
-                    <TableCell className="text-white font-mono text-sm">
+                    <TableCell className="text-white font-mono text-sm" suppressHydrationWarning>
                       {new Date(bet.placed_at).toLocaleDateString('es-ES', {
                         year: 'numeric',
                         month: '2-digit',
@@ -172,6 +173,7 @@ export function HistoryPage() {
         )}
       </div>
     </div>
+    </LazyMotion>
   )
 }
 

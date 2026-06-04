@@ -3,8 +3,8 @@
  * Real-time system monitoring and health checks
  */
 
-import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { useReducer, useEffect } from 'react'
+import { LazyMotion, domAnimation, m } from 'framer-motion'
 import { Activity, CheckCircle, XCircle, Clock, AlertTriangle } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -12,12 +12,35 @@ import { Badge } from '@/components/ui/badge'
 import { metricsService, type HealthStatus, type ReadinessStatus, type SystemMetrics } from '@/services/metrics.service'
 import { useToast } from '@/hooks/use-toast'
 
+interface MonitoringState {
+  health: HealthStatus | null
+  readiness: ReadinessStatus | null
+  metrics: SystemMetrics | null
+  loading: boolean
+  autoRefresh: boolean
+}
+type MonitoringAction =
+  | { type: 'SET_HEALTH'; payload: HealthStatus | null }
+  | { type: 'SET_READINESS'; payload: ReadinessStatus | null }
+  | { type: 'SET_METRICS'; payload: SystemMetrics | null }
+  | { type: 'SET_LOADING'; payload: boolean }
+  | { type: 'TOGGLE_AUTO_REFRESH' }
+function monitoringReducer(state: MonitoringState, action: MonitoringAction): MonitoringState {
+  switch (action.type) {
+    case 'SET_HEALTH': return { ...state, health: action.payload }
+    case 'SET_READINESS': return { ...state, readiness: action.payload }
+    case 'SET_METRICS': return { ...state, metrics: action.payload }
+    case 'SET_LOADING': return { ...state, loading: action.payload }
+    case 'TOGGLE_AUTO_REFRESH': return { ...state, autoRefresh: !state.autoRefresh }
+    default: return state
+  }
+}
+
 export function MonitoringPage() {
-  const [health, setHealth] = useState<HealthStatus | null>(null)
-  const [readiness, setReadiness] = useState<ReadinessStatus | null>(null)
-  const [metrics, setMetrics] = useState<SystemMetrics | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [autoRefresh, setAutoRefresh] = useState(true)
+  const [state, dispatch] = useReducer(monitoringReducer, {
+    health: null, readiness: null, metrics: null, loading: true, autoRefresh: true
+  })
+  const { health, readiness, metrics, loading, autoRefresh } = state
   const { toast } = useToast()
 
   useEffect(() => {
@@ -30,15 +53,15 @@ export function MonitoringPage() {
 
   const loadData = async () => {
     try {
-      setLoading(true)
+      dispatch({ type: 'SET_LOADING', payload: true })
       const [healthData, readinessData, metricsData] = await Promise.all([
         metricsService.getHealth(),
         metricsService.getReadiness(),
         metricsService.getMetrics(),
       ])
-      setHealth(healthData)
-      setReadiness(readinessData)
-      setMetrics(metricsData)
+      dispatch({ type: 'SET_HEALTH', payload: healthData })
+      dispatch({ type: 'SET_READINESS', payload: readinessData })
+      dispatch({ type: 'SET_METRICS', payload: metricsData })
     } catch (error: any) {
       toast({
         title: 'Error',
@@ -46,27 +69,28 @@ export function MonitoringPage() {
         variant: 'destructive',
       })
     } finally {
-      setLoading(false)
+      dispatch({ type: 'SET_LOADING', payload: false })
     }
   }
 
   return (
+    <LazyMotion features={domAnimation}>
     <div className="space-y-6">
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         className="flex justify-between items-center"
       >
         <div>
-          <h1 className="text-4xl font-heading font-bold bg-gradient-to-r from-[#00FF73] to-[#FFD700] bg-clip-text text-transparent mb-2">
+          <h1 className="text-4xl font-heading font-semibold text-[#00FF73] mb-2">
             Monitoreo del Sistema
           </h1>
           <p className="text-[#B0B3C5]">Estado en tiempo real y métricas de salud</p>
         </div>
         <div className="flex gap-2">
           <Button
-            onClick={() => setAutoRefresh(!autoRefresh)}
+            onClick={() => dispatch({ type: 'TOGGLE_AUTO_REFRESH' })}
             variant={autoRefresh ? 'default' : 'outline'}
             className={autoRefresh ? 'bg-[#00FF73] hover:bg-[#00D95F] text-black' : 'border-[#1C2541] text-[#B0B3C5]'}
           >
@@ -76,7 +100,7 @@ export function MonitoringPage() {
             Actualizar
           </Button>
         </div>
-      </motion.div>
+      </m.div>
 
       {/* Health Status */}
       <div className="grid gap-4 md:grid-cols-2">
@@ -90,7 +114,7 @@ export function MonitoringPage() {
           <CardContent>
             {loading ? (
               <div className="flex justify-center py-4">
-                <div className="inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-[#00FF73] border-r-transparent"></div>
+                <div className="inline-block size-6 animate-spin rounded-full border-4 border-solid border-[#00FF73] border-r-transparent"></div>
               </div>
             ) : health ? (
               <div className="space-y-2">
@@ -100,7 +124,7 @@ export function MonitoringPage() {
                 </div>
                 <p className="text-[#B0B3C5] text-sm">Service: {health.service}</p>
                 <p className="text-[#B0B3C5] text-sm">Version: {health.version}</p>
-                <p className="text-[#B0B3C5] text-xs">
+                <p className="text-[#B0B3C5] text-xs" suppressHydrationWarning>
                   {new Date(health.timestamp).toLocaleString()}
                 </p>
               </div>
@@ -123,7 +147,7 @@ export function MonitoringPage() {
           <CardContent>
             {loading ? (
               <div className="flex justify-center py-4">
-                <div className="inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-[#00FF73] border-r-transparent"></div>
+                <div className="inline-block size-6 animate-spin rounded-full border-4 border-solid border-[#00FF73] border-r-transparent"></div>
               </div>
             ) : readiness ? (
               <div className="space-y-2">
@@ -143,7 +167,7 @@ export function MonitoringPage() {
                   )}
                   <span className="text-[#B0B3C5] text-sm">Database: {readiness.database}</span>
                 </div>
-                <p className="text-[#B0B3C5] text-xs">
+                <p className="text-[#B0B3C5] text-xs" suppressHydrationWarning>
                   {new Date(readiness.timestamp).toLocaleString()}
                 </p>
               </div>
@@ -226,6 +250,7 @@ export function MonitoringPage() {
         </Card>
       )}
     </div>
+    </LazyMotion>
   )
 }
 

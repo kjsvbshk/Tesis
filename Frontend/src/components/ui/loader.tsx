@@ -4,7 +4,7 @@ export function Loader({ text = 'SYSTEM LOADING', className = '' }: { text?: str
     return (
         <div className={`flex flex-col items-center justify-center p-8 gap-4 ${className}`}>
             <div className="relative">
-                <div className="w-12 h-12 border-2 border-acid-500 rounded-none animate-spin" />
+                <div className="size-12 border-2 border-acid-500 rounded-none animate-spin" />
                 <div className="absolute inset-0 flex items-center justify-center">
                     <Zap size={16} className="text-acid-500 animate-pulse" />
                 </div>

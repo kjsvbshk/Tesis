@@ -255,7 +255,7 @@ export function RolesManagementPage() {
         className="flex items-center justify-between"
       >
         <div>
-          <h1 className="text-4xl font-heading font-bold bg-gradient-to-r from-[#00FF73] to-[#FFD700] bg-clip-text text-transparent">
+          <h1 className="text-4xl font-heading font-semibold bg-gradient-to-r from-[#00FF73] to-[#FFD700] bg-clip-text text-transparent">
             Gestión de Roles y Permisos
           </h1>
           <p className="text-[#B0B3C5] mt-2">
@@ -430,7 +430,7 @@ export function RolesManagementPage() {
               <Input
                 id="role-code"
                 value={roleForm.code}
-                onChange={(e) => setRoleForm({ ...roleForm, code: e.target.value })}
+                onChange={(e) => setRoleForm(prev => ({ ...prev, code: e.target.value })}
                 className="bg-[#0B132B] border-[#1C2541] text-white"
                 placeholder="admin"
               />
@@ -440,7 +440,7 @@ export function RolesManagementPage() {
               <Input
                 id="role-name"
                 value={roleForm.name}
-                onChange={(e) => setRoleForm({ ...roleForm, name: e.target.value })}
+                onChange={(e) => setRoleForm(prev => ({ ...prev, name: e.target.value })}
                 className="bg-[#0B132B] border-[#1C2541] text-white"
                 placeholder="Administrador"
               />
@@ -450,7 +450,7 @@ export function RolesManagementPage() {
               <Textarea
                 id="role-description"
                 value={roleForm.description}
-                onChange={(e) => setRoleForm({ ...roleForm, description: e.target.value })}
+                onChange={(e) => setRoleForm(prev => ({ ...prev, description: e.target.value })}
                 className="bg-[#0B132B] border-[#1C2541] text-white"
                 placeholder="Descripción del rol"
               />
@@ -499,7 +499,7 @@ export function RolesManagementPage() {
               <Input
                 id="edit-role-name"
                 value={roleForm.name}
-                onChange={(e) => setRoleForm({ ...roleForm, name: e.target.value })}
+                onChange={(e) => setRoleForm(prev => ({ ...prev, name: e.target.value })}
                 className="bg-[#0B132B] border-[#1C2541] text-white"
               />
             </div>
@@ -508,7 +508,7 @@ export function RolesManagementPage() {
               <Textarea
                 id="edit-role-description"
                 value={roleForm.description}
-                onChange={(e) => setRoleForm({ ...roleForm, description: e.target.value })}
+                onChange={(e) => setRoleForm(prev => ({ ...prev, description: e.target.value })}
                 className="bg-[#0B132B] border-[#1C2541] text-white"
               />
             </div>
@@ -546,7 +546,7 @@ export function RolesManagementPage() {
               <Input
                 id="permission-code"
                 value={permissionForm.code}
-                onChange={(e) => setPermissionForm({ ...permissionForm, code: e.target.value })}
+                onChange={(e) => setPermissionForm(prev => ({ ...prev, code: e.target.value })}
                 className="bg-[#0B132B] border-[#1C2541] text-white"
                 placeholder="admin:write"
               />
@@ -556,7 +556,7 @@ export function RolesManagementPage() {
               <Input
                 id="permission-name"
                 value={permissionForm.name}
-                onChange={(e) => setPermissionForm({ ...permissionForm, name: e.target.value })}
+                onChange={(e) => setPermissionForm(prev => ({ ...prev, name: e.target.value })}
                 className="bg-[#0B132B] border-[#1C2541] text-white"
                 placeholder="Escribir en Admin"
               />
@@ -566,7 +566,7 @@ export function RolesManagementPage() {
               <Input
                 id="permission-scope"
                 value={permissionForm.scope}
-                onChange={(e) => setPermissionForm({ ...permissionForm, scope: e.target.value })}
+                onChange={(e) => setPermissionForm(prev => ({ ...prev, scope: e.target.value })}
                 className="bg-[#0B132B] border-[#1C2541] text-white"
                 placeholder="admin"
               />
@@ -576,7 +576,7 @@ export function RolesManagementPage() {
               <Textarea
                 id="permission-description"
                 value={permissionForm.description}
-                onChange={(e) => setPermissionForm({ ...permissionForm, description: e.target.value })}
+                onChange={(e) => setPermissionForm(prev => ({ ...prev, description: e.target.value })}
                 className="bg-[#0B132B] border-[#1C2541] text-white"
                 placeholder="Descripción del permiso"
               />
@@ -625,7 +625,7 @@ export function RolesManagementPage() {
               <Input
                 id="edit-permission-name"
                 value={permissionForm.name}
-                onChange={(e) => setPermissionForm({ ...permissionForm, name: e.target.value })}
+                onChange={(e) => setPermissionForm(prev => ({ ...prev, name: e.target.value })}
                 className="bg-[#0B132B] border-[#1C2541] text-white"
               />
             </div>
@@ -634,7 +634,7 @@ export function RolesManagementPage() {
               <Input
                 id="edit-permission-scope"
                 value={permissionForm.scope}
-                onChange={(e) => setPermissionForm({ ...permissionForm, scope: e.target.value })}
+                onChange={(e) => setPermissionForm(prev => ({ ...prev, scope: e.target.value })}
                 className="bg-[#0B132B] border-[#1C2541] text-white"
               />
             </div>
@@ -643,7 +643,7 @@ export function RolesManagementPage() {
               <Textarea
                 id="edit-permission-description"
                 value={permissionForm.description}
-                onChange={(e) => setPermissionForm({ ...permissionForm, description: e.target.value })}
+                onChange={(e) => setPermissionForm(prev => ({ ...prev, description: e.target.value })}
                 className="bg-[#0B132B] border-[#1C2541] text-white"
               />
             </div>

@@ -33,7 +33,7 @@ export function AdvancedSearchPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <h1 className="text-4xl font-heading font-bold bg-gradient-to-r from-[#00FF73] to-[#FFD700] bg-clip-text text-transparent mb-2">
+        <h1 className="text-4xl font-heading font-semibold bg-gradient-to-r from-[#00FF73] to-[#FFD700] bg-clip-text text-transparent mb-2">
           Búsqueda Avanzada
         </h1>
         <p className="text-[#B0B3C5]">Buscar en requests, keys, logs y eventos</p>
@@ -127,7 +127,7 @@ function RequestSearchTab() {
             <Label className="text-[#B0B3C5]">Request ID</Label>
             <Input
               value={filters.request_id}
-              onChange={(e) => setFilters({ ...filters, request_id: e.target.value })}
+              onChange={(e) => setFilters(prev => ({ ...prev, request_id: e.target.value })}
               className="bg-[#0B132B] border-[#1C2541] text-white"
             />
           </div>
@@ -135,7 +135,7 @@ function RequestSearchTab() {
             <Label className="text-[#B0B3C5]">Request Key</Label>
             <Input
               value={filters.request_key}
-              onChange={(e) => setFilters({ ...filters, request_key: e.target.value })}
+              onChange={(e) => setFilters(prev => ({ ...prev, request_key: e.target.value })}
               className="bg-[#0B132B] border-[#1C2541] text-white"
             />
           </div>
@@ -143,7 +143,7 @@ function RequestSearchTab() {
             <Label className="text-[#B0B3C5]">Event ID</Label>
             <Input
               value={filters.event_id}
-              onChange={(e) => setFilters({ ...filters, event_id: e.target.value })}
+              onChange={(e) => setFilters(prev => ({ ...prev, event_id: e.target.value })}
               className="bg-[#0B132B] border-[#1C2541] text-white"
             />
           </div>
@@ -151,7 +151,7 @@ function RequestSearchTab() {
             <Label className="text-[#B0B3C5]">Status</Label>
             <Input
               value={filters.status}
-              onChange={(e) => setFilters({ ...filters, status: e.target.value })}
+              onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value })}
               className="bg-[#0B132B] border-[#1C2541] text-white"
             />
           </div>
@@ -160,7 +160,7 @@ function RequestSearchTab() {
             <Input
               type="date"
               value={filters.date_from}
-              onChange={(e) => setFilters({ ...filters, date_from: e.target.value })}
+              onChange={(e) => setFilters(prev => ({ ...prev, date_from: e.target.value })}
               className="bg-[#0B132B] border-[#1C2541] text-white"
             />
           </div>
@@ -169,7 +169,7 @@ function RequestSearchTab() {
             <Input
               type="date"
               value={filters.date_to}
-              onChange={(e) => setFilters({ ...filters, date_to: e.target.value })}
+              onChange={(e) => setFilters(prev => ({ ...prev, date_to: e.target.value })}
               className="bg-[#0B132B] border-[#1C2541] text-white"
             />
           </div>
@@ -181,7 +181,7 @@ function RequestSearchTab() {
 
         {loading ? (
           <div className="flex justify-center py-8">
-            <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-[#00FF73] border-r-transparent"></div>
+            <div className="inline-block size-8 animate-spin rounded-full border-4 border-solid border-[#00FF73] border-r-transparent"></div>
           </div>
         ) : results.length > 0 ? (
           <div className="overflow-x-auto">
@@ -262,7 +262,7 @@ function KeySearchTab() {
             <Label className="text-[#B0B3C5]">Request Key</Label>
             <Input
               value={filters.request_key}
-              onChange={(e) => setFilters({ ...filters, request_key: e.target.value })}
+              onChange={(e) => setFilters(prev => ({ ...prev, request_key: e.target.value })}
               className="bg-[#0B132B] border-[#1C2541] text-white"
             />
           </div>
@@ -271,7 +271,7 @@ function KeySearchTab() {
             <Input
               type="date"
               value={filters.date_from}
-              onChange={(e) => setFilters({ ...filters, date_from: e.target.value })}
+              onChange={(e) => setFilters(prev => ({ ...prev, date_from: e.target.value })}
               className="bg-[#0B132B] border-[#1C2541] text-white"
             />
           </div>
@@ -280,7 +280,7 @@ function KeySearchTab() {
             <Input
               type="date"
               value={filters.date_to}
-              onChange={(e) => setFilters({ ...filters, date_to: e.target.value })}
+              onChange={(e) => setFilters(prev => ({ ...prev, date_to: e.target.value })}
               className="bg-[#0B132B] border-[#1C2541] text-white"
             />
           </div>
@@ -292,7 +292,7 @@ function KeySearchTab() {
 
         {loading ? (
           <div className="flex justify-center py-8">
-            <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-[#00FF73] border-r-transparent"></div>
+            <div className="inline-block size-8 animate-spin rounded-full border-4 border-solid border-[#00FF73] border-r-transparent"></div>
           </div>
         ) : results.length > 0 ? (
           <div className="overflow-x-auto">
@@ -385,7 +385,7 @@ function EventSearchTab() {
             <Label className="text-[#B0B3C5]">Event ID</Label>
             <Input
               value={filters.event_id}
-              onChange={(e) => setFilters({ ...filters, event_id: e.target.value })}
+              onChange={(e) => setFilters(prev => ({ ...prev, event_id: e.target.value })}
               className="bg-[#0B132B] border-[#1C2541] text-white"
             />
           </div>
@@ -394,7 +394,7 @@ function EventSearchTab() {
             <Input
               type="date"
               value={filters.date_from}
-              onChange={(e) => setFilters({ ...filters, date_from: e.target.value })}
+              onChange={(e) => setFilters(prev => ({ ...prev, date_from: e.target.value })}
               className="bg-[#0B132B] border-[#1C2541] text-white"
             />
           </div>
@@ -403,7 +403,7 @@ function EventSearchTab() {
             <Input
               type="date"
               value={filters.date_to}
-              onChange={(e) => setFilters({ ...filters, date_to: e.target.value })}
+              onChange={(e) => setFilters(prev => ({ ...prev, date_to: e.target.value })}
               className="bg-[#0B132B] border-[#1C2541] text-white"
             />
           </div>
@@ -415,7 +415,7 @@ function EventSearchTab() {
 
         {loading ? (
           <div className="flex justify-center py-8">
-            <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-[#00FF73] border-r-transparent"></div>
+            <div className="inline-block size-8 animate-spin rounded-full border-4 border-solid border-[#00FF73] border-r-transparent"></div>
           </div>
         ) : results.length > 0 ? (
           <div className="overflow-x-auto">
@@ -430,8 +430,8 @@ function EventSearchTab() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {results.map((result, idx) => (
-                  <TableRow key={idx} className="border-[#1C2541]">
+                {results.map((result) => (
+                  <TableRow key={`${result.event_id}-${result.request_id}`} className="border-[#1C2541]">
                     <TableCell className="text-white">{result.event_id}</TableCell>
                     <TableCell className="text-white">{result.request_id}</TableCell>
                     <TableCell className="text-white font-mono text-xs">{result.request_key}</TableCell>

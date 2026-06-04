@@ -5,9 +5,20 @@ Handles request deduplication using request_key
 
 from sqlalchemy.orm import Session
 from typing import Optional, Dict, Any
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from app.models import IdempotencyKey, Request
 from app.core.config import settings
+
+
+def _utcnow() -> datetime:
+    """Devuelve datetime tz-aware en UTC, compatible con columnas
+    `TIMESTAMP WITH TIME ZONE` de Postgres.
+
+    `_utcnow()` produce un datetime naive, lo que provoca
+    `TypeError: can't compare offset-naive and offset-aware datetimes`
+    al compararlo con columnas tz-aware.
+    """
+    return datetime.now(timezone.utc)
 
 class IdempotencyService:
     def __init__(self, db: Session):
@@ -27,7 +38,7 @@ class IdempotencyService:
             return None
         
         # Verificar si expiró
-        if idempotency_key.expires_at and idempotency_key.expires_at < datetime.utcnow():
+        if idempotency_key.expires_at and idempotency_key.expires_at < _utcnow():
             # Eliminar clave expirada
             self.db.delete(idempotency_key)
             self.db.commit()
@@ -76,9 +87,9 @@ class IdempotencyService:
         # Calcular fecha de expiración
         expires_at = None
         if ttl_hours:
-            expires_at = datetime.utcnow() + timedelta(hours=ttl_hours)
+            expires_at = _utcnow() + timedelta(hours=ttl_hours)
         elif self.default_ttl_hours:
-            expires_at = datetime.utcnow() + timedelta(hours=self.default_ttl_hours)
+            expires_at = _utcnow() + timedelta(hours=self.default_ttl_hours)
         
         # Crear nueva clave
         idempotency_key = IdempotencyKey(
@@ -146,7 +157,7 @@ class IdempotencyService:
         Limpiar claves de idempotencia expiradas
         Retorna el número de claves eliminadas
         """
-        now = datetime.utcnow()
+        now = _utcnow()
         expired_keys = self.db.query(IdempotencyKey).filter(
             IdempotencyKey.expires_at < now
         ).all()

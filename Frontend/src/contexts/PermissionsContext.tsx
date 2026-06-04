@@ -3,7 +3,7 @@
  * Manages user permissions and role-based access control
  */
 
-import { createContext, useContext, useState, useEffect, type ReactNode } from 'react'
+import { createContext, use, useReducer, useEffect, type ReactNode } from 'react'
 import { useAuth } from './AuthContext'
 import { adminService, type Role, type Permission, type UserRole } from '@/services/admin.service'
 import { apiRequest } from '@/lib/api'
@@ -22,13 +22,46 @@ interface PermissionsContextType {
 
 const PermissionsContext = createContext<PermissionsContextType | undefined>(undefined)
 
+interface PermissionsState {
+  roles: Role[]
+  permissions: Permission[]
+  userRoles: UserRole[]
+  userPermissions: string[]
+  isLoading: boolean
+}
+
+type PermissionsAction =
+  | { type: 'SET_ROLES'; payload: Role[] }
+  | { type: 'SET_PERMISSIONS'; payload: Permission[] }
+  | { type: 'SET_USER_ROLES'; payload: UserRole[] }
+  | { type: 'SET_USER_PERMISSIONS'; payload: string[] }
+  | { type: 'SET_LOADING'; payload: boolean }
+  | { type: 'RESET' }
+
+const permissionsInitialState: PermissionsState = {
+  roles: [],
+  permissions: [],
+  userRoles: [],
+  userPermissions: [],
+  isLoading: true,
+}
+
+function permissionsReducer(state: PermissionsState, action: PermissionsAction): PermissionsState {
+  switch (action.type) {
+    case 'SET_ROLES': return { ...state, roles: action.payload }
+    case 'SET_PERMISSIONS': return { ...state, permissions: action.payload }
+    case 'SET_USER_ROLES': return { ...state, userRoles: action.payload }
+    case 'SET_USER_PERMISSIONS': return { ...state, userPermissions: action.payload }
+    case 'SET_LOADING': return { ...state, isLoading: action.payload }
+    case 'RESET': return { ...permissionsInitialState, isLoading: false }
+    default: return state
+  }
+}
+
 export function PermissionsProvider({ children }: { children: ReactNode }) {
   const { user, isAuthenticated } = useAuth()
-  const [roles, setRoles] = useState<Role[]>([])
-  const [permissions, setPermissions] = useState<Permission[]>([])
-  const [userRoles, setUserRoles] = useState<UserRole[]>([])
-  const [userPermissions, setUserPermissions] = useState<string[]>([]) // Store user's permission codes
-  const [isLoading, setIsLoading] = useState(true)
+  const [state, dispatch] = useReducer(permissionsReducer, permissionsInitialState)
+  const { roles, permissions, userRoles, userPermissions, isLoading } = state
   // Cache for permission checks to reduce API calls
   const permissionCache = new Map<string, { hasPermission: boolean; timestamp: number }>()
   const CACHE_TTL = 5 * 60 * 1000 // 5 minutes
@@ -37,10 +70,7 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
     if (isAuthenticated && user) {
       refreshPermissions()
     } else {
-      setRoles([])
-      setPermissions([])
-      setUserRoles([])
-      setIsLoading(false)
+      dispatch({ type: 'RESET' })
     }
   }, [isAuthenticated, user?.id]) // Add user?.id to dependencies
 
@@ -48,7 +78,7 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
     if (!user) return
 
     try {
-      setIsLoading(true)
+      dispatch({ type: 'SET_LOADING', payload: true })
       
       // Get current user's permissions and roles from /users/me/permissions
       try {
@@ -75,9 +105,9 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
             created_at: new Date().toISOString(),
           },
         }))
-        setUserRoles(userRolesData)
+        dispatch({ type: 'SET_USER_ROLES', payload: userRolesData })
         // Store permissions for fast local checking
-        setUserPermissions(permissionsData.permissions)
+        dispatch({ type: 'SET_USER_PERMISSIONS', payload: permissionsData.permissions })
         
         // Pre-populate cache with known permissions
         permissionsData.permissions.forEach(perm => {
@@ -92,8 +122,8 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
           try {
             const allRoles = await adminService.getRoles()
             const allPermissions = await adminService.getPermissions()
-            setRoles(allRoles)
-            setPermissions(allPermissions)
+            dispatch({ type: 'SET_ROLES', payload: allRoles })
+            dispatch({ type: 'SET_PERMISSIONS', payload: allPermissions })
           } catch (error) {
             // User might not have admin permissions, that's ok
             console.warn('Could not fetch all roles/permissions:', error)
@@ -105,7 +135,7 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
         // Fallback: try to get user roles directly (may fail if not admin)
         try {
           const rolesData = await adminService.getUserRoles(user.id)
-          setUserRoles(rolesData)
+          dispatch({ type: 'SET_USER_ROLES', payload: rolesData })
         } catch (fallbackError) {
           console.warn('Could not fetch user roles:', fallbackError)
         }
@@ -113,7 +143,7 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error('Error refreshing permissions:', error)
     } finally {
-      setIsLoading(false)
+      dispatch({ type: 'SET_LOADING', payload: false })
     }
   }
 
@@ -234,7 +264,7 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
 }
 
 export function usePermissions() {
-  const context = useContext(PermissionsContext)
+  const context = use(PermissionsContext)
   if (context === undefined) {
     throw new Error('usePermissions must be used within a PermissionsProvider')
   }

@@ -1,5 +1,14 @@
 """
-Ensemble de apilamiento (Stacking) para predicción NBA — v2.1.2.
+Ensemble de apilamiento (Stacking) para predicción NBA — v2.2.0.
+
+v2.2.0 añade predicción de team-level props (rebotes, asistencias, robos,
+bloqueos, turnovers) por equipo (home/away). Cada prop se predice con un
+NBAStatRegressor independiente entrenado contra su target real (home_reb,
+away_blk, etc.). Estas salidas se exponen en predict_full bajo la clave
+team_props y NO entran al meta-learner (siguen siendo regresiones marginales
+sobre la misma matriz de features).
+
+v2.1.2 (heredado):
 
 Diferencia con v2.1.0:
     El Bivariate Poisson NO entra al meta-learner como una probabilidad.
@@ -41,6 +50,20 @@ from .xgboost_model import NBAXGBoost
 from .poisson_model import NBABivariatePoisson
 from .margin_model import NBAMarginModel
 from .total_model import NBATotalModel
+from .stat_regressor import NBAStatRegressor
+
+
+# Stats predichas como team-props en v2.2.0.
+# Cada nombre es la "clase" de stat; el ensemble entrenará un regresor por
+# (clase, equipo): home_reb, away_reb, home_ast, away_ast, ...
+TEAM_STAT_KINDS = ["reb", "ast", "stl", "blk", "to"]
+TEAM_STAT_LABELS = {
+    "reb": "Rebotes totales",
+    "ast": "Asistencias",
+    "stl": "Robos",
+    "blk": "Bloqueos",
+    "to":  "Turnovers (pérdidas)",
+}
 
 
 # Dimensión del vector de meta-features de Capa 2.
@@ -70,6 +93,7 @@ class NBAEnsemble:
         poisson_model: NBABivariatePoisson = None,
         margin_model: NBAMarginModel = None,
         total_model: NBATotalModel = None,
+        team_stat_models: dict | None = None,
         n_folds: int = 5,
     ):
         self.rf = rf_model or NBARandomForest()
@@ -77,6 +101,10 @@ class NBAEnsemble:
         self.poisson = poisson_model or NBABivariatePoisson()
         self.margin_model = margin_model or NBAMarginModel()
         self.total_model = total_model or NBATotalModel()
+        # team_stat_models: dict[str, NBAStatRegressor] indexado por
+        # ("home_reb", "away_reb", ...). Se llena dinámicamente en fit
+        # según los targets recibidos en team_stat_targets.
+        self.team_stat_models: dict = team_stat_models or {}
         # v2.1.2: meta-learner como Pipeline(StandardScaler → LogReg).
         # Las 4 meta-features viven en escalas distintas:
         #   rf_proba ∈ [0, 1], score_diff ∈ [-25, 25],
@@ -132,6 +160,7 @@ class NBAEnsemble:
 
     def fit(self, X, y, y_home_score: np.ndarray, y_away_score: np.ndarray,
             y_margin: np.ndarray = None, y_total: np.ndarray = None,
+            team_stat_targets: dict | None = None,
             feature_names: list = None):
         """
         Entrena el ensemble con OOF temporal stacking:
@@ -139,17 +168,21 @@ class NBAEnsemble:
         Etapa 1 (OOF): K folds temporales → meta-features out-of-fold.
         Etapa 2: Meta-learner entrenado sobre todos los OOF meta-features.
         Etapa 3: Isotonic regression calibration sobre OOF predictions.
-        Etapa 4: Re-entrena RF+XGB sobre el dataset completo.
+        Etapa 4: Re-entrena RF+XGB+Poisson sobre el dataset completo.
         Etapa 5: Entrena modelos dedicados de margen y total.
+        Etapa 6: Entrena regresores de team-props (v2.2.0).
 
         Args:
-            X:             matriz de features de entrenamiento (ordenada por fecha)
-            y:             target binario (home_win)
-            y_home_score:  puntuaciones reales del equipo local
-            y_away_score:  puntuaciones reales del equipo visitante
-            y_margin:      point_diff real (home - away), derivado si None
-            y_total:       total real (home + away), derivado si None
-            feature_names: nombres de las columnas (opcional)
+            X:                  matriz de features de entrenamiento (ordenada por fecha)
+            y:                  target binario (home_win)
+            y_home_score:       puntuaciones reales del equipo local
+            y_away_score:       puntuaciones reales del equipo visitante
+            y_margin:           point_diff real (home - away), derivado si None
+            y_total:            total real (home + away), derivado si None
+            team_stat_targets:  dict[str, np.ndarray] con targets de team props
+                                p.ej. {"home_reb": [...], "away_blk": [...], ...}.
+                                Si None, no se entrenan team stat models.
+            feature_names:      nombres de las columnas (opcional)
         """
         self.feature_names = feature_names
         n = len(X)
@@ -215,13 +248,31 @@ class NBAEnsemble:
         self.rf.fit(X, y, feature_names=feature_names)
         self.xgb.fit(X, y_home_score, y_away_score)
         self.poisson.fit(X, y_home_score, y_away_score, feature_names=feature_names)
-        print(f"  [Poisson] λ3 estimado: {self.poisson.lambda3_:.4f}")
+        print(f"  [Poisson] lambda3 estimado: {self.poisson.lambda3_:.4f}")
 
         # Etapa 5 — modelos dedicados de margen y total
         print("  Entrenando modelo de margen dedicado...")
         self.margin_model.fit(X, y_margin)
         print("  Entrenando modelo de total dedicado...")
         self.total_model.fit(X, y_total)
+
+        # Etapa 6 — team-props (v2.2.0)
+        if team_stat_targets:
+            print(f"  Entrenando {len(team_stat_targets)} regresores de team-props...")
+            for target_name, y_target in team_stat_targets.items():
+                if y_target is None:
+                    continue
+                model = NBAStatRegressor(target_name=target_name)
+                try:
+                    model.fit(X, y_target)
+                except ValueError as e:
+                    print(f"    [SKIP] {target_name}: {e}")
+                    continue
+                self.team_stat_models[target_name] = model
+                pct_kept = 100.0 * model.n_train / max(1, model.n_train + model.n_dropped)
+                print(f"    [OK] {target_name}: clip={model.clip_range}, "
+                      f"n_train={model.n_train} ({pct_kept:.0f}% válidos), "
+                      f"descartados={model.n_dropped}")
 
         self.is_fitted = True
         return self
@@ -273,7 +324,11 @@ class NBAEnsemble:
         poisson_proba = self.poisson.predict_home_win_proba(X)
         poisson_lambdas = self.poisson.predict_lambdas(X)
 
-        return {
+        # Team-props v2.2.0: rebotes, asistencias, robos, bloqueos, turnovers
+        # por equipo (home/away). Cada uno predicho por un NBAStatRegressor.
+        team_props = self._predict_team_props(X) if self.team_stat_models else None
+
+        out = {
             "home_win_probability": home_proba,
             "away_win_probability": 1.0 - home_proba,
             "predicted_margin": margin,
@@ -289,3 +344,29 @@ class NBAEnsemble:
             "poisson_home_score": poisson_lambdas["mu_home"],
             "poisson_away_score": poisson_lambdas["mu_away"],
         }
+        if team_props is not None:
+            out["team_props"] = team_props
+        return out
+
+    def _predict_team_props(self, X) -> dict:
+        """
+        Predicción de team-level props (v2.2.0).
+
+        Devuelve un dict anidado:
+            {
+              "home": {"reb": [...], "ast": [...], "stl": [...], "blk": [...], "to": [...]},
+              "away": {"reb": [...], "ast": [...], "stl": [...], "blk": [...], "to": [...]},
+              "labels": {"reb": "Rebotes totales", ...}
+            }
+        Solo incluye las stats para las que se entrenó un regresor.
+        """
+        out = {"home": {}, "away": {}, "labels": {}}
+        for kind in TEAM_STAT_KINDS:
+            for side in ("home", "away"):
+                key = f"{side}_{kind}"
+                model = self.team_stat_models.get(key)
+                if model is None or not model.is_fitted:
+                    continue
+                out[side][kind] = model.predict(X)
+                out["labels"][kind] = TEAM_STAT_LABELS.get(kind, kind)
+        return out

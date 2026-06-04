@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useTransition } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useToast } from '@/hooks/use-toast'
-import { motion } from 'framer-motion'
+import { LazyMotion, domAnimation, m } from 'framer-motion'
 import { authService } from '@/services/auth.service'
 
 export function VerifyEmailPage() {
@@ -14,7 +14,7 @@ export function VerifyEmailPage() {
   const { email, username, purpose = 'registration' } = location.state || {}
   
   const [code, setCode] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
+  const [isPending, startTransition] = useTransition()
   const [error, setError] = useState('')
 
   // Redirect if no email/username provided based on purpose
@@ -38,9 +38,8 @@ export function VerifyEmailPage() {
       return
     }
 
-    setIsLoading(true)
     setError('')
-    
+    startTransition(async () => {
     try {
       let response
       // For password reset, use username. For registration, use email
@@ -96,13 +95,12 @@ export function VerifyEmailPage() {
         description: errorMessage,
         variant: 'destructive',
       })
-    } finally {
-      setIsLoading(false)
     }
+    }) // end startTransition
   }
 
   const handleResendCode = async () => {
-    setIsLoading(true)
+    startTransition(async () => {
     try {
       if (purpose === 'password_reset' && username) {
         // For password reset, resend using username
@@ -121,14 +119,14 @@ export function VerifyEmailPage() {
         description: error.message || 'Error al reenviar el código',
         variant: 'destructive',
       })
-    } finally {
-      setIsLoading(false)
     }
+    }) // end startTransition
   }
 
   return (
+    <LazyMotion features={domAnimation}>
     <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8 bg-[#0B132B]">
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -139,7 +137,7 @@ export function VerifyEmailPage() {
             <img src="/logo.png" alt="HAW Logo" className="h-12 w-auto" />
           </div>
         </div>
-        <h2 className="mt-10 text-center text-3xl font-heading font-bold tracking-tight text-white">
+        <h2 className="mt-10 text-center text-3xl font-heading font-semibold tracking-tight text-white">
           Verifica tu correo
         </h2>
         <p className="mt-2 text-center text-sm text-[#B0B3C5]">
@@ -160,9 +158,9 @@ export function VerifyEmailPage() {
             Usuario: {username}
           </p>
         )}
-      </motion.div>
+      </m.div>
 
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
@@ -201,10 +199,10 @@ export function VerifyEmailPage() {
           <div>
             <Button
               type="submit"
-              disabled={isLoading || code.length !== 6}
+              disabled={isPending || code.length !== 6}
               className="flex w-full justify-center rounded-lg bg-gradient-to-r from-[#00FF73] to-[#00D95F] px-3 py-2.5 text-sm font-semibold text-[#0B132B] hover:from-[#00D95F] hover:to-[#00FF73] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00FF73] transition-all duration-300 shadow-[0_0_20px_rgba(0,255,115,0.3)] hover:shadow-[0_0_25px_rgba(0,255,115,0.5)] disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? 'Verificando...' : 'Verificar código'}
+              {isPending ? 'Verificando…' : 'Verificar código'}
             </Button>
           </div>
 
@@ -212,14 +210,15 @@ export function VerifyEmailPage() {
             <button
               type="button"
               onClick={handleResendCode}
-              disabled={isLoading}
+              disabled={isPending}
               className="text-sm text-[#00FF73] hover:text-[#00D95F] transition-colors disabled:opacity-50"
             >
               ¿No recibiste el código? Reenviar
             </button>
           </div>
         </form>
-      </motion.div>
+      </m.div>
     </div>
+    </LazyMotion>
   )
 }

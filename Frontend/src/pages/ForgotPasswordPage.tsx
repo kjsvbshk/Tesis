@@ -1,17 +1,17 @@
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useToast } from '@/hooks/use-toast'
-import { motion } from 'framer-motion'
+import { LazyMotion, domAnimation, m } from 'framer-motion'
 import { authService } from '@/services/auth.service'
 
 export function ForgotPasswordPage() {
   const { toast } = useToast()
   const navigate = useNavigate()
   const [username, setUsername] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
+  const [isPending, startTransition] = useTransition()
   const [error, setError] = useState('')
   const [codeSent, setCodeSent] = useState(false)
   const [userEmail, setUserEmail] = useState<string | null>(null)
@@ -29,49 +29,49 @@ export function ForgotPasswordPage() {
       return
     }
 
-    setIsLoading(true)
     setError('')
-    
-    try {
-      const response = await authService.forgotPassword(username.trim())
-      setCodeSent(true)
-      
-      // Guardar email si viene en la respuesta (solo en desarrollo)
-      if (response.email) {
-        setUserEmail(response.email)
-      }
-      
-      toast({
-        title: 'Código enviado',
-        description: 'Si el usuario existe, se ha enviado un código de verificación al correo asociado',
-      })
-      
-      // Navigate to verification page with username and email (if available)
-      setTimeout(() => {
-        navigate('/verify-email', { 
-          state: { 
-            username: username.trim(),
-            email: response.email || null,
-            purpose: 'password_reset' 
-          } 
+
+    startTransition(async () => {
+      try {
+        const response = await authService.forgotPassword(username.trim())
+        setCodeSent(true)
+
+        // Guardar email si viene en la respuesta (solo en desarrollo)
+        if (response.email) {
+          setUserEmail(response.email)
+        }
+
+        toast({
+          title: 'Código enviado',
+          description: 'Si el usuario existe, se ha enviado un código de verificación al correo asociado',
         })
-      }, 1000)
-    } catch (error: any) {
-      const errorMessage = error.message || 'Error al enviar el código'
-      setError(errorMessage)
-      toast({
-        title: 'Error',
-        description: errorMessage,
-        variant: 'destructive',
-      })
-    } finally {
-      setIsLoading(false)
-    }
+
+        // Navigate to verification page with username and email (if available)
+        setTimeout(() => {
+          navigate('/verify-email', {
+            state: {
+              username: username.trim(),
+              email: response.email || null,
+              purpose: 'password_reset'
+            }
+          })
+        }, 1000)
+      } catch (error: any) {
+        const errorMessage = error.message || 'Error al enviar el código'
+        setError(errorMessage)
+        toast({
+          title: 'Error',
+          description: errorMessage,
+          variant: 'destructive',
+        })
+      }
+    })
   }
 
   return (
+    <LazyMotion features={domAnimation}>
     <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8 bg-[#0B132B]">
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -82,15 +82,15 @@ export function ForgotPasswordPage() {
             <img src="/logo.png" alt="HAW Logo" className="h-12 w-auto" />
           </div>
         </div>
-        <h2 className="mt-10 text-center text-3xl font-heading font-bold tracking-tight text-white">
+        <h2 className="mt-10 text-center text-3xl font-heading font-semibold tracking-tight text-white">
           Recuperar contraseña
         </h2>
         <p className="mt-2 text-center text-sm text-[#B0B3C5]">
           Ingresa tu nombre de usuario y te enviaremos un código de verificación al correo asociado
         </p>
-      </motion.div>
+      </m.div>
 
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
@@ -102,7 +102,7 @@ export function ForgotPasswordPage() {
               ✓ Código enviado
             </div>
             <p className="text-[#B0B3C5]">
-              Redirigiendo a la página de verificación...
+              Redirigiendo a la página de verificación…
             </p>
           </div>
         ) : (
@@ -142,10 +142,10 @@ export function ForgotPasswordPage() {
             <div>
               <Button
                 type="submit"
-                disabled={isLoading}
+                disabled={isPending}
                 className="flex w-full justify-center rounded-lg bg-gradient-to-r from-[#00FF73] to-[#00D95F] px-3 py-2.5 text-sm font-semibold text-[#0B132B] hover:from-[#00D95F] hover:to-[#00FF73] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00FF73] transition-all duration-300 shadow-[0_0_20px_rgba(0,255,115,0.3)] hover:shadow-[0_0_25px_rgba(0,255,115,0.5)] disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isLoading ? 'Enviando...' : 'Enviar código'}
+                {isPending ? 'Enviando…' : 'Enviar código'}
               </Button>
             </div>
           </form>
@@ -160,7 +160,8 @@ export function ForgotPasswordPage() {
             Inicia sesión
           </Link>
         </p>
-      </motion.div>
+      </m.div>
     </div>
+    </LazyMotion>
   )
 }

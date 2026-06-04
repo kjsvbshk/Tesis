@@ -29,7 +29,7 @@ export function LoginPage() {
     e.preventDefault()
     if (!validateForm()) return
     if (requires2FA && (!twoFactorCode || twoFactorCode.length !== 6)) {
-      setErrors({ ...errors, twoFactorCode: 'Invalid Protocol' })
+      setErrors(prev => ({ ...prev, twoFactorCode: 'Invalid Protocol' })
       return
     }
 
@@ -106,7 +106,7 @@ export function LoginPage() {
           transition={{ duration: 0.5 }}
           className="mx-auto w-full max-w-sm lg:w-96"
         >
-          <h2 className="text-2xl font-display font-bold tracking-tight text-white mb-8 border-b border-border pb-4">
+          <h2 className="text-2xl font-display font-semibold tracking-tight text-white mb-8 border-b border-border pb-4">
             AUTHENTICATE
           </h2>
 

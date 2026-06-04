@@ -1,6 +1,6 @@
 import { MatchCard, type Match } from '@/components/MatchCard'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { matchesService, type MatchResponse } from '@/services/matches.service'
 import { useToast } from '@/hooks/use-toast'
 import { Activity, CalendarDays, Zap } from 'lucide-react'
@@ -8,7 +8,8 @@ import { Activity, CalendarDays, Zap } from 'lucide-react'
 export function MatchList() {
   const [todayMatches, setTodayMatches] = useState<MatchResponse[]>([])
   const [upcomingMatches, setUpcomingMatches] = useState<MatchResponse[]>([])
-  const [loading, setLoading] = useState(true)
+  // loading is only used as a guard, not rendered — using useRef to avoid re-render
+  const loading = useRef(true)
   const { toast } = useToast()
 
   useEffect(() => {
@@ -17,7 +18,7 @@ export function MatchList() {
 
   const loadMatches = async () => {
     try {
-      setLoading(true)
+      loading.current = true
       const [today, upcoming] = await Promise.all([
         matchesService.getTodayMatches(),
         matchesService.getUpcomingMatches(7)
@@ -32,7 +33,7 @@ export function MatchList() {
         variant: 'destructive',
       })
     } finally {
-      setLoading(false)
+      loading.current = false
     }
   }
 
@@ -63,30 +64,34 @@ export function MatchList() {
     }
   }
 
-  const todayMatchesConverted = todayMatches
-    .filter(m => m.home_team?.name !== 'TBD' && m.away_team?.name !== 'TBD')
-    .map(convertToMatch)
+  const todayMatchesConverted = todayMatches.reduce<ReturnType<typeof convertToMatch>[]>((acc, m) => {
+    if (m.home_team?.name !== 'TBD' && m.away_team?.name !== 'TBD') {
+      acc.push(convertToMatch(m))
+    }
+    return acc
+  }, [])
   
-  // Deduplicate by team names and IDs for safety
-  const uniqueUpcoming = Array.from(new Map(
-    upcomingMatches
-      .filter(m => m.home_team?.name !== 'TBD' && m.away_team?.name !== 'TBD')
-      .map(m => [m.id, m])
-  ).values())
-  
-  const upcomingMatchesConverted = uniqueUpcoming.map(convertToMatch)
+  // Deduplicate and convert in a single pass
+  const upcomingMatchesConverted = Array.from(
+    upcomingMatches.reduce<Map<number, ReturnType<typeof convertToMatch>>>((acc, m) => {
+      if (m.home_team?.name !== 'TBD' && m.away_team?.name !== 'TBD' && !acc.has(m.id)) {
+        acc.set(m.id, convertToMatch(m))
+      }
+      return acc
+    }, new Map()).values()
+  )
 
-  if (loading) {
+  if (loading.current) {
     return (
       <div className="flex h-64 items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="relative">
-            <div className="w-12 h-12 border-2 border-acid-500 rounded-none animate-spin" />
+            <div className="size-12 border-2 border-acid-500 rounded-none animate-spin" />
             <div className="absolute inset-0 flex items-center justify-center">
               <Zap size={16} className="text-acid-500 animate-pulse" />
             </div>
           </div>
-          <div className="text-acid-500 font-mono text-xs uppercase tracking-widest animate-pulse">SCANNING MATCH NETWORK...</div>
+          <div className="text-acid-500 font-mono text-xs uppercase tracking-widest animate-pulse">SCANNING MATCH NETWORK…</div>
         </div>
       </div>
     )
@@ -100,7 +105,7 @@ export function MatchList() {
           <TabTrigger value="upcoming" icon={<CalendarDays size={16} />} label="UPCOMING" />
         </TabsList>
         <div className="hidden md:flex items-center gap-2 text-[10px] font-mono text-muted-foreground">
-          <span className="w-2 h-2 rounded-full bg-acid-500 animate-pulse" />
+          <span className="size-2 rounded-full bg-acid-500 animate-pulse" />
           LIVE DATA FEED
         </div>
       </div>

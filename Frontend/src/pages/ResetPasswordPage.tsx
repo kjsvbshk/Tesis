@@ -42,7 +42,7 @@ export function ResetPasswordPage() {
     })
     // Clear error when user starts typing
     if (errors[name as keyof typeof errors]) {
-      setErrors({ ...errors, [name]: undefined })
+      setErrors(prev => ({ ...prev, [name]: undefined })
     }
   }
 
@@ -110,7 +110,7 @@ export function ResetPasswordPage() {
             <img src="/logo.png" alt="HAW Logo" className="h-12 w-auto" />
           </div>
         </div>
-        <h2 className="mt-10 text-center text-3xl font-heading font-bold tracking-tight text-white">
+        <h2 className="mt-10 text-center text-3xl font-heading font-semibold tracking-tight text-white">
           Nueva contraseña
         </h2>
         <p className="mt-2 text-center text-sm text-[#B0B3C5]">

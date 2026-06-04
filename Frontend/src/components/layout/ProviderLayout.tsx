@@ -3,7 +3,7 @@ import { Toaster } from '@/components/ui/toaster'
 import { Activity, LogOut, ChevronLeft, Menu, Database, FileText, Settings, Shield } from 'lucide-react'
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
-import { motion, AnimatePresence } from 'framer-motion'
+import { LazyMotion, domAnimation, m, AnimatePresence } from 'framer-motion'
 import { useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 
@@ -25,13 +25,14 @@ export function ProviderLayout() {
     }
 
     return (
+        <LazyMotion features={domAnimation}>
         <div className="flex h-screen bg-void text-foreground overflow-hidden font-sans relative selection:bg-[#00F0FF] selection:text-black">
             <div className="absolute inset-0 pointer-events-none z-50 mix-blend-overlay opacity-5 bg-[url('/noise.svg')] bg-repeat" />
 
             {/* Sidebar Desktop */}
             <AnimatePresence mode="wait">
                 {isSidebarOpen && (
-                    <motion.aside
+                    <m.aside
                         initial={{ width: 0, opacity: 0 }}
                         animate={{ width: 280, opacity: 1 }}
                         exit={{ width: 0, opacity: 0 }}
@@ -39,9 +40,9 @@ export function ProviderLayout() {
                         className="hidden md:flex flex-col border-r border-border bg-metal-900/50 backdrop-blur-sm relative z-20"
                     >
                         <div className="p-6 border-b border-white/5 flex items-center gap-3">
-                            <div className={`w-8 h-8 ${themeBg} rounded-none cut-corners flex items-center justify-center text-black font-bold font-display text-lg`}>P</div>
+                            <div className={`size-8 ${themeBg} rounded-none cut-corners flex items-center justify-center text-black font-bold font-display text-lg`}>P</div>
                             <div>
-                                <h1 className="font-display font-bold text-xl tracking-tighter text-white">HAW<span className={themeColor}>.PRO</span></h1>
+                                <h1 className="font-display font-semibold text-xl tracking-tighter text-white">HAW<span className={themeColor}>.PRO</span></h1>
                                 <p className="text-[10px] font-mono text-muted-foreground tracking-widest uppercase">PROVIDER ACCESS</p>
                             </div>
                         </div>
@@ -69,7 +70,7 @@ export function ProviderLayout() {
 
                         <div className="p-4 border-t border-white/5">
                             <div className="mb-4 flex items-center gap-3 px-2">
-                                <div className="w-8 h-8 bg-metal-800 rounded-full flex items-center justify-center text-xs font-bold border border-white/10">
+                                <div className="size-8 bg-metal-800 rounded-full flex items-center justify-center text-xs font-bold border border-white/10">
                                     {user?.username?.charAt(0).toUpperCase()}
                                 </div>
                                 <div className="flex-1 overflow-hidden">
@@ -86,7 +87,7 @@ export function ProviderLayout() {
                                 DISCONNECT
                             </Button>
                         </div>
-                    </motion.aside>
+                    </m.aside>
                 )}
             </AnimatePresence>
 
@@ -107,7 +108,7 @@ export function ProviderLayout() {
 
                         <div className="hidden md:flex items-center gap-6 text-[10px] font-mono text-muted-foreground uppercase tracking-wider border-l border-white/10 pl-4 h-8">
                             <span className="flex items-center gap-2">
-                                <span className={`w-1.5 h-1.5 ${themeBg} rounded-full animate-pulse`} />
+                                <span className={`size-1.5 ${themeBg} rounded-full animate-pulse`} />
                                 NODE: ACTIVE
                             </span>
                             <span>UPTIME: 99.98%</span>
@@ -125,6 +126,7 @@ export function ProviderLayout() {
 
             <Toaster />
         </div>
+        </LazyMotion>
     )
 }
 
@@ -161,8 +163,8 @@ function MobileNav({ themeColor, themeBg, themeBorder }: { themeColor: string; t
                 <SheetDescription className="sr-only">Navegación Móvil</SheetDescription>
 
                 <div className="p-6 border-b border-white/5 flex items-center gap-3">
-                    <div className={`w-8 h-8 ${themeBg} rounded-none flex items-center justify-center text-black font-bold font-display text-lg`}>P</div>
-                    <h1 className="font-display font-bold text-xl tracking-tighter text-white">HAW<span className={themeColor}>.PRO</span></h1>
+                    <div className={`size-8 ${themeBg} rounded-none flex items-center justify-center text-black font-bold font-display text-lg`}>P</div>
+                    <h1 className="font-display font-semibold text-xl tracking-tighter text-white">HAW<span className={themeColor}>.PRO</span></h1>
                 </div>
 
                 <nav className="flex-1 overflow-y-auto py-6 px-3 space-y-1">

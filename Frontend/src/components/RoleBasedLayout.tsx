@@ -25,8 +25,8 @@ export function RoleBasedLayout(_props: RoleBasedLayoutProps) {
           <div className="logo-container pulse-glow mx-auto mb-4">
             <img src="/logo.png" alt="HAW Logo" className="h-12 w-auto" />
           </div>
-          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-[#00FF73] border-r-transparent"></div>
-          <p className="mt-4 text-[#B0B3C5]">Cargando...</p>
+          <div className="inline-block size-8 animate-spin rounded-full border-4 border-solid border-[#00FF73] border-r-transparent"></div>
+          <p className="mt-4 text-[#B0B3C5]">Cargando…</p>
         </div>
       </div>
     )

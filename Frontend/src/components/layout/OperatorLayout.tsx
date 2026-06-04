@@ -5,7 +5,7 @@
 
 import { Outlet, NavLink } from 'react-router-dom'
 import { Key, Activity, FileText, Home, LogOut, ChevronLeft, Menu } from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { LazyMotion, domAnimation, m, AnimatePresence } from 'framer-motion'
 import { useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/button'
@@ -25,13 +25,14 @@ export function OperatorLayout() {
   }
 
   return (
+    <LazyMotion features={domAnimation}>
     <div className="flex h-screen bg-void text-foreground overflow-hidden font-sans relative selection:bg-electric-violet selection:text-white">
       <div className="absolute inset-0 pointer-events-none z-50 mix-blend-overlay opacity-5 bg-[url('/noise.svg')] bg-repeat" />
 
       {/* Operator Sidebar */}
       <AnimatePresence mode="wait">
         {isSidebarOpen && (
-          <motion.aside
+          <m.aside
             initial={{ width: 0, opacity: 0 }}
             animate={{ width: 280, opacity: 1 }}
             exit={{ width: 0, opacity: 0 }}
@@ -39,9 +40,9 @@ export function OperatorLayout() {
             className="hidden md:flex flex-col border-r border-border bg-metal-900/50 backdrop-blur-sm relative z-20"
           >
             <div className="p-6 border-b border-white/5 flex items-center gap-3">
-              <div className="w-8 h-8 bg-electric-violet rounded-none cut-corners flex items-center justify-center text-white font-bold font-display text-lg">OP</div>
+              <div className="size-8 bg-electric-violet rounded-none cut-corners flex items-center justify-center text-white font-bold font-display text-lg">OP</div>
               <div>
-                <h1 className="font-display font-bold text-xl tracking-tighter text-white">HAW<span className="text-electric-violet">.OPS</span></h1>
+                <h1 className="font-display font-semibold text-xl tracking-tighter text-white">HAW<span className="text-electric-violet">.OPS</span></h1>
                 <p className="text-[10px] font-mono text-muted-foreground tracking-widest uppercase">OPERATOR CONSOLE</p>
               </div>
             </div>
@@ -69,7 +70,7 @@ export function OperatorLayout() {
                 DISCONNECT
               </Button>
             </div>
-          </motion.aside>
+          </m.aside>
         )}
       </AnimatePresence>
 
@@ -89,7 +90,7 @@ export function OperatorLayout() {
 
             <div className="hidden md:flex items-center gap-6 text-[10px] font-mono text-electric-violet/70 uppercase tracking-wider border-l border-white/10 pl-4 h-8">
               <span className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 bg-electric-violet rounded-full animate-pulse" />
+                <span className="size-1.5 bg-electric-violet rounded-full animate-pulse" />
                 LINK: ESTABLISHED
               </span>
               <span>FEED: ACTIVE</span>
@@ -103,6 +104,7 @@ export function OperatorLayout() {
       </div>
       <Toaster />
     </div>
+    </LazyMotion>
   )
 }
 
@@ -139,8 +141,8 @@ function MobileNav() {
         <SheetDescription className="sr-only">Navegación Operador Móvil</SheetDescription>
 
         <div className="p-6 border-b border-white/5 flex items-center gap-3">
-          <div className="w-8 h-8 bg-electric-violet rounded-none flex items-center justify-center text-white font-bold font-display text-lg">OP</div>
-          <h1 className="font-display font-bold text-xl tracking-tighter text-white">HAW<span className="text-electric-violet">.OPS</span></h1>
+          <div className="size-8 bg-electric-violet rounded-none flex items-center justify-center text-white font-bold font-display text-lg">OP</div>
+          <h1 className="font-display font-semibold text-xl tracking-tighter text-white">HAW<span className="text-electric-violet">.OPS</span></h1>
         </div>
 
         <nav className="flex-1 overflow-y-auto py-6 px-3 space-y-1">

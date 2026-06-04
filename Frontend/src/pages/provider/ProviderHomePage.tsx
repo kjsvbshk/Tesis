@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { LazyMotion, domAnimation, m } from 'framer-motion'
 import { Activity, Server, Clock, Database, CheckCircle, AlertTriangle } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useAuth } from '@/contexts/AuthContext'
@@ -14,8 +14,9 @@ export function ProviderHomePage() {
     const gradient = "from-[#00F0FF] to-[#0099FF]"
 
     return (
+        <LazyMotion features={domAnimation}>
         <div className="space-y-6">
-            <motion.div
+            <m.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
@@ -23,7 +24,7 @@ export function ProviderHomePage() {
             >
                 <div>
                     <Link to="/provider">
-                        <h1 className={`text-4xl font-heading font-bold bg-gradient-to-r ${gradient} bg-clip-text text-transparent mb-2 hover:opacity-80 transition-opacity`}>
+                        <h1 className="text-4xl font-heading font-semibold text-violet-600 mb-2 hover:opacity-80 transition-opacity">
                             Provider Portal
                         </h1>
                     </Link>
@@ -31,13 +32,13 @@ export function ProviderHomePage() {
                 </div>
 
                 <div className={`px-4 py-2 bg-[#00F0FF]/10 ${themeBorder} border rounded-sm flex items-center gap-3`}>
-                    <div className={`w-2 h-2 rounded-full ${themeBg} animate-pulse`} />
+                    <div className={`size-2 rounded-full ${themeBg} animate-pulse`} />
                     <span className={`font-mono text-xs ${themeColor} font-bold`}>SYSTEM STATUS: OPERATIONAL</span>
                 </div>
-            </motion.div>
+            </m.div>
 
             {/* Metrics Grid */}
-            <motion.div
+            <m.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
@@ -71,11 +72,11 @@ export function ProviderHomePage() {
                     description="All endpoints healthy"
                     themeColor={themeColor}
                 />
-            </motion.div>
+            </m.div>
 
             {/* Main Status Area */}
             <div className="grid gap-6 md:grid-cols-3">
-                <motion.div
+                <m.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.6, delay: 0.4 }}
@@ -98,9 +99,9 @@ export function ProviderHomePage() {
                             </div>
                         </CardContent>
                     </Card>
-                </motion.div>
+                </m.div>
 
-                <motion.div
+                <m.div
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.6, delay: 0.5 }}
@@ -113,7 +114,7 @@ export function ProviderHomePage() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                            <div className="p-3 bg-black/30 border-l-2 border-yellow-500 rounded-r-sm">
+                            <div className="p-3 bg-black/30 shadow-[inset_2px_0_0_theme(colors.yellow.500)] rounded-r-sm">
                                 <div className="flex justify-between items-start mb-1">
                                     <span className="text-yellow-500 font-bold text-xs font-mono">WARNING</span>
                                     <span className="text-muted-foreground text-[10px]">10m ago</span>
@@ -121,7 +122,7 @@ export function ProviderHomePage() {
                                 <p className="text-sm text-white">High latency detected on endpoint /api/v2/odds</p>
                             </div>
 
-                            <div className="p-3 bg-black/30 border-l-2 border-[#00F0FF] rounded-r-sm">
+                            <div className="p-3 bg-black/30 shadow-[inset_2px_0_0_#00F0FF] rounded-r-sm">
                                 <div className="flex justify-between items-start mb-1">
                                     <span className={`${themeColor} font-bold text-xs font-mono`}>INFO</span>
                                     <span className="text-muted-foreground text-[10px]">1h ago</span>
@@ -129,7 +130,7 @@ export function ProviderHomePage() {
                                 <p className="text-sm text-white">Daily sync completed successfully</p>
                             </div>
 
-                            <div className="p-3 bg-black/30 border-l-2 border-green-500 rounded-r-sm">
+                            <div className="p-3 bg-black/30 shadow-[inset_2px_0_0_theme(colors.green.500)] rounded-r-sm">
                                 <div className="flex justify-between items-start mb-1">
                                     <span className="text-green-500 font-bold text-xs font-mono">RESOLVED</span>
                                     <span className="text-muted-foreground text-[10px]">2h ago</span>
@@ -138,9 +139,10 @@ export function ProviderHomePage() {
                             </div>
                         </CardContent>
                     </Card>
-                </motion.div>
+                </m.div>
             </div>
         </div>
+        </LazyMotion>
     )
 }
 
@@ -159,7 +161,7 @@ function StatCard({
 }) {
     return (
         <Card className={`bg-[#1C2541]/50 border-[#1C2541] hover:border-[#00F0FF]/30 transition-all group`}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardHeader className="flex flex-row items-center justify-between gap-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-[#B0B3C5]">{title}</CardTitle>
                 <div className={`${themeColor} group-hover:scale-110 transition-transform`}>{icon}</div>
             </CardHeader>

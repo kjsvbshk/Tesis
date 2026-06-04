@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { LazyMotion, domAnimation, m } from 'framer-motion'
 import { CheckCircle, XCircle, AlertTriangle, RefreshCw, Zap } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -89,15 +89,16 @@ export function IntegrationMonitoringPage() {
   }
 
   return (
+    <LazyMotion features={domAnimation}>
     <div className="space-y-6">
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         className="flex justify-between items-center"
       >
         <div>
-          <h1 className="text-4xl font-heading font-bold bg-gradient-to-r from-[#00FF73] to-[#FFD700] bg-clip-text text-transparent mb-2">
+          <h1 className="text-4xl font-heading font-semibold text-[#00FF73] mb-2">
             Monitoreo de Integraciones
           </h1>
           <p className="text-[#B0B3C5]">Estado en tiempo real de proveedores y circuit breakers</p>
@@ -115,7 +116,7 @@ export function IntegrationMonitoringPage() {
             Actualizar
           </Button>
         </div>
-      </motion.div>
+      </m.div>
 
       {/* Summary Cards */}
       <div className="grid gap-4 md:grid-cols-4">
@@ -164,7 +165,7 @@ export function IntegrationMonitoringPage() {
         {loading ? (
           <Card className="bg-[#1C2541]/50 border-[#1C2541]">
             <CardContent className="flex justify-center py-8">
-              <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-[#00FF73] border-r-transparent"></div>
+              <div className="inline-block size-8 animate-spin rounded-full border-4 border-solid border-[#00FF73] border-r-transparent"></div>
             </CardContent>
           </Card>
         ) : providers.length === 0 ? (
@@ -241,7 +242,7 @@ export function IntegrationMonitoringPage() {
                         </div>
                         <div>
                           <p className="text-xs text-[#B0B3C5] mb-1">Último Fallo</p>
-                          <p className="text-white font-medium text-sm">
+                          <p className="text-white font-medium text-sm" suppressHydrationWarning>
                             {status.circuit_breaker.last_failure
                               ? new Date(status.circuit_breaker.last_failure).toLocaleString()
                               : 'N/A'}
@@ -265,5 +266,6 @@ export function IntegrationMonitoringPage() {
         )}
       </div>
     </div>
+    </LazyMotion>
   )
 }

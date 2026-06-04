@@ -1,5 +1,5 @@
 """
-Visualización de calibración y diagnóstico — Ensemble v2.0.0
+Visualización de calibración y diagnóstico — Ensemble (cualquier versión).
 
 Genera 4 gráficas:
   1. Reliability diagram del ensemble
@@ -9,9 +9,12 @@ Genera 4 gráficas:
 
 Uso:
     cd ML
-    python -m scripts.plot_calibration
+    python -m scripts.plot_calibration                       # v2.2.0 (default)
+    python -m scripts.plot_calibration --version v2.1.0
+    python -m scripts.plot_calibration --version v1.6.0 --output-dir reports/figures/v1.6.0
 """
 
+import argparse
 import sys
 from pathlib import Path
 
@@ -122,7 +125,7 @@ def plot_calibration_comparison(y_true, proba_rf, proba_ens, ece_rf, ece_ens, ou
     print(f"  Guardado: {output_path}")
 
 
-def plot_confidence_histogram(y_proba, output_path):
+def plot_confidence_histogram(y_proba, output_path, version="v?"):
     """Histograma de distribución de probabilidades predichas."""
     fig, ax = plt.subplots(figsize=(8, 5))
 
@@ -133,7 +136,7 @@ def plot_confidence_histogram(y_proba, output_path):
 
     ax.set_xlabel("P(home_win)", fontsize=12)
     ax.set_ylabel("Frecuencia", fontsize=12)
-    ax.set_title("Distribución de confianza — Ensemble v2.0.0", fontsize=14)
+    ax.set_title(f"Distribución de confianza — Ensemble {version}", fontsize=14)
     ax.legend(fontsize=10)
     ax.grid(True, alpha=0.3)
 
@@ -143,7 +146,7 @@ def plot_confidence_histogram(y_proba, output_path):
     print(f"  Guardado: {output_path}")
 
 
-def plot_confusion_matrix(y_true, y_proba, output_path, threshold=0.5):
+def plot_confusion_matrix(y_true, y_proba, output_path, threshold=0.5, version="v?"):
     """Matriz de confusión."""
     y_pred = (y_proba >= threshold).astype(int)
     cm = confusion_matrix(y_true, y_pred)
@@ -158,7 +161,7 @@ def plot_confusion_matrix(y_true, y_proba, output_path, threshold=0.5):
         xticks=[0, 1], yticks=[0, 1],
         xticklabels=labels, yticklabels=labels,
         xlabel="Predicho", ylabel="Real",
-        title=f"Matriz de confusión — Ensemble v2.0.0 (umbral={threshold})",
+        title=f"Matriz de confusión — Ensemble {version} (umbral={threshold})",
     )
 
     # Anotar valores
@@ -181,66 +184,104 @@ def plot_confusion_matrix(y_true, y_proba, output_path, threshold=0.5):
 
 
 def main():
-    FIGURES_DIR.mkdir(parents=True, exist_ok=True)
+    parser = argparse.ArgumentParser(description=__doc__,
+                                     formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--version", default="v2.2.0",
+                        help="Versión del modelo (default: v2.2.0)")
+    parser.add_argument("--output-dir", default=None,
+                        help="Directorio de salida (default: reports/figures)")
+    args = parser.parse_args()
+
+    out_dir = Path(args.output_dir) if args.output_dir else FIGURES_DIR
+    out_dir.mkdir(parents=True, exist_ok=True)
 
     # ------------------------------------------------------------------
-    # 1. Cargar datos y modelo
+    # 1. Cargar modelo PRIMERO para inferir el feature set correcto
+    # ------------------------------------------------------------------
+    model_path = Path(__file__).parent.parent / "models" / f"nba_prediction_model_{args.version}.joblib"
+    if not model_path.exists():
+        print(f"ERROR: No se encontró {model_path}")
+        print(f"Entrena primero: python -m src.training.train --version {args.version} --model ensemble")
+        sys.exit(1)
+    print(f"\nCargando modelo: {model_path}")
+    ensemble = joblib.load(model_path)
+
+    # Inferir el feature set que espera el modelo (21 para v1.x, 33 para v2.x)
+    # y filtrar X_test/X_train acorde — el modelo v1.6.0 fue entrenado con 21
+    # features y falla si recibe 33; el v2.x con 33 y falla si recibe 21.
+    from scripts.evaluate_active_model import predict_legacy, detect_feature_set
+    from tests.ablation_study import FEATURE_SETS
+    try:
+        feature_set = detect_feature_set(ensemble)
+    except Exception:
+        feature_set = "v2"
+    requested = FEATURE_SETS[feature_set]
+    print(f"  Feature set inferido: {feature_set} ({len(requested)} features)")
+
+    # ------------------------------------------------------------------
+    # 2. Cargar datos con el feature set correcto
     # ------------------------------------------------------------------
     df = load_ml_ready_games()
-    X, y, feature_cols, df_clean = build_feature_matrix(df)
+    X, y, all_feature_cols, df_clean = build_feature_matrix(df)
     df_train, df_test = temporal_train_test_split(df_clean, date_col=DATE_COL, test_size=0.20)
+
+    feature_cols = [c for c in requested if c in df_clean.columns]
+    if len(feature_cols) != len(requested):
+        missing = [c for c in requested if c not in df_clean.columns]
+        print(f"  Aviso: features ausentes en BD ({len(missing)}): {missing}")
 
     X_train = df_train[feature_cols].values
     y_train = df_train[TARGET].astype(int).values
     X_test = df_test[feature_cols].values
     y_test = df_test[TARGET].astype(int).values
 
-    # Ensemble v2.0.0
-    model_path = Path(__file__).parent.parent / "models" / "nba_prediction_model_v2.0.0.joblib"
-    if not model_path.exists():
-        print(f"ERROR: No se encontró {model_path}")
-        sys.exit(1)
-    ensemble = joblib.load(model_path)
-    y_proba_ens = ensemble.predict_home_win_proba(X_test)
+    # predict_legacy maneja todas las versiones (v1.x: 2D, v2.1.0: 3D, v2.1.2/v2.2.0: 4D)
+    try:
+        y_proba_ens = predict_legacy(ensemble, X_test)
+    except Exception as e:
+        print(f"  Advertencia: predict_legacy falló ({e}); usando predict_home_win_proba directo")
+        y_proba_ens = ensemble.predict_home_win_proba(X_test)
     ece_ens = compute_ece(y_test, y_proba_ens)
 
-    # RF solo (entrenar para comparación)
+    # RF solo (entrenar para comparación) — usa el MISMO feature set que el modelo
     print("\nEntrenando RF solo para comparación de calibración...")
     rf = NBARandomForest()
     rf.fit(X_train, y_train, feature_names=feature_cols)
     y_proba_rf = rf.predict_home_win_proba(X_test)
     ece_rf = compute_ece(y_test, y_proba_rf)
 
-    print(f"\n  ECE Ensemble: {ece_ens:.4f}")
-    print(f"  ECE RF solo:  {ece_rf:.4f}")
+    print(f"\n  ECE Ensemble {args.version}: {ece_ens:.4f}")
+    print(f"  ECE RF solo:               {ece_rf:.4f}")
 
     # ------------------------------------------------------------------
     # 2. Generar gráficas
     # ------------------------------------------------------------------
-    print("\nGenerando gráficas...")
+    print(f"\nGenerando gráficas en {out_dir}...")
 
     plot_reliability_diagram(
         y_test, y_proba_ens, ece_ens,
-        "Curva de calibración — Ensemble v2.0.0",
-        FIGURES_DIR / "calibration_v160_v3.png",
+        f"Curva de calibración — Ensemble {args.version}",
+        out_dir / f"calibration_{args.version}.png",
     )
 
     plot_calibration_comparison(
         y_test, y_proba_rf, y_proba_ens, ece_rf, ece_ens,
-        FIGURES_DIR / "calibration_comparison_v3.png",
+        out_dir / f"calibration_comparison_{args.version}.png",
     )
 
     plot_confidence_histogram(
         y_proba_ens,
-        FIGURES_DIR / "confidence_histogram_v3.png",
+        out_dir / f"confidence_histogram_{args.version}.png",
+        version=args.version,
     )
 
     plot_confusion_matrix(
         y_test, y_proba_ens,
-        FIGURES_DIR / "confusion_matrix_v3.png",
+        out_dir / f"confusion_matrix_{args.version}.png",
+        version=args.version,
     )
 
-    print(f"\n  Todas las gráficas guardadas en: {FIGURES_DIR}")
+    print(f"\n  Todas las gráficas guardadas en: {out_dir}")
 
 
 if __name__ == "__main__":

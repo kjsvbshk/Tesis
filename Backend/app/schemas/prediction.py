@@ -9,6 +9,23 @@ from datetime import datetime, date
 class PredictionRequest(BaseModel):
     game_id: int
 
+
+class TeamPropPrediction(BaseModel):
+    """Predicción de un team-prop (rebotes, asistencias, etc.) para un equipo."""
+    reb: Optional[float] = None
+    ast: Optional[float] = None
+    stl: Optional[float] = None
+    blk: Optional[float] = None
+    to:  Optional[float] = None  # turnovers (pérdidas)
+
+
+class TeamPropsBundle(BaseModel):
+    """Predicciones team-props para ambos equipos del partido (v2.2.0+)."""
+    home: TeamPropPrediction
+    away: TeamPropPrediction
+    labels: Optional[Dict[str, str]] = None
+
+
 class PredictionResponse(BaseModel):
     game_id: int
     home_team_id: int
@@ -16,7 +33,7 @@ class PredictionResponse(BaseModel):
     home_team_name: str
     away_team_name: str
     game_date: Optional[datetime] = None
-    
+
     # Predictions
     home_win_probability: float
     away_win_probability: float
@@ -24,18 +41,24 @@ class PredictionResponse(BaseModel):
     predicted_away_score: float
     predicted_total: float
     predicted_margin: Optional[float] = None  # home_score - away_score; positivo = local gana
-    
+
+    # Team-props (v2.2.0+) — rebotes, asistencias, robos, bloqueos, turnovers por equipo
+    team_props: Optional[TeamPropsBundle] = None
+
     # Betting recommendations
     recommended_bet: Optional[str] = None  # "home", "away", "over", "under", "none"
     expected_value: Optional[float] = None
     confidence_score: float
-    
+
     # Model information
     model_version: str
     prediction_timestamp: datetime
-    
-    # Additional features
+
+    # Additional features y telemetría (Sprint 1)
     features_used: Optional[Dict[str, Any]] = None
+    inference_latency_ms: Optional[int] = None  # latencia aislada del modelo
+    model_signals: Optional[Dict[str, float]] = None  # rf_proba, poisson_*, etc.
+    fallback_dummy: Optional[bool] = None  # True si la respuesta es dummy por fallback
 
     @field_serializer('game_date')
     def serialize_game_date(self, value: Optional[datetime]) -> Optional[str]:

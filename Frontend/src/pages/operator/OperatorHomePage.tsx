@@ -3,7 +3,7 @@
  * Dashboard principal para operadores
  */
 
-import { motion } from 'framer-motion'
+import { LazyMotion, domAnimation, m } from 'framer-motion'
 import { Activity, Database, RefreshCw, AlertCircle, CheckCircle } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useEffect, useState } from 'react'
@@ -47,24 +47,25 @@ export function OperatorHomePage() {
   const inactiveProviders = providers.filter(p => !p.is_active).length
 
   return (
+    <LazyMotion features={domAnimation}>
     <div className="space-y-6">
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         className="text-center"
       >
-        <h1 className="text-5xl font-heading font-bold bg-gradient-to-r from-[#00FF73] via-[#00D95F] to-[#FFD700] bg-clip-text text-transparent mb-3 drop-shadow-[0_0_15px_rgba(0,255,115,0.5)]">
+        <h1 className="text-5xl font-heading font-semibold text-[#00FF73] mb-3 drop-shadow-[0_0_15px_rgba(0,255,115,0.5)]">
           Panel de Operador
         </h1>
         <p className="text-[#B0B3C5] text-lg font-medium">
           Gestión de proveedores y sincronizaciones
         </p>
-      </motion.div>
+      </m.div>
 
       {/* Quick Stats */}
       {metrics && (
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
@@ -98,11 +99,11 @@ export function OperatorHomePage() {
             description="Pendientes de publicación"
             link="/operator/monitoreo"
           />
-        </motion.div>
+        </m.div>
       )}
 
       {/* Quick Actions */}
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.4 }}
@@ -126,11 +127,11 @@ export function OperatorHomePage() {
           icon={<RefreshCw size={32} />}
           link="/operator/sincronizacion"
         />
-      </motion.div>
+      </m.div>
 
       {/* Provider Status Summary */}
       {providers.length > 0 && (
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.6 }}
@@ -173,9 +174,10 @@ export function OperatorHomePage() {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </m.div>
       )}
     </div>
+    </LazyMotion>
   )
 }
 
@@ -194,7 +196,7 @@ function StatCard({
 }) {
   const content = (
     <Card className="bg-[#1C2541]/50 border-[#1C2541] hover:border-[#00FF73]/30 transition-all">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+      <CardHeader className="flex flex-row items-center justify-between gap-y-0 pb-2">
         <CardTitle className="text-sm font-medium text-[#B0B3C5]">{title}</CardTitle>
         <div className="text-[#00FF73]">{icon}</div>
       </CardHeader>

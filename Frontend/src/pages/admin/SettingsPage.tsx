@@ -1,26 +1,58 @@
-import React, { useState, useEffect } from 'react'
+import React, { useReducer, useEffect } from 'react'
 import { Settings, Database, CheckCircle2, AlertCircle, RefreshCw, Activity, Cpu } from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { LazyMotion, domAnimation, m, AnimatePresence } from 'framer-motion'
 import { adminService, type ModelVersion } from '@/services/admin.service'
 
+// Issue I: useReducer ─────────────────────────────────────────────────────────
+interface SettingsState {
+  models: ModelVersion[]
+  loading: boolean
+  error: string | null
+  activating: number | null
+  successMsg: string | null
+}
+
+type SettingsAction =
+  | { type: 'SET_MODELS'; payload: ModelVersion[] }
+  | { type: 'SET_LOADING'; payload: boolean }
+  | { type: 'SET_ERROR'; payload: string | null }
+  | { type: 'SET_ACTIVATING'; payload: number | null }
+  | { type: 'SET_SUCCESS_MSG'; payload: string | null }
+
+const initialSettingsState: SettingsState = {
+  models: [],
+  loading: true,
+  error: null,
+  activating: null,
+  successMsg: null,
+}
+
+function settingsReducer(state: SettingsState, action: SettingsAction): SettingsState {
+  switch (action.type) {
+    case 'SET_MODELS': return { ...state, models: action.payload }
+    case 'SET_LOADING': return { ...state, loading: action.payload }
+    case 'SET_ERROR': return { ...state, error: action.payload }
+    case 'SET_ACTIVATING': return { ...state, activating: action.payload }
+    case 'SET_SUCCESS_MSG': return { ...state, successMsg: action.payload }
+    default: return state
+  }
+}
+
 const SettingsPage: React.FC = () => {
-  const [models, setModels] = useState<ModelVersion[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [activating, setActivating] = useState<number | null>(null)
-  const [successMsg, setSuccessMsg] = useState<string | null>(null)
+  const [state, dispatch] = useReducer(settingsReducer, initialSettingsState)
+  const { models, loading, error, activating, successMsg } = state
 
   const fetchModels = async () => {
-    setLoading(true)
-    setError(null)
+    dispatch({ type: 'SET_LOADING', payload: true })
+    dispatch({ type: 'SET_ERROR', payload: null })
     try {
       const data = await adminService.getModels()
-      setModels(data)
+      dispatch({ type: 'SET_MODELS', payload: data })
     } catch (err: any) {
-      setError('Error al cargar las versiones de los modelos')
+      dispatch({ type: 'SET_ERROR', payload: 'Error al cargar las versiones de los modelos' })
       console.error(err)
     } finally {
-      setLoading(false)
+      dispatch({ type: 'SET_LOADING', payload: false })
     }
   }
 
@@ -29,36 +61,39 @@ const SettingsPage: React.FC = () => {
   }, [])
 
   const handleActivate = async (id: number) => {
-    setActivating(id)
-    setSuccessMsg(null)
+    dispatch({ type: 'SET_ACTIVATING', payload: id })
+    dispatch({ type: 'SET_SUCCESS_MSG', payload: null })
     try {
       await adminService.activateModel(id)
-      setSuccessMsg('Modelo activado correctamente')
+      dispatch({ type: 'SET_SUCCESS_MSG', payload: 'Modelo activado correctamente' })
       await fetchModels()
-      
+
       // Clear success message after 3 seconds
-      setTimeout(() => setSuccessMsg(null), 3000)
+      setTimeout(() => dispatch({ type: 'SET_SUCCESS_MSG', payload: null }), 3000)
     } catch (err: any) {
-      setError('Error al activar el modelo')
+      dispatch({ type: 'SET_ERROR', payload: 'Error al activar el modelo' })
       console.error(err)
     } finally {
-      setActivating(null)
+      dispatch({ type: 'SET_ACTIVATING', payload: null })
     }
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-gray-100 p-8">
+    <LazyMotion features={domAnimation}>
+    {/* Issue C: gray-100 → zinc-100; bg-[#0a0a0a] kept as custom */}
+    <div className="min-h-screen bg-[#0a0a0a] text-zinc-100 p-8">
       {/* Header section */}
       <div className="mb-10">
         <div className="flex items-center gap-3 mb-2">
           <div className="p-2 bg-lime-500/10 rounded-lg border border-lime-500/20">
             <Settings className="text-lime-400" size={24} />
           </div>
-          <h1 className="text-3xl font-bold tracking-tighter uppercase">
+          <h1 className="text-3xl font-semibold tracking-tighter uppercase">
             System <span className="text-lime-400">Configuration</span>
           </h1>
         </div>
-        <p className="text-gray-400 max-w-2xl">
+        {/* Issue C: gray-400 → zinc-400 */}
+        <p className="text-zinc-400 max-w-2xl">
           Administra las versiones de los modelos de Machine Learning y la configuración central del motor de predicciones.
         </p>
       </div>
@@ -70,11 +105,11 @@ const SettingsPage: React.FC = () => {
             <div className="p-6 border-b border-white/5 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Database className="text-lime-400" size={20} />
-                <h2 className="text-xl font-bold uppercase tracking-tight">Model Versions</h2>
+                <h2 className="text-xl font-semibold uppercase tracking-tight">Model Versions</h2>
               </div>
-              <button 
+              <button
                 onClick={fetchModels}
-                className="p-2 hover:bg-white/5 rounded-full transition-colors text-gray-400 hover:text-white"
+                className="p-2 hover:bg-white/5 rounded-full transition-colors text-zinc-400 hover:text-white"
               >
                 <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
               </button>
@@ -84,8 +119,9 @@ const SettingsPage: React.FC = () => {
               <AnimatePresence mode="wait">
                 {loading && models.length === 0 ? (
                   <div className="py-20 flex flex-col items-center justify-center gap-4">
-                    <div className="w-12 h-12 border-4 border-lime-500/20 border-t-lime-500 rounded-full animate-spin"></div>
-                    <p className="text-gray-500 animate-pulse uppercase tracking-widest text-xs">Fetching registry...</p>
+                    <div className="size-12 border-4 border-lime-500/20 border-t-lime-500 rounded-full animate-spin"></div>
+                    {/* Issue D: ... → … */}
+                    <p className="text-zinc-500 animate-pulse uppercase tracking-widest text-xs">Fetching registry…</p>
                   </div>
                 ) : error ? (
                   <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4 flex items-start gap-3 text-red-400">
@@ -98,33 +134,36 @@ const SettingsPage: React.FC = () => {
                 ) : (
                   <div className="space-y-4">
                     {models.map((model) => (
-                      <motion.div
+                      <m.div
                         key={model.id}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         className={`group relative p-4 rounded-xl border transition-all duration-300 ${
-                          model.is_active 
-                            ? 'bg-lime-500/5 border-lime-500/30 shadow-[0_0_20px_rgba(132,204,22,0.05)]' 
+                          model.is_active
+                            ? 'bg-lime-500/5 border-lime-500/30 shadow-[0_0_20px_rgba(132,204,22,0.05)]'
                             : 'bg-white/[0.02] border-white/5 hover:border-white/10'
                         }`}
                       >
                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                           <div className="flex items-start gap-4">
-                            <div className={`p-3 rounded-lg ${model.is_active ? 'bg-lime-500/10 text-lime-400' : 'bg-white/5 text-gray-400'}`}>
+                            <div className={`p-3 rounded-lg ${model.is_active ? 'bg-lime-500/10 text-lime-400' : 'bg-white/5 text-zinc-400'}`}>
                               <Cpu size={20} />
                             </div>
                             <div>
                               <div className="flex items-center gap-2 mb-1">
-                                <h3 className="font-bold text-lg">{model.version}</h3>
+                                <h3 className="font-semibold text-lg">{model.version}</h3>
                                 {model.is_active && (
                                   <span className="bg-lime-500 text-black text-[10px] font-black px-2 py-0.5 rounded-full uppercase">
                                     Active
                                   </span>
                                 )}
                               </div>
-                              <div className="text-xs text-gray-500 flex items-center gap-3">
-                                <span>Trained: {model.model_metadata?.trained_at ? new Date(model.model_metadata.trained_at).toLocaleDateString() : 'N/A'}</span>
-                                <span className="w-1 h-1 bg-gray-700 rounded-full"></span>
+                              {/* Issue C: gray-500 → zinc-500 */}
+                              <div className="text-xs text-zinc-500 flex items-center gap-3">
+                                {/* Issue A: suppressHydrationWarning for server date */}
+                                <span suppressHydrationWarning>Trained: {model.model_metadata?.trained_at ? new Date(model.model_metadata.trained_at).toLocaleDateString() : 'N/A'}</span>
+                                {/* Issue G: w-1 h-1 → size-1 */}
+                                <span className="size-1 bg-zinc-700 rounded-full"></span>
                                 <span>Type: {model.model_metadata?.model_type || 'Unknown'}</span>
                               </div>
                             </div>
@@ -134,13 +173,14 @@ const SettingsPage: React.FC = () => {
                             {/* Short metrics preview */}
                             <div className="hidden sm:flex items-center gap-4 pr-4 border-r border-white/5">
                               <div className="text-center">
-                                <p className="text-[10px] text-gray-500 uppercase tracking-tighter">ROC AUC</p>
+                                {/* Issue C: gray-500 → zinc-500 */}
+                                <p className="text-[10px] text-zinc-500 uppercase tracking-tighter">ROC AUC</p>
                                 <p className="text-sm font-mono text-lime-400/80">
                                   {model.model_metadata?.metrics?.roc_auc?.toFixed(3) || model.model_metadata?.roc_auc?.toFixed(3) || '0.000'}
                                 </p>
                               </div>
                               <div className="text-center">
-                                <p className="text-[10px] text-gray-500 uppercase tracking-tighter">ACC</p>
+                                <p className="text-[10px] text-zinc-500 uppercase tracking-tighter">ACC</p>
                                 <p className="text-sm font-mono text-white/80">
                                   {model.model_metadata?.metrics?.accuracy?.toFixed(1) || model.model_metadata?.accuracy?.toFixed(1) || '0.0'}%
                                 </p>
@@ -158,32 +198,33 @@ const SettingsPage: React.FC = () => {
                             )}
                           </div>
                         </div>
-                      </motion.div>
+                      </m.div>
                     ))}
                   </div>
                 )}
               </AnimatePresence>
             </div>
           </div>
-          
+
           {/* Audit Logs Quick View (Coming soon) */}
           <div className="bg-white/[0.01] border border-dashed border-white/10 rounded-2xl p-12 text-center">
-             <Activity className="mx-auto text-gray-600 mb-4" size={32} />
-             <h3 className="text-gray-400 font-bold uppercase tracking-widest text-sm mb-1">Audit Trail Sync</h3>
-             <p className="text-gray-600 text-xs uppercase tracking-tight">Real-time action logging coming soon.</p>
+             <Activity className="mx-auto text-zinc-600 mb-4" size={32} />
+             <h3 className="text-zinc-400 font-semibold uppercase tracking-widest text-sm mb-1">Audit Trail Sync</h3>
+             <p className="text-zinc-600 text-xs uppercase tracking-tight">Real-time action logging coming soon.</p>
           </div>
         </div>
 
         {/* Sidebar Info Panel */}
         <div className="space-y-6">
           <div className="bg-[#111] border border-white/5 rounded-2xl p-6 shadow-xl relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-lime-500/5 blur-3xl -mr-16 -mt-16 rounded-full"></div>
-            
-            <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
+            <div className="absolute top-0 right-0 size-32 bg-lime-500/5 blur-3xl -mr-16 -mt-16 rounded-full"></div>
+
+            <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
               <AlertCircle className="text-lime-400" size={18} />
               Información de Versiones
             </h3>
-            <div className="space-y-4 text-sm text-gray-400">
+            {/* Issue C: gray-400 → zinc-400 */}
+            <div className="space-y-4 text-sm text-zinc-400">
               <p>
                 Al activar una versión, el motor de predicciones cargará automáticamente el archivo <code className="text-lime-300">.joblib</code> correspondiente en el backend.
               </p>
@@ -203,7 +244,7 @@ const SettingsPage: React.FC = () => {
 
           <AnimatePresence>
             {successMsg && (
-              <motion.div
+              <m.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
@@ -211,12 +252,13 @@ const SettingsPage: React.FC = () => {
               >
                 <CheckCircle2 size={20} />
                 {successMsg}
-              </motion.div>
+              </m.div>
             )}
           </AnimatePresence>
         </div>
       </div>
     </div>
+    </LazyMotion>
   )
 }
 

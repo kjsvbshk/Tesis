@@ -52,7 +52,7 @@ SLEEP_BETWEEN_REQUESTS = 0.4   # segundos entre llamadas
 SEASON_RANGES = {
     "2023-24": (date(2023, 10, 24), date(2024, 6, 17)),
     "2024-25": (date(2024, 10, 22), date(2025, 6, 22)),
-    "2025-26": (date(2025, 10, 22), date.today()),
+    "2025-26": (date(2025, 10, 22), date(2026, 6, 30)),
 }
 
 
@@ -251,7 +251,7 @@ def populate_season(
 
     has_game_type = "game_type" in columns
 
-    print(f"\n--- Temporada {season}: {start_date} → {end_date} ---")
+    print(f"\n--- Temporada {season}: {start_date} -> {end_date} ---")
     print(f"  Partidos existentes en DB: {len(existing)}")
 
     # Recolectar todos los game_ids del período
@@ -400,10 +400,16 @@ if __name__ == "__main__":
     parser.add_argument("--audit-only", action="store_true", help="Solo audita, no inserta")
     parser.add_argument("--dry-run",    action="store_true", help="Muestra qué insertaría, sin cambios")
     parser.add_argument("--since",      default=None,        help="Solo desde esta fecha YYYY-MM-DD")
+    parser.add_argument("--until",      default=None,        help="Incluir fechas hasta YYYY-MM-DD (permite partidos futuros)")
     parser.add_argument("--season",     default=None,        help="Solo esta temporada: 2023-24 | 2024-25 | 2025-26")
     args = parser.parse_args()
 
     seasons = [args.season] if args.season else None
+
+    # Aplicar --until: extiende el rango de la temporada 2025-26 si es necesario
+    if args.until:
+        until_date = date.fromisoformat(args.until)
+        SEASON_RANGES["2025-26"] = (SEASON_RANGES["2025-26"][0], until_date)
 
     populate_all_games(
         seasons=seasons,

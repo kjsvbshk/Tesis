@@ -3,15 +3,25 @@ Queue Service for Redis + RQ
 Handles background task queuing using Redis Queue
 """
 
+from __future__ import annotations
+
 from typing import Optional, Callable, Any
 from app.core.config import settings
 
-# Try to import RQ
+# Try to import RQ. En Windows, `rq.scheduler` falla con ValueError porque
+# usa multiprocessing.get_context('fork') que no existe en Windows. También
+# capturamos OSError y Exception para que cualquier fallo en el import deje
+# RQ_AVAILABLE = False en lugar de tumbar el arranque del backend.
 try:
     from rq import Queue
     from redis import Redis
     RQ_AVAILABLE = True
-except ImportError:
+except (ImportError, ValueError, OSError, Exception) as _rq_import_error:
+    import logging
+    logging.getLogger(__name__).warning(
+        f"rq/redis no disponible ({type(_rq_import_error).__name__}: "
+        f"{_rq_import_error}). queue_service operará en modo no-op."
+    )
     RQ_AVAILABLE = False
     Queue = None
     Redis = None

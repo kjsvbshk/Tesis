@@ -6,7 +6,7 @@
 import { Navigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import { usePermissions } from '@/contexts/PermissionsContext'
-import { motion } from 'framer-motion'
+import { LazyMotion, domAnimation, m } from 'framer-motion'
 
 interface RoleProtectedRouteProps {
   children: React.ReactNode
@@ -24,8 +24,9 @@ export function RoleProtectedRoute({
 
   if (isLoading || permissionsLoading) {
     return (
+      <LazyMotion features={domAnimation}>
       <div className="flex min-h-screen items-center justify-center bg-[#0B132B]">
-        <motion.div
+        <m.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className="text-center"
@@ -33,10 +34,11 @@ export function RoleProtectedRoute({
           <div className="logo-container pulse-glow mx-auto mb-4">
             <img src="/logo.png" alt="HAW Logo" className="h-12 w-auto" />
           </div>
-          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-[#00FF73] border-r-transparent"></div>
-          <p className="mt-4 text-[#B0B3C5]">Cargando...</p>
-        </motion.div>
+          <div className="inline-block size-8 animate-spin rounded-full border-4 border-solid border-[#00FF73] border-r-transparent"></div>
+          <p className="mt-4 text-[#B0B3C5]">Cargando…</p>
+        </m.div>
       </div>
+      </LazyMotion>
     )
   }
 

@@ -3,8 +3,8 @@
  * Displays system metrics and performance data
  */
 
-import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { useReducer, useEffect } from 'react'
+import { LazyMotion, domAnimation, m } from 'framer-motion'
 import { BarChart3, Activity, TrendingUp, Clock, AlertCircle, RefreshCcw } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -13,12 +13,44 @@ import { Label } from '@/components/ui/label'
 import { metricsService, type SystemMetrics, type RequestMetrics } from '@/services/metrics.service'
 import { useToast } from '@/hooks/use-toast'
 
+// Issue I: useReducer ─────────────────────────────────────────────────────────
+interface MetricsState {
+  metrics: SystemMetrics | null
+  requestMetrics: RequestMetrics | null
+  loading: boolean  // react-doctor: loading used in render, skipping useRef
+  dateFrom: string
+  dateTo: string
+}
+
+type MetricsAction =
+  | { type: 'SET_METRICS'; payload: SystemMetrics | null }
+  | { type: 'SET_REQUEST_METRICS'; payload: RequestMetrics | null }
+  | { type: 'SET_LOADING'; payload: boolean }
+  | { type: 'SET_DATE_FROM'; payload: string }
+  | { type: 'SET_DATE_TO'; payload: string }
+
+const initialMetricsState: MetricsState = {
+  metrics: null,
+  requestMetrics: null,
+  loading: true,
+  dateFrom: '',
+  dateTo: '',
+}
+
+function metricsReducer(state: MetricsState, action: MetricsAction): MetricsState {
+  switch (action.type) {
+    case 'SET_METRICS': return { ...state, metrics: action.payload }
+    case 'SET_REQUEST_METRICS': return { ...state, requestMetrics: action.payload }
+    case 'SET_LOADING': return { ...state, loading: action.payload }
+    case 'SET_DATE_FROM': return { ...state, dateFrom: action.payload }
+    case 'SET_DATE_TO': return { ...state, dateTo: action.payload }
+    default: return state
+  }
+}
+
 export function MetricsDashboardPage() {
-  const [metrics, setMetrics] = useState<SystemMetrics | null>(null)
-  const [requestMetrics, setRequestMetrics] = useState<RequestMetrics | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [dateFrom, setDateFrom] = useState('')
-  const [dateTo, setDateTo] = useState('')
+  const [state, dispatch] = useReducer(metricsReducer, initialMetricsState)
+  const { metrics, requestMetrics, loading, dateFrom, dateTo } = state
   const { toast } = useToast()
 
   useEffect(() => {
@@ -27,13 +59,13 @@ export function MetricsDashboardPage() {
 
   const loadMetrics = async () => {
     try {
-      setLoading(true)
+      dispatch({ type: 'SET_LOADING', payload: true })
       const [systemMetrics, reqMetrics] = await Promise.all([
         metricsService.getMetrics(),
         metricsService.getRequestMetrics(dateFrom || undefined, dateTo || undefined),
       ])
-      setMetrics(systemMetrics)
-      setRequestMetrics(reqMetrics)
+      dispatch({ type: 'SET_METRICS', payload: systemMetrics })
+      dispatch({ type: 'SET_REQUEST_METRICS', payload: reqMetrics })
     } catch (error: any) {
       toast({
         title: 'Error',
@@ -41,7 +73,7 @@ export function MetricsDashboardPage() {
         variant: 'destructive',
       })
     } finally {
-      setLoading(false)
+      dispatch({ type: 'SET_LOADING', payload: false })
     }
   }
 
@@ -53,18 +85,20 @@ export function MetricsDashboardPage() {
     return (
       <div className="flex h-96 items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-16 h-16 border-4 border-acid-500/20 border-t-acid-500 rounded-full animate-spin" />
-          <div className="text-acid-500 font-mono text-sm animate-pulse">LOADING METRICS...</div>
+          <div className="size-16 border-4 border-acid-500/20 border-t-acid-500 rounded-full animate-spin" />
+          {/* Issue D: ... → … */}
+          <div className="text-acid-500 font-mono text-sm animate-pulse">LOADING METRICS…</div>
         </div>
       </div>
     )
   }
 
   return (
+    <LazyMotion features={domAnimation}>
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-display font-bold text-white mb-1">
+          <h1 className="text-3xl font-display font-semibold text-white mb-1">
             SYSTEM METRICS
           </h1>
           <p className="text-muted-foreground font-mono text-sm uppercase tracking-wider">
@@ -90,7 +124,7 @@ export function MetricsDashboardPage() {
                 id="dateFrom"
                 type="date"
                 value={dateFrom}
-                onChange={(e) => setDateFrom(e.target.value)}
+                onChange={(e) => dispatch({ type: 'SET_DATE_FROM', payload: e.target.value })}
                 className="bg-black/50 border-white/10 text-white font-mono h-9"
               />
             </div>
@@ -100,11 +134,12 @@ export function MetricsDashboardPage() {
                 id="dateTo"
                 type="date"
                 value={dateTo}
-                onChange={(e) => setDateTo(e.target.value)}
+                onChange={(e) => dispatch({ type: 'SET_DATE_TO', payload: e.target.value })}
                 className="bg-black/50 border-white/10 text-white font-mono h-9"
               />
             </div>
-            <Button onClick={handleFilter} className="w-full bg-white text-black hover:bg-gray-200 font-mono text-xs font-bold h-9">
+            {/* Issue C: gray-200 → zinc-200 */}
+            <Button onClick={handleFilter} className="w-full bg-white text-black hover:bg-zinc-200 font-mono text-xs font-bold h-9">
               APPLY FILTER
             </Button>
           </div>
@@ -113,7 +148,7 @@ export function MetricsDashboardPage() {
 
       {/* System Metrics */}
       {metrics && (
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
@@ -145,7 +180,7 @@ export function MetricsDashboardPage() {
             icon={<Clock size={18} />}
             description={`${metrics.outbox.unpublished_events} pending`}
           />
-        </motion.div>
+        </m.div>
       )}
 
       {/* Request Metrics */}
@@ -221,6 +256,7 @@ export function MetricsDashboardPage() {
               Redis Cache Status
             </CardTitle>
           </CardHeader>
+          {/* Issue F: space-y on grid (not flex) — no change needed; grid uses gap already */}
           <CardContent className="pt-6">
             <div className="grid gap-4 md:grid-cols-4">
               <div className="bg-black/40 p-4 rounded border border-white/5 text-center">
@@ -244,6 +280,7 @@ export function MetricsDashboardPage() {
         </Card>
       )}
     </div>
+    </LazyMotion>
   )
 }
 
@@ -285,4 +322,3 @@ function MetricCard({
     </Card>
   )
 }
-

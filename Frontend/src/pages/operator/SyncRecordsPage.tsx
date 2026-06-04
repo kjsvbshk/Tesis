@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { LazyMotion, domAnimation, m } from 'framer-motion'
 import { Search, RefreshCw, AlertCircle, CheckCircle } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -86,15 +86,16 @@ export function SyncRecordsPage() {
   }
 
   return (
+    <LazyMotion features={domAnimation}>
     <div className="space-y-6">
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         className="flex justify-between items-center"
       >
         <div>
-          <h1 className="text-4xl font-heading font-bold bg-gradient-to-r from-[#00FF73] to-[#FFD700] bg-clip-text text-transparent mb-2">
+          <h1 className="text-4xl font-heading font-semibold text-[#00FF73] mb-2">
             Registros de Sincronización
           </h1>
           <p className="text-[#B0B3C5]">Historial y logs de sincronizaciones con proveedores</p>
@@ -103,7 +104,7 @@ export function SyncRecordsPage() {
           <RefreshCw size={16} className="mr-2" />
           Actualizar
         </Button>
-      </motion.div>
+      </m.div>
 
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-4">
@@ -183,7 +184,7 @@ export function SyncRecordsPage() {
         <CardContent>
           {loading ? (
             <div className="flex justify-center py-8">
-              <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-[#00FF73] border-r-transparent"></div>
+              <div className="inline-block size-8 animate-spin rounded-full border-4 border-solid border-[#00FF73] border-r-transparent"></div>
             </div>
           ) : filteredRecords.length === 0 ? (
             <p className="text-center text-[#B0B3C5] py-8">No hay registros disponibles</p>
@@ -203,10 +204,10 @@ export function SyncRecordsPage() {
                   <TableRow key={record.id} className="border-[#1C2541]">
                     <TableCell className="text-white font-mono text-sm">{record.request_key}</TableCell>
                     <TableCell>{getStatusBadge(record.status)}</TableCell>
-                    <TableCell className="text-[#B0B3C5] text-sm">
+                    <TableCell className="text-[#B0B3C5] text-sm" suppressHydrationWarning>
                       {new Date(record.created_at).toLocaleString()}
                     </TableCell>
-                    <TableCell className="text-[#B0B3C5] text-sm">
+                    <TableCell className="text-[#B0B3C5] text-sm" suppressHydrationWarning>
                       {record.completed_at ? new Date(record.completed_at).toLocaleString() : '-'}
                     </TableCell>
                     <TableCell className="text-red-400 text-sm max-w-md truncate">
@@ -220,5 +221,6 @@ export function SyncRecordsPage() {
         </CardContent>
       </Card>
     </div>
+    </LazyMotion>
   )
 }

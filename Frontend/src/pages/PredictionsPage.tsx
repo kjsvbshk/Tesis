@@ -5,7 +5,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
+import { LazyMotion, domAnimation, m, AnimatePresence } from 'framer-motion'
 import { Target, Users, Zap, Cpu, Search, AlertTriangle } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -68,8 +68,9 @@ export function PredictionsPage() {
   }, [searchParams, handleGetPrediction])
 
   return (
+    <LazyMotion features={domAnimation}>
     <div className="space-y-8 max-w-5xl mx-auto pb-10">
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
@@ -79,7 +80,7 @@ export function PredictionsPage() {
           <Cpu size={16} className="animate-pulse" />
           <span className="text-xs font-mono uppercase tracking-widest">AI Predictive Core v2.4</span>
         </div>
-        <h1 className="text-4xl md:text-5xl font-display font-bold text-white tracking-tight">
+        <h1 className="text-4xl md:text-5xl font-display font-semibold text-white tracking-tight">
           PREDICTIVE <span className="text-acid-500">ANALYSIS</span>
         </h1>
         <p className="text-muted-foreground font-mono uppercase tracking-wide max-w-lg">
@@ -88,10 +89,10 @@ export function PredictionsPage() {
         {modelStatus && !modelStatus.using_real_predictions && (
           <div className="flex items-center gap-2 mt-3 px-3 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded text-yellow-400 font-mono text-xs uppercase tracking-widest w-fit">
             <AlertTriangle size={12} />
-            <span>MODO SIMULADO — predicciones dummy, modelo no cargado</span>
+            <span>MODO SIMULADO: predicciones dummy, modelo no cargado</span>
           </div>
         )}
-      </motion.div>
+      </m.div>
 
       {/* Input Section */}
       <Card className="bg-metal-900 border-white/10 relative overflow-hidden group">
@@ -101,7 +102,7 @@ export function PredictionsPage() {
             <div className="space-y-2 flex-1 w-full">
               <Label htmlFor="gameId" className="text-xs font-mono uppercase tracking-widest text-muted-foreground">Target Match Identifier (Game ID)</Label>
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground size-4" />
                 <Input
                   id="gameId"
                   type="number"
@@ -119,7 +120,7 @@ export function PredictionsPage() {
             >
               {loading ? (
                 <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                  <div className="size-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
                   <span>PROCESSING</span>
                 </div>
               ) : (
@@ -135,7 +136,7 @@ export function PredictionsPage() {
 
       <AnimatePresence>
         {prediction && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
@@ -198,6 +199,17 @@ export function PredictionsPage() {
                   />
                 </div>
               )}
+
+              {/* Team Props (v2.2.0+) — rebotes, asistencias, robos, bloqueos, turnovers */}
+              {prediction.team_props && (
+                <div className="grid grid-cols-1 gap-4">
+                  <TeamPropsCard
+                    teamProps={prediction.team_props}
+                    homeName={prediction.home_team_name}
+                    awayName={prediction.away_team_name}
+                  />
+                </div>
+              )}
             </div>
 
             {/* Sidebar - Recommendation */}
@@ -230,7 +242,7 @@ export function PredictionsPage() {
                             {prediction.expected_value > 0 ? '+' : ''}{prediction.expected_value.toFixed(2)}
                           </div>
                         </div>
-                        <Badge className="bg-black text-acid-500 hover:bg-black/90 font-mono border-none">Ev+</Badge>
+                        <Badge className="bg-zinc-950 text-acid-500 hover:bg-black/90 font-mono border-none">Ev+</Badge>
                       </div>
                     )}
                   </CardContent>
@@ -251,13 +263,25 @@ export function PredictionsPage() {
                     <span className="text-acid-500 font-bold">{((prediction.confidence_score || 0) * 100).toFixed(1)}%</span>
                   </div>
                   <div className="flex justify-between border-b border-white/5 pb-2">
-                    <span className="text-muted-foreground">LATENCY</span>
+                    <span className="text-muted-foreground">HTTP LATENCY</span>
                     <span className="text-white">{prediction.latency_ms || 0}ms</span>
                   </div>
+                  {prediction.inference_latency_ms != null && (
+                    <div className="flex justify-between border-b border-white/5 pb-2">
+                      <span className="text-muted-foreground">INFERENCE</span>
+                      <span className="text-acid-500 font-bold">{prediction.inference_latency_ms}ms</span>
+                    </div>
+                  )}
                   <div className="flex justify-between border-b border-white/5 pb-2">
                     <span className="text-muted-foreground">TIMESTAMP</span>
-                    <span className="text-white">{new Date(prediction.prediction_timestamp || Date.now()).toLocaleTimeString()}</span>
+                    <span className="text-white" suppressHydrationWarning>{new Date(prediction.prediction_timestamp || Date.now()).toLocaleTimeString()}</span>
                   </div>
+                  {prediction.fallback_dummy && (
+                    <div className="flex justify-between pt-1">
+                      <span className="text-muted-foreground">MODE</span>
+                      <span className="text-yellow-400 font-bold">FALLBACK DUMMY</span>
+                    </div>
+                  )}
                   {modelStatus?.using_real_predictions === false && (
                     <div className="flex justify-between pt-1">
                       <span className="text-muted-foreground">MODE</span>
@@ -267,7 +291,7 @@ export function PredictionsPage() {
                   {modelStatus?.trained_at && (
                     <div className="flex justify-between pt-1">
                       <span className="text-muted-foreground">TRAINED</span>
-                      <span className="text-white">{new Date(modelStatus.trained_at).toLocaleDateString()}</span>
+                      <span className="text-white" suppressHydrationWarning>{new Date(modelStatus.trained_at).toLocaleDateString()}</span>
                     </div>
                   )}
                   {modelStatus?.metrics && (
@@ -284,10 +308,11 @@ export function PredictionsPage() {
                 </CardContent>
               </Card>
             </div>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </div>
+    </LazyMotion>
   )
 }
 
@@ -298,6 +323,70 @@ function StatCard({ label, value, sub, highlight }: { label: string; value: stri
         <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest mb-1">{label}</span>
         <span className={`text-3xl lg:text-4xl font-mono font-bold ${highlight ? 'text-acid-500' : 'text-white'} tracking-tighter`}>{value}</span>
         <span className="text-[10px] text-white/30 mt-1">{sub}</span>
+      </CardContent>
+    </Card>
+  )
+}
+
+// Helper para formatear un valor de team-prop como entero o decimal corto
+function fmtProp(v: number | null | undefined): string {
+  if (v === null || v === undefined) return '—'
+  // Bloqueos suelen ser decimales pequeños, el resto enteros
+  return Math.abs(v) < 10 ? v.toFixed(1) : Math.round(v).toString()
+}
+
+function TeamPropsCard({
+  teamProps,
+  homeName,
+  awayName,
+}: {
+  teamProps: NonNullable<import('@/services/predictions.service').TeamPropsBundle>
+  homeName: string
+  awayName: string
+}) {
+  const labels = teamProps.labels || {
+    reb: 'Rebotes',
+    ast: 'Asistencias',
+    stl: 'Robos',
+    blk: 'Bloqueos',
+    to: 'Pérdidas',
+  }
+  const stats: Array<'reb' | 'ast' | 'stl' | 'blk' | 'to'> = ['reb', 'ast', 'stl', 'blk', 'to']
+
+  return (
+    <Card className="border-white/10 bg-metal-900/50">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-sm font-mono text-muted-foreground uppercase tracking-widest">
+          Team Props · Estadísticas esperadas por equipo
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="p-4 pt-2">
+        <div className="grid grid-cols-5 gap-2 mb-2">
+          <div className="text-[10px] font-mono uppercase text-muted-foreground text-left">Stat</div>
+          <div className="text-[10px] font-mono uppercase text-acid-500 text-center col-span-2 truncate" title={homeName}>{homeName}</div>
+          <div className="text-[10px] font-mono uppercase text-electric-violet text-center col-span-2 truncate" title={awayName}>{awayName}</div>
+        </div>
+        <div className="space-y-1">
+          {stats.map((kind) => {
+            const home = teamProps.home?.[kind]
+            const away = teamProps.away?.[kind]
+            if (home == null && away == null) return null
+            return (
+              <div key={kind} className="grid grid-cols-5 gap-2 items-center py-1 border-t border-white/5">
+                <div className="text-xs font-mono text-white/70 uppercase tracking-wide">{labels[kind] || kind}</div>
+                <div className="text-2xl font-mono font-bold text-acid-500 text-center tracking-tighter col-span-2">
+                  {fmtProp(home)}
+                </div>
+                <div className="text-2xl font-mono font-bold text-electric-violet text-center tracking-tighter col-span-2">
+                  {fmtProp(away)}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+        <p className="text-[10px] font-mono text-white/30 mt-3 uppercase tracking-wider">
+          Valores esperados por el modelo (rebotes totales, asistencias, robos, bloqueos y pérdidas por equipo).
+        </p>
       </CardContent>
     </Card>
   )
@@ -336,7 +425,7 @@ function ProbabilityBar({ label, value, color }: { label: string; value: number;
       <div className="h-2 bg-black/50 rounded-none overflow-hidden relative">
         {/* Grid background for bar */}
         <div className="absolute inset-0 w-full h-full opacity-20 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNCIgaGVpZ2h0PSI0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik0xIDFoMXYxSDF6IiBmaWxsPSIjZmZmIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiLz48L3N2Zz4=')]"></div>
-        <motion.div
+        <m.div
           initial={{ width: 0 }}
           animate={{ width: `${percentage}%` }}
           transition={{ duration: 1, ease: "circOut" }}

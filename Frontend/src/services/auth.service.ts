@@ -70,7 +70,7 @@ export const authService = {
   clearStorage() {
     // Limpiar todos los datos de autenticación
     localStorage.removeItem('token')
-    localStorage.removeItem('user')
+    localStorage.removeItem('user:v1')
     // Limpiar cualquier otro dato relacionado con la sesión si existe
     sessionStorage.clear()
   },
@@ -84,11 +84,11 @@ export const authService = {
   },
 
   saveUser(user: UserResponse) {
-    localStorage.setItem('user', JSON.stringify(user))
+    localStorage.setItem('user:v1', JSON.stringify(user))
   },
 
   getUser(): UserResponse | null {
-    const userStr = localStorage.getItem('user')
+    const userStr = localStorage.getItem('user:v1')
     if (!userStr) return null
     try {
       return JSON.parse(userStr)

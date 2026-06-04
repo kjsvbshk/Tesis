@@ -4,7 +4,7 @@ import { Home, Trophy, Ticket, History, User, Zap, FileText, LogOut, ChevronLeft
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from '@/components/ui/sheet'
 import { BetSlip } from '@/components/BetSlip'
 import { Button } from '@/components/ui/button'
-import { motion, AnimatePresence } from 'framer-motion'
+import { LazyMotion, domAnimation, m, AnimatePresence } from 'framer-motion'
 import { useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 
@@ -22,13 +22,14 @@ export function SidebarLayout() {
   }
 
   return (
+    <LazyMotion features={domAnimation}>
     <div className="flex h-screen bg-void text-foreground overflow-hidden font-sans relative selection:bg-acid-500 selection:text-black">
       <div className="absolute inset-0 pointer-events-none z-50 mix-blend-overlay opacity-5 bg-[url('/noise.svg')] bg-repeat" />
 
       {/* Sidebar Desktop */}
       <AnimatePresence mode="wait">
         {isSidebarOpen && (
-          <motion.aside
+          <m.aside
             initial={{ width: 0, opacity: 0 }}
             animate={{ width: 280, opacity: 1 }}
             exit={{ width: 0, opacity: 0 }}
@@ -36,9 +37,9 @@ export function SidebarLayout() {
             className="hidden md:flex flex-col border-r border-border bg-metal-900/50 backdrop-blur-sm relative z-20"
           >
             <div className="p-6 border-b border-white/5 flex items-center gap-3">
-              <div className="w-8 h-8 bg-acid-500 rounded-none cut-corners flex items-center justify-center text-black font-bold font-display text-lg">H</div>
+              <div className="size-8 bg-acid-500 rounded-none cut-corners flex items-center justify-center text-black font-bold font-display text-lg">H</div>
               <div>
-                <h1 className="font-display font-bold text-xl tracking-tighter text-white">HAW<span className="text-acid-500">.OS</span></h1>
+                <h1 className="font-display font-semibold text-xl tracking-tighter text-white">HAW<span className="text-acid-500">.OS</span></h1>
                 <p className="text-[10px] font-mono text-muted-foreground tracking-widest uppercase">v2.4.0-STABLE</p>
               </div>
             </div>
@@ -64,7 +65,7 @@ export function SidebarLayout() {
                 DISCONNECT
               </Button>
             </div>
-          </motion.aside>
+          </m.aside>
         )}
       </AnimatePresence>
 
@@ -86,7 +87,7 @@ export function SidebarLayout() {
             {/* Ticker (Visual only) */}
             <div className="hidden md:flex items-center gap-6 text-[10px] font-mono text-muted-foreground uppercase tracking-wider border-l border-white/10 pl-4 h-8">
               <span className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 bg-acid-500 rounded-full animate-pulse" />
+                <span className="size-1.5 bg-acid-500 rounded-full animate-pulse" />
                 SYSTEM: ONLINE
               </span>
               <span>LATENCY: 12ms</span>
@@ -98,7 +99,7 @@ export function SidebarLayout() {
             <div className="px-3 py-1 bg-acid-500/10 border border-acid-500/20 text-acid-500 font-mono text-xs rounded-sm max-w-[200px] truncate" title="Available Credits">
               CREDITS: <span className="font-bold">2,450</span>
             </div>
-            <div className="w-8 h-8 bg-metal-800 rounded-none border border-white/10 flex items-center justify-center">
+            <div className="size-8 bg-metal-800 rounded-none border border-white/10 flex items-center justify-center">
               <User size={14} className="text-white" />
             </div>
           </div>
@@ -125,6 +126,7 @@ export function SidebarLayout() {
 
       <Toaster />
     </div>
+    </LazyMotion>
   )
 }
 
@@ -161,8 +163,8 @@ function MobileNav() {
         <SheetDescription className="sr-only">Navegación Móvil</SheetDescription>
 
         <div className="p-6 border-b border-white/5 flex items-center gap-3">
-          <div className="w-8 h-8 bg-acid-500 rounded-none flex items-center justify-center text-black font-bold font-display text-lg">H</div>
-          <h1 className="font-display font-bold text-xl tracking-tighter text-white">HAW<span className="text-acid-500">.OS</span></h1>
+          <div className="size-8 bg-acid-500 rounded-none flex items-center justify-center text-black font-bold font-display text-lg">H</div>
+          <h1 className="font-display font-semibold text-xl tracking-tighter text-white">HAW<span className="text-acid-500">.OS</span></h1>
         </div>
 
         <nav className="flex-1 overflow-y-auto py-6 px-3 space-y-1">

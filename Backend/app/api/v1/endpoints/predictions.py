@@ -9,6 +9,10 @@ from typing import List, Optional
 from app.core.database import get_espn_db, get_sys_db
 from app.schemas.prediction import PredictionResponse, PredictionRequest
 from app.services.prediction_service import PredictionService
+from app.services.feature_extractor import FeaturesNotAvailableError
+from app.services.ml_inference import (
+    ModelNotLoadedError, InferenceError,
+)
 from app.services.cache_service import cache_service
 from app.services.snapshot_service import SnapshotService
 from app.services.outbox_service import OutboxService
@@ -77,13 +81,14 @@ async def get_prediction(
             allow_stale=True
         )
         
-        # Crear snapshot de odds (RF-07)
-        snapshot_service = SnapshotService(sys_db)
-        snapshot = await snapshot_service.create_snapshot_for_request(
-            request_id=request_id,
-            game_id=prediction_request.game_id
-        )
-        
+        # Crear snapshot de odds (RF-07) — solo si hay request_id (NOT NULL en BD)
+        if request_id is not None:
+            snapshot_service = SnapshotService(sys_db)
+            snapshot = await snapshot_service.create_snapshot_for_request(
+                request_id=request_id,
+                game_id=prediction_request.game_id
+            )
+
         # Almacenar respuesta para idempotencia
         if idempotency_data.get("x_idempotency_key"):
             idempotency_service = idempotency_data["idempotency_service"]
@@ -123,12 +128,30 @@ async def get_prediction(
         )
         
         return prediction
-    
+
+    except FeaturesNotAvailableError as e:
+        # 422 Unprocessable Entity — el partido existe pero no hay features
+        # pre-calculadas en ml.ml_ready_games (típicamente partidos futuros
+        # aún no procesados por el ETL).
+        if request_id:
+            await request_service.mark_request_failed(request_id, str(e))
+        raise HTTPException(status_code=422, detail=str(e))
+    except ModelNotLoadedError as e:
+        # 503 Service Unavailable — el modelo no está cargado en memoria
+        if request_id:
+            await request_service.mark_request_failed(request_id, str(e))
+        raise HTTPException(status_code=503, detail=str(e))
+    except InferenceError as e:
+        # 500 — error de inferencia (dimensión, validación post-predict, etc.)
+        if request_id:
+            await request_service.mark_request_failed(request_id, str(e))
+        raise HTTPException(status_code=500, detail=f"Inference error: {str(e)}")
     except Exception as e:
-        # Marcar como fallido
+        # Marcar como fallido (catchall)
         if request_id:
             await request_service.mark_request_failed(request_id, str(e))
         raise HTTPException(status_code=500, detail=f"Error generating prediction: {str(e)}")
+
 
 @router.get("/game/{game_id}", response_model=PredictionResponse)
 async def get_game_prediction(
@@ -242,6 +265,18 @@ async def get_game_prediction(
         )
         
         return prediction
+    except FeaturesNotAvailableError as e:
+        if request_id:
+            await request_service.mark_request_failed(request_id, str(e))
+        raise HTTPException(status_code=422, detail=str(e))
+    except ModelNotLoadedError as e:
+        if request_id:
+            await request_service.mark_request_failed(request_id, str(e))
+        raise HTTPException(status_code=503, detail=str(e))
+    except InferenceError as e:
+        if request_id:
+            await request_service.mark_request_failed(request_id, str(e))
+        raise HTTPException(status_code=500, detail=f"Inference error: {str(e)}")
     except Exception as e:
         # Marcar como fallido si hay un request_id
         if request_id:

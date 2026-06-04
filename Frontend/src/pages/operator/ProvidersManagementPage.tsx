@@ -3,8 +3,8 @@
  * CRUD completo de proveedores externos y sus endpoints
  */
 
-import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { useReducer, useEffect } from 'react'
+import { LazyMotion, domAnimation, m } from 'framer-motion'
 import { Plus, Edit, Trash2, Settings, CheckCircle, XCircle } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -30,33 +30,95 @@ import {
 import { providersService, type Provider, type ProviderEndpoint } from '@/services/providers.service'
 import { useToast } from '@/hooks/use-toast'
 
-export function ProvidersManagementPage() {
-  const [providers, setProviders] = useState<Provider[]>([])
-  const [loading, setLoading] = useState(true)
-  const [isCreateOpen, setIsCreateOpen] = useState(false)
-  const [isEditOpen, setIsEditOpen] = useState(false)
-  const [isEndpointsOpen, setIsEndpointsOpen] = useState(false)
-  const [selectedProvider, setSelectedProvider] = useState<Provider | null>(null)
-  const [providerEndpoints, setProviderEndpoints] = useState<ProviderEndpoint[]>([])
-  const { toast } = useToast()
+interface ProvidersState {
+  providers: Provider[]
+  loading: boolean
+  isCreateOpen: boolean
+  isEditOpen: boolean
+  isEndpointsOpen: boolean
+  selectedProvider: Provider | null
+  providerEndpoints: ProviderEndpoint[]
+  createForm: {
+    code: string
+    name: string
+    timeout_seconds: number
+    max_retries: number
+    circuit_breaker_threshold: number
+    provider_metadata: string
+  }
+  editForm: {
+    name: string
+    is_active: boolean
+    timeout_seconds: number
+    max_retries: number
+    circuit_breaker_threshold: number
+    provider_metadata: string
+  }
+}
 
-  // Form states
-  const [createForm, setCreateForm] = useState({
-    code: '',
-    name: '',
-    timeout_seconds: 30,
-    max_retries: 3,
-    circuit_breaker_threshold: 5,
-    provider_metadata: '',
-  })
-  const [editForm, setEditForm] = useState({
+type ProvidersAction =
+  | { type: 'SET_PROVIDERS'; payload: Provider[] }
+  | { type: 'SET_LOADING'; payload: boolean }
+  | { type: 'SET_CREATE_OPEN'; payload: boolean }
+  | { type: 'SET_EDIT_OPEN'; payload: boolean }
+  | { type: 'SET_ENDPOINTS_OPEN'; payload: boolean }
+  | { type: 'SET_SELECTED_PROVIDER'; payload: Provider | null }
+  | { type: 'SET_PROVIDER_ENDPOINTS'; payload: ProviderEndpoint[] }
+  | { type: 'SET_CREATE_FORM'; payload: Partial<ProvidersState['createForm']> }
+  | { type: 'SET_EDIT_FORM'; payload: Partial<ProvidersState['editForm']> }
+  | { type: 'RESET_CREATE_FORM' }
+
+const initialCreateForm = {
+  code: '',
+  name: '',
+  timeout_seconds: 30,
+  max_retries: 3,
+  circuit_breaker_threshold: 5,
+  provider_metadata: '',
+}
+
+const initialState: ProvidersState = {
+  providers: [],
+  loading: true,
+  isCreateOpen: false,
+  isEditOpen: false,
+  isEndpointsOpen: false,
+  selectedProvider: null,
+  providerEndpoints: [],
+  createForm: initialCreateForm,
+  editForm: {
     name: '',
     is_active: true,
     timeout_seconds: 30,
     max_retries: 3,
     circuit_breaker_threshold: 5,
     provider_metadata: '',
-  })
+  },
+}
+
+function providersReducer(state: ProvidersState, action: ProvidersAction): ProvidersState {
+  switch (action.type) {
+    case 'SET_PROVIDERS': return { ...state, providers: action.payload }
+    case 'SET_LOADING': return { ...state, loading: action.payload }
+    case 'SET_CREATE_OPEN': return { ...state, isCreateOpen: action.payload }
+    case 'SET_EDIT_OPEN': return { ...state, isEditOpen: action.payload }
+    case 'SET_ENDPOINTS_OPEN': return { ...state, isEndpointsOpen: action.payload }
+    case 'SET_SELECTED_PROVIDER': return { ...state, selectedProvider: action.payload }
+    case 'SET_PROVIDER_ENDPOINTS': return { ...state, providerEndpoints: action.payload }
+    case 'SET_CREATE_FORM': return { ...state, createForm: { ...state.createForm, ...action.payload } }
+    case 'SET_EDIT_FORM': return { ...state, editForm: { ...state.editForm, ...action.payload } }
+    case 'RESET_CREATE_FORM': return { ...state, createForm: initialCreateForm }
+    default: return state
+  }
+}
+
+export function ProvidersManagementPage() {
+  const [state, dispatch] = useReducer(providersReducer, initialState)
+  const {
+    providers, loading, isCreateOpen, isEditOpen, isEndpointsOpen,
+    selectedProvider, providerEndpoints, createForm, editForm,
+  } = state
+  const { toast } = useToast()
 
   useEffect(() => {
     loadProviders()
@@ -64,9 +126,9 @@ export function ProvidersManagementPage() {
 
   const loadProviders = async () => {
     try {
-      setLoading(true)
+      dispatch({ type: 'SET_LOADING', payload: true })
       const data = await providersService.getProviders()
-      setProviders(data)
+      dispatch({ type: 'SET_PROVIDERS', payload: data })
     } catch (error: any) {
       toast({
         title: 'Error',
@@ -74,14 +136,14 @@ export function ProvidersManagementPage() {
         variant: 'destructive',
       })
     } finally {
-      setLoading(false)
+      dispatch({ type: 'SET_LOADING', payload: false })
     }
   }
 
   const loadProviderEndpoints = async (providerId: number) => {
     try {
       const endpoints = await providersService.getProviderEndpoints(providerId)
-      setProviderEndpoints(endpoints)
+      dispatch({ type: 'SET_PROVIDER_ENDPOINTS', payload: endpoints })
     } catch (error: any) {
       toast({
         title: 'Error',
@@ -98,15 +160,8 @@ export function ProvidersManagementPage() {
         title: 'Éxito',
         description: 'Proveedor creado correctamente',
       })
-      setIsCreateOpen(false)
-      setCreateForm({
-        code: '',
-        name: '',
-        timeout_seconds: 30,
-        max_retries: 3,
-        circuit_breaker_threshold: 5,
-        provider_metadata: '',
-      })
+      dispatch({ type: 'SET_CREATE_OPEN', payload: false })
+      dispatch({ type: 'RESET_CREATE_FORM' })
       loadProviders()
     } catch (error: any) {
       toast({
@@ -118,16 +173,16 @@ export function ProvidersManagementPage() {
   }
 
   const handleEdit = (provider: Provider) => {
-    setSelectedProvider(provider)
-    setEditForm({
+    dispatch({ type: 'SET_SELECTED_PROVIDER', payload: provider })
+    dispatch({ type: 'SET_EDIT_FORM', payload: {
       name: provider.name,
       is_active: provider.is_active,
       timeout_seconds: provider.timeout_seconds,
       max_retries: provider.max_retries,
       circuit_breaker_threshold: provider.circuit_breaker_threshold,
       provider_metadata: provider.provider_metadata || '',
-    })
-    setIsEditOpen(true)
+    } })
+    dispatch({ type: 'SET_EDIT_OPEN', payload: true })
   }
 
   const handleUpdate = async () => {
@@ -138,8 +193,8 @@ export function ProvidersManagementPage() {
         title: 'Éxito',
         description: 'Proveedor actualizado correctamente',
       })
-      setIsEditOpen(false)
-      setSelectedProvider(null)
+      dispatch({ type: 'SET_EDIT_OPEN', payload: false })
+      dispatch({ type: 'SET_SELECTED_PROVIDER', payload: null })
       loadProviders()
     } catch (error: any) {
       toast({
@@ -169,33 +224,34 @@ export function ProvidersManagementPage() {
   }
 
   const handleViewEndpoints = async (provider: Provider) => {
-    setSelectedProvider(provider)
+    dispatch({ type: 'SET_SELECTED_PROVIDER', payload: provider })
     await loadProviderEndpoints(provider.id)
-    setIsEndpointsOpen(true)
+    dispatch({ type: 'SET_ENDPOINTS_OPEN', payload: true })
   }
 
   return (
+    <LazyMotion features={domAnimation}>
     <div className="space-y-6">
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         className="flex justify-between items-center"
       >
         <div>
-          <h1 className="text-4xl font-heading font-bold bg-gradient-to-r from-[#00FF73] to-[#FFD700] bg-clip-text text-transparent mb-2">
+          <h1 className="text-4xl font-heading font-semibold text-[#00FF73] mb-2">
             Gestión de Proveedores
           </h1>
           <p className="text-[#B0B3C5]">Administra proveedores externos y sus endpoints</p>
         </div>
         <Button
-          onClick={() => setIsCreateOpen(true)}
+          onClick={() => dispatch({ type: 'SET_CREATE_OPEN', payload: true })}
           className="bg-[#00FF73] hover:bg-[#00D95F] text-black"
         >
           <Plus size={20} className="mr-2" />
           Nuevo Proveedor
         </Button>
-      </motion.div>
+      </m.div>
 
       <Card className="bg-[#1C2541]/50 border-[#1C2541]">
         <CardHeader>
@@ -204,7 +260,7 @@ export function ProvidersManagementPage() {
         <CardContent>
           {loading ? (
             <div className="flex justify-center py-8">
-              <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-[#00FF73] border-r-transparent"></div>
+              <div className="inline-block size-8 animate-spin rounded-full border-4 border-solid border-[#00FF73] border-r-transparent"></div>
             </div>
           ) : providers.length === 0 ? (
             <p className="text-center text-[#B0B3C5] py-8">No hay proveedores registrados</p>
@@ -279,7 +335,7 @@ export function ProvidersManagementPage() {
       </Card>
 
       {/* Create Provider Sheet */}
-      <Sheet open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+      <Sheet open={isCreateOpen} onOpenChange={(v) => dispatch({ type: 'SET_CREATE_OPEN', payload: v })}>
         <SheetContent className="bg-[#0B132B] border-[#1C2541] text-white overflow-y-auto">
           <SheetHeader>
             <SheetTitle className="text-white">Crear Proveedor</SheetTitle>
@@ -292,7 +348,7 @@ export function ProvidersManagementPage() {
               <Label className="text-white">Código</Label>
               <Input
                 value={createForm.code}
-                onChange={(e) => setCreateForm({ ...createForm, code: e.target.value })}
+                onChange={(e) => dispatch({ type: 'SET_CREATE_FORM', payload: { code: e.target.value } })}
                 placeholder="espn"
                 className="bg-[#1C2541] border-[#1C2541] text-white"
               />
@@ -301,7 +357,7 @@ export function ProvidersManagementPage() {
               <Label className="text-white">Nombre</Label>
               <Input
                 value={createForm.name}
-                onChange={(e) => setCreateForm({ ...createForm, name: e.target.value })}
+                onChange={(e) => dispatch({ type: 'SET_CREATE_FORM', payload: { name: e.target.value } })}
                 placeholder="ESPN API"
                 className="bg-[#1C2541] border-[#1C2541] text-white"
               />
@@ -311,7 +367,7 @@ export function ProvidersManagementPage() {
               <Input
                 type="number"
                 value={createForm.timeout_seconds}
-                onChange={(e) => setCreateForm({ ...createForm, timeout_seconds: parseInt(e.target.value) || 30 })}
+                onChange={(e) => dispatch({ type: 'SET_CREATE_FORM', payload: { timeout_seconds: parseInt(e.target.value) || 30 } })}
                 className="bg-[#1C2541] border-[#1C2541] text-white"
               />
             </div>
@@ -320,7 +376,7 @@ export function ProvidersManagementPage() {
               <Input
                 type="number"
                 value={createForm.max_retries}
-                onChange={(e) => setCreateForm({ ...createForm, max_retries: parseInt(e.target.value) || 3 })}
+                onChange={(e) => dispatch({ type: 'SET_CREATE_FORM', payload: { max_retries: parseInt(e.target.value) || 3 } })}
                 className="bg-[#1C2541] border-[#1C2541] text-white"
               />
             </div>
@@ -329,7 +385,7 @@ export function ProvidersManagementPage() {
               <Input
                 type="number"
                 value={createForm.circuit_breaker_threshold}
-                onChange={(e) => setCreateForm({ ...createForm, circuit_breaker_threshold: parseInt(e.target.value) || 5 })}
+                onChange={(e) => dispatch({ type: 'SET_CREATE_FORM', payload: { circuit_breaker_threshold: parseInt(e.target.value) || 5 } })}
                 className="bg-[#1C2541] border-[#1C2541] text-white"
               />
             </div>
@@ -337,7 +393,7 @@ export function ProvidersManagementPage() {
               <Label className="text-white">Metadata (JSON opcional)</Label>
               <Input
                 value={createForm.provider_metadata}
-                onChange={(e) => setCreateForm({ ...createForm, provider_metadata: e.target.value })}
+                onChange={(e) => dispatch({ type: 'SET_CREATE_FORM', payload: { provider_metadata: e.target.value } })}
                 placeholder='{"api_key": "..."}'
                 className="bg-[#1C2541] border-[#1C2541] text-white"
               />
@@ -355,7 +411,7 @@ export function ProvidersManagementPage() {
       </Sheet>
 
       {/* Edit Provider Sheet */}
-      <Sheet open={isEditOpen} onOpenChange={setIsEditOpen}>
+      <Sheet open={isEditOpen} onOpenChange={(v) => dispatch({ type: 'SET_EDIT_OPEN', payload: v })}>
         <SheetContent className="bg-[#0B132B] border-[#1C2541] text-white overflow-y-auto">
           <SheetHeader>
             <SheetTitle className="text-white">Editar Proveedor</SheetTitle>
@@ -368,7 +424,7 @@ export function ProvidersManagementPage() {
               <Label className="text-white">Nombre</Label>
               <Input
                 value={editForm.name}
-                onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                onChange={(e) => dispatch({ type: 'SET_EDIT_FORM', payload: { name: e.target.value } })}
                 className="bg-[#1C2541] border-[#1C2541] text-white"
               />
             </div>
@@ -376,8 +432,8 @@ export function ProvidersManagementPage() {
               <input
                 type="checkbox"
                 checked={editForm.is_active}
-                onChange={(e) => setEditForm({ ...editForm, is_active: e.target.checked })}
-                className="w-4 h-4"
+                onChange={(e) => dispatch({ type: 'SET_EDIT_FORM', payload: { is_active: e.target.checked } })}
+                className="size-4"
               />
               <Label className="text-white">Activo</Label>
             </div>
@@ -386,7 +442,7 @@ export function ProvidersManagementPage() {
               <Input
                 type="number"
                 value={editForm.timeout_seconds}
-                onChange={(e) => setEditForm({ ...editForm, timeout_seconds: parseInt(e.target.value) || 30 })}
+                onChange={(e) => dispatch({ type: 'SET_EDIT_FORM', payload: { timeout_seconds: parseInt(e.target.value) || 30 } })}
                 className="bg-[#1C2541] border-[#1C2541] text-white"
               />
             </div>
@@ -395,7 +451,7 @@ export function ProvidersManagementPage() {
               <Input
                 type="number"
                 value={editForm.max_retries}
-                onChange={(e) => setEditForm({ ...editForm, max_retries: parseInt(e.target.value) || 3 })}
+                onChange={(e) => dispatch({ type: 'SET_EDIT_FORM', payload: { max_retries: parseInt(e.target.value) || 3 } })}
                 className="bg-[#1C2541] border-[#1C2541] text-white"
               />
             </div>
@@ -404,7 +460,7 @@ export function ProvidersManagementPage() {
               <Input
                 type="number"
                 value={editForm.circuit_breaker_threshold}
-                onChange={(e) => setEditForm({ ...editForm, circuit_breaker_threshold: parseInt(e.target.value) || 5 })}
+                onChange={(e) => dispatch({ type: 'SET_EDIT_FORM', payload: { circuit_breaker_threshold: parseInt(e.target.value) || 5 } })}
                 className="bg-[#1C2541] border-[#1C2541] text-white"
               />
             </div>
@@ -412,7 +468,7 @@ export function ProvidersManagementPage() {
               <Label className="text-white">Metadata (JSON opcional)</Label>
               <Input
                 value={editForm.provider_metadata}
-                onChange={(e) => setEditForm({ ...editForm, provider_metadata: e.target.value })}
+                onChange={(e) => dispatch({ type: 'SET_EDIT_FORM', payload: { provider_metadata: e.target.value } })}
                 className="bg-[#1C2541] border-[#1C2541] text-white"
               />
             </div>
@@ -429,7 +485,7 @@ export function ProvidersManagementPage() {
       </Sheet>
 
       {/* Endpoints Sheet */}
-      <Sheet open={isEndpointsOpen} onOpenChange={setIsEndpointsOpen}>
+      <Sheet open={isEndpointsOpen} onOpenChange={(v) => dispatch({ type: 'SET_ENDPOINTS_OPEN', payload: v })}>
         <SheetContent className="bg-[#0B132B] border-[#1C2541] text-white overflow-y-auto w-full sm:max-w-2xl">
           <SheetHeader>
             <SheetTitle className="text-white">
@@ -464,5 +520,6 @@ export function ProvidersManagementPage() {
         </SheetContent>
       </Sheet>
     </div>
+    </LazyMotion>
   )
 }

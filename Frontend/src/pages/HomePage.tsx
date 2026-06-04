@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { LazyMotion, domAnimation, m } from 'framer-motion'
 import { FaWallet, FaBullseye, FaTrophy, FaChartLine, FaFire } from 'react-icons/fa'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -17,6 +17,7 @@ export function HomePage() {
   const [stats, setStats] = useState<any>(null)
   const [todayMatches, setTodayMatches] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const [now, setNow] = useState<Date | null>(null)
 
   const handleAnalyze = (matchId: number) => {
     navigate(`/predicciones?game_id=${matchId}`)
@@ -27,7 +28,7 @@ export function HomePage() {
     const justLoggedIn = sessionStorage.getItem('justLoggedIn')
     if (justLoggedIn === 'true') {
       sessionStorage.removeItem('justLoggedIn')
-      setTimeout(() => {
+      const id = setTimeout(() => {
         toast({
           title: 'SYSTEM ONLINE',
           description: `User ${user?.username} authenticated.`,
@@ -35,9 +36,12 @@ export function HomePage() {
           className: "bg-acid-500 text-black border-none font-mono"
         })
       }, 100)
+      return () => clearTimeout(id)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => { setNow(new Date()) }, [])
 
   const loadData = async () => {
     try {
@@ -73,16 +77,17 @@ export function HomePage() {
   const activeBets = stats?.pending_bets || 0
 
   return (
+    <LazyMotion features={domAnimation}>
     <div className="space-y-8 p-4 md:p-8 max-w-7xl mx-auto">
       {/* Hero Section */}
-      <motion.div
+      <m.div
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6 }}
         className="relative"
       >
         <div className="absolute top-0 left-0 w-20 h-1 bg-acid-500 mb-4" />
-        <h1 className="text-6xl md:text-8xl font-display font-bold uppercase text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-400 to-gray-600 mt-6 tracking-tighter">
+        <h1 className="text-6xl md:text-8xl font-display font-semibold uppercase text-violet-600 mt-6 tracking-tighter">
           House Always<br />
           <span className="text-acid-500 hover:animate-glitch inline-block">Wins</span>
         </h1>
@@ -90,16 +95,16 @@ export function HomePage() {
           :: PROBABILITY PROTOCOLS ENGAGED<br />
           :: MARKET VOLATILITY INDEX: STABLE
         </p>
-      </motion.div>
+      </m.div>
 
       {loading ? (
         <div className="flex items-center justify-center h-64 font-mono text-acid-500 animate-pulse">
-          [ LOADING DATA STREAMS... ]
+          [ LOADING DATA STREAMS… ]
         </div>
       ) : (
         <>
           {/* Stats Grid - Bento Style */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
@@ -127,11 +132,11 @@ export function HomePage() {
               value={`${(winRate * 100).toFixed(1)}%`}
               icon={<FaChartLine />}
             />
-          </motion.div>
+          </m.div>
 
           {/* Active Bets Alert */}
           {activeBets > 0 && (
-            <motion.div
+            <m.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.3 }}
@@ -142,19 +147,19 @@ export function HomePage() {
                   <FaFire size={24} />
                 </div>
                 <div>
-                  <h3 className="font-display font-bold text-lg text-white">ACTIVE OPERATIONS</h3>
+                  <h3 className="font-display font-semibold text-lg text-white">ACTIVE OPERATIONS</h3>
                   <p className="text-muted-foreground font-mono text-sm">{activeBets} pending validation(s)</p>
                 </div>
               </div>
               <Button variant="destructive" size="sm" className="font-mono">
                 VIEW LOGS
               </Button>
-            </motion.div>
+            </m.div>
           )}
 
           {/* Today's Matches - Console List */}
           {todayMatches.length > 0 && (
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
@@ -162,10 +167,10 @@ export function HomePage() {
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
                   <div className="w-2 h-8 bg-acid-500" />
-                  <h2 className="text-2xl font-display font-bold text-white uppercase">Live Feeds</h2>
+                  <h2 className="text-2xl font-display font-semibold text-white uppercase">Live Feeds</h2>
                 </div>
                 <div className="font-mono text-acid-500 text-xs border border-acid-500/30 px-2 py-1">
-                  SYNCED: {new Date().toLocaleTimeString()}
+                  SYNCED: {now ? now.toLocaleTimeString() : ''}
                 </div>
               </div>
 
@@ -214,11 +219,12 @@ export function HomePage() {
                   </Card>
                 ))}
               </div>
-            </motion.div>
+            </m.div>
           )}
         </>
       )}
     </div>
+    </LazyMotion>
   )
 }
 
@@ -240,7 +246,7 @@ function StatCard({
       relative overflow-hidden group hover:translate-y-[-4px] transition-transform duration-300
       ${highlight ? 'border-acid-500/50 bg-acid-500/5' : ''}
     `}>
-      <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0 border-b-0">
+      <CardHeader className="flex flex-row items-center justify-between pb-2 gap-y-0 border-b-0">
         <CardTitle className="text-xs font-mono text-muted-foreground group-hover:text-white transition-colors">
           {title}
         </CardTitle>

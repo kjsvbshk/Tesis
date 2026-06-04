@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { LazyMotion, domAnimation, m } from 'framer-motion'
 import { FileText, Search, RefreshCw } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -79,17 +79,18 @@ export function RequestsPage() {
   }
 
   return (
+    <LazyMotion features={domAnimation}>
     <div className="space-y-6">
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <h1 className="text-4xl font-heading font-bold bg-gradient-to-r from-[#00FF73] to-[#FFD700] bg-clip-text text-transparent mb-2">
+        <h1 className="text-4xl font-heading font-semibold text-violet-600 mb-2">
           Mis Requests
         </h1>
         <p className="text-[#B0B3C5]">Historial de tus solicitudes y predicciones</p>
-      </motion.div>
+      </m.div>
 
       {/* Search */}
       <Card className="bg-[#1C2541]/50 border-[#1C2541]">
@@ -154,7 +155,7 @@ export function RequestsPage() {
         <CardContent>
           {loading ? (
             <div className="flex items-center justify-center h-64">
-              <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-[#00FF73] border-r-transparent"></div>
+              <div className="inline-block size-8 animate-spin rounded-full border-4 border-solid border-[#00FF73] border-r-transparent"></div>
             </div>
           ) : requests.length === 0 ? (
             <div className="text-center py-8 text-[#B0B3C5]">
@@ -186,12 +187,12 @@ export function RequestsPage() {
                           {request.status}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-[#B0B3C5]">
+                      <TableCell className="text-[#B0B3C5]" suppressHydrationWarning>
                         {request.created_at
                           ? new Date(request.created_at).toLocaleString()
                           : 'N/A'}
                       </TableCell>
-                      <TableCell className="text-[#B0B3C5]">
+                      <TableCell className="text-[#B0B3C5]" suppressHydrationWarning>
                         {request.completed_at
                           ? new Date(request.completed_at).toLocaleString()
                           : 'N/A'}
@@ -205,6 +206,7 @@ export function RequestsPage() {
         </CardContent>
       </Card>
     </div>
+    </LazyMotion>
   )
 }
 

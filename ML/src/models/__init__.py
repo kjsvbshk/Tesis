@@ -14,7 +14,8 @@ from .xgboost_model import NBAXGBoost
 from .poisson_model import NBABivariatePoisson
 from .margin_model import NBAMarginModel
 from .total_model import NBATotalModel
-from .ensemble import NBAEnsemble
+from .stat_regressor import NBAStatRegressor
+from .ensemble import NBAEnsemble, TEAM_STAT_KINDS, TEAM_STAT_LABELS
 
 __all__ = [
     "NBARandomForest",
@@ -22,5 +23,8 @@ __all__ = [
     "NBABivariatePoisson",
     "NBAMarginModel",
     "NBATotalModel",
+    "NBAStatRegressor",
     "NBAEnsemble",
+    "TEAM_STAT_KINDS",
+    "TEAM_STAT_LABELS",
 ]

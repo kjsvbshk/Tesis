@@ -290,8 +290,8 @@ export function BetSlip() {
         >
           {isSubmitting ? (
             <>
-              <div className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-white border-r-transparent mr-2"></div>
-              Procesando...
+              <div className="inline-block size-4 animate-spin rounded-full border-2 border-solid border-white border-r-transparent mr-2"></div>
+              Procesando…
             </>
           ) : (
             stake > 0 ? `Confirmar apuesta ${formatCurrency(stake)}` : 'Confirmar apuesta'

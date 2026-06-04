@@ -97,7 +97,7 @@ export function AuditManagementPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <h1 className="text-4xl font-heading font-bold bg-gradient-to-r from-[#00FF73] to-[#FFD700] bg-clip-text text-transparent mb-2">
+        <h1 className="text-4xl font-heading font-semibold bg-gradient-to-r from-[#00FF73] to-[#FFD700] bg-clip-text text-transparent mb-2">
           Gestión de Auditoría
         </h1>
         <p className="text-[#B0B3C5]">Registros de auditoría y actividad del sistema</p>
@@ -121,7 +121,7 @@ export function AuditManagementPage() {
                 id="actor_user_id"
                 type="number"
                 value={filters.actor_user_id}
-                onChange={(e) => setFilters({ ...filters, actor_user_id: e.target.value })}
+                onChange={(e) => setFilters(prev => ({ ...prev, actor_user_id: e.target.value })}
                 className="bg-[#0B132B] border-[#1C2541] text-white"
                 placeholder="Filtrar por usuario"
               />
@@ -133,7 +133,7 @@ export function AuditManagementPage() {
               <Input
                 id="action"
                 value={filters.action}
-                onChange={(e) => setFilters({ ...filters, action: e.target.value })}
+                onChange={(e) => setFilters(prev => ({ ...prev, action: e.target.value })}
                 className="bg-[#0B132B] border-[#1C2541] text-white"
                 placeholder="Ej: create, update, delete"
               />
@@ -145,7 +145,7 @@ export function AuditManagementPage() {
               <Input
                 id="resource_type"
                 value={filters.resource_type}
-                onChange={(e) => setFilters({ ...filters, resource_type: e.target.value })}
+                onChange={(e) => setFilters(prev => ({ ...prev, resource_type: e.target.value })}
                 className="bg-[#0B132B] border-[#1C2541] text-white"
                 placeholder="Ej: user, role, bet"
               />
@@ -158,7 +158,7 @@ export function AuditManagementPage() {
                 id="resource_id"
                 type="number"
                 value={filters.resource_id}
-                onChange={(e) => setFilters({ ...filters, resource_id: e.target.value })}
+                onChange={(e) => setFilters(prev => ({ ...prev, resource_id: e.target.value })}
                 className="bg-[#0B132B] border-[#1C2541] text-white"
                 placeholder="ID del recurso"
               />
@@ -171,7 +171,7 @@ export function AuditManagementPage() {
                 id="date_from"
                 type="date"
                 value={filters.date_from}
-                onChange={(e) => setFilters({ ...filters, date_from: e.target.value })}
+                onChange={(e) => setFilters(prev => ({ ...prev, date_from: e.target.value })}
                 className="bg-[#0B132B] border-[#1C2541] text-white"
               />
             </div>
@@ -183,7 +183,7 @@ export function AuditManagementPage() {
                 id="date_to"
                 type="date"
                 value={filters.date_to}
-                onChange={(e) => setFilters({ ...filters, date_to: e.target.value })}
+                onChange={(e) => setFilters(prev => ({ ...prev, date_to: e.target.value })}
                 className="bg-[#0B132B] border-[#1C2541] text-white"
               />
             </div>
@@ -211,7 +211,7 @@ export function AuditManagementPage() {
         <CardContent>
           {loading ? (
             <div className="flex items-center justify-center h-64">
-              <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-[#00FF73] border-r-transparent"></div>
+              <div className="inline-block size-8 animate-spin rounded-full border-4 border-solid border-[#00FF73] border-r-transparent"></div>
             </div>
           ) : logs.length === 0 ? (
             <div className="text-center py-8 text-[#B0B3C5]">

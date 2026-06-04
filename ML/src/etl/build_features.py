@@ -71,7 +71,7 @@ def build_features():
         print("   Cargando espn.nba_player_boxscores...")
         try:
             player_box = pd.read_sql(
-                f"SELECT game_id, team_tricode, pts, fga, fgm, fta, ftm, three_pa, three_pm, oreb, dreb, ast, stl, blk, to_stat as tov FROM {espn_schema}.nba_player_boxscores",
+                f"SELECT game_id, player_id, team_tricode, pts, fga, fgm, fta, ftm, three_pa, three_pm, oreb, dreb, ast, stl, blk, to_stat as tov FROM {espn_schema}.nba_player_boxscores",
                 engine
             )
             # COVERTIR game_id A BIGINT PARA MATCHING
@@ -84,7 +84,19 @@ def build_features():
             # Agregar boxscores a nivel de equipo
             print("   Agregando estadísticas a nivel de equipo...")
             player_box = player_box.dropna(subset=['game_id'])
-            
+
+            # v2.2.1 fix: el scraper inserta cada jugador dos veces (doble INSERT).
+            # Deduplicar por (game_id, team_tricode, player_id) antes de sumar
+            # para que los totales de equipo sean correctos (~13 jugadores, no ~26).
+            n_before = len(player_box)
+            player_box = player_box.drop_duplicates(
+                subset=['game_id', 'team_tricode', 'player_id']
+            )
+            n_after = len(player_box)
+            if n_before != n_after:
+                print(f"   [Fix] Deduplicacion: {n_before} -> {n_after} filas "
+                      f"({n_before - n_after} duplicados eliminados)")
+
             team_game_stats = player_box.groupby(['game_id', 'team_tricode']).agg({
                 'pts': 'sum',
                 'fga': 'sum',
@@ -681,10 +693,188 @@ def build_features():
         print("   [OK] Diferenciales calculados")
         print()
         
-        # 8) Odds Probs (si no están ya mapeadas)
-        # Probabilidades implícitas si existen
-        # (Omitimos el mapeo JSON manual si ya está en espn.game_odds)
-        
+        # 8) Probabilidades implícitas desde espn.game_odds
+        # Convierte cuotas americanas (moneyline) a probabilidades implícitas normalizadas
+        # (sin vig) y las escribe en ml_ready_games.implied_prob_home/away.
+        # Cobertura esperada: ~53 partidos (~1.4% del dataset). Se usa como feature
+        # opcional en el entrenamiento con --use-odds.
+        print("[>] Paso 8: Calculando probabilidades implícitas desde cuotas...")
+        print("-" * 60)
+        try:
+            go = pd.read_sql(text(f"""
+                SELECT game_id, odds_type, AVG(odds_value) AS avg_odds
+                FROM {espn_schema}.game_odds
+                WHERE odds_type IN ('moneyline_home', 'moneyline_away')
+                  AND odds_value IS NOT NULL
+                GROUP BY game_id, odds_type
+            """), engine)
+
+            if go.empty:
+                print("   [!] No hay datos en espn.game_odds con moneyline. Intentando desde espn.odds JSONB...")
+                go = None
+
+            # Diagnóstico rápido: mostrar rango de odds_value para detectar datos corruptos
+            if go is not None and not go.empty:
+                mn_v, mx_v = go['avg_odds'].min(), go['avg_odds'].max()
+                print(f"   [DEBUG] odds_value rango: min={mn_v:.1f}, max={mx_v:.1f}")
+                # Cuotas americanas reales: home típico -300 a +300, away similar.
+                # Si el rango está en [-10, 10], los datos no son cuotas americanas reales.
+                if abs(mx_v) < 50 and abs(mn_v) < 50:
+                    print("   [!] odds_value parece corrupto (rango demasiado pequeño para cuotas americanas).")
+                    print("       Leyendo directamente desde espn.odds.bookmakers (JSONB)...")
+                    go = None   # forzar lectura desde JSONB
+
+            if go is None:
+                # Leer directamente del JSONB crudo en espn.odds + espn.odds_event_game_map
+                odds_raw = pd.read_sql(text(f"""
+                    SELECT m.game_id, o.home_team, o.away_team, o.bookmakers
+                    FROM {espn_schema}.odds o
+                    JOIN {espn_schema}.odds_event_game_map m ON o.game_id = m.odds_id
+                    WHERE o.bookmakers IS NOT NULL
+                """), engine)
+
+                if odds_raw.empty:
+                    print("   [!] No hay datos en espn.odds. Se omite cálculo de implied_prob.")
+                else:
+                    import json as _json
+                    rows_implied = []
+                    for _, row in odds_raw.iterrows():
+                        b_data = row['bookmakers']
+                        if isinstance(b_data, str):
+                            b_data = _json.loads(b_data)
+                        home_prices, away_prices = [], []
+                        home_name = row['home_team']
+                        away_name = row['away_team']
+                        for bookie in b_data:
+                            for market in bookie.get('markets', []):
+                                if market.get('key') != 'h2h':
+                                    continue
+                                for out in market.get('outcomes', []):
+                                    price = out.get('price')
+                                    if price is None:
+                                        continue
+                                    if out.get('name') == home_name:
+                                        home_prices.append(float(price))
+                                    elif out.get('name') == away_name:
+                                        away_prices.append(float(price))
+                        if home_prices and away_prices:
+                            rows_implied.append({
+                                'game_id': int(row['game_id']),
+                                'avg_home': sum(home_prices) / len(home_prices),
+                                'avg_away': sum(away_prices) / len(away_prices),
+                            })
+
+                    if rows_implied:
+                        go_jsonb = pd.DataFrame(rows_implied)
+                        print(f"   [DEBUG] JSONB: {len(go_jsonb)} juegos, "
+                              f"rango home_odds=[{go_jsonb['avg_home'].min():.1f}, {go_jsonb['avg_home'].max():.1f}], "
+                              f"away_odds=[{go_jsonb['avg_away'].min():.1f}, {go_jsonb['avg_away'].max():.1f}]")
+                        # Reconstruir go con el mismo formato que el path normal
+                        go = pd.DataFrame({
+                            'game_id': go_jsonb['game_id'],
+                            'moneyline_home': go_jsonb['avg_home'],
+                            'moneyline_away': go_jsonb['avg_away'],
+                        })
+                    else:
+                        print("   [!] No se pudieron extraer precios h2h del JSONB.")
+                        go = pd.DataFrame()
+
+                if isinstance(go, pd.DataFrame) and not go.empty:
+                    # Asegurar que go_pivot esté disponible para el bloque siguiente
+                    go_pivot = go.rename(columns={'moneyline_home': 'moneyline_home',
+                                                  'moneyline_away': 'moneyline_away'})
+                else:
+                    go_pivot = pd.DataFrame()
+            else:
+                go_pivot = go.pivot(index='game_id', columns='odds_type', values='avg_odds').reset_index()
+                go_pivot.columns.name = None
+                go_pivot = go_pivot.rename(columns={
+                    'moneyline_home': 'moneyline_home',
+                    'moneyline_away': 'moneyline_away',
+                })
+
+            if go_pivot is not None and not go_pivot.empty and \
+               'moneyline_home' in go_pivot.columns and 'moneyline_away' in go_pivot.columns:
+
+                def to_decimal(odds):
+                    """
+                    Convierte cualquier formato de cuota a decimal.
+                    - Americano: |odds| >= 100  →  +150 = 2.50 / -180 = 1.556
+                    - Decimal:   1 < odds < 50  →  se usa directamente
+                    """
+                    if odds is None or odds == 0:
+                        return None
+                    if abs(odds) >= 100:          # formato americano
+                        return (1 + odds / 100.0) if odds > 0 else (1 + 100.0 / abs(odds))
+                    elif 1.0 < odds < 50.0:       # ya es decimal
+                        return float(odds)
+                    return None
+
+                def decimal_to_implied(dec):
+                    """Probabilidad implícita bruta desde cuota decimal."""
+                    return 1.0 / dec if dec and dec > 0 else None
+
+                if 'moneyline_home' not in go_pivot.columns or 'moneyline_away' not in go_pivot.columns:
+                    print("   [!] Faltan columnas moneyline_home o moneyline_away. Se omite.")
+                else:
+                    # Detectar formato predominante
+                    sample_home = go_pivot['moneyline_home'].abs().median()
+                    fmt = "americano" if sample_home >= 100 else "decimal"
+                    print(f"   [DEBUG] Formato de cuotas detectado: {fmt} (mediana abs={sample_home:.1f})")
+
+                    go_pivot['dec_home'] = go_pivot['moneyline_home'].apply(to_decimal)
+                    go_pivot['dec_away'] = go_pivot['moneyline_away'].apply(to_decimal)
+
+                    go_pivot['raw_home'] = go_pivot['dec_home'].apply(decimal_to_implied)
+                    go_pivot['raw_away'] = go_pivot['dec_away'].apply(decimal_to_implied)
+
+                    # Normalizar (quitar vig): cada prob / suma_probs
+                    total = go_pivot['raw_home'] + go_pivot['raw_away']
+                    go_pivot['implied_prob_home'] = (go_pivot['raw_home'] / total).round(4)
+                    go_pivot['implied_prob_away'] = (go_pivot['raw_away'] / total).round(4)
+
+                    # Validar rango [0, 1]
+                    valid = (
+                        go_pivot['implied_prob_home'].between(0, 1) &
+                        go_pivot['implied_prob_away'].between(0, 1)
+                    )
+                    go_pivot = go_pivot[valid]
+
+                    # UPDATE en ml_ready_games
+                    updated = 0
+                    with engine.begin() as conn:
+                        for _, row in go_pivot.iterrows():
+                            result = conn.execute(text(f"""
+                                UPDATE {ml_schema}.ml_ready_games
+                                SET implied_prob_home = :iph,
+                                    implied_prob_away = :ipa
+                                WHERE game_id = :gid
+                            """), {
+                                "iph": float(row['implied_prob_home']),
+                                "ipa": float(row['implied_prob_away']),
+                                "gid": int(row['game_id']),
+                            })
+                            updated += result.rowcount
+
+                    n_total = len(go_pivot)
+                    pct = updated / len(ml) * 100 if len(ml) > 0 else 0
+                    print(f"   [OK] {updated}/{n_total} partidos actualizados con implied_prob "
+                          f"({pct:.1f}% del dataset total)")
+
+                    # Mostrar muestra de las probabilidades calculadas
+                    sample = go_pivot[['game_id', 'moneyline_home', 'moneyline_away',
+                                       'implied_prob_home', 'implied_prob_away']].head(5)
+                    print(f"\n   Muestra (primeros 5 partidos con odds):")
+                    print(f"   {'game_id':>12}  {'ml_home':>8}  {'ml_away':>8}  "
+                          f"{'imp_home':>10}  {'imp_away':>10}")
+                    for _, r in sample.iterrows():
+                        print(f"   {int(r['game_id']):>12}  {r['moneyline_home']:>8.0f}  "
+                              f"{r['moneyline_away']:>8.0f}  "
+                              f"{r['implied_prob_home']:>10.4f}  {r['implied_prob_away']:>10.4f}")
+        except Exception as e_odds:
+            print(f"   [!] Error al calcular implied_prob: {e_odds} — se continúa sin odds")
+        print()
+
         # Escribir a BD
         print("[>] Paso 8: Actualizando ml_ready_games en Neon...")
         print("-" * 60)

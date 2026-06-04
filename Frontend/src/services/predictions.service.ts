@@ -9,6 +9,20 @@ export interface PredictionRequest {
   game_id: number
 }
 
+export interface TeamPropPrediction {
+  reb?: number | null
+  ast?: number | null
+  stl?: number | null
+  blk?: number | null
+  to?: number | null
+}
+
+export interface TeamPropsBundle {
+  home: TeamPropPrediction
+  away: TeamPropPrediction
+  labels?: Record<string, string>
+}
+
 export interface PredictionResponse {
   game_id: number
   home_team_id: number
@@ -22,11 +36,15 @@ export interface PredictionResponse {
   predicted_away_score: number
   predicted_total: number
   predicted_margin?: number
+  team_props?: TeamPropsBundle | null
   recommended_bet: string
   expected_value: number
   confidence_score: number
   model_version: string
   latency_ms?: number
+  inference_latency_ms?: number | null
+  model_signals?: Record<string, number> | null
+  fallback_dummy?: boolean | null
   prediction_timestamp?: string
   features_used?: Record<string, any>
 }

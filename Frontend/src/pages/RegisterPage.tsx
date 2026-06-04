@@ -35,8 +35,8 @@ export function RegisterPage() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
-    setFormData({ ...formData, [name]: value })
-    if (errors[name]) setErrors({ ...errors, [name]: undefined })
+    setFormData(prev => ({ ...prev, [name]: value })
+    if (errors[name]) setErrors(prev => ({ ...prev, [name]: undefined })
   }
 
   const validateForm = () => {
@@ -78,7 +78,7 @@ export function RegisterPage() {
     }
 
     if (!formData.verificationCode || formData.verificationCode.length !== 6) {
-      setErrors({ ...errors, verificationCode: 'Invalid Length' })
+      setErrors(prev => ({ ...prev, verificationCode: 'Invalid Length' })
       return
     }
 
@@ -150,7 +150,7 @@ export function RegisterPage() {
           animate={{ opacity: 1, x: 0 }}
           className="mx-auto w-full max-w-sm lg:w-96"
         >
-          <h2 className="text-2xl font-display font-bold tracking-tight text-white mb-8 border-b border-border pb-4">
+          <h2 className="text-2xl font-display font-semibold tracking-tight text-white mb-8 border-b border-border pb-4">
             {step === 'register' ? 'VERIFY IDENTITY' : 'CREATE PROFILE'}
           </h2>
 

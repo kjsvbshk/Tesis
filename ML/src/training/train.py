@@ -217,16 +217,35 @@ def train_poisson(X_train, df_train, feature_cols) -> NBABivariatePoisson:
 
 
 def train_ensemble(X_train, y_train, df_train, feature_cols) -> NBAEnsemble:
-    print("\nEntrenando Ensemble (RF + XGBoost + Margin + Total)...")
+    print("\nEntrenando Ensemble (RF + XGBoost + Poisson + Margin + Total + TeamProps)...")
     score_col_h = next((c for c in ['home_pts', 'home_score'] if c in df_train.columns), 'home_score')
     score_col_a = next((c for c in ['away_pts', 'away_score'] if c in df_train.columns), 'away_score')
     y_home = df_train[score_col_h].fillna(df_train[score_col_h].median()).values
     y_away = df_train[score_col_a].fillna(df_train[score_col_a].median()).values
     y_margin = (y_home - y_away).astype(float)
     y_total = (y_home + y_away).astype(float)
+
+    # v2.2.0: targets de team-props (rebotes, asistencias, robos, bloqueos, turnovers).
+    # v2.2.1: NO imputar nulos con la mediana — pasarlos como NaN y dejar que
+    # NBAStatRegressor.fit() filtre internamente las filas inválidas (NaN o por
+    # debajo del clip mínimo). Esto evita que el modelo aprenda a oscilar entre
+    # extremos cuando muchos partidos tienen boxscore incompleto.
+    from src.models.ensemble import TEAM_STAT_KINDS
+    team_stat_targets: dict = {}
+    for kind in TEAM_STAT_KINDS:
+        for side in ("home", "away"):
+            col = f"{side}_{kind}"
+            if col in df_train.columns:
+                team_stat_targets[col] = df_train[col].astype(float).values
+    if team_stat_targets:
+        print(f"  Team-props detectados: {sorted(team_stat_targets.keys())}")
+    else:
+        print("  Aviso: no hay columnas team-props en el dataset, se omiten regresores.")
+
     model = NBAEnsemble()
     model.fit(X_train, y_train, y_home, y_away,
               y_margin=y_margin, y_total=y_total,
+              team_stat_targets=team_stat_targets or None,
               feature_names=feature_cols)
     print("  Ensemble entrenado.")
     return model
@@ -286,6 +305,52 @@ def evaluate(model, X_test, y_test, df_test, model_name: str) -> dict:
                 print_regressor_report(total_metrics, "Total puntos")
                 reg_metrics = {"margin": margin_metrics, "total": total_metrics}
 
+    # Métricas de team-props (v2.2.1): MAE por stat por equipo.
+    # Evaluamos SOLO contra filas con target válido (no NaN, no inflado con
+    # mediana). Esto refleja el desempeño real del regresor sobre boxscores
+    # completos, no el ruido introducido por la imputación.
+    props_metrics = {}
+    if hasattr(model, "team_stat_models") and model.team_stat_models:
+        from src.models.ensemble import TEAM_STAT_KINDS, TEAM_STAT_LABELS
+        full = model.predict_full(X_test) if not isinstance(model, dict) else None
+        if full and "team_props" in full:
+            print("\nMétricas de team-props (MAE por stat × equipo, sobre boxscores válidos):")
+            print(f"  {'Stat':<26} {'home_MAE':>10} {'away_MAE':>10} {'home_n':>8} {'away_n':>8}")
+            print("  " + "-" * 70)
+            for kind in TEAM_STAT_KINDS:
+                row = {"label": TEAM_STAT_LABELS.get(kind, kind)}
+                for side in ("home", "away"):
+                    col = f"{side}_{kind}"
+                    if col not in df_test.columns:
+                        continue
+                    y_true_raw = df_test[col].astype(float).values
+                    y_pred = full["team_props"][side].get(kind)
+                    if y_pred is None:
+                        continue
+                    # Filtrar filas con target válido (no NaN, no <= 0)
+                    valid = ~np.isnan(y_true_raw) & (y_true_raw > 0)
+                    n_valid = int(valid.sum())
+                    if n_valid == 0:
+                        row[f"{side}_mae"] = None
+                        row[f"{side}_rmse"] = None
+                        row[f"{side}_n"] = 0
+                        continue
+                    yt = y_true_raw[valid]
+                    yp = y_pred[valid]
+                    mae = float(np.mean(np.abs(yt - yp)))
+                    rmse = float(np.sqrt(np.mean((yt - yp) ** 2)))
+                    row[f"{side}_mae"] = round(mae, 3)
+                    row[f"{side}_rmse"] = round(rmse, 3)
+                    row[f"{side}_n"] = n_valid
+                home_mae = row.get("home_mae")
+                away_mae = row.get("away_mae")
+                home_n = row.get("home_n", 0)
+                away_n = row.get("away_n", 0)
+                home_str = f"{home_mae:.3f}" if isinstance(home_mae, float) else "-"
+                away_str = f"{away_mae:.3f}" if isinstance(away_mae, float) else "-"
+                print(f"  {row['label']:<26} {home_str:>10} {away_str:>10} {home_n:>8} {away_n:>8}")
+                props_metrics[kind] = row
+
     # Métricas económicas si hay odds disponibles
     eco_metrics = {}
     if "implied_prob_home" in df_test.columns:
@@ -301,7 +366,8 @@ def evaluate(model, X_test, y_test, df_test, model_name: str) -> dict:
             )
             print_economic_report(eco_metrics)
 
-    return {**pred_metrics, **eco_metrics, **reg_metrics}
+    return {**pred_metrics, **eco_metrics, **reg_metrics,
+            "team_props": props_metrics if props_metrics else None}
 
 
 # ---------------------------------------------------------------------------
@@ -381,6 +447,28 @@ def train_model(version: str = "v1.0.0", model_type: str = "ensemble", use_odds:
     X_test  = df_test[feature_cols].values
     y_test  = df_test[TARGET].values
 
+    # Pre-imputación de features con baja cobertura (ej: implied_prob ~1.4%).
+    # El SimpleImputer interno de cada modelo opera por fold OOF; si los partidos
+    # con odds caen todos en validación, el fold de train tiene 0 valores → warning
+    # y feature ignorada. Solución: calcular la mediana sobre el training set completo
+    # y rellenar NaN ANTES de los folds. Así cada muestra tiene un valor válido.
+    # Nota metodológica: el 98.6% de filas sin odds queda con la mediana del mercado
+    # histórico (~0.53), que es no-informativo pero correcto — el modelo aprende que
+    # valores cercanos a 0.53 son "sin información de mercado".
+    if use_odds and ODDS_FEATURES:
+        odds_indices = [feature_cols.index(f) for f in ODDS_FEATURES if f in feature_cols]
+        if odds_indices:
+            for idx in odds_indices:
+                col_train = X_train[:, idx].astype(float)
+                col_test  = X_test[:, idx].astype(float)
+                valid = ~np.isnan(col_train)
+                col_median = float(np.nanmedian(col_train[valid])) if valid.any() else 0.5
+                X_train[:, idx] = np.where(np.isnan(col_train), col_median, col_train)
+                X_test[:, idx]  = np.where(np.isnan(col_test),  col_median, col_test)
+            feat_names = [feature_cols[i] for i in odds_indices]
+            col_vals   = [X_train[:, i].mean() for i in odds_indices]
+            print(f"  Pre-imputación odds: {dict(zip(feat_names, [f'{v:.4f}' for v in col_vals]))}")
+
     # 4. Entrenar modelo
     if model_type == "rf":
         model = train_random_forest(X_train, y_train, feature_cols)
@@ -419,8 +507,8 @@ def train_model(version: str = "v1.0.0", model_type: str = "ensemble", use_odds:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Entrenamiento del modelo NBA")
-    parser.add_argument("--version",    default="v2.1.0",
-                        help="Versión del modelo (ej: v2.1.0). Default v2.1.0 incluye Bivariate Poisson.")
+    parser.add_argument("--version",    default="v2.2.0",
+                        help="Versión del modelo (ej: v2.2.0). Default v2.2.0 incluye Bivariate Poisson + team-props.")
     parser.add_argument("--model",      default="ensemble",
                         help="Tipo: rf | xgb | poisson | ensemble")
     parser.add_argument("--use-odds",   action="store_true", help="Incluir features de odds")

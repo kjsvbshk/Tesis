@@ -28,8 +28,25 @@ from app.models.team import Team
 from app.models import ModelVersion, Prediction, Request
 from app.schemas.prediction import PredictionResponse
 from app.services.match_service import MatchService
+from app.services.feature_extractor import (
+    FeatureExtractor,
+    FeaturesNotAvailableError,
+    FeatureExtractorError,
+)
+from app.services.ml_inference import (
+    InferenceError,
+    ModelNotLoadedError,
+    detect_feature_set,
+    predict_full_robust,
+    extract_single_sample,
+    validate_prediction,
+)
 from app.core.config import settings
 import time
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class PredictionService:
     def __init__(self, db: Session):
@@ -40,22 +57,30 @@ class PredictionService:
         self.load_model()
     
     def load_model(self):
-        """Load the trained ML model with versioning"""
+        """Load the trained ML model with versioning.
+
+        Sprint 1: logging detallado para diagnosticar fallos de carga.
+        Imprime la versión activa, el path resuelto y, si joblib.load falla,
+        muestra el tipo de la excepción además del mensaje, para distinguir
+        entre file-not-found, unpickle error o ModuleNotFoundError (el caso
+        típico cuando el .joblib se serializó con clases que ya no existen).
+        """
         # Obtener versión activa del modelo desde BD
         self.model_version_obj = self.db.query(ModelVersion).filter(
             ModelVersion.is_active == True
         ).first()
-        
+
         if not self.model_version_obj:
-            print("⚠️  No active model version found, using dummy predictions")
+            print("[load_model] ⚠️  No active model version found, using dummy predictions")
             self.model = None
             return
-        
+
         if not JOBLIB_AVAILABLE:
-            print(f"⚠️  joblib no disponible, usando predicciones dummy (model version: {self.model_version_obj.version})")
+            print(f"[load_model] ⚠️  joblib no disponible, usando dummy "
+                  f"(model version: {self.model_version_obj.version})")
             self.model = None
             return
-        
+
         try:
             # Resolver MODEL_DIR como ruta absoluta relativa a este archivo si es relativa
             model_dir = settings.MODEL_DIR
@@ -64,19 +89,71 @@ class PredictionService:
                 backend_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
                 model_dir = os.path.normpath(os.path.join(backend_root, model_dir))
 
-            model_path = os.path.join(model_dir, f"nba_prediction_model_{self.model_version_obj.version}.joblib")
-            if not os.path.exists(model_path):
-                # Fallback a nombre genérico
-                model_path = os.path.join(model_dir, "nba_prediction_model.joblib")
+            version = self.model_version_obj.version
+            model_path = os.path.join(model_dir, f"nba_prediction_model_{version}.joblib")
+            fallback_path = os.path.join(model_dir, "nba_prediction_model.joblib")
 
+            print(f"[load_model] versión activa: {version}")
+            print(f"[load_model] MODEL_DIR resuelto: {model_dir}")
+            print(f"[load_model] intentando: {model_path} (existe={os.path.exists(model_path)})")
+
+            chosen_path = None
             if os.path.exists(model_path):
-                self.model = joblib.load(model_path)
-                print(f"✅ ML model loaded successfully (version: {self.model_version_obj.version}, path: {model_path})")
-            else:
-                print(f"⚠️ ML model not found at {model_path}, using dummy predictions")
+                chosen_path = model_path
+            elif os.path.exists(fallback_path):
+                chosen_path = fallback_path
+                print(f"[load_model] usando fallback genérico: {fallback_path}")
+
+            if chosen_path is None:
+                print(f"[load_model] ❌ NO se encontró ningún .joblib en {model_dir}")
+                print(f"[load_model]    archivos disponibles: "
+                      f"{os.listdir(model_dir) if os.path.isdir(model_dir) else 'directorio NO existe'}")
                 self.model = None
+                return
+
+            # Los .joblib se serializaron con clases registradas como
+            # `src.models.ensemble.NBAEnsemble` (porque train.py corría desde
+            # ML/ con `src` como package). Al deserializar desde Backend hay
+            # que registrar ML/ en sys.path para que pickle encuentre `src.*`.
+            import sys
+            ml_root = os.path.normpath(os.path.join(model_dir, ".."))  # ML/
+            if ml_root not in sys.path:
+                sys.path.insert(0, ml_root)
+                print(f"[load_model] sys.path += {ml_root} (para resolver `src.*` del pickle)")
+
+            # Cargar el joblib — distinguir tipos de error para diagnóstico
+            try:
+                self.model = joblib.load(chosen_path)
+            except ModuleNotFoundError as e:
+                # Típico cuando el .joblib se serializó con imports que ya no existen
+                # (p. ej. NBAEnsemble en versiones antiguas)
+                print(f"[load_model] ❌ ModuleNotFoundError al cargar {chosen_path}: {e}")
+                print(f"[load_model]    el .joblib referencia un módulo que ya no existe; "
+                      f"hay que re-entrenar la versión {version}")
+                self.model = None
+                return
+            except AttributeError as e:
+                print(f"[load_model] ❌ AttributeError al cargar {chosen_path}: {e}")
+                print(f"[load_model]    la clase del modelo cambió desde que se serializó este .joblib; "
+                      f"re-entrenar la versión {version} con el código actual")
+                self.model = None
+                return
+
+            print(f"[load_model] ✅ ML model loaded ({type(self.model).__name__}) "
+                  f"version={version} path={chosen_path}")
+            # Diagnóstico adicional para entender qué espera el modelo
+            try:
+                from app.services.ml_inference import detect_feature_set, detect_meta_dim
+                fs = detect_feature_set(self.model)
+                md = detect_meta_dim(self.model.meta_learner)
+                print(f"[load_model]    feature_set inferido: {fs}, meta_dim: {md}")
+            except Exception as diag_e:
+                print(f"[load_model]    (no se pudo inferir feature_set/meta_dim: {diag_e})")
+
         except Exception as e:
-            print(f"❌ Error loading ML model: {e}")
+            print(f"[load_model] ❌ Error inesperado: {type(e).__name__}: {e}")
+            import traceback
+            traceback.print_exc()
             self.model = None
     
     async def get_game_prediction(
@@ -167,20 +244,33 @@ class PredictionService:
         away_team.team_id = away_team_id or 0
         away_team.name = away_team_name
         
-        # Generate prediction (dummy for now)
+        # Generate prediction — Sprint 1: usar modelo real si está cargado.
+        # Si el modelo no está cargado, fallback a dummy con flag visible.
+        # Si features no están disponibles, propagar excepción al endpoint.
         if self.model:
-            prediction = await self._predict_with_model(game, home_team, away_team)
+            try:
+                prediction = await self._predict_with_model(game, home_team, away_team)
+            except FeaturesNotAvailableError:
+                # No degradamos silenciosamente: el endpoint REST lo convierte en 422
+                raise
         else:
+            logger.warning("No hay modelo cargado; respondiendo con dummy explícito")
             prediction = await self._generate_dummy_prediction(game, home_team, away_team)
-        
-        # Calcular latencia
+            prediction["fallback_dummy"] = True
+
+        # Calcular latencia HTTP total (incluye lookup de game, features, inferencia)
         latency_ms = int((time.time() - start_time) * 1000)
         prediction["latency_ms"] = latency_ms
-        
+
         # Si hay request_id, guardar predicción en BD
         if request_id and self.model_version_obj:
             await self._save_prediction(request_id, prediction, latency_ms)
-        
+
+        # Filtrar a campos conocidos del schema para evitar ValidationError
+        # cuando _predict_with_model devuelve claves auxiliares ya envueltas.
+        allowed_keys = set(PredictionResponse.model_fields.keys())
+        clean_prediction = {k: v for k, v in prediction.items() if k in allowed_keys}
+
         return PredictionResponse(
             game_id=game.get("id") or game.get("game_id"),
             home_team_id=getattr(home_team, "team_id", getattr(home_team, "id", None)),
@@ -188,7 +278,7 @@ class PredictionService:
             home_team_name=home_team.name,
             away_team_name=away_team.name,
             game_date=game.get("game_date"),
-            **prediction
+            **clean_prediction
         )
     
     async def _save_prediction(
@@ -276,10 +366,129 @@ class PredictionService:
         return predictions
     
     async def _predict_with_model(self, game: Dict[str, Any], home_team: Team, away_team: Team) -> Dict[str, Any]:
-        """Generate prediction using ML model"""
-        # This would use the actual trained model
-        # For now, return dummy data
-        return await self._generate_dummy_prediction(game, home_team, away_team)
+        """Generate prediction using the loaded ML model (Sprint 1).
+
+        Flujo:
+          1. Inferir el feature_set que espera el modelo (v1 = 21, v2 = 33).
+          2. Consultar features pre-calculadas desde ml.ml_ready_games.
+          3. Invocar predict_full_robust sobre los componentes del ensemble.
+          4. Validar rangos sanos (probabilidades en [0,1], scores realistas).
+          5. Construir el dict de respuesta para mapear a PredictionResponse.
+
+        Raises:
+            ModelNotLoadedError    si el modelo no se pudo cargar.
+            FeaturesNotAvailableError si el partido no existe en ml.ml_ready_games.
+            InferenceError         si el modelo produce salida inválida.
+        """
+        if self.model is None:
+            raise ModelNotLoadedError(
+                "El servicio recibió una solicitud de predicción pero no hay "
+                "modelo cargado. Verificar sys.model_versions y MODEL_DIR."
+            )
+
+        game_id = game.get("id") or game.get("game_id")
+        if game_id is None:
+            raise InferenceError("Game sin identificador (id/game_id)")
+
+        # 1. Detectar feature set esperado por el modelo cargado
+        try:
+            feature_set = detect_feature_set(self.model)
+        except InferenceError as e:
+            logger.error(f"No se pudo inferir feature_set para game {game_id}: {e}")
+            raise
+
+        # 2. Extraer features desde ml.ml_ready_games
+        extractor = FeatureExtractor(self.db)
+        try:
+            X = extractor.build_feature_vector(game_id, feature_set=feature_set)
+            features_summary = extractor.get_features_summary(game_id, feature_set=feature_set)
+        except FeaturesNotAvailableError:
+            # Re-lanzar para que el endpoint REST devuelva 422
+            raise
+        except FeatureExtractorError as e:
+            logger.error(f"Error extrayendo features para game {game_id}: {e}")
+            raise InferenceError(f"Feature extraction falló: {e}")
+
+        # 3. Invocar el modelo (con timing aislado de la inferencia)
+        inference_start = time.time()
+        try:
+            full_output = predict_full_robust(self.model, X)
+        except Exception as e:
+            logger.error(f"Modelo falló al predecir game {game_id}: {e}")
+            raise InferenceError(f"predict_full_robust falló: {e}")
+        inference_ms = int((time.time() - inference_start) * 1000)
+
+        # 4. Reducir a escalares y validar
+        scalar = extract_single_sample(full_output, idx=0)
+        validate_prediction(scalar)
+
+        # 5. Construir payload con derivados (recomendación de apuesta, EV, confianza)
+        home_proba = scalar["home_win_probability"]
+        away_proba = scalar["away_win_probability"]
+        # Heurística simple (la misma que tenía el dummy) para mantener compatibilidad
+        # con el frontend; en sprints posteriores se puede mejorar.
+        if home_proba > 0.6:
+            recommended_bet = "home"
+            expected_value = round(home_proba * 1.8 - 1.0, 3)
+        elif away_proba > 0.6:
+            recommended_bet = "away"
+            expected_value = round(away_proba * 1.8 - 1.0, 3)
+        else:
+            recommended_bet = "none"
+            expected_value = 0.0
+        confidence_score = round(max(home_proba, away_proba), 3)
+
+        # 6. Armar respuesta
+        response: Dict[str, Any] = {
+            "home_win_probability": round(home_proba, 4),
+            "away_win_probability": round(away_proba, 4),
+            "predicted_home_score": round(scalar.get("predicted_home_score") or 0.0, 1),
+            "predicted_away_score": round(scalar.get("predicted_away_score") or 0.0, 1),
+            "predicted_total": round(
+                (scalar.get("predicted_total")
+                 or ((scalar.get("predicted_home_score") or 0.0)
+                     + (scalar.get("predicted_away_score") or 0.0))),
+                1,
+            ),
+            "predicted_margin": (
+                round(scalar["predicted_margin"], 2)
+                if scalar.get("predicted_margin") is not None else None
+            ),
+            "recommended_bet": recommended_bet,
+            "expected_value": expected_value,
+            "confidence_score": confidence_score,
+            "model_version": (
+                self.model_version_obj.version if self.model_version_obj else "unknown"
+            ),
+            "prediction_timestamp": datetime.utcnow(),
+            "features_used": features_summary,
+            # Telemetría — útil para el dashboard de inferencia
+            "inference_latency_ms": inference_ms,
+        }
+
+        # Team-props (v2.2.0+) si el modelo los expone
+        if "team_props" in scalar:
+            tp = scalar["team_props"]
+            response["team_props"] = {
+                "home": tp.get("home", {}),
+                "away": tp.get("away", {}),
+                "labels": tp.get("labels", {}),
+            }
+
+        # Señales auxiliares del Poisson (v2.1.x+) — útiles para auditoría
+        for key in (
+            "poisson_probability", "poisson_lambda1", "poisson_lambda2",
+            "poisson_lambda3", "poisson_home_score", "poisson_away_score",
+            "rf_probability",
+        ):
+            if scalar.get(key) is not None:
+                response.setdefault("model_signals", {})[key] = round(scalar[key], 4)
+
+        logger.info(
+            f"Predicción game={game_id} model={response['model_version']} "
+            f"P(home)={home_proba:.3f} inference_ms={inference_ms}"
+        )
+        return response
     
     async def _generate_dummy_prediction(self, game: Dict[str, Any], home_team: Team, away_team: Team) -> Dict[str, Any]:
         """Generate dummy prediction for testing"""

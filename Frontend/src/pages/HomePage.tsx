@@ -157,58 +157,84 @@ export function HomePage() {
             </m.div>
           )}
 
-          {/* Today's Matches - Console List */}
-          {todayMatches.length > 0 && (
-            <m.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-            >
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-3">
-                  <div className="w-2 h-8 bg-acid-500" />
-                  <h2 className="text-2xl font-display font-semibold text-white uppercase">Live Feeds</h2>
-                </div>
+          {/* Upcoming Matches */}
+          <m.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-2 h-8 bg-acid-500" />
+                <h2 className="text-2xl font-display font-semibold text-white uppercase">
+                  {todayMatches.length > 0 ? 'Upcoming Games' : 'Recent Games'}
+                </h2>
+              </div>
+              <div className="flex items-center gap-3">
                 <div className="font-mono text-acid-500 text-xs border border-acid-500/30 px-2 py-1">
                   SYNCED: {now ? now.toLocaleTimeString() : ''}
                 </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="border-acid-500/30 hover:bg-acid-500 hover:text-black font-mono text-xs"
+                  onClick={() => navigate('/proximos')}
+                >
+                  VIEW ALL →
+                </Button>
               </div>
+            </div>
 
+            {todayMatches.length === 0 ? (
+              <div className="text-center py-12 text-muted-foreground font-mono text-sm border border-dashed border-white/10 rounded">
+                [ NO UPCOMING GAMES IN DATABASE ]<br />
+                <span className="text-xs mt-2 block">Run scraping pipeline to update game schedule</span>
+              </div>
+            ) : (
               <div className="grid gap-4">
                 {todayMatches.slice(0, 5).map((match, i) => (
                   <Card key={match.id} className="group hover:border-acid-500 transition-colors">
                     <CardContent className="p-4 flex items-center justify-between">
                       <div className="flex items-center gap-4">
-                        <span className="font-mono text-muted-foreground text-xs text-acid-500/50">0{i + 1}</span>
+                        <span className="font-mono text-muted-foreground text-xs text-acid-500/50">
+                          {String(i + 1).padStart(2, '0')}
+                        </span>
                         <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-8">
+                          {match.game_date && (
+                            <span className="text-xs text-muted-foreground font-mono hidden md:block">
+                              {new Date(match.game_date).toLocaleDateString('es-CO', { month: 'short', day: 'numeric' })}
+                            </span>
+                          )}
                           <span className="text-white font-display font-semibold text-lg hover:text-acid-500 transition-colors cursor-pointer uppercase">
-                            {match.home_team.name}
+                            {match.home_team?.name || 'TBD'}
                           </span>
                           <span className="text-muted-foreground text-xs px-2 py-1 bg-metal-900 border border-chrome-grey font-mono">VS</span>
                           <span className="text-white font-display font-semibold text-lg hover:text-acid-500 transition-colors cursor-pointer uppercase">
-                            {match.away_team.name}
+                            {match.away_team?.name || 'TBD'}
                           </span>
                         </div>
                       </div>
 
                       <div className="flex items-center gap-6">
-                        <div className="hidden md:flex gap-4">
-                          <div className="flex flex-col items-center">
-                            <span className="text-xs text-muted-foreground font-mono mb-1">HOME</span>
-                            <span className="text-acid-500 font-mono font-bold bg-acid-500/10 px-2 py-0.5 border border-acid-500/20">
-                              {match.home_odds?.toFixed(2) || '-'}
-                            </span>
+                        {(match.home_odds || match.away_odds) && (
+                          <div className="hidden md:flex gap-4">
+                            <div className="flex flex-col items-center">
+                              <span className="text-xs text-muted-foreground font-mono mb-1">HOME</span>
+                              <span className="text-acid-500 font-mono font-bold bg-acid-500/10 px-2 py-0.5 border border-acid-500/20">
+                                {match.home_odds?.toFixed(2) || '-'}
+                              </span>
+                            </div>
+                            <div className="flex flex-col items-center">
+                              <span className="text-xs text-muted-foreground font-mono mb-1">AWAY</span>
+                              <span className="text-acid-500 font-mono font-bold bg-acid-500/10 px-2 py-0.5 border border-acid-500/20">
+                                {match.away_odds?.toFixed(2) || '-'}
+                              </span>
+                            </div>
                           </div>
-                          <div className="flex flex-col items-center">
-                            <span className="text-xs text-muted-foreground font-mono mb-1">AWAY</span>
-                            <span className="text-acid-500 font-mono font-bold bg-acid-500/10 px-2 py-0.5 border border-acid-500/20">
-                              {match.away_odds?.toFixed(2) || '-'}
-                            </span>
-                          </div>
-                        </div>
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
+                        )}
+                        <Button
+                          variant="outline"
+                          size="sm"
                           className="hidden sm:flex border-acid-500/30 hover:bg-acid-500 hover:text-black transition-all"
                           onClick={() => handleAnalyze(match.id)}
                         >
@@ -219,8 +245,8 @@ export function HomePage() {
                   </Card>
                 ))}
               </div>
-            </m.div>
-          )}
+            )}
+          </m.div>
         </>
       )}
     </div>

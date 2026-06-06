@@ -339,30 +339,123 @@ class PredictionService:
             self.db.rollback()
     
     async def get_upcoming_predictions(self, days: int, user_id: int) -> List[PredictionResponse]:
-        """Get predictions for upcoming games"""
-        if not self.match_service:
-            raise ValueError("Database connection required")
-        
+        """
+        Devuelve predicciones para partidos futuros de los próximos `days` días.
+
+        Consulta espn.games directamente filtrando por fecha y score=0 (no jugados).
+        Para cada partido usa LiveFeatureExtractor para calcular las features en vivo
+        y producir una predicción real con el modelo cargado.
+        """
+        from sqlalchemy import text as sql_text
+        from datetime import datetime, timedelta, date
+
         today = datetime.now().date()
         future_date = today + timedelta(days=days)
-        
-        games = await self.match_service.get_matches(
-            date_from=today,
-            date_to=future_date,
-            status="scheduled"
-        )
-        
+
+        # Obtener partidos futuros desde espn.games
+        query = sql_text("""
+            SELECT game_id, fecha, home_team, away_team, home_score, away_score, status
+            FROM espn.games
+            WHERE fecha >= :today
+              AND fecha <= :future
+              AND (home_score = 0 OR home_score IS NULL)
+              AND (away_score = 0 OR away_score IS NULL)
+              AND home_team != 'TBD' AND away_team != 'TBD'
+              AND home_team IS NOT NULL AND away_team IS NOT NULL
+            ORDER BY fecha ASC
+        """)
+        rows = self.db.execute(query, {
+            "today": str(today),
+            "future": str(future_date),
+        }).mappings().fetchall()
+
+        if not rows:
+            return []
+
+        from app.services.live_feature_extractor import LiveFeatureExtractor, LiveFeaturesError
+        from app.services.ml_inference import detect_feature_set, predict_full_robust, extract_single_sample, validate_prediction, ModelNotLoadedError
+        from app.schemas.prediction import PredictionResponse
+
+        if self.model is None:
+            raise ModelNotLoadedError("No hay modelo cargado.")
+
+        try:
+            feature_set = detect_feature_set(self.model)
+        except Exception:
+            feature_set = "v2"
+
+        live_extractor = LiveFeatureExtractor(self.db)
         predictions = []
-        for game in games:
+
+        for row in rows:
+            game_id   = int(row["game_id"])
+            home_name = row["home_team"]
+            away_name = row["away_team"]
+            game_date = row["fecha"]
+            if isinstance(game_date, str):
+                game_date = datetime.strptime(game_date[:10], "%Y-%m-%d").date()
+
             try:
-                game_id = game.get("id") or game.get("game_id") if isinstance(game, dict) else getattr(game, "game_id", getattr(game, "id", None))
-                prediction = await self.get_game_prediction(game_id, user_id)
-                predictions.append(prediction)
-            except Exception as e:
-                game_id = game.get("id") or game.get("game_id") if isinstance(game, dict) else getattr(game, "game_id", getattr(game, "id", "unknown"))
-                print(f"Error generating prediction for game {game_id}: {e}")
+                import time
+                t0 = time.time()
+                X = live_extractor.build_feature_vector(
+                    home_team=home_name,
+                    away_team=away_name,
+                    game_date=game_date,
+                    feature_set=feature_set,
+                    game_id=game_id,
+                )
+                features_summary = live_extractor.get_features_summary(
+                    home_team=home_name,
+                    away_team=away_name,
+                    game_date=game_date,
+                    feature_set=feature_set,
+                    game_id=game_id,
+                )
+                full_output = predict_full_robust(self.model, X)
+                inference_ms = int((time.time() - t0) * 1000)
+
+                scalar = extract_single_sample(full_output, idx=0)
+                validate_prediction(scalar)
+
+                home_proba = scalar["home_win_probability"]
+                away_proba = scalar["away_win_probability"]
+
+                if home_proba > 0.6:
+                    recommended_bet, ev = "home", round(home_proba * 1.8 - 1.0, 3)
+                elif away_proba > 0.6:
+                    recommended_bet, ev = "away", round(away_proba * 1.8 - 1.0, 3)
+                else:
+                    recommended_bet, ev = "none", 0.0
+
+                pred = PredictionResponse(
+                    game_id=game_id,
+                    home_team_id=None,
+                    away_team_id=None,
+                    home_team_name=home_name,
+                    away_team_name=away_name,
+                    home_win_probability=round(home_proba, 4),
+                    away_win_probability=round(away_proba, 4),
+                    predicted_home_score=round(scalar.get("predicted_home_score") or 0.0, 1),
+                    predicted_away_score=round(scalar.get("predicted_away_score") or 0.0, 1),
+                    predicted_total=round(scalar.get("predicted_total") or 0.0, 1),
+                    predicted_margin=round(scalar.get("predicted_margin") or 0.0, 2),
+                    recommended_bet=recommended_bet,
+                    expected_value=ev,
+                    confidence_score=round(max(home_proba, away_proba), 3),
+                    model_version=self.model_version_obj.version if self.model_version_obj else "unknown",
+                    prediction_timestamp=datetime.utcnow(),
+                    game_date=game_date,
+                    features_used=features_summary,
+                    inference_latency_ms=inference_ms,
+                )
+                predictions.append(pred)
+
+            except (LiveFeaturesError, Exception) as e:
+                logger.warning(f"Upcoming prediction falló para game {game_id} "
+                               f"({away_name} @ {home_name}): {e}")
                 continue
-        
+
         return predictions
     
     async def _predict_with_model(self, game: Dict[str, Any], home_team: Team, away_team: Team) -> Dict[str, Any]:
@@ -397,14 +490,62 @@ class PredictionService:
             logger.error(f"No se pudo inferir feature_set para game {game_id}: {e}")
             raise
 
-        # 2. Extraer features desde ml.ml_ready_games
+        # 2. Extraer features desde ml.ml_ready_games (partidos históricos) o
+        #    LiveFeatureExtractor (partidos futuros sin fila pre-calculada).
         extractor = FeatureExtractor(self.db)
         try:
             X = extractor.build_feature_vector(game_id, feature_set=feature_set)
             features_summary = extractor.get_features_summary(game_id, feature_set=feature_set)
         except FeaturesNotAvailableError:
-            # Re-lanzar para que el endpoint REST devuelva 422
-            raise
+            # Partido futuro: intentar con LiveFeatureExtractor
+            logger.info(
+                f"game {game_id} no está en ml_ready_games — "
+                "intentando LiveFeatureExtractor para partido futuro"
+            )
+            home_name = home_team.name if home_team else game.get("home_team")
+            away_name = away_team.name if away_team else game.get("away_team")
+            raw_date  = game.get("game_date") or game.get("fecha") or game.get("date")
+            if isinstance(raw_date, str):
+                from datetime import datetime
+                try:
+                    game_date = datetime.strptime(raw_date[:10], "%Y-%m-%d").date()
+                except ValueError:
+                    game_date = datetime.now().date()
+            elif raw_date is None:
+                from datetime import datetime
+                game_date = datetime.now().date()
+            else:
+                game_date = raw_date
+
+            if not home_name or not away_name:
+                raise FeaturesNotAvailableError(
+                    f"Partido {game_id} no tiene features pre-calculadas ni "
+                    "nombres de equipo válidos para calcularlas en vivo."
+                )
+
+            from app.services.live_feature_extractor import LiveFeatureExtractor, LiveFeaturesError
+            live_extractor = LiveFeatureExtractor(self.db)
+            try:
+                X = live_extractor.build_feature_vector(
+                    home_team=home_name,
+                    away_team=away_name,
+                    game_date=game_date,
+                    feature_set=feature_set,
+                    game_id=game_id,
+                )
+                features_summary = live_extractor.get_features_summary(
+                    home_team=home_name,
+                    away_team=away_name,
+                    game_date=game_date,
+                    feature_set=feature_set,
+                    game_id=game_id,
+                )
+                logger.info(
+                    f"game {game_id}: features en vivo calculadas "
+                    f"(missing={features_summary.get('missing_count', '?')})"
+                )
+            except LiveFeaturesError as lfe:
+                raise FeaturesNotAvailableError(str(lfe))
         except FeatureExtractorError as e:
             logger.error(f"Error extrayendo features para game {game_id}: {e}")
             raise InferenceError(f"Feature extraction falló: {e}")

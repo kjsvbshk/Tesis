@@ -28,8 +28,8 @@ class TeamPropsBundle(BaseModel):
 
 class PredictionResponse(BaseModel):
     game_id: int
-    home_team_id: int
-    away_team_id: int
+    home_team_id: Optional[int] = None
+    away_team_id: Optional[int] = None
     home_team_name: str
     away_team_name: str
     game_date: Optional[datetime] = None

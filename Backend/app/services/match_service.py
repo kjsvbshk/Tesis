@@ -229,20 +229,41 @@ class MatchService:
                 away_team_div = away_team_db.division if away_team_db else ''
                 
                 # Construir objeto MatchResponse usando solo columnas que existen
+                # Intentar obtener odds de espn.game_odds para este partido
+                game_id_val = match_dict.get('id')
+                home_odds_val = None
+                away_odds_val = None
+                if game_id_val:
+                    try:
+                        odds_row = self.db.execute(text("""
+                            SELECT
+                                AVG(CASE WHEN odds_type='moneyline_home' THEN odds_value END) AS home_odds,
+                                AVG(CASE WHEN odds_type='moneyline_away' THEN odds_value END) AS away_odds
+                            FROM espn.game_odds
+                            WHERE game_id = :gid
+                              AND odds_type IN ('moneyline_home','moneyline_away')
+                            GROUP BY game_id
+                        """), {"gid": int(game_id_val)}).fetchone()
+                        if odds_row:
+                            home_odds_val = float(odds_row[0]) if odds_row[0] else None
+                            away_odds_val = float(odds_row[1]) if odds_row[1] else None
+                    except Exception:
+                        pass
+
                 match = {
                     "id": match_dict.get('id'),
                     "espn_id": None,
                     "home_team_id": int(home_team_id) if home_team_id else None,
                     "away_team_id": int(away_team_id) if away_team_id else None,
-                    "game_date": None,  # No se incluye la fecha
+                    "game_date": str(match_dict.get(date_col)) if date_col and match_dict.get(date_col) else None,
                     "season": None,  # No existe en games
                     "season_type": None,  # No existe en games
                     "status": None,  # No existe en games
                     "home_score": int(match_dict.get(home_score_col)) if home_score_col and match_dict.get(home_score_col) is not None else None,
                     "away_score": int(match_dict.get(away_score_col)) if away_score_col and match_dict.get(away_score_col) is not None else None,
                     "winner_id": None,
-                    "home_odds": None,
-                    "away_odds": None,
+                    "home_odds": home_odds_val,
+                    "away_odds": away_odds_val,
                     "over_under": None,
                     "created_at": None,
                     "updated_at": None,
@@ -478,11 +499,11 @@ class MatchService:
                 "home_score": match_dict.get(column_mapping['home_score']) if column_mapping['home_score'] else None,
                 "away_score": match_dict.get(column_mapping['away_score']) if column_mapping['away_score'] else None,
                 "winner_id": None,  # No hay tabla teams, pero hay home_win (bigint)
-                "home_odds": None,  # No existe en games, está en odds
-                "away_odds": None,  # No existe en games, está en odds
-                "over_under": None,  # No existe en games
-                "created_at": None,  # No existe en la estructura real
-                "updated_at": None,  # No existe en la estructura real
+                "home_odds": None,
+                "away_odds": None,
+                "over_under": None,
+                "created_at": None,
+                "updated_at": None,
                 "home_team": {
                     "id": home_team_id or 0,
                     "name": home_team_db.name if home_team_db else (home_team_name or 'Unknown'),

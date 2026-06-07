@@ -10,40 +10,6 @@ class PredictionRequest(BaseModel):
     game_id: int
 
 
-class MatchupRequest(BaseModel):
-    """Solicitud de predicción por enfrentamiento directo (sin game_id previo)."""
-    home_team: str          # nombre o tricode, ej: "San Antonio Spurs" / "SAS"
-    away_team: str          # nombre o tricode, ej: "New York Knicks" / "NYK"
-    game_date: Optional[date] = None  # fecha del partido; si es None usa hoy
-
-
-class MatchupResponse(BaseModel):
-    """Predicción de enfrentamiento — igual que PredictionResponse pero sin game_id."""
-    home_team_name: str
-    away_team_name: str
-    game_date: Optional[str] = None
-
-    home_win_probability: float
-    away_win_probability: float
-    predicted_home_score: float
-    predicted_away_score: float
-    predicted_total: float
-    predicted_margin: Optional[float] = None
-
-    team_props: Optional[TeamPropsBundle] = None
-
-    recommended_bet: Optional[str] = None
-    expected_value: Optional[float] = None
-    confidence_score: float
-
-    model_version: str
-    prediction_timestamp: str
-
-    features_used: Optional[Dict[str, Any]] = None
-    inference_latency_ms: Optional[int] = None
-    model_signals: Optional[Dict[str, float]] = None
-
-
 class TeamPropPrediction(BaseModel):
     """Predicción de un team-prop (rebotes, asistencias, etc.) para un equipo."""
     reb: Optional[float] = None
@@ -149,3 +115,37 @@ class ModelStatusResponse(BaseModel):
     metrics: Optional[Dict[str, Any]] = None
     status: str
     using_real_predictions: bool = False
+
+
+class MatchupRequest(BaseModel):
+    """Solicitud de predicción por enfrentamiento directo (sin game_id previo)."""
+    home_team: str          # nombre o tricode, ej: "San Antonio Spurs" / "SAS"
+    away_team: str          # nombre o tricode, ej: "New York Knicks" / "NYK"
+    game_date: Optional[date] = None  # fecha del partido; si es None usa hoy
+
+
+class MatchupResponse(BaseModel):
+    """Predicción de enfrentamiento — igual que PredictionResponse pero sin game_id."""
+    home_team_name: str
+    away_team_name: str
+    game_date: Optional[str] = None
+
+    home_win_probability: float
+    away_win_probability: float
+    predicted_home_score: float
+    predicted_away_score: float
+    predicted_total: float
+    predicted_margin: Optional[float] = None
+
+    team_props: Optional[TeamPropsBundle] = None
+
+    recommended_bet: Optional[str] = None
+    expected_value: Optional[float] = None
+    confidence_score: float
+
+    model_version: str
+    prediction_timestamp: str
+
+    features_used: Optional[Dict[str, Any]] = None
+    inference_latency_ms: Optional[int] = None
+    model_signals: Optional[Dict[str, float]] = None

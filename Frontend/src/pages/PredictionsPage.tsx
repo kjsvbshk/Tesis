@@ -41,14 +41,27 @@ export function PredictionsPage() {
       setPrediction(result)
       toast({
         title: 'ANALYSIS COMPLETE',
-        description: 'Prediction model execution successful.',
+        description: 'Predicción generada por el modelo ML v2.2.0.',
       })
     } catch (error: any) {
-      toast({
-        title: 'ANALYSIS FAILED',
-        description: error.message || 'Error executing prediction model.',
-        variant: 'destructive',
-      })
+      // Mensajes de error específicos por código HTTP
+      const status = error?.status || error?.response?.status
+      let title = 'ERROR DE PREDICCIÓN'
+      let description = error.message || 'Error al ejecutar el modelo.'
+
+      if (status === 503) {
+        title = 'MODELO NO DISPONIBLE'
+        description = 'El modelo ML no está cargado en el servidor. Contacte al administrador.'
+      } else if (status === 422) {
+        title = 'DATOS INSUFICIENTES'
+        description = 'No hay features pre-calculadas para este partido. Ejecute el ETL primero.'
+      } else if (status === 404) {
+        title = 'PARTIDO NO ENCONTRADO'
+        description = `El partido con ID ${targetId} no existe en la base de datos.`
+      }
+
+      toast({ title, description, variant: 'destructive' })
+      setPrediction(null) // limpiar resultado anterior — no mostrar datos viejos
     } finally {
       setLoading(false)
     }
@@ -87,9 +100,9 @@ export function PredictionsPage() {
           Execute Neural Network models to probability outcomes for upcoming matches.
         </p>
         {modelStatus && !modelStatus.using_real_predictions && (
-          <div className="flex items-center gap-2 mt-3 px-3 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded text-yellow-400 font-mono text-xs uppercase tracking-widest w-fit">
+          <div className="flex items-center gap-2 mt-3 px-3 py-2 bg-red-500/10 border border-red-500/40 rounded text-red-400 font-mono text-xs uppercase tracking-widest w-fit">
             <AlertTriangle size={12} />
-            <span>MODO SIMULADO: predicciones dummy, modelo no cargado</span>
+            <span>MODELO NO DISPONIBLE — Las predicciones no están operativas</span>
           </div>
         )}
       </m.div>
@@ -276,18 +289,10 @@ export function PredictionsPage() {
                     <span className="text-muted-foreground">TIMESTAMP</span>
                     <span className="text-white" suppressHydrationWarning>{new Date(prediction.prediction_timestamp || Date.now()).toLocaleTimeString()}</span>
                   </div>
-                  {prediction.fallback_dummy && (
-                    <div className="flex justify-between pt-1">
-                      <span className="text-muted-foreground">MODE</span>
-                      <span className="text-yellow-400 font-bold">FALLBACK DUMMY</span>
-                    </div>
-                  )}
-                  {modelStatus?.using_real_predictions === false && (
-                    <div className="flex justify-between pt-1">
-                      <span className="text-muted-foreground">MODE</span>
-                      <span className="text-yellow-400 font-bold">SIMULADO</span>
-                    </div>
-                  )}
+                  <div className="flex justify-between pt-1">
+                    <span className="text-muted-foreground">MODE</span>
+                    <span className="text-acid-500 font-bold">ML REAL</span>
+                  </div>
                   {modelStatus?.trained_at && (
                     <div className="flex justify-between pt-1">
                       <span className="text-muted-foreground">TRAINED</span>

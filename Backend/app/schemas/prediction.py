@@ -58,7 +58,6 @@ class PredictionResponse(BaseModel):
     features_used: Optional[Dict[str, Any]] = None
     inference_latency_ms: Optional[int] = None  # latencia aislada del modelo
     model_signals: Optional[Dict[str, float]] = None  # rf_proba, poisson_*, etc.
-    fallback_dummy: Optional[bool] = None  # True si la respuesta es dummy por fallback
 
     @field_serializer('game_date')
     def serialize_game_date(self, value: Optional[datetime]) -> Optional[str]:

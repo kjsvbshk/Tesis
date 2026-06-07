@@ -229,7 +229,7 @@ const SettingsPage: React.FC = () => {
                 Al activar una versión, el motor de predicciones cargará automáticamente el archivo <code className="text-lime-300">.joblib</code> correspondiente en el backend.
               </p>
               <p>
-                Si el archivo no existe en el servidor, el sistema entrará en <span className="text-orange-400">Modo Simulado</span> para garantizar la disponibilidad del servicio.
+                Si el archivo no existe en el servidor, el sistema retornará un error 503 (modelo no disponible) en lugar de predicciones.
               </p>
               <div className="p-3 bg-white/5 rounded-lg border border-white/5">
                 <p className="text-xs text-white font-bold mb-1 uppercase tracking-wider">Políticas de Cambio:</p>

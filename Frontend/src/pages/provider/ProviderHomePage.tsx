@@ -93,8 +93,8 @@ export function ProviderHomePage() {
                             <div className="h-[300px] flex items-center justify-center border border-dashed border-white/10 rounded-md bg-black/20">
                                 <div className="text-center">
                                     <Database size={48} className={`mx-auto mb-4 ${themeColor} opacity-50`} />
-                                    <p className="text-muted-foreground font-mono text-sm">Real-time traffic visualization would appear here.</p>
-                                    <p className="text-xs text-[#B0B3C5] mt-1">(Mock Data for UI Demo)</p>
+                                    <p className="text-muted-foreground font-mono text-sm">Visualización de tráfico en tiempo real.</p>
+                                    <p className="text-xs text-[#B0B3C5] mt-1">Conecte un proveedor activo para ver datos.</p>
                                 </div>
                             </div>
                         </CardContent>

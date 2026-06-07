@@ -13,7 +13,7 @@ try:
     JOBLIB_AVAILABLE = True
 except ImportError:
     JOBLIB_AVAILABLE = False
-    print("⚠️  joblib no está instalado. Las predicciones usarán modo dummy.")
+    print("⚠️  joblib no está instalado — instalar con: pip install joblib. Las predicciones no están disponibles.")
 
 try:
     import pandas as pd
@@ -71,13 +71,13 @@ class PredictionService:
         ).first()
 
         if not self.model_version_obj:
-            print("[load_model] ⚠️  No active model version found, using dummy predictions")
+            print("[load_model] ⚠️  No active model version found in app.model_versions")
             self.model = None
             return
 
         if not JOBLIB_AVAILABLE:
-            print(f"[load_model] ⚠️  joblib no disponible, usando dummy "
-                  f"(model version: {self.model_version_obj.version})")
+            print(f"[load_model] ❌ joblib no disponible — instalar con: pip install joblib"
+                  f" (model version: {self.model_version_obj.version})")
             self.model = None
             return
 
@@ -234,7 +234,6 @@ class PredictionService:
             raise ValueError(error_msg)
         
         # Crear objetos Team simples con la información disponible
-        # (para compatibilidad con _predict_with_model y _generate_dummy_prediction)
         from app.models.team import Team
         home_team = Team()
         home_team.team_id = home_team_id or 0
@@ -244,19 +243,20 @@ class PredictionService:
         away_team.team_id = away_team_id or 0
         away_team.name = away_team_name
         
-        # Generate prediction — Sprint 1: usar modelo real si está cargado.
-        # Si el modelo no está cargado, fallback a dummy con flag visible.
-        # Si features no están disponibles, propagar excepción al endpoint.
-        if self.model:
-            try:
-                prediction = await self._predict_with_model(game, home_team, away_team)
-            except FeaturesNotAvailableError:
-                # No degradamos silenciosamente: el endpoint REST lo convierte en 422
-                raise
-        else:
-            logger.warning("No hay modelo cargado; respondiendo con dummy explícito")
-            prediction = await self._generate_dummy_prediction(game, home_team, away_team)
-            prediction["fallback_dummy"] = True
+        # El sistema SOLO devuelve predicciones reales del modelo ML.
+        # Si el modelo no está cargado, se lanza 503 — nunca se devuelven
+        # valores artificiales que el usuario podría confundir con resultados reales.
+        if not self.model:
+            raise ModelNotLoadedError(
+                "El modelo ML no está disponible en este momento. "
+                "Verifique que el archivo .joblib esté configurado y que "
+                "app.model_versions tenga una versión activa."
+            )
+        try:
+            prediction = await self._predict_with_model(game, home_team, away_team)
+        except FeaturesNotAvailableError:
+            # Partido sin features pre-calculadas → el endpoint REST devuelve 422
+            raise
 
         # Calcular latencia HTTP total (incluye lookup de game, features, inferencia)
         latency_ms = int((time.time() - start_time) * 1000)
@@ -566,8 +566,7 @@ class PredictionService:
         # 5. Construir payload con derivados (recomendación de apuesta, EV, confianza)
         home_proba = scalar["home_win_probability"]
         away_proba = scalar["away_win_probability"]
-        # Heurística simple (la misma que tenía el dummy) para mantener compatibilidad
-        # con el frontend; en sprints posteriores se puede mejorar.
+        # Umbral de confianza: >60% probabilidad de victoria → recomendar ese equipo.
         if home_proba > 0.6:
             recommended_bet = "home"
             expected_value = round(home_proba * 1.8 - 1.0, 3)
@@ -631,62 +630,6 @@ class PredictionService:
         )
         return response
     
-    async def _generate_dummy_prediction(self, game: Dict[str, Any], home_team: Team, away_team: Team) -> Dict[str, Any]:
-        """Generate dummy prediction for testing"""
-        import random
-        
-        # Simple home court advantage simulation
-        home_advantage = 0.05  # 5% home court advantage
-        
-        # Random probabilities (in real implementation, these would come from the model)
-        base_home_prob = 0.5 + home_advantage
-        base_away_prob = 0.5 - home_advantage
-        
-        # Add some randomness
-        if PANDAS_AVAILABLE:
-            home_win_probability = min(0.9, max(0.1, base_home_prob + np.random.normal(0, 0.1)))
-            predicted_home_score = 110 + np.random.normal(0, 10)
-            predicted_away_score = 108 + np.random.normal(0, 10)
-        else:
-            # Fallback sin numpy
-            home_win_probability = min(0.9, max(0.1, base_home_prob + random.uniform(-0.1, 0.1)))
-            predicted_home_score = 110 + random.uniform(-10, 10)
-            predicted_away_score = 108 + random.uniform(-10, 10)
-        
-        away_win_probability = 1.0 - home_win_probability
-        predicted_total = predicted_home_score + predicted_away_score
-        
-        # Betting recommendation
-        if home_win_probability > 0.6:
-            recommended_bet = "home"
-            expected_value = (home_win_probability * 1.8) - 1.0  # Assuming 1.8 odds
-        elif away_win_probability > 0.6:
-            recommended_bet = "away"
-            expected_value = (away_win_probability * 1.8) - 1.0
-        else:
-            recommended_bet = "none"
-            expected_value = 0.0
-        
-        confidence_score = max(home_win_probability, away_win_probability)
-        
-        return {
-            "home_win_probability": round(home_win_probability, 3),
-            "away_win_probability": round(away_win_probability, 3),
-            "predicted_home_score": round(predicted_home_score, 1),
-            "predicted_away_score": round(predicted_away_score, 1),
-            "predicted_total": round(predicted_total, 1),
-            "recommended_bet": recommended_bet,
-            "expected_value": round(expected_value, 3),
-            "confidence_score": round(confidence_score, 3),
-            "model_version": self.model_version_obj.version if self.model_version_obj else None,
-            "prediction_timestamp": datetime.utcnow(),
-            "features_used": {
-                "home_team": home_team.name,
-                "away_team": away_team.name,
-                "home_court_advantage": home_advantage
-            }
-        }
-    
     async def get_model_status(self) -> Dict[str, Any]:
         """Get ML model status and information"""
         metrics = None
@@ -709,10 +652,10 @@ class PredictionService:
         return {
             "model_loaded": self.model is not None,
             "model_version": self.model_version_obj.version if self.model_version_obj else None,
-            "model_type": type(self.model).__name__ if self.model else "DummyPredictor",
+            "model_type": type(self.model).__name__ if self.model else "not_loaded",
             "trained_at": trained_at,
             "metrics": metrics,
-            "status": "ready" if self.model else "dummy_mode",
+            "status": "ready" if self.model else "unavailable",
             "using_real_predictions": self.model is not None,
         }
     

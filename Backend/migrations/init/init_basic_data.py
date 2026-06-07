@@ -30,7 +30,7 @@ def init_basic_data(db: Session):
             version="v1.0.0",
             is_active=True,
             description="Versión inicial del modelo de predicción NBA",
-            model_metadata='{"type": "dummy", "accuracy": 0.0}'
+            model_metadata='{"type": "placeholder", "accuracy": 0.0}'
         )
         db.add(model_version)
         db.commit()

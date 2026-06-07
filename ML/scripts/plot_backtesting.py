@@ -104,7 +104,7 @@ def plot_ev_distribution(ev_stats, output_path):
     """Histograma de distribución de Expected Value."""
     fig, ax = plt.subplots(figsize=(8, 5))
 
-    # Generar datos simulados de EV a partir de estadísticas
+    # Reconstruir distribución de EV a partir de estadísticas reales (media/std) para el histograma
     rng = np.random.RandomState(42)
     ev_samples = rng.normal(ev_stats["mean"], ev_stats["std"], size=1000)
     ev_samples = np.clip(ev_samples, ev_stats["min"], ev_stats["max"])

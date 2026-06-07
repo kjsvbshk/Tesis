@@ -44,7 +44,6 @@ export interface PredictionResponse {
   latency_ms?: number
   inference_latency_ms?: number | null
   model_signals?: Record<string, number> | null
-  fallback_dummy?: boolean | null
   prediction_timestamp?: string
   features_used?: Record<string, any>
 }

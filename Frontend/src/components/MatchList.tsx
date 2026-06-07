@@ -2,12 +2,25 @@ import { MatchCard, type Match } from '@/components/MatchCard'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useEffect, useRef, useState } from 'react'
 import { matchesService, type MatchResponse } from '@/services/matches.service'
+import { predictionsService, type PredictionResponse } from '@/services/predictions.service'
 import { useToast } from '@/hooks/use-toast'
 import { Activity, CalendarDays, Zap } from 'lucide-react'
+
+/** Convierte probabilidad ML → cuota decimal (sin margen de casa) */
+function probToOdds(prob: number): number {
+  if (!prob || prob <= 0 || prob >= 1) return 1.90
+  return Math.max(1.01, parseFloat((1 / prob).toFixed(2)))
+}
+
+/** Redondea el total al 0.5 más cercano para la línea O/U */
+function roundHalf(n: number): number {
+  return Math.round(n * 2) / 2
+}
 
 export function MatchList() {
   const [todayMatches, setTodayMatches] = useState<MatchResponse[]>([])
   const [upcomingMatches, setUpcomingMatches] = useState<MatchResponse[]>([])
+  const [predictions, setPredictions] = useState<Map<number, PredictionResponse>>(new Map())
   // loading is only used as a guard, not rendered — using useRef to avoid re-render
   const loading = useRef(true)
   const { toast } = useToast()
@@ -25,6 +38,21 @@ export function MatchList() {
       ])
       setTodayMatches(today)
       setUpcomingMatches(upcoming)
+
+      // Obtener predicciones ML para derivar cuotas reales por partido
+      const allMatches = [...today, ...upcoming]
+      const predMap = new Map<number, PredictionResponse>()
+      await Promise.allSettled(
+        allMatches.map(async (m) => {
+          try {
+            const pred = await predictionsService.getGamePrediction(m.id as number)
+            predMap.set(m.id as number, pred)
+          } catch {
+            // Partido sin predicción disponible — se usarán cuotas de la DB o N/A
+          }
+        })
+      )
+      setPredictions(predMap)
     } catch (error: any) {
       console.error('Error loading matches:', error)
       toast({
@@ -37,15 +65,25 @@ export function MatchList() {
     }
   }
 
-  const convertToMatch = (matchResponse: MatchResponse): Match => {
-    // Default odds logic
-    const homeOdds = matchResponse.home_odds || 1.90
-    const awayOdds = matchResponse.away_odds || 1.90
-    const overUnder = matchResponse.over_under || 220.5
+  const convertToMatch = (matchResponse: MatchResponse, pred?: PredictionResponse): Match => {
+    // Cuotas derivadas del modelo ML (odds = 1/probabilidad)
+    // Si no hay predicción disponible, usar cuotas de la DB o marcar como N/A (1.00 = placeholder)
+    const homeOdds = pred
+      ? probToOdds(pred.home_win_probability)
+      : matchResponse.home_odds || 0   // 0 = sin dato
 
-    // Default over/under odds
-    const overOdds = 1.85
-    const underOdds = 1.95
+    const awayOdds = pred
+      ? probToOdds(pred.away_win_probability)
+      : matchResponse.away_odds || 0
+
+    // Línea O/U: usar total predicho por el modelo, o fallback de DB, o estándar NBA
+    const ouLine = pred
+      ? roundHalf(pred.predicted_total)
+      : (matchResponse.over_under || 220.5)
+
+    // Cuotas O/U: el modelo no predice probabilidad over/under → cuotas neutras 1.90
+    const overOdds  = 1.90
+    const underOdds = 1.90
 
     return {
       id: matchResponse.id,
@@ -57,25 +95,27 @@ export function MatchList() {
         over: overOdds,
         under: underOdds,
       },
+      overUnderLine: ouLine,
+      aiHomeWinProb: pred?.home_win_probability,
       gameId: matchResponse.id,
       homeTeamId: matchResponse.home_team_id,
       awayTeamId: matchResponse.away_team_id,
-      overUnderValue: overUnder,
+      overUnderValue: ouLine,
     }
   }
 
   const todayMatchesConverted = todayMatches.reduce<ReturnType<typeof convertToMatch>[]>((acc, m) => {
     if (m.home_team?.name !== 'TBD' && m.away_team?.name !== 'TBD') {
-      acc.push(convertToMatch(m))
+      acc.push(convertToMatch(m, predictions.get(m.id as number)))
     }
     return acc
   }, [])
-  
+
   // Deduplicate and convert in a single pass
   const upcomingMatchesConverted = Array.from(
     upcomingMatches.reduce<Map<number, ReturnType<typeof convertToMatch>>>((acc, m) => {
       if (m.home_team?.name !== 'TBD' && m.away_team?.name !== 'TBD' && !acc.has(m.id)) {
-        acc.set(m.id, convertToMatch(m))
+        acc.set(m.id, convertToMatch(m, predictions.get(m.id as number)))
       }
       return acc
     }, new Map()).values()

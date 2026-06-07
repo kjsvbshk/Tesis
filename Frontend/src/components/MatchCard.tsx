@@ -15,7 +15,8 @@ export interface Match {
     over: number
     under: number
   }
-  aiHomeWinProb?: number // 0..1
+  overUnderLine?: number  // línea O/U predicha por el modelo (ej: 217.5)
+  aiHomeWinProb?: number  // 0..1
   gameId?: number
   homeTeamId?: number
   awayTeamId?: number
@@ -93,9 +94,9 @@ export function MatchCard({ match, delay = 0 }: { match: Match; delay?: number }
             <div className="p-4 bg-black/20 flex-shrink-0">
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
                 <OddButton label="1" odd={match.odds.home} onClick={() => add('home')} highlight="acid" />
-                <OddButton label="X" odd={match.odds.away} onClick={() => add('away')} />
-                <OddButton label="O 2.5" odd={match.odds.over} onClick={() => add('over')} />
-                <OddButton label="U 2.5" odd={match.odds.under} onClick={() => add('under')} />
+                <OddButton label="2" odd={match.odds.away} onClick={() => add('away')} />
+                <OddButton label={`O ${match.overUnderLine ?? 220.5}`} odd={match.odds.over} onClick={() => add('over')} />
+                <OddButton label={`U ${match.overUnderLine ?? 220.5}`} odd={match.odds.under} onClick={() => add('under')} />
               </div>
             </div>
 
@@ -107,18 +108,20 @@ export function MatchCard({ match, delay = 0 }: { match: Match; delay?: number }
 }
 
 function OddButton({ label, odd, onClick, highlight }: { label: string; odd: number; onClick: () => void; highlight?: 'acid' | 'violet' }) {
+  const hasOdd = odd > 0
   return (
     <Button
       variant="ghost"
-      onClick={onClick}
-      className="h-14 flex flex-col items-center justify-center gap-0.5 bg-metal-900 border border-white/5 hover:bg-white/5 hover:border-acid-500/50 rounded-sm w-full min-w-[80px] group/btn transition-all relative overflow-hidden"
+      onClick={hasOdd ? onClick : undefined}
+      disabled={!hasOdd}
+      className="h-14 flex flex-col items-center justify-center gap-0.5 bg-metal-900 border border-white/5 hover:bg-white/5 hover:border-acid-500/50 rounded-sm w-full min-w-[80px] group/btn transition-all relative overflow-hidden disabled:opacity-40 disabled:cursor-not-allowed"
     >
       <span className="text-[10px] font-mono text-muted-foreground uppercase">{label}</span>
       <span className={`text-lg font-mono font-bold ${highlight === 'acid' ? 'text-white' : 'text-acid-500'} group-hover/btn:text-white transition-colors`}>
-        {odd.toFixed(2)}
+        {hasOdd ? odd.toFixed(2) : '—'}
       </span>
       {/* Hover Glitch Effect */}
-      <div className="absolute inset-0 bg-acid-500/10 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-200" />
+      {hasOdd && <div className="absolute inset-0 bg-acid-500/10 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-200" />}
     </Button>
   )
 }

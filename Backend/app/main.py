@@ -197,7 +197,7 @@ async def startup_event():
             import os
             from app.core.config import settings
             from app.models import ModelVersion
-            from app.database import get_sys_db
+            from app.core.database import get_sys_db
 
             db = next(get_sys_db())
             active_mv = db.query(ModelVersion).filter(ModelVersion.is_active == True).first()
@@ -250,6 +250,62 @@ async def root():
         "docs": "/docs",
         "status": "running"
     }
+
+@app.get("/debug/model")
+async def debug_model():
+    """Diagnóstico sin auth — retorna el estado real del modelo ML en este servidor.
+    SOLO para debugging; quitar en producción final."""
+    import sys, traceback as tb
+    from app.core.config import settings
+
+    result: dict = {}
+
+    # 1. Resolver MODEL_DIR
+    model_dir = settings.MODEL_DIR
+    if not os.path.isabs(model_dir):
+        backend_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        model_dir = os.path.normpath(os.path.join(backend_root, model_dir))
+    result["model_dir"] = model_dir
+    result["model_dir_exists"] = os.path.isdir(model_dir)
+    result["model_dir_files"] = os.listdir(model_dir) if os.path.isdir(model_dir) else []
+
+    # 2. Versión activa en DB
+    try:
+        from app.core.database import get_sys_db
+        from app.models import ModelVersion
+        db = next(get_sys_db())
+        mv = db.query(ModelVersion).filter(ModelVersion.is_active == True).first()
+        db.close()
+        result["active_version"] = mv.version if mv else None
+        result["joblib_expected"] = os.path.join(model_dir, f"nba_prediction_model_{mv.version}.joblib") if mv else None
+        result["joblib_exists"] = os.path.exists(result["joblib_expected"]) if result["joblib_expected"] else False
+    except Exception as e:
+        result["db_error"] = str(e)
+
+    # 3. Intentar cargar el modelo
+    try:
+        import joblib
+        path = result.get("joblib_expected")
+        if path and os.path.exists(path):
+            ml_root = os.path.normpath(os.path.join(model_dir, ".."))
+            if ml_root not in sys.path:
+                sys.path.insert(0, ml_root)
+            result["sys_path_ml"] = ml_root
+            model = joblib.load(path)
+            result["load_success"] = True
+            result["model_class"] = type(model).__name__
+            from app.services.ml_inference import detect_feature_set, detect_meta_dim
+            result["feature_set"] = detect_feature_set(model)
+            result["meta_dim"] = detect_meta_dim(model.meta_learner)
+        else:
+            result["load_success"] = False
+            result["load_skip"] = "archivo no encontrado"
+    except Exception as e:
+        result["load_success"] = False
+        result["load_error"] = str(e)
+        result["load_traceback"] = tb.format_exc()
+
+    return result
 
 @app.on_event("shutdown")
 async def shutdown_event():

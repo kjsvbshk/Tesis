@@ -1,8 +1,9 @@
 # Hoja de Ruta — Niveles de Predicción
 
-> **Estado actual**: Nivel 1 implementado (v2.0.0). Niveles 2-4 documentados como trabajo futuro.
+> **Estado actual**: Nivel 1 entrenado (v2.0.0) pero **no integrado en Backend/Frontend**.
+> Ver `plan_trabajo_integracion.md` para las tareas de integración pendientes.
 
-## Nivel 1 — Core Predictions (v2.0.0) ✅ IMPLEMENTADO
+## Nivel 1 — Core Predictions (v2.0.0) ✅ ENTRENADO / ⏳ INTEGRACIÓN PENDIENTE
 
 ### Targets
 | Target | Modelo | Tipo | Métricas |
@@ -17,15 +18,24 @@
 - Todas con `shift(1)` anti-leakage
 - Ver detalle en `features.md`
 
+### Estado de integración
+| Componente | Estado |
+|-----------|--------|
+| Modelo entrenado (.joblib) | ✅ `nba_prediction_model_v2.0.0.joblib` |
+| Backend `_predict_with_model()` | ❌ Dummy — no usa modelo real |
+| Backend feature engineering | ❌ No implementado |
+| Frontend consume margen/total | ⚠️ Parcial — campos en schema, datos dummy |
+| Deploy workflow | ❌ No existe como proceso automatizado |
+
 ### Criterios de aceptación
-| Métrica | Umbral | Aplica a |
-|---------|--------|----------|
-| Log Loss | < 0.68 | home_win |
-| Brier Score | < 0.25 | home_win |
-| ROC-AUC | > 0.55 | home_win |
-| ECE | < 0.05 | home_win |
-| MAE margen | < 10.0 pts | margin |
-| MAE total | < 15.0 pts | total |
+| Métrica | Umbral | v2.0.0 | Estado |
+|---------|--------|--------|--------|
+| Log Loss | < 0.68 | 0.6855 | ❌ |
+| Brier Score | < 0.25 | 0.243 | ✅ |
+| ROC-AUC | > 0.55 | 0.6462 | ✅ |
+| ECE | < 0.05 | 0.0925 | ❌ |
+| MAE margen | < 10.0 pts | 12.21 | ❌ |
+| MAE total | < 15.0 pts | 16.45 | ❌ |
 
 ---
 

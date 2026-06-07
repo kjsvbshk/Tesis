@@ -106,8 +106,16 @@ class PredictionService:
 
             if chosen_path is None:
                 print(f"[load_model] ❌ NO se encontró ningún .joblib en {model_dir}")
-                print(f"[load_model]    archivos disponibles: "
-                      f"{os.listdir(model_dir) if os.path.isdir(model_dir) else 'directorio NO existe'}")
+                available = (os.listdir(model_dir) if os.path.isdir(model_dir)
+                             else "directorio NO existe")
+                print(f"[load_model]    archivos disponibles: {available}")
+                print(f"[load_model] ────────────────────────────────────────────────")
+                print(f"[load_model]  SOLUCIÓN: el archivo .joblib no está en el servidor.")
+                print(f"[load_model]  Para generarlo ejecutar desde ML/:")
+                print(f"[load_model]    python -m src.etl.build_features")
+                print(f"[load_model]    python -m src.training.train --version {version} --model ensemble --use-v3")
+                print(f"[load_model]  Luego commitear y hacer push del .joblib al repositorio.")
+                print(f"[load_model] ────────────────────────────────────────────────")
                 self.model = None
                 return
 

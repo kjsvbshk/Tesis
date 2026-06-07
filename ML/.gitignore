@@ -34,6 +34,7 @@ models/*.h5
 models/*.pb
 models/*.onnx
 !models/.gitkeep
+!models/nba_prediction_model_v3.0.0.joblib
 
 # Data (los datos pueden ser grandes)
 data/raw/*

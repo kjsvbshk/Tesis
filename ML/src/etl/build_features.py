@@ -122,10 +122,51 @@ def build_features():
                 team_game_stats['tov']
             )
             print(f"   [OK] Estadísticas de equipo calculadas para {len(team_game_stats)} registros")
+
+            # ── PLAYER STAR FEATURES ──────────────────────────────────────────
+            # Para cada (game_id, team_tricode) tomamos los top-3 jugadores por
+            # eficiencia (EFF) y calculamos su promedio de pts y EFF.
+            # EFF = PTS + REB + AST + STL + BLK - TOV - (FGA-FGM) - (FTA-FTM)
+            pb = player_box.copy()
+            pb['reb']      = pb['oreb'].fillna(0) + pb['dreb'].fillna(0)
+            pb['miss_fg']  = pb['fga'].fillna(0) - pb['fgm'].fillna(0)
+            pb['miss_ft']  = pb['fta'].fillna(0) - pb['ftm'].fillna(0)
+            pb['eff']      = (
+                pb['pts'].fillna(0) + pb['reb'] + pb['ast'].fillna(0)
+                + pb['stl'].fillna(0) + pb['blk'].fillna(0)
+                - pb['tov'].fillna(0) - pb['miss_fg'] - pb['miss_ft']
+            )
+
+            def _top3_agg(g):
+                top3 = g.nlargest(3, 'eff')
+                return pd.Series({
+                    'top3_pts': top3['pts'].mean(),
+                    'top3_eff': top3['eff'].mean(),
+                })
+
+            player_star = (
+                pb.groupby(['game_id', 'team_tricode'], group_keys=False)
+                .apply(_top3_agg)
+                .reset_index()
+            )
+            # Construir mapa rápido: (game_id_int, tricode) → {top3_pts, top3_eff}
+            player_star_map = {}
+            for _, r in player_star.iterrows():
+                try:
+                    gid = int(r['game_id'])
+                    player_star_map[(gid, r['team_tricode'])] = {
+                        'top3_pts': r['top3_pts'],
+                        'top3_eff': r['top3_eff'],
+                    }
+                except Exception:
+                    pass
+            print(f"   [OK] Player star features calculadas para {len(player_star_map)} (game,team) pares")
+
         except Exception as e:
             print(f"   [!]  No se pudo cargar o procesar nba_player_boxscores: {e}")
             print(e)
             team_game_stats = pd.DataFrame()
+            player_star_map = {}
         
         print("   Cargando espn.injuries...")
         try:
@@ -206,10 +247,13 @@ def build_features():
                     matchup_history.setdefault(key, []).append((row['fecha'], winner))
             return h2h
 
-        def rolling_stats(df_games, df_team_stats):
+        def rolling_stats(df_games, df_team_stats, p_star_map=None):
             """
-            Construye estadísticas rolling por equipo
+            Construye estadísticas rolling por equipo.
+            p_star_map: dict[(game_id_int, tricode)] -> {top3_pts, top3_eff}
             """
+            if p_star_map is None:
+                p_star_map = {}
             rows = []
             
             # Mapeo de ID (as numeric) a estadísticas de equipo para acceso rápido
@@ -351,6 +395,10 @@ def build_features():
                 h_dreb_pct = (h_dreb / (h_dreb + a_oreb)) if (home_has_box and away_has_box and not np.isnan(h_dreb) and (h_dreb + a_oreb) > 0) else np.nan
                 a_dreb_pct = (a_dreb / (a_dreb + h_oreb)) if (away_has_box and home_has_box and not np.isnan(a_dreb) and (a_dreb + h_oreb) > 0) else np.nan
 
+                # Player star lookup
+                h_ps = p_star_map.get((lookup_id, home_tricode), {})
+                a_ps = p_star_map.get((lookup_id, away_tricode), {})
+
                 rows.append({
                     'game_id': game_id,
                     'fecha': fecha,
@@ -359,6 +407,7 @@ def build_features():
                     'is_home': True,
                     'pts': home_pts,
                     'opp_pts': away_pts,
+                    'margin': home_pts - away_pts,
                     'net_rating': net_rating_diff,
                     'poss': home_poss,
                     'off_rtg': home_off_rtg,
@@ -367,6 +416,8 @@ def build_features():
                     'reb': h_reb, 'ast': h_ast, 'stl': h_stl, 'blk': h_blk, 'tov': h_tov,
                     'efg_pct': h_efg_pct, 'tov_rate': h_tov_rate,
                     'oreb_pct': h_oreb_pct, 'dreb_pct': h_dreb_pct,
+                    'top3_pts': h_ps.get('top3_pts', np.nan),
+                    'top3_eff': h_ps.get('top3_eff', np.nan),
                 })
 
                 rows.append({
@@ -377,6 +428,7 @@ def build_features():
                     'is_home': False,
                     'pts': away_pts,
                     'opp_pts': home_pts,
+                    'margin': away_pts - home_pts,
                     'net_rating': -net_rating_diff,
                     'poss': away_poss,
                     'off_rtg': away_off_rtg,
@@ -385,6 +437,8 @@ def build_features():
                     'reb': a_reb, 'ast': a_ast, 'stl': a_stl, 'blk': a_blk, 'tov': a_tov,
                     'efg_pct': a_efg_pct, 'tov_rate': a_tov_rate,
                     'oreb_pct': a_oreb_pct, 'dreb_pct': a_dreb_pct,
+                    'top3_pts': a_ps.get('top3_pts', np.nan),
+                    'top3_eff': a_ps.get('top3_eff', np.nan),
                 })
             
             tt = pd.DataFrame(rows).sort_values(['team', 'fecha', 'game_id'])
@@ -482,9 +536,24 @@ def build_features():
                 lambda x: x.shift(1).rolling(window=10, min_periods=3).mean()
             )
 
+            # === NUEVAS FEATURES V3 ===
+
+            # Margen de victoria rolling (últimos 5 partidos, sin leakage)
+            tt['margin_last5'] = tt.groupby('team')['margin'].transform(
+                lambda x: x.shift(1).rolling(window=5, min_periods=1).mean()
+            )
+
+            # Player top-3 rolling (últimos 5 partidos con datos de boxscore)
+            tt['top3_pts_last5'] = tt.groupby('team')['top3_pts'].transform(
+                lambda x: x.shift(1).rolling(window=5, min_periods=1).mean()
+            )
+            tt['top3_eff_last5'] = tt.groupby('team')['top3_eff'].transform(
+                lambda x: x.shift(1).rolling(window=5, min_periods=1).mean()
+            )
+
             return tt
         
-        tt = rolling_stats(games, team_game_stats)
+        tt = rolling_stats(games, team_game_stats, player_star_map)
         print(f"   [OK] Rolling features calculadas para {len(tt)} registros")
 
         # Elo ratings (cumulative, leakage-free by design)
@@ -538,6 +607,9 @@ def build_features():
             'streak': 'home_streak',
             'home_win_rate_split': 'home_home_win_rate',
             'h2h_home_wins_last5': 'h2h_home_advantage',
+            'margin_last5':     'home_avg_margin_rolling',
+            'top3_pts_last5':   'home_player_top3_pts',
+            'top3_eff_last5':   'home_player_top3_eff',
         }
         home_cols = ['game_id'] + list(home_rename.values())
         tt_home = tt[tt['is_home'] == True].rename(columns=home_rename)[home_cols]
@@ -562,6 +634,9 @@ def build_features():
             'elo': 'away_elo',
             'streak': 'away_streak',
             'away_win_rate_split': 'away_away_win_rate',
+            'margin_last5':     'away_avg_margin_rolling',
+            'top3_pts_last5':   'away_player_top3_pts',
+            'top3_eff_last5':   'away_player_top3_eff',
         }
         away_cols = ['game_id'] + [v for v in away_rename.values()]
         tt_away = tt[tt['is_home'] == False].rename(columns=away_rename)[away_cols]
@@ -614,9 +689,25 @@ def build_features():
         # B2B logic
         rest_df['home_b2b'] = rest_df['home_rest_days'] == 1
         rest_df['away_b2b'] = rest_df['away_rest_days'] == 1
+
+        # Rest quality flags (V3)
+        # big_rest: >2 días (ventaja de descanso significativa)
+        rest_df['home_big_rest']      = (rest_df['home_rest_days'] >= 3).astype(float)
+        rest_df['away_big_rest']      = (rest_df['away_rest_days'] >= 3).astype(float)
+        # optimal_rest: exactamente 2 días (ideal para rendimiento)
+        rest_df['home_optimal_rest']  = (rest_df['home_rest_days'] == 2).astype(float)
+        rest_df['away_optimal_rest']  = (rest_df['away_rest_days'] == 2).astype(float)
+        # excessive_rest: >=5 días (efecto negativo por falta de ritmo)
+        rest_df['home_excessive_rest'] = (rest_df['home_rest_days'] >= 5).astype(float)
+        rest_df['away_excessive_rest'] = (rest_df['away_rest_days'] >= 5).astype(float)
         
         # Merge
-        ml = ml.drop(columns=['home_rest_days', 'away_rest_days', 'home_b2b', 'away_b2b'], errors='ignore')
+        ml = ml.drop(columns=[
+            'home_rest_days', 'away_rest_days', 'home_b2b', 'away_b2b',
+            'home_big_rest', 'away_big_rest',
+            'home_optimal_rest', 'away_optimal_rest',
+            'home_excessive_rest', 'away_excessive_rest',
+        ], errors='ignore')
         ml = ml.merge(rest_df, on='game_id', how='left')
         
         print(f"   [OK] Días de descanso y B2B calculados")
@@ -689,7 +780,20 @@ def build_features():
         ml['streak_diff'] = ml['home_streak'] - ml['away_streak']
         ml['home_away_split_diff'] = ml['home_home_win_rate'] - ml['away_away_win_rate']
         ml['injuries_diff'] = ml['home_injuries_count'] - ml['away_injuries_count']
-        
+
+        # ── Nuevos diferenciales V3 ────────────────────────────────────────────
+        ml['avg_margin_diff']          = ml['home_avg_margin_rolling'] - ml['away_avg_margin_rolling']
+        ml['player_top3_pts_advantage'] = ml['home_player_top3_pts']   - ml['away_player_top3_pts']
+        ml['player_top3_eff_advantage'] = ml['home_player_top3_eff']   - ml['away_player_top3_eff']
+
+        # strength_composite: promedio ponderado de 3 señales clave de dominio
+        # elo_diff captura historia, net_rating captura forma, win_rate captura consistencia
+        ml['strength_composite'] = (
+            0.4 * ml['elo_diff'].fillna(0) / 100.0        # normalizar ~[-200, 200] → [-2, 2]
+            + 0.35 * ml['net_rating_diff_rolling'].fillna(0) / 10.0  # normalizar ~[-20, 20] → [-2, 2]
+            + 0.25 * ml['win_rate_diff'].fillna(0)        # ya está en [-1, 1]
+        )
+
         print("   [OK] Diferenciales calculados")
         print()
         
@@ -920,6 +1024,21 @@ def build_features():
             # Nuevos diferenciales v2
             'efg_pct_diff', 'tov_rate_diff', 'oreb_pct_diff', 'dreb_pct_diff',
             'elo_diff', 'streak_diff', 'home_away_split_diff',
+            # ── V3 features ──────────────────────────────────────────────────
+            # Rest flags
+            'home_big_rest', 'away_big_rest',
+            'home_optimal_rest', 'away_optimal_rest',
+            'home_excessive_rest', 'away_excessive_rest',
+            # Margen rolling
+            'home_avg_margin_rolling', 'away_avg_margin_rolling',
+            # Player star rolling
+            'home_player_top3_pts', 'away_player_top3_pts',
+            'home_player_top3_eff', 'away_player_top3_eff',
+            # Diferenciales V3
+            'avg_margin_diff',
+            'player_top3_pts_advantage',
+            'player_top3_eff_advantage',
+            'strength_composite',
         ]
         
         # Ensure target columns are populated from the dataframe
@@ -995,6 +1114,23 @@ def build_features():
             ("elo_diff",           "FLOAT"),
             ("streak_diff",        "FLOAT"),
             ("home_away_split_diff", "FLOAT"),
+            # V3 columns
+            ("home_big_rest",              "FLOAT"),
+            ("away_big_rest",              "FLOAT"),
+            ("home_optimal_rest",          "FLOAT"),
+            ("away_optimal_rest",          "FLOAT"),
+            ("home_excessive_rest",        "FLOAT"),
+            ("away_excessive_rest",        "FLOAT"),
+            ("home_avg_margin_rolling",    "FLOAT"),
+            ("away_avg_margin_rolling",    "FLOAT"),
+            ("home_player_top3_pts",       "FLOAT"),
+            ("away_player_top3_pts",       "FLOAT"),
+            ("home_player_top3_eff",       "FLOAT"),
+            ("away_player_top3_eff",       "FLOAT"),
+            ("avg_margin_diff",            "FLOAT"),
+            ("player_top3_pts_advantage",  "FLOAT"),
+            ("player_top3_eff_advantage",  "FLOAT"),
+            ("strength_composite",         "FLOAT"),
         ]
         with engine.begin() as conn:
             for col_name, col_type in new_columns_ddl:
@@ -1098,7 +1234,24 @@ def build_features():
                     dreb_pct_diff = t.dreb_pct_diff,
                     elo_diff = t.elo_diff,
                     streak_diff = t.streak_diff,
-                    home_away_split_diff = t.home_away_split_diff
+                    home_away_split_diff = t.home_away_split_diff,
+
+                    home_big_rest              = t.home_big_rest,
+                    away_big_rest              = t.away_big_rest,
+                    home_optimal_rest          = t.home_optimal_rest,
+                    away_optimal_rest          = t.away_optimal_rest,
+                    home_excessive_rest        = t.home_excessive_rest,
+                    away_excessive_rest        = t.away_excessive_rest,
+                    home_avg_margin_rolling    = t.home_avg_margin_rolling,
+                    away_avg_margin_rolling    = t.away_avg_margin_rolling,
+                    home_player_top3_pts       = t.home_player_top3_pts,
+                    away_player_top3_pts       = t.away_player_top3_pts,
+                    home_player_top3_eff       = t.home_player_top3_eff,
+                    away_player_top3_eff       = t.away_player_top3_eff,
+                    avg_margin_diff            = t.avg_margin_diff,
+                    player_top3_pts_advantage  = t.player_top3_pts_advantage,
+                    player_top3_eff_advantage  = t.player_top3_eff_advantage,
+                    strength_composite         = t.strength_composite
                 FROM {ml_schema}.ml_ready_games_temp t
                 WHERE m.game_id = t.game_id
             """)

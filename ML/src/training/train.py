@@ -86,6 +86,27 @@ INDIVIDUAL_FEATURES = [
     "h2h_home_advantage",
 ]
 
+# Features V3: rest flags + player star + strength composite
+V3_EXTRA_FEATURES = [
+    # Rest quality flags
+    "home_big_rest",
+    "away_big_rest",
+    "home_optimal_rest",
+    "away_optimal_rest",
+    "home_excessive_rest",
+    "away_excessive_rest",
+    # Player top-3 rolling (desde nba_player_boxscores)
+    "home_player_top3_pts",
+    "away_player_top3_pts",
+    "home_player_top3_eff",
+    "away_player_top3_eff",
+    # Diferenciales V3
+    "avg_margin_diff",
+    "player_top3_pts_advantage",
+    "player_top3_eff_advantage",
+    "strength_composite",
+]
+
 # Features de odds (baja cobertura ~1%, se excluyen por defecto)
 ODDS_FEATURES = [
     "implied_prob_home",
@@ -116,22 +137,21 @@ def load_ml_ready_games() -> pd.DataFrame:
     return df
 
 
-def build_feature_matrix(df: pd.DataFrame, use_odds: bool = False) -> tuple:
+def build_feature_matrix(df: pd.DataFrame, use_odds: bool = False, use_v3: bool = False) -> tuple:
     """
     Construye X (features) e y (target) desde el DataFrame.
 
-    Selecciona features diferenciales + individuales.
-    Filtra filas donde el target es NULL.
-
     Args:
-        df:        DataFrame con ml_ready_games
-        use_odds:  incluir features de odds (baja cobertura)
+        df:       DataFrame con ml_ready_games
+        use_odds: incluir features de odds (baja cobertura)
+        use_v3:   incluir features V3 (rest flags + player star + strength_composite)
 
     Returns:
-        (X, y, feature_cols, df_clean) donde df_clean conserva la fecha
-        para el split temporal.
+        (X, y, feature_cols, df_clean)
     """
     feature_cols = DIFF_FEATURES + INDIVIDUAL_FEATURES
+    if use_v3:
+        feature_cols += V3_EXTRA_FEATURES
     if use_odds:
         feature_cols += ODDS_FEATURES
 
@@ -413,7 +433,8 @@ def save_model(model, version: str, metrics: dict, model_name: str, feature_cols
 # Función principal
 # ---------------------------------------------------------------------------
 
-def train_model(version: str = "v1.0.0", model_type: str = "ensemble", use_odds: bool = False):
+def train_model(version: str = "v1.0.0", model_type: str = "ensemble",
+                use_odds: bool = False, use_v3: bool = False):
     """
     Ejecuta el pipeline completo de entrenamiento.
 
@@ -421,13 +442,14 @@ def train_model(version: str = "v1.0.0", model_type: str = "ensemble", use_odds:
         version:    versión del modelo (ej: "v1.0.0")
         model_type: "rf" | "xgb" | "ensemble"
         use_odds:   incluir features de odds (baja cobertura)
+        use_v3:     incluir features V3 (rest flags + player star + strength_composite)
 
     Returns:
         (model, metrics, model_path)
     """
     print("=" * 60)
     print(f"NBA Prediction Model — Entrenamiento {version}")
-    print(f"Tipo: {model_type.upper()}   Odds features: {use_odds}")
+    print(f"Tipo: {model_type.upper()}   Odds: {use_odds}   V3 features: {use_v3}")
     print("=" * 60)
 
     # 1. Cargar datos
@@ -435,7 +457,7 @@ def train_model(version: str = "v1.0.0", model_type: str = "ensemble", use_odds:
 
     # 2. Construir features
     print("\nConstruyendo matriz de features...")
-    X, y, feature_cols, df_clean = build_feature_matrix(df, use_odds=use_odds)
+    X, y, feature_cols, df_clean = build_feature_matrix(df, use_odds=use_odds, use_v3=use_v3)
 
     # 3. Split temporal
     print("\nAplicando split temporal (80/20)...")
@@ -512,10 +534,12 @@ if __name__ == "__main__":
     parser.add_argument("--model",      default="ensemble",
                         help="Tipo: rf | xgb | poisson | ensemble")
     parser.add_argument("--use-odds",   action="store_true", help="Incluir features de odds")
+    parser.add_argument("--use-v3",    action="store_true", help="Incluir features V3 (rest flags + player star)")
     args = parser.parse_args()
 
     train_model(
         version=args.version,
         model_type=args.model,
         use_odds=args.use_odds,
+        use_v3=args.use_v3,
     )

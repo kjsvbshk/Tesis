@@ -85,7 +85,38 @@ ODDS_FEATURES: List[str] = [
     "implied_prob_away",
 ]
 
-# Orden exacto que produce train.py: DIFF_FEATURES + INDIVIDUAL_FEATURES [+ ODDS_FEATURES]
+# ── V3 extra features ─────────────────────────────────────────────────────────
+# Flags de calidad de descanso (derivados de rest_days en ETL)
+V3_REST_FLAGS: List[str] = [
+    "home_big_rest",
+    "away_big_rest",
+    "home_optimal_rest",
+    "away_optimal_rest",
+    "home_excessive_rest",
+    "away_excessive_rest",
+]
+
+# Features de estrellas individuales (desde nba_player_boxscores rolling)
+V3_PLAYER_INDIVIDUAL: List[str] = [
+    "home_player_top3_pts",
+    "away_player_top3_pts",
+    "home_player_top3_eff",
+    "away_player_top3_eff",
+]
+
+# Diferenciales nuevos V3
+V3_DIFF_FEATURES: List[str] = [
+    "avg_margin_diff",
+    "player_top3_pts_advantage",
+    "player_top3_eff_advantage",
+    "strength_composite",
+]
+
+V3_EXTRA_FEATURES: List[str] = (
+    V3_REST_FLAGS + V3_PLAYER_INDIVIDUAL + V3_DIFF_FEATURES
+)  # 14 nuevas features
+
+# Orden exacto que produce train.py: DIFF_FEATURES + INDIVIDUAL_FEATURES [+ extras]
 V1_FEATURES: List[str] = V1_DIFF_FEATURES + V1_INDIVIDUAL_FEATURES                    # 21
 
 V2_FEATURES: List[str] = (
@@ -97,14 +128,22 @@ V2_FEATURES: List[str] = (
 
 V2_ODDS_FEATURES: List[str] = V2_FEATURES + ODDS_FEATURES  # 35
 
-assert len(V1_FEATURES)    == 21, f"V1 debe tener 21 features, tiene {len(V1_FEATURES)}"
-assert len(V2_FEATURES)    == 33, f"V2 debe tener 33 features, tiene {len(V2_FEATURES)}"
+V3_FEATURES: List[str] = V2_FEATURES + V3_EXTRA_FEATURES   # 33 + 14 = 47
+
+V3_ODDS_FEATURES: List[str] = V3_FEATURES + ODDS_FEATURES  # 47 + 2 = 49
+
+assert len(V1_FEATURES)      == 21, f"V1 debe tener 21 features, tiene {len(V1_FEATURES)}"
+assert len(V2_FEATURES)      == 33, f"V2 debe tener 33 features, tiene {len(V2_FEATURES)}"
 assert len(V2_ODDS_FEATURES) == 35, f"V2+odds debe tener 35 features, tiene {len(V2_ODDS_FEATURES)}"
+assert len(V3_FEATURES)      == 47, f"V3 debe tener 47 features, tiene {len(V3_FEATURES)}"
+assert len(V3_ODDS_FEATURES) == 49, f"V3+odds debe tener 49 features, tiene {len(V3_ODDS_FEATURES)}"
 
 FEATURE_SETS: Dict[str, List[str]] = {
     "v1":      V1_FEATURES,
     "v2":      V2_FEATURES,
     "v2_odds": V2_ODDS_FEATURES,   # modelo entrenado con --use-odds
+    "v3":      V3_FEATURES,        # + rest flags + player star
+    "v3_odds": V3_ODDS_FEATURES,   # v3 + implied probs
 }
 
 

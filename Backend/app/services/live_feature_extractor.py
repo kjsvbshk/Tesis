@@ -174,7 +174,10 @@ class LiveFeatureExtractor:
                 CASE WHEN home_team = :team THEN home_elo            ELSE away_elo            END AS elo,
                 CASE WHEN home_team = :team THEN home_streak         ELSE away_streak         END AS streak,
                 CASE WHEN home_team = :team THEN home_home_win_rate  ELSE away_away_win_rate  END AS split_win_rate,
-                CASE WHEN home_team = :team THEN home_rest_days      ELSE away_rest_days      END AS last_rest_days
+                CASE WHEN home_team = :team THEN home_rest_days      ELSE away_rest_days      END AS last_rest_days,
+                CASE WHEN home_team = :team THEN home_avg_margin_rolling ELSE away_avg_margin_rolling END AS avg_margin_rolling,
+                CASE WHEN home_team = :team THEN home_player_top3_pts ELSE away_player_top3_pts END AS player_top3_pts,
+                CASE WHEN home_team = :team THEN home_player_top3_eff ELSE away_player_top3_eff END AS player_top3_eff
             FROM {self.ML_SCHEMA}.ml_ready_games
             WHERE (home_team = :team OR away_team = :team)
               AND home_win IS NOT NULL
@@ -370,5 +373,38 @@ class LiveFeatureExtractor:
         # ── Odds ──────────────────────────────────────────────────────
         f["implied_prob_home"] = float(imp_home) if imp_home is not None else np.nan
         f["implied_prob_away"] = float(imp_away) if imp_away is not None else np.nan
+
+        # ── V3: Rest flags ─────────────────────────────────────────────
+        h_rest = f["home_rest_days"]
+        a_rest = f["away_rest_days"]
+        f["home_big_rest"]       = 1.0 if h_rest >= 3 else 0.0
+        f["away_big_rest"]       = 1.0 if a_rest >= 3 else 0.0
+        f["home_optimal_rest"]   = 1.0 if h_rest == 2 else 0.0
+        f["away_optimal_rest"]   = 1.0 if a_rest == 2 else 0.0
+        f["home_excessive_rest"] = 1.0 if h_rest >= 5 else 0.0
+        f["away_excessive_rest"] = 1.0 if a_rest >= 5 else 0.0
+
+        # ── V3: Player star features ───────────────────────────────────
+        f["home_avg_margin_rolling"]  = g(home, "avg_margin_rolling")
+        f["away_avg_margin_rolling"]  = g(away, "avg_margin_rolling")
+        f["home_player_top3_pts"]     = g(home, "player_top3_pts")
+        f["away_player_top3_pts"]     = g(away, "player_top3_pts")
+        f["home_player_top3_eff"]     = g(home, "player_top3_eff")
+        f["away_player_top3_eff"]     = g(away, "player_top3_eff")
+
+        # ── V3: Diferenciales ─────────────────────────────────────────
+        f["avg_margin_diff"]           = f["home_avg_margin_rolling"] - f["away_avg_margin_rolling"]
+        f["player_top3_pts_advantage"] = f["home_player_top3_pts"]   - f["away_player_top3_pts"]
+        f["player_top3_eff_advantage"] = f["home_player_top3_eff"]   - f["away_player_top3_eff"]
+
+        # strength_composite: promedio ponderado ELO + net_rating + win_rate
+        elo_d = f.get("elo_diff", 0.0) or 0.0
+        nrt_d = f.get("net_rating_diff_rolling", 0.0) or 0.0
+        wr_d  = f.get("win_rate_diff", 0.0) or 0.0
+        f["strength_composite"] = (
+            0.4 * elo_d / 100.0
+            + 0.35 * nrt_d / 10.0
+            + 0.25 * wr_d
+        )
 
         return f

@@ -24,6 +24,7 @@ import { ForgotPasswordPage } from '@/pages/ForgotPasswordPage'
 import { ResetPasswordPage } from '@/pages/ResetPasswordPage'
 import { PredictionsPage } from '@/pages/PredictionsPage'
 import UpcomingGamesPage from '@/pages/UpcomingGamesPage'
+import MatchupPage from '@/pages/MatchupPage'
 import { RequestsPage } from '@/pages/RequestsPage'
 import { AdminHomePage } from '@/pages/admin/AdminHomePage'
 import { UsersManagementPage } from '@/pages/admin/UsersManagementPage'
@@ -156,6 +157,7 @@ const routerWithAuth = createBrowserRouter([
           { path: 'partidos', element: <MatchesPage /> },
           { path: 'predicciones', element: <PredictionsPage /> },
           { path: 'proximos', element: <UpcomingGamesPage /> },
+          { path: 'enfrentamiento', element: <MatchupPage /> },
           { path: 'apuestas', element: <BetsPage /> },
           { path: 'historial', element: <HistoryPage /> },
           { path: 'requests', element: <RequestsPage /> },

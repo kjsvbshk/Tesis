@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 
 from app.core.database import get_espn_db, get_sys_db
-from app.schemas.prediction import PredictionResponse, PredictionRequest
+from app.schemas.prediction import PredictionResponse, PredictionRequest, MatchupRequest, MatchupResponse
 from app.services.prediction_service import PredictionService
 from app.services.feature_extractor import FeaturesNotAvailableError
 from app.services.ml_inference import (
@@ -299,6 +299,44 @@ async def get_upcoming_predictions(
         return predictions
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating predictions: {str(e)}")
+
+@router.post("/matchup", response_model=MatchupResponse)
+async def predict_matchup(
+    request: MatchupRequest,
+    current_user: UserAccount = Depends(get_current_user),
+    db: Session = Depends(get_espn_db),
+    sys_db: Session = Depends(get_sys_db),
+):
+    """
+    Predice el resultado de un enfrentamiento entre dos equipos sin necesitar game_id.
+
+    Útil para partidos que aún no han sido publicados por ESPN o
+    para comparar cualquier par de equipos en una fecha hipotética.
+    El modelo usa las estadísticas más recientes de cada equipo en DB.
+    """
+    from app.services.match_service import MatchService
+    match_service_espn = MatchService(db)
+    prediction_service = PredictionService(sys_db)
+    prediction_service.match_service = match_service_espn
+    # El matchup usa espn_db para LiveFeatureExtractor
+    prediction_service.db = db
+
+    try:
+        result = await prediction_service.predict_matchup(
+            home_team=request.home_team,
+            away_team=request.away_team,
+            game_date=request.game_date,
+        )
+        return MatchupResponse(**result)
+    except FeaturesNotAvailableError as e:
+        raise HTTPException(status_code=422, detail=str(e))
+    except ModelNotLoadedError as e:
+        raise HTTPException(status_code=503, detail=str(e))
+    except InferenceError as e:
+        raise HTTPException(status_code=500, detail=f"Inference error: {str(e)}")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error en predicción de matchup: {str(e)}")
+
 
 @router.get("/model/status")
 async def get_model_status():

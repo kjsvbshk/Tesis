@@ -629,7 +629,157 @@ class PredictionService:
             f"P(home)={home_proba:.3f} inference_ms={inference_ms}"
         )
         return response
-    
+
+    async def predict_matchup(
+        self,
+        home_team: str,
+        away_team: str,
+        game_date: Optional[Any] = None,
+    ) -> Dict[str, Any]:
+        """Predice el resultado de un enfrentamiento directo sin necesitar game_id.
+
+        Flujo:
+          1. Detectar feature_set del modelo cargado.
+          2. Usar LiveFeatureExtractor con home_team + away_team + game_date.
+          3. Invocar predict_full_robust.
+          4. Retornar dict compatible con MatchupResponse.
+
+        Raises:
+            ModelNotLoadedError       si el modelo no está cargado.
+            FeaturesNotAvailableError si no hay datos de algún equipo en DB.
+            InferenceError            si el modelo produce salida inválida.
+        """
+        if self.model is None:
+            raise ModelNotLoadedError(
+                "No hay modelo ML cargado. Verificar app.model_versions y MODEL_DIR."
+            )
+
+        # Normalizar fecha
+        from datetime import datetime as dt
+        if game_date is None:
+            resolved_date = dt.utcnow().date()
+        elif isinstance(game_date, str):
+            try:
+                resolved_date = dt.strptime(game_date[:10], "%Y-%m-%d").date()
+            except ValueError:
+                resolved_date = dt.utcnow().date()
+        else:
+            resolved_date = game_date
+
+        # 1. Feature set del modelo
+        try:
+            feature_set = detect_feature_set(self.model)
+        except InferenceError as e:
+            logger.error(f"predict_matchup: no se pudo inferir feature_set: {e}")
+            raise
+
+        # 2. LiveFeatureExtractor — calcula features desde estadísticas reales en DB
+        from app.services.live_feature_extractor import LiveFeatureExtractor, LiveFeaturesError
+        live_extractor = LiveFeatureExtractor(self.db)
+        try:
+            X = live_extractor.build_feature_vector(
+                home_team=home_team,
+                away_team=away_team,
+                game_date=resolved_date,
+                feature_set=feature_set,
+                game_id=None,
+            )
+            features_summary = live_extractor.get_features_summary(
+                home_team=home_team,
+                away_team=away_team,
+                game_date=resolved_date,
+                feature_set=feature_set,
+                game_id=None,
+            )
+        except LiveFeaturesError as e:
+            raise FeaturesNotAvailableError(
+                f"No se encontraron datos suficientes para {home_team} vs {away_team}: {e}"
+            )
+
+        logger.info(
+            f"predict_matchup: {home_team} vs {away_team} ({resolved_date}) "
+            f"— features calculadas (missing={features_summary.get('missing_count', '?')})"
+        )
+
+        # 3. Inferencia
+        inference_start = time.time()
+        try:
+            full_output = predict_full_robust(self.model, X)
+        except Exception as e:
+            logger.error(f"predict_matchup: modelo falló: {e}")
+            raise InferenceError(f"predict_full_robust falló: {e}")
+        inference_ms = int((time.time() - inference_start) * 1000)
+
+        # 4. Escalares + validación
+        scalar = extract_single_sample(full_output, idx=0)
+        validate_prediction(scalar)
+
+        # 5. Construir respuesta
+        home_proba = scalar["home_win_probability"]
+        away_proba = scalar["away_win_probability"]
+
+        if home_proba > 0.6:
+            recommended_bet = "home"
+            expected_value = round(home_proba * 1.8 - 1.0, 3)
+        elif away_proba > 0.6:
+            recommended_bet = "away"
+            expected_value = round(away_proba * 1.8 - 1.0, 3)
+        else:
+            recommended_bet = "none"
+            expected_value = 0.0
+        confidence_score = round(max(home_proba, away_proba), 3)
+
+        response: Dict[str, Any] = {
+            "home_team_name": home_team,
+            "away_team_name": away_team,
+            "game_date": resolved_date.isoformat(),
+            "home_win_probability": round(home_proba, 4),
+            "away_win_probability": round(away_proba, 4),
+            "predicted_home_score": round(scalar.get("predicted_home_score") or 0.0, 1),
+            "predicted_away_score": round(scalar.get("predicted_away_score") or 0.0, 1),
+            "predicted_total": round(
+                (scalar.get("predicted_total")
+                 or ((scalar.get("predicted_home_score") or 0.0)
+                     + (scalar.get("predicted_away_score") or 0.0))),
+                1,
+            ),
+            "predicted_margin": (
+                round(scalar["predicted_margin"], 2)
+                if scalar.get("predicted_margin") is not None else None
+            ),
+            "recommended_bet": recommended_bet,
+            "expected_value": expected_value,
+            "confidence_score": confidence_score,
+            "model_version": (
+                self.model_version_obj.version if self.model_version_obj else "unknown"
+            ),
+            "prediction_timestamp": dt.utcnow().isoformat(),
+            "features_used": features_summary,
+            "inference_latency_ms": inference_ms,
+        }
+
+        if "team_props" in scalar:
+            tp = scalar["team_props"]
+            response["team_props"] = {
+                "home": tp.get("home", {}),
+                "away": tp.get("away", {}),
+                "labels": tp.get("labels", {}),
+            }
+
+        for key in (
+            "poisson_probability", "poisson_lambda1", "poisson_lambda2",
+            "poisson_lambda3", "poisson_home_score", "poisson_away_score",
+            "rf_probability",
+        ):
+            if scalar.get(key) is not None:
+                response.setdefault("model_signals", {})[key] = round(scalar[key], 4)
+
+        logger.info(
+            f"predict_matchup: {home_team} vs {away_team} "
+            f"P(home)={home_proba:.3f} inference_ms={inference_ms}"
+        )
+        return response
+
     async def get_model_status(self) -> Dict[str, Any]:
         """Get ML model status and information"""
         metrics = None

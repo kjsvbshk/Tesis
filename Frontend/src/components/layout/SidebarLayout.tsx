@@ -1,6 +1,6 @@
 import { Outlet, NavLink } from 'react-router-dom'
 import { Toaster } from '@/components/ui/toaster'
-import { Home, Trophy, Ticket, History, User, Zap, FileText, LogOut, ChevronLeft, Menu, Activity, CalendarClock } from 'lucide-react'
+import { Home, Trophy, Ticket, History, User, Zap, FileText, LogOut, ChevronLeft, Menu, Activity, CalendarClock, Swords } from 'lucide-react'
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from '@/components/ui/sheet'
 import { BetSlip } from '@/components/BetSlip'
 import { Button } from '@/components/ui/button'
@@ -49,6 +49,7 @@ export function SidebarLayout() {
               <SideLink to="/partidos" icon={<Trophy size={18} />}>MATCH_FEED</SideLink>
               <SideLink to="/predicciones" icon={<Zap size={18} />}>PREDICTIONS</SideLink>
               <SideLink to="/proximos" icon={<CalendarClock size={18} />}>UPCOMING_GAMES</SideLink>
+              <SideLink to="/enfrentamiento" icon={<Swords size={18} />}>MATCHUP</SideLink>
               <SideLink to="/apuestas" icon={<Ticket size={18} />}>BET_SLIP</SideLink>
               <SideLink to="/requests" icon={<FileText size={18} />}>REQUESTS</SideLink>
               <div className="my-4 border-t border-white/5 mx-2" />

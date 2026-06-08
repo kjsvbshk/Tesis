@@ -6,7 +6,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react'
-import { predictionsService, PredictionResponse } from '@/services/predictions.service'
+import { predictionsService, type PredictionResponse } from '@/services/predictions.service'
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 

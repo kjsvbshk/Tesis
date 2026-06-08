@@ -11,7 +11,7 @@ export function ProviderHomePage() {
     const themeColor = "text-[#00F0FF]"
     const themeBg = "bg-[#00F0FF]"
     const themeBorder = "border-[#00F0FF]"
-    const gradient = "from-[#00F0FF] to-[#0099FF]"
+
 
     return (
         <LazyMotion features={domAnimation}>

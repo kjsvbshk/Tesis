@@ -1,0 +1,39 @@
+{
+  "version": "v1.0.0",
+  "model_type": "Ensemble (RF+XGB)",
+  "feature_columns": [
+    "ppg_diff",
+    "net_rating_diff_rolling",
+    "rest_days_diff",
+    "injuries_diff",
+    "pace_diff",
+    "off_rating_diff",
+    "def_rating_diff",
+    "reb_diff",
+    "ast_diff",
+    "tov_diff",
+    "home_ppg_last5",
+    "away_ppg_last5",
+    "home_rest_days",
+    "away_rest_days",
+    "home_b2b",
+    "away_b2b",
+    "home_injuries_count",
+    "away_injuries_count"
+  ],
+  "trained_at": "2026-03-18T04:24:45.114385+00:00",
+  "metrics": {
+    "split": "test",
+    "n_samples": 779,
+    "log_loss": 0.5436,
+    "brier_score": 0.1588,
+    "roc_auc": 0.853,
+    "accuracy": 0.7304,
+    "ece": 0.2226,
+    "passes_log_loss": true,
+    "passes_brier": true,
+    "passes_auc": true,
+    "passes_ece": "False",
+    "passes_all": false
+  }
+}

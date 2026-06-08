@@ -1,0 +1,175 @@
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import './index.css'
+import App from './App.tsx'
+import { AuthProvider } from '@/contexts/AuthContext'
+import { PermissionsProvider } from '@/contexts/PermissionsContext'
+
+import { SidebarLayout } from '@/components/layout/SidebarLayout'
+import { AdminLayout } from '@/components/layout/AdminLayout'
+import { OperatorLayout } from '@/components/layout/OperatorLayout'
+import { ProtectedRoute } from '@/components/ProtectedRoute'
+import { RoleProtectedRoute } from '@/components/RoleProtectedRoute'
+import { PublicRoute } from '@/components/PublicRoute'
+import { HomePage } from '@/pages/HomePage'
+import { MatchesPage } from '@/pages/MatchesPage'
+import { BetsPage } from '@/pages/BetsPage'
+import { HistoryPage } from '@/pages/HistoryPage'
+import { ProfilePage } from '@/pages/ProfilePage'
+import { LoginPage } from '@/pages/LoginPage'
+import { RegisterPage } from '@/pages/RegisterPage'
+import { VerifyEmailPage } from '@/pages/VerifyEmailPage'
+import { ForgotPasswordPage } from '@/pages/ForgotPasswordPage'
+import { ResetPasswordPage } from '@/pages/ResetPasswordPage'
+import { PredictionsPage } from '@/pages/PredictionsPage'
+import UpcomingGamesPage from '@/pages/UpcomingGamesPage'
+import MatchupPage from '@/pages/MatchupPage'
+import { RequestsPage } from '@/pages/RequestsPage'
+import { AdminHomePage } from '@/pages/admin/AdminHomePage'
+import { UsersManagementPage } from '@/pages/admin/UsersManagementPage'
+import { RolesManagementPage } from '@/pages/admin/RolesManagementPage'
+import { MetricsDashboardPage } from '@/pages/admin/MetricsDashboardPage'
+import { AuditManagementPage } from '@/pages/admin/AuditManagementPage'
+import { AdvancedSearchPage } from '@/pages/admin/AdvancedSearchPage'
+import { MonitoringPage } from '@/pages/admin/MonitoringPage'
+import SettingsPage from '@/pages/admin/SettingsPage'
+import { OperatorHomePage } from '@/pages/operator/OperatorHomePage'
+import { ProvidersManagementPage } from '@/pages/operator/ProvidersManagementPage'
+import { IntegrationMonitoringPage } from '@/pages/operator/IntegrationMonitoringPage'
+import { SyncRecordsPage } from '@/pages/operator/SyncRecordsPage'
+import { ProviderLayout } from '@/components/layout/ProviderLayout'
+import { ProviderHomePage } from '@/pages/provider/ProviderHomePage'
+import { ProviderIntegrationPage } from '@/pages/provider/ProviderIntegrationPage'
+
+
+// Create router with AuthProvider and PermissionsProvider wrapper
+const routerWithAuth = createBrowserRouter([
+  {
+    path: '/',
+    element: (
+      <AuthProvider>
+        <PermissionsProvider>
+          <App />
+        </PermissionsProvider>
+      </AuthProvider>
+    ),
+    children: [
+      {
+        path: 'login',
+        element: (
+          <PublicRoute>
+            <LoginPage />
+          </PublicRoute>
+        ),
+      },
+      {
+        path: 'registro',
+        element: (
+          <PublicRoute>
+            <RegisterPage />
+          </PublicRoute>
+        ),
+      },
+      {
+        path: 'verify-email',
+        element: (
+          <PublicRoute>
+            <VerifyEmailPage />
+          </PublicRoute>
+        ),
+      },
+      {
+        path: 'recuperar-contraseña',
+        element: (
+          <PublicRoute>
+            <ForgotPasswordPage />
+          </PublicRoute>
+        ),
+      },
+      {
+        path: 'reset-password',
+        element: (
+          <PublicRoute>
+            <ResetPasswordPage />
+          </PublicRoute>
+        ),
+      },
+      // Admin routes (check first to redirect admins)
+      {
+        path: 'admin',
+        element: (
+          <RoleProtectedRoute allowedRoles={['admin']}>
+            <AdminLayout />
+          </RoleProtectedRoute>
+        ),
+        children: [
+          { index: true, element: <AdminHomePage /> },
+          { path: 'usuarios', element: <UsersManagementPage /> },
+          { path: 'roles', element: <RolesManagementPage /> },
+          { path: 'metricas', element: <MetricsDashboardPage /> },
+          { path: 'auditoria', element: <AuditManagementPage /> },
+          { path: 'buscar', element: <AdvancedSearchPage /> },
+          { path: 'proveedores', element: <ProvidersManagementPage /> },
+          { path: 'monitoreo', element: <MonitoringPage /> },
+          { path: 'configuracion', element: <SettingsPage /> },
+        ],
+      },
+      // Operator routes
+      {
+        path: 'operator',
+        element: (
+          <RoleProtectedRoute allowedRoles={['operator']}>
+            <OperatorLayout />
+          </RoleProtectedRoute>
+        ),
+        children: [
+          { index: true, element: <OperatorHomePage /> },
+          { path: 'proveedores', element: <ProvidersManagementPage /> },
+          { path: 'monitoreo', element: <IntegrationMonitoringPage /> },
+          { path: 'sincronizacion', element: <SyncRecordsPage /> },
+        ],
+      },
+      // Provider routes
+      {
+        path: 'provider',
+        element: (
+          <RoleProtectedRoute allowedRoles={['provider', 'admin']}>
+            <ProviderLayout />
+          </RoleProtectedRoute>
+        ),
+        children: [
+          { index: true, element: <ProviderHomePage /> },
+          { path: 'integration', element: <ProviderIntegrationPage /> },
+          { path: 'docs', element: <div className="p-8 text-white">API Documentation Coming Soon</div> },
+          { path: 'settings', element: <div className="p-8 text-white">Provider Settings Coming Soon</div> },
+        ],
+      },
+      // User routes (default layout) - exclude admins and operators
+      {
+        element: (
+          <ProtectedRoute>
+            <SidebarLayout />
+          </ProtectedRoute>
+        ),
+        children: [
+          { index: true, element: <HomePage /> },
+          { path: 'partidos', element: <MatchesPage /> },
+          { path: 'predicciones', element: <PredictionsPage /> },
+          { path: 'proximos', element: <UpcomingGamesPage /> },
+          { path: 'enfrentamiento', element: <MatchupPage /> },
+          { path: 'apuestas', element: <BetsPage /> },
+          { path: 'historial', element: <HistoryPage /> },
+          { path: 'requests', element: <RequestsPage /> },
+          { path: 'perfil', element: <ProfilePage /> },
+        ],
+      },
+    ],
+  },
+])
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <RouterProvider router={routerWithAuth} />
+  </StrictMode>,
+)

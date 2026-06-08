@@ -1,0 +1,5155 @@
+{
+  "timestamp": "2026-01-22T20:21:48.607571",
+  "schemas": {
+    "app": {
+      "schema_name": "app",
+      "tables": {
+        "administrators": {
+          "columns": {
+            "id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": "nextval('administrators_id_seq'::regclass)",
+              "position": 1
+            },
+            "user_account_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 2
+            },
+            "role_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 3
+            },
+            "first_name": {
+              "type": "character varying",
+              "max_length": 100,
+              "nullable": false,
+              "default": null,
+              "position": 4
+            },
+            "last_name": {
+              "type": "character varying",
+              "max_length": 100,
+              "nullable": false,
+              "default": null,
+              "position": 5
+            },
+            "employee_id": {
+              "type": "character varying",
+              "max_length": 50,
+              "nullable": true,
+              "default": null,
+              "position": 6
+            },
+            "department": {
+              "type": "character varying",
+              "max_length": 100,
+              "nullable": true,
+              "default": null,
+              "position": 7
+            },
+            "phone": {
+              "type": "character varying",
+              "max_length": 20,
+              "nullable": true,
+              "default": null,
+              "position": 8
+            },
+            "created_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "CURRENT_TIMESTAMP",
+              "position": 9
+            },
+            "updated_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "CURRENT_TIMESTAMP",
+              "position": 10
+            }
+          },
+          "primary_key": "id",
+          "row_count": 1
+        },
+        "audit_log": {
+          "columns": {
+            "id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": "nextval('audit_log_id_seq'::regclass)",
+              "position": 1
+            },
+            "organization_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 2
+            },
+            "actor_user_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 3
+            },
+            "action": {
+              "type": "character varying",
+              "max_length": 100,
+              "nullable": false,
+              "default": null,
+              "position": 4
+            },
+            "resource_type": {
+              "type": "character varying",
+              "max_length": 50,
+              "nullable": true,
+              "default": null,
+              "position": 5
+            },
+            "resource_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 6
+            },
+            "before": {
+              "type": "text",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 7
+            },
+            "after": {
+              "type": "text",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 8
+            },
+            "audit_metadata": {
+              "type": "text",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 9
+            },
+            "created_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "now()",
+              "position": 10
+            }
+          },
+          "primary_key": "id",
+          "row_count": 67
+        },
+        "bets": {
+          "columns": {
+            "id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": "nextval('bets_id_seq'::regclass)",
+              "position": 1
+            },
+            "user_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 2
+            },
+            "game_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 3
+            },
+            "bet_type": {
+              "type": "USER-DEFINED",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 4
+            },
+            "bet_amount": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 5
+            },
+            "odds": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 6
+            },
+            "potential_payout": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 7
+            },
+            "selected_team_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 8
+            },
+            "spread_value": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 9
+            },
+            "over_under_value": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 10
+            },
+            "is_over": {
+              "type": "boolean",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 11
+            },
+            "status": {
+              "type": "USER-DEFINED",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 12
+            },
+            "actual_payout": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 13
+            },
+            "placed_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "now()",
+              "position": 14
+            },
+            "settled_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 15
+            },
+            "created_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "now()",
+              "position": 16
+            },
+            "updated_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 17
+            }
+          },
+          "primary_key": [
+            "id",
+            "id"
+          ],
+          "row_count": 14
+        },
+        "clients": {
+          "columns": {
+            "id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": "nextval('clients_id_seq'::regclass)",
+              "position": 1
+            },
+            "user_account_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 2
+            },
+            "role_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 3
+            },
+            "credits": {
+              "type": "numeric",
+              "max_length": null,
+              "nullable": false,
+              "default": "1000.0",
+              "position": 4
+            },
+            "first_name": {
+              "type": "character varying",
+              "max_length": 100,
+              "nullable": true,
+              "default": null,
+              "position": 5
+            },
+            "last_name": {
+              "type": "character varying",
+              "max_length": 100,
+              "nullable": true,
+              "default": null,
+              "position": 6
+            },
+            "phone": {
+              "type": "character varying",
+              "max_length": 20,
+              "nullable": true,
+              "default": null,
+              "position": 7
+            },
+            "date_of_birth": {
+              "type": "date",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 8
+            },
+            "created_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "CURRENT_TIMESTAMP",
+              "position": 9
+            },
+            "updated_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "CURRENT_TIMESTAMP",
+              "position": 10
+            }
+          },
+          "primary_key": "id",
+          "row_count": 7
+        },
+        "email_verification_codes": {
+          "columns": {
+            "id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": "nextval('email_verification_codes_id_seq'::regclass)",
+              "position": 1
+            },
+            "email": {
+              "type": "character varying",
+              "max_length": 100,
+              "nullable": false,
+              "default": null,
+              "position": 2
+            },
+            "code": {
+              "type": "character varying",
+              "max_length": 6,
+              "nullable": false,
+              "default": null,
+              "position": 3
+            },
+            "purpose": {
+              "type": "character varying",
+              "max_length": 20,
+              "nullable": false,
+              "default": null,
+              "position": 4
+            },
+            "is_verified": {
+              "type": "boolean",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 5
+            },
+            "created_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "now()",
+              "position": 6
+            },
+            "expires_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 7
+            },
+            "verified_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 8
+            }
+          },
+          "primary_key": "id",
+          "row_count": 1
+        },
+        "idempotency_keys": {
+          "columns": {
+            "id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": "nextval('idempotency_keys_id_seq'::regclass)",
+              "position": 1
+            },
+            "request_key": {
+              "type": "character varying",
+              "max_length": 255,
+              "nullable": false,
+              "default": null,
+              "position": 2
+            },
+            "request_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 3
+            },
+            "response_data": {
+              "type": "text",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 4
+            },
+            "created_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "now()",
+              "position": 5
+            },
+            "expires_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 6
+            }
+          },
+          "primary_key": "id",
+          "row_count": 10
+        },
+        "model_versions": {
+          "columns": {
+            "id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": "nextval('model_versions_id_seq'::regclass)",
+              "position": 1
+            },
+            "version": {
+              "type": "character varying",
+              "max_length": 50,
+              "nullable": false,
+              "default": null,
+              "position": 2
+            },
+            "is_active": {
+              "type": "boolean",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 3
+            },
+            "model_metadata": {
+              "type": "text",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 4
+            },
+            "description": {
+              "type": "text",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 5
+            },
+            "created_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "now()",
+              "position": 6
+            }
+          },
+          "primary_key": "id",
+          "row_count": 1
+        },
+        "odds_lines": {
+          "columns": {
+            "id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": "nextval('odds_lines_id_seq'::regclass)",
+              "position": 1
+            },
+            "snapshot_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 2
+            },
+            "provider_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 3
+            },
+            "line_code": {
+              "type": "character varying",
+              "max_length": 100,
+              "nullable": false,
+              "default": null,
+              "position": 4
+            },
+            "price": {
+              "type": "numeric",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 5
+            },
+            "line_metadata": {
+              "type": "text",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 6
+            },
+            "created_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "now()",
+              "position": 7
+            }
+          },
+          "primary_key": "id",
+          "row_count": 0
+        },
+        "odds_snapshots": {
+          "columns": {
+            "id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": "nextval('odds_snapshots_id_seq'::regclass)",
+              "position": 1
+            },
+            "request_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 2
+            },
+            "taken_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": false,
+              "default": "now()",
+              "position": 3
+            }
+          },
+          "primary_key": "id",
+          "row_count": 11
+        },
+        "operators": {
+          "columns": {
+            "id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": "nextval('operators_id_seq'::regclass)",
+              "position": 1
+            },
+            "user_account_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 2
+            },
+            "role_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 3
+            },
+            "first_name": {
+              "type": "character varying",
+              "max_length": 100,
+              "nullable": false,
+              "default": null,
+              "position": 4
+            },
+            "last_name": {
+              "type": "character varying",
+              "max_length": 100,
+              "nullable": false,
+              "default": null,
+              "position": 5
+            },
+            "employee_id": {
+              "type": "character varying",
+              "max_length": 50,
+              "nullable": true,
+              "default": null,
+              "position": 6
+            },
+            "department": {
+              "type": "character varying",
+              "max_length": 100,
+              "nullable": true,
+              "default": null,
+              "position": 7
+            },
+            "phone": {
+              "type": "character varying",
+              "max_length": 20,
+              "nullable": true,
+              "default": null,
+              "position": 8
+            },
+            "shift": {
+              "type": "character varying",
+              "max_length": 50,
+              "nullable": true,
+              "default": null,
+              "position": 9
+            },
+            "created_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "CURRENT_TIMESTAMP",
+              "position": 10
+            },
+            "updated_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "CURRENT_TIMESTAMP",
+              "position": 11
+            }
+          },
+          "primary_key": "id",
+          "row_count": 0
+        },
+        "outbox": {
+          "columns": {
+            "id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": "nextval('outbox_id_seq'::regclass)",
+              "position": 1
+            },
+            "topic": {
+              "type": "character varying",
+              "max_length": 100,
+              "nullable": false,
+              "default": null,
+              "position": 2
+            },
+            "payload": {
+              "type": "text",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 3
+            },
+            "created_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "now()",
+              "position": 4
+            },
+            "published_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 5
+            }
+          },
+          "primary_key": "id",
+          "row_count": 47
+        },
+        "permissions": {
+          "columns": {
+            "id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": "nextval('permissions_id_seq'::regclass)",
+              "position": 1
+            },
+            "code": {
+              "type": "character varying",
+              "max_length": 100,
+              "nullable": false,
+              "default": null,
+              "position": 2
+            },
+            "name": {
+              "type": "character varying",
+              "max_length": 200,
+              "nullable": false,
+              "default": null,
+              "position": 3
+            },
+            "description": {
+              "type": "text",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 4
+            },
+            "scope": {
+              "type": "character varying",
+              "max_length": 50,
+              "nullable": true,
+              "default": null,
+              "position": 5
+            },
+            "created_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "now()",
+              "position": 6
+            }
+          },
+          "primary_key": "id",
+          "row_count": 13
+        },
+        "predictions": {
+          "columns": {
+            "id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": "nextval('predictions_id_seq'::regclass)",
+              "position": 1
+            },
+            "request_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 2
+            },
+            "model_version_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 3
+            },
+            "score": {
+              "type": "text",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 4
+            },
+            "latency_ms": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 5
+            },
+            "telemetry": {
+              "type": "text",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 6
+            },
+            "created_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "now()",
+              "position": 7
+            }
+          },
+          "primary_key": "id",
+          "row_count": 10
+        },
+        "provider_endpoints": {
+          "columns": {
+            "id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": "nextval('provider_endpoints_id_seq'::regclass)",
+              "position": 1
+            },
+            "provider_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 2
+            },
+            "purpose": {
+              "type": "character varying",
+              "max_length": 100,
+              "nullable": false,
+              "default": null,
+              "position": 3
+            },
+            "url": {
+              "type": "character varying",
+              "max_length": 500,
+              "nullable": false,
+              "default": null,
+              "position": 4
+            },
+            "method": {
+              "type": "character varying",
+              "max_length": 10,
+              "nullable": false,
+              "default": null,
+              "position": 5
+            },
+            "headers": {
+              "type": "text",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 6
+            },
+            "created_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "now()",
+              "position": 7
+            }
+          },
+          "primary_key": "id",
+          "row_count": 0
+        },
+        "providers": {
+          "columns": {
+            "id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": "nextval('providers_id_seq'::regclass)",
+              "position": 1
+            },
+            "code": {
+              "type": "character varying",
+              "max_length": 50,
+              "nullable": false,
+              "default": null,
+              "position": 2
+            },
+            "name": {
+              "type": "character varying",
+              "max_length": 100,
+              "nullable": false,
+              "default": null,
+              "position": 3
+            },
+            "is_active": {
+              "type": "boolean",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 4
+            },
+            "timeout_seconds": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 5
+            },
+            "max_retries": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 6
+            },
+            "circuit_breaker_threshold": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 7
+            },
+            "provider_metadata": {
+              "type": "text",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 8
+            },
+            "created_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "now()",
+              "position": 9
+            },
+            "updated_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 10
+            }
+          },
+          "primary_key": "id",
+          "row_count": 0
+        },
+        "requests": {
+          "columns": {
+            "id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": "nextval('requests_id_seq'::regclass)",
+              "position": 1
+            },
+            "organization_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 2
+            },
+            "user_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 3
+            },
+            "event_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 4
+            },
+            "market_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 5
+            },
+            "request_key": {
+              "type": "character varying",
+              "max_length": 255,
+              "nullable": false,
+              "default": null,
+              "position": 6
+            },
+            "status": {
+              "type": "USER-DEFINED",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 7
+            },
+            "request_metadata": {
+              "type": "text",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 8
+            },
+            "error_message": {
+              "type": "text",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 9
+            },
+            "created_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "now()",
+              "position": 10
+            },
+            "updated_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 11
+            },
+            "completed_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 12
+            }
+          },
+          "primary_key": "id",
+          "row_count": 33
+        },
+        "role_permissions": {
+          "columns": {
+            "role_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 1
+            },
+            "permission_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 2
+            },
+            "created_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "now()",
+              "position": 3
+            }
+          },
+          "primary_key": [
+            "role_id",
+            "permission_id"
+          ],
+          "row_count": 22
+        },
+        "roles": {
+          "columns": {
+            "id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": "nextval('roles_id_seq'::regclass)",
+              "position": 1
+            },
+            "code": {
+              "type": "character varying",
+              "max_length": 50,
+              "nullable": false,
+              "default": null,
+              "position": 2
+            },
+            "name": {
+              "type": "character varying",
+              "max_length": 100,
+              "nullable": false,
+              "default": null,
+              "position": 3
+            },
+            "description": {
+              "type": "text",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 4
+            },
+            "created_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "now()",
+              "position": 5
+            }
+          },
+          "primary_key": "id",
+          "row_count": 4
+        },
+        "transactions": {
+          "columns": {
+            "id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": "nextval('transactions_id_seq'::regclass)",
+              "position": 1
+            },
+            "user_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 2
+            },
+            "bet_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 3
+            },
+            "transaction_type": {
+              "type": "USER-DEFINED",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 4
+            },
+            "amount": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 5
+            },
+            "balance_before": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 6
+            },
+            "balance_after": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 7
+            },
+            "description": {
+              "type": "character varying",
+              "max_length": 255,
+              "nullable": true,
+              "default": null,
+              "position": 8
+            },
+            "created_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "now()",
+              "position": 9
+            }
+          },
+          "primary_key": "id",
+          "row_count": 31
+        },
+        "user_accounts": {
+          "columns": {
+            "id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": "nextval('user_accounts_id_seq'::regclass)",
+              "position": 1
+            },
+            "username": {
+              "type": "character varying",
+              "max_length": 50,
+              "nullable": false,
+              "default": null,
+              "position": 2
+            },
+            "email": {
+              "type": "character varying",
+              "max_length": 100,
+              "nullable": false,
+              "default": null,
+              "position": 3
+            },
+            "hashed_password": {
+              "type": "character varying",
+              "max_length": 255,
+              "nullable": false,
+              "default": null,
+              "position": 4
+            },
+            "is_active": {
+              "type": "boolean",
+              "max_length": null,
+              "nullable": false,
+              "default": "true",
+              "position": 5
+            },
+            "created_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "CURRENT_TIMESTAMP",
+              "position": 6
+            },
+            "updated_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "CURRENT_TIMESTAMP",
+              "position": 7
+            },
+            "avatar_url": {
+              "type": "character varying",
+              "max_length": 500,
+              "nullable": true,
+              "default": null,
+              "position": 8
+            }
+          },
+          "primary_key": "id",
+          "row_count": 8
+        },
+        "user_roles": {
+          "columns": {
+            "id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": "nextval('user_roles_id_seq'::regclass)",
+              "position": 1
+            },
+            "user_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 2
+            },
+            "role_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 3
+            },
+            "is_active": {
+              "type": "boolean",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 4
+            },
+            "created_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "now()",
+              "position": 5
+            }
+          },
+          "primary_key": "id",
+          "row_count": 2
+        },
+        "user_sessions": {
+          "columns": {
+            "id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": "nextval('user_sessions_id_seq'::regclass)",
+              "position": 1
+            },
+            "user_account_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 2
+            },
+            "token_hash": {
+              "type": "character varying",
+              "max_length": 64,
+              "nullable": false,
+              "default": null,
+              "position": 3
+            },
+            "device_info": {
+              "type": "character varying",
+              "max_length": 255,
+              "nullable": true,
+              "default": null,
+              "position": 4
+            },
+            "ip_address": {
+              "type": "character varying",
+              "max_length": 45,
+              "nullable": true,
+              "default": null,
+              "position": 5
+            },
+            "user_agent": {
+              "type": "text",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 6
+            },
+            "location": {
+              "type": "character varying",
+              "max_length": 255,
+              "nullable": true,
+              "default": null,
+              "position": 7
+            },
+            "is_active": {
+              "type": "boolean",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 8
+            },
+            "last_activity": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": false,
+              "default": "now()",
+              "position": 9
+            },
+            "created_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": false,
+              "default": "now()",
+              "position": 10
+            },
+            "expires_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 11
+            },
+            "revoked_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 12
+            }
+          },
+          "primary_key": "id",
+          "row_count": 18
+        },
+        "user_two_factor": {
+          "columns": {
+            "id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": "nextval('user_two_factor_id_seq'::regclass)",
+              "position": 1
+            },
+            "user_account_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 2
+            },
+            "secret": {
+              "type": "character varying",
+              "max_length": 32,
+              "nullable": false,
+              "default": null,
+              "position": 3
+            },
+            "is_enabled": {
+              "type": "boolean",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 4
+            },
+            "backup_codes": {
+              "type": "text",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 5
+            },
+            "created_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "now()",
+              "position": 6
+            },
+            "updated_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 7
+            },
+            "enabled_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 8
+            }
+          },
+          "primary_key": "id",
+          "row_count": 3
+        },
+        "users": {
+          "columns": {
+            "id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": "nextval('users_id_seq'::regclass)",
+              "position": 1
+            },
+            "username": {
+              "type": "character varying",
+              "max_length": 50,
+              "nullable": false,
+              "default": null,
+              "position": 2
+            },
+            "email": {
+              "type": "character varying",
+              "max_length": 100,
+              "nullable": false,
+              "default": null,
+              "position": 3
+            },
+            "hashed_password": {
+              "type": "character varying",
+              "max_length": 255,
+              "nullable": false,
+              "default": null,
+              "position": 4
+            },
+            "rol": {
+              "type": "character varying",
+              "max_length": 20,
+              "nullable": false,
+              "default": null,
+              "position": 5
+            },
+            "credits": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 6
+            },
+            "is_active": {
+              "type": "boolean",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 7
+            },
+            "created_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "now()",
+              "position": 8
+            },
+            "updated_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 9
+            }
+          },
+          "primary_key": "id",
+          "row_count": 3
+        }
+      },
+      "foreign_keys": [
+        {
+          "table": "administrators",
+          "column": "user_account_id",
+          "foreign_schema": "app",
+          "foreign_table": "user_accounts",
+          "foreign_column": "id",
+          "constraint_name": "fk_administrators_user_account"
+        },
+        {
+          "table": "administrators",
+          "column": "role_id",
+          "foreign_schema": "app",
+          "foreign_table": "roles",
+          "foreign_column": "id",
+          "constraint_name": "fk_administrators_role"
+        },
+        {
+          "table": "audit_log",
+          "column": "actor_user_id",
+          "foreign_schema": "app",
+          "foreign_table": "users",
+          "foreign_column": "id",
+          "constraint_name": "audit_log_actor_user_id_fkey"
+        },
+        {
+          "table": "bets",
+          "column": "user_id",
+          "foreign_schema": "app",
+          "foreign_table": "users",
+          "foreign_column": "id",
+          "constraint_name": "bets_user_id_fkey"
+        },
+        {
+          "table": "bets",
+          "column": "user_id",
+          "foreign_schema": "app",
+          "foreign_table": "user_accounts",
+          "foreign_column": "id",
+          "constraint_name": "fk_bets_user_account"
+        },
+        {
+          "table": "clients",
+          "column": "role_id",
+          "foreign_schema": "app",
+          "foreign_table": "roles",
+          "foreign_column": "id",
+          "constraint_name": "fk_clients_role"
+        },
+        {
+          "table": "clients",
+          "column": "user_account_id",
+          "foreign_schema": "app",
+          "foreign_table": "user_accounts",
+          "foreign_column": "id",
+          "constraint_name": "fk_clients_user_account"
+        },
+        {
+          "table": "odds_lines",
+          "column": "snapshot_id",
+          "foreign_schema": "app",
+          "foreign_table": "odds_snapshots",
+          "foreign_column": "id",
+          "constraint_name": "odds_lines_snapshot_id_fkey"
+        },
+        {
+          "table": "odds_lines",
+          "column": "provider_id",
+          "foreign_schema": "app",
+          "foreign_table": "providers",
+          "foreign_column": "id",
+          "constraint_name": "odds_lines_provider_id_fkey"
+        },
+        {
+          "table": "odds_snapshots",
+          "column": "request_id",
+          "foreign_schema": "app",
+          "foreign_table": "requests",
+          "foreign_column": "id",
+          "constraint_name": "odds_snapshots_request_id_fkey"
+        },
+        {
+          "table": "operators",
+          "column": "role_id",
+          "foreign_schema": "app",
+          "foreign_table": "roles",
+          "foreign_column": "id",
+          "constraint_name": "fk_operators_role"
+        },
+        {
+          "table": "operators",
+          "column": "user_account_id",
+          "foreign_schema": "app",
+          "foreign_table": "user_accounts",
+          "foreign_column": "id",
+          "constraint_name": "fk_operators_user_account"
+        },
+        {
+          "table": "predictions",
+          "column": "request_id",
+          "foreign_schema": "app",
+          "foreign_table": "requests",
+          "foreign_column": "id",
+          "constraint_name": "predictions_request_id_fkey"
+        },
+        {
+          "table": "predictions",
+          "column": "model_version_id",
+          "foreign_schema": "app",
+          "foreign_table": "model_versions",
+          "foreign_column": "id",
+          "constraint_name": "predictions_model_version_id_fkey"
+        },
+        {
+          "table": "provider_endpoints",
+          "column": "provider_id",
+          "foreign_schema": "app",
+          "foreign_table": "providers",
+          "foreign_column": "id",
+          "constraint_name": "provider_endpoints_provider_id_fkey"
+        },
+        {
+          "table": "requests",
+          "column": "user_id",
+          "foreign_schema": "app",
+          "foreign_table": "users",
+          "foreign_column": "id",
+          "constraint_name": "requests_user_id_fkey"
+        },
+        {
+          "table": "role_permissions",
+          "column": "role_id",
+          "foreign_schema": "app",
+          "foreign_table": "roles",
+          "foreign_column": "id",
+          "constraint_name": "role_permissions_role_id_fkey"
+        },
+        {
+          "table": "role_permissions",
+          "column": "permission_id",
+          "foreign_schema": "app",
+          "foreign_table": "permissions",
+          "foreign_column": "id",
+          "constraint_name": "role_permissions_permission_id_fkey"
+        },
+        {
+          "table": "transactions",
+          "column": "user_id",
+          "foreign_schema": "app",
+          "foreign_table": "users",
+          "foreign_column": "id",
+          "constraint_name": "transactions_user_id_fkey"
+        },
+        {
+          "table": "transactions",
+          "column": "user_id",
+          "foreign_schema": "app",
+          "foreign_table": "user_accounts",
+          "foreign_column": "id",
+          "constraint_name": "fk_transactions_user_account"
+        },
+        {
+          "table": "user_roles",
+          "column": "role_id",
+          "foreign_schema": "app",
+          "foreign_table": "roles",
+          "foreign_column": "id",
+          "constraint_name": "user_roles_role_id_fkey"
+        },
+        {
+          "table": "user_roles",
+          "column": "user_id",
+          "foreign_schema": "app",
+          "foreign_table": "users",
+          "foreign_column": "id",
+          "constraint_name": "user_roles_user_id_fkey"
+        },
+        {
+          "table": "user_sessions",
+          "column": "user_account_id",
+          "foreign_schema": "app",
+          "foreign_table": "user_accounts",
+          "foreign_column": "id",
+          "constraint_name": "user_sessions_user_account_id_fkey"
+        },
+        {
+          "table": "user_two_factor",
+          "column": "user_account_id",
+          "foreign_schema": "app",
+          "foreign_table": "user_accounts",
+          "foreign_column": "id",
+          "constraint_name": "user_two_factor_user_account_id_fkey"
+        }
+      ],
+      "indexes": {
+        "administrators": [
+          {
+            "name": "administrators_employee_id_key",
+            "definition": "CREATE UNIQUE INDEX administrators_employee_id_key ON app.administrators USING btree (employee_id)"
+          },
+          {
+            "name": "administrators_pkey",
+            "definition": "CREATE UNIQUE INDEX administrators_pkey ON app.administrators USING btree (id)"
+          },
+          {
+            "name": "administrators_user_account_id_key",
+            "definition": "CREATE UNIQUE INDEX administrators_user_account_id_key ON app.administrators USING btree (user_account_id)"
+          },
+          {
+            "name": "idx_administrators_employee_id",
+            "definition": "CREATE INDEX idx_administrators_employee_id ON app.administrators USING btree (employee_id)"
+          },
+          {
+            "name": "idx_administrators_role_id",
+            "definition": "CREATE INDEX idx_administrators_role_id ON app.administrators USING btree (role_id)"
+          },
+          {
+            "name": "idx_administrators_user_account_id",
+            "definition": "CREATE INDEX idx_administrators_user_account_id ON app.administrators USING btree (user_account_id)"
+          }
+        ],
+        "audit_log": [
+          {
+            "name": "audit_log_pkey",
+            "definition": "CREATE UNIQUE INDEX audit_log_pkey ON app.audit_log USING btree (id)"
+          },
+          {
+            "name": "idx_audit_actor",
+            "definition": "CREATE INDEX idx_audit_actor ON app.audit_log USING btree (actor_user_id)"
+          },
+          {
+            "name": "idx_audit_created_at",
+            "definition": "CREATE INDEX idx_audit_created_at ON app.audit_log USING btree (created_at)"
+          },
+          {
+            "name": "idx_audit_resource",
+            "definition": "CREATE INDEX idx_audit_resource ON app.audit_log USING btree (resource_type, resource_id)"
+          },
+          {
+            "name": "ix_app_audit_log_action",
+            "definition": "CREATE INDEX ix_app_audit_log_action ON app.audit_log USING btree (action)"
+          },
+          {
+            "name": "ix_app_audit_log_actor_user_id",
+            "definition": "CREATE INDEX ix_app_audit_log_actor_user_id ON app.audit_log USING btree (actor_user_id)"
+          },
+          {
+            "name": "ix_app_audit_log_created_at",
+            "definition": "CREATE INDEX ix_app_audit_log_created_at ON app.audit_log USING btree (created_at)"
+          },
+          {
+            "name": "ix_app_audit_log_id",
+            "definition": "CREATE INDEX ix_app_audit_log_id ON app.audit_log USING btree (id)"
+          }
+        ],
+        "bets": [
+          {
+            "name": "bets_pkey",
+            "definition": "CREATE UNIQUE INDEX bets_pkey ON app.bets USING btree (id)"
+          },
+          {
+            "name": "ix_app_bets_id",
+            "definition": "CREATE INDEX ix_app_bets_id ON app.bets USING btree (id)"
+          }
+        ],
+        "clients": [
+          {
+            "name": "clients_pkey",
+            "definition": "CREATE UNIQUE INDEX clients_pkey ON app.clients USING btree (id)"
+          },
+          {
+            "name": "clients_user_account_id_key",
+            "definition": "CREATE UNIQUE INDEX clients_user_account_id_key ON app.clients USING btree (user_account_id)"
+          },
+          {
+            "name": "idx_clients_role_id",
+            "definition": "CREATE INDEX idx_clients_role_id ON app.clients USING btree (role_id)"
+          },
+          {
+            "name": "idx_clients_user_account_id",
+            "definition": "CREATE INDEX idx_clients_user_account_id ON app.clients USING btree (user_account_id)"
+          }
+        ],
+        "email_verification_codes": [
+          {
+            "name": "email_verification_codes_pkey",
+            "definition": "CREATE UNIQUE INDEX email_verification_codes_pkey ON app.email_verification_codes USING btree (id)"
+          },
+          {
+            "name": "idx_email_verification_email_purpose",
+            "definition": "CREATE INDEX idx_email_verification_email_purpose ON app.email_verification_codes USING btree (email, purpose)"
+          },
+          {
+            "name": "ix_app_email_verification_codes_email",
+            "definition": "CREATE INDEX ix_app_email_verification_codes_email ON app.email_verification_codes USING btree (email)"
+          },
+          {
+            "name": "ix_app_email_verification_codes_id",
+            "definition": "CREATE INDEX ix_app_email_verification_codes_id ON app.email_verification_codes USING btree (id)"
+          }
+        ],
+        "idempotency_keys": [
+          {
+            "name": "idempotency_keys_pkey",
+            "definition": "CREATE UNIQUE INDEX idempotency_keys_pkey ON app.idempotency_keys USING btree (id)"
+          },
+          {
+            "name": "ix_app_idempotency_keys_id",
+            "definition": "CREATE INDEX ix_app_idempotency_keys_id ON app.idempotency_keys USING btree (id)"
+          },
+          {
+            "name": "ix_app_idempotency_keys_request_key",
+            "definition": "CREATE UNIQUE INDEX ix_app_idempotency_keys_request_key ON app.idempotency_keys USING btree (request_key)"
+          }
+        ],
+        "model_versions": [
+          {
+            "name": "ix_app_model_versions_id",
+            "definition": "CREATE INDEX ix_app_model_versions_id ON app.model_versions USING btree (id)"
+          },
+          {
+            "name": "ix_app_model_versions_version",
+            "definition": "CREATE UNIQUE INDEX ix_app_model_versions_version ON app.model_versions USING btree (version)"
+          },
+          {
+            "name": "model_versions_pkey",
+            "definition": "CREATE UNIQUE INDEX model_versions_pkey ON app.model_versions USING btree (id)"
+          }
+        ],
+        "odds_lines": [
+          {
+            "name": "ix_app_odds_lines_id",
+            "definition": "CREATE INDEX ix_app_odds_lines_id ON app.odds_lines USING btree (id)"
+          },
+          {
+            "name": "ix_app_odds_lines_provider_id",
+            "definition": "CREATE INDEX ix_app_odds_lines_provider_id ON app.odds_lines USING btree (provider_id)"
+          },
+          {
+            "name": "ix_app_odds_lines_snapshot_id",
+            "definition": "CREATE INDEX ix_app_odds_lines_snapshot_id ON app.odds_lines USING btree (snapshot_id)"
+          },
+          {
+            "name": "odds_lines_pkey",
+            "definition": "CREATE UNIQUE INDEX odds_lines_pkey ON app.odds_lines USING btree (id)"
+          }
+        ],
+        "odds_snapshots": [
+          {
+            "name": "ix_app_odds_snapshots_id",
+            "definition": "CREATE INDEX ix_app_odds_snapshots_id ON app.odds_snapshots USING btree (id)"
+          },
+          {
+            "name": "ix_app_odds_snapshots_request_id",
+            "definition": "CREATE INDEX ix_app_odds_snapshots_request_id ON app.odds_snapshots USING btree (request_id)"
+          },
+          {
+            "name": "odds_snapshots_pkey",
+            "definition": "CREATE UNIQUE INDEX odds_snapshots_pkey ON app.odds_snapshots USING btree (id)"
+          }
+        ],
+        "operators": [
+          {
+            "name": "idx_operators_employee_id",
+            "definition": "CREATE INDEX idx_operators_employee_id ON app.operators USING btree (employee_id)"
+          },
+          {
+            "name": "idx_operators_role_id",
+            "definition": "CREATE INDEX idx_operators_role_id ON app.operators USING btree (role_id)"
+          },
+          {
+            "name": "idx_operators_user_account_id",
+            "definition": "CREATE INDEX idx_operators_user_account_id ON app.operators USING btree (user_account_id)"
+          },
+          {
+            "name": "operators_employee_id_key",
+            "definition": "CREATE UNIQUE INDEX operators_employee_id_key ON app.operators USING btree (employee_id)"
+          },
+          {
+            "name": "operators_pkey",
+            "definition": "CREATE UNIQUE INDEX operators_pkey ON app.operators USING btree (id)"
+          },
+          {
+            "name": "operators_user_account_id_key",
+            "definition": "CREATE UNIQUE INDEX operators_user_account_id_key ON app.operators USING btree (user_account_id)"
+          }
+        ],
+        "outbox": [
+          {
+            "name": "ix_app_outbox_created_at",
+            "definition": "CREATE INDEX ix_app_outbox_created_at ON app.outbox USING btree (created_at)"
+          },
+          {
+            "name": "ix_app_outbox_id",
+            "definition": "CREATE INDEX ix_app_outbox_id ON app.outbox USING btree (id)"
+          },
+          {
+            "name": "ix_app_outbox_published_at",
+            "definition": "CREATE INDEX ix_app_outbox_published_at ON app.outbox USING btree (published_at)"
+          },
+          {
+            "name": "ix_app_outbox_topic",
+            "definition": "CREATE INDEX ix_app_outbox_topic ON app.outbox USING btree (topic)"
+          },
+          {
+            "name": "outbox_pkey",
+            "definition": "CREATE UNIQUE INDEX outbox_pkey ON app.outbox USING btree (id)"
+          }
+        ],
+        "permissions": [
+          {
+            "name": "ix_app_permissions_code",
+            "definition": "CREATE UNIQUE INDEX ix_app_permissions_code ON app.permissions USING btree (code)"
+          },
+          {
+            "name": "ix_app_permissions_id",
+            "definition": "CREATE INDEX ix_app_permissions_id ON app.permissions USING btree (id)"
+          },
+          {
+            "name": "permissions_pkey",
+            "definition": "CREATE UNIQUE INDEX permissions_pkey ON app.permissions USING btree (id)"
+          }
+        ],
+        "predictions": [
+          {
+            "name": "ix_app_predictions_id",
+            "definition": "CREATE INDEX ix_app_predictions_id ON app.predictions USING btree (id)"
+          },
+          {
+            "name": "ix_app_predictions_model_version_id",
+            "definition": "CREATE INDEX ix_app_predictions_model_version_id ON app.predictions USING btree (model_version_id)"
+          },
+          {
+            "name": "ix_app_predictions_request_id",
+            "definition": "CREATE UNIQUE INDEX ix_app_predictions_request_id ON app.predictions USING btree (request_id)"
+          },
+          {
+            "name": "predictions_pkey",
+            "definition": "CREATE UNIQUE INDEX predictions_pkey ON app.predictions USING btree (id)"
+          }
+        ],
+        "provider_endpoints": [
+          {
+            "name": "ix_app_provider_endpoints_id",
+            "definition": "CREATE INDEX ix_app_provider_endpoints_id ON app.provider_endpoints USING btree (id)"
+          },
+          {
+            "name": "ix_app_provider_endpoints_provider_id",
+            "definition": "CREATE INDEX ix_app_provider_endpoints_provider_id ON app.provider_endpoints USING btree (provider_id)"
+          },
+          {
+            "name": "provider_endpoints_pkey",
+            "definition": "CREATE UNIQUE INDEX provider_endpoints_pkey ON app.provider_endpoints USING btree (id)"
+          }
+        ],
+        "providers": [
+          {
+            "name": "ix_app_providers_code",
+            "definition": "CREATE UNIQUE INDEX ix_app_providers_code ON app.providers USING btree (code)"
+          },
+          {
+            "name": "ix_app_providers_id",
+            "definition": "CREATE INDEX ix_app_providers_id ON app.providers USING btree (id)"
+          },
+          {
+            "name": "providers_pkey",
+            "definition": "CREATE UNIQUE INDEX providers_pkey ON app.providers USING btree (id)"
+          }
+        ],
+        "requests": [
+          {
+            "name": "idx_requests_created_at",
+            "definition": "CREATE INDEX idx_requests_created_at ON app.requests USING btree (created_at)"
+          },
+          {
+            "name": "idx_requests_status",
+            "definition": "CREATE INDEX idx_requests_status ON app.requests USING btree (status)"
+          },
+          {
+            "name": "idx_requests_user_id",
+            "definition": "CREATE INDEX idx_requests_user_id ON app.requests USING btree (user_id)"
+          },
+          {
+            "name": "ix_app_requests_created_at",
+            "definition": "CREATE INDEX ix_app_requests_created_at ON app.requests USING btree (created_at)"
+          },
+          {
+            "name": "ix_app_requests_id",
+            "definition": "CREATE INDEX ix_app_requests_id ON app.requests USING btree (id)"
+          },
+          {
+            "name": "ix_app_requests_request_key",
+            "definition": "CREATE INDEX ix_app_requests_request_key ON app.requests USING btree (request_key)"
+          },
+          {
+            "name": "ix_app_requests_status",
+            "definition": "CREATE INDEX ix_app_requests_status ON app.requests USING btree (status)"
+          },
+          {
+            "name": "ix_app_requests_user_id",
+            "definition": "CREATE INDEX ix_app_requests_user_id ON app.requests USING btree (user_id)"
+          },
+          {
+            "name": "requests_pkey",
+            "definition": "CREATE UNIQUE INDEX requests_pkey ON app.requests USING btree (id)"
+          }
+        ],
+        "role_permissions": [
+          {
+            "name": "role_permissions_pkey",
+            "definition": "CREATE UNIQUE INDEX role_permissions_pkey ON app.role_permissions USING btree (role_id, permission_id)"
+          }
+        ],
+        "roles": [
+          {
+            "name": "ix_app_roles_code",
+            "definition": "CREATE UNIQUE INDEX ix_app_roles_code ON app.roles USING btree (code)"
+          },
+          {
+            "name": "ix_app_roles_id",
+            "definition": "CREATE INDEX ix_app_roles_id ON app.roles USING btree (id)"
+          },
+          {
+            "name": "roles_pkey",
+            "definition": "CREATE UNIQUE INDEX roles_pkey ON app.roles USING btree (id)"
+          }
+        ],
+        "transactions": [
+          {
+            "name": "ix_app_transactions_id",
+            "definition": "CREATE INDEX ix_app_transactions_id ON app.transactions USING btree (id)"
+          },
+          {
+            "name": "transactions_pkey",
+            "definition": "CREATE UNIQUE INDEX transactions_pkey ON app.transactions USING btree (id)"
+          }
+        ],
+        "user_accounts": [
+          {
+            "name": "idx_user_accounts_active",
+            "definition": "CREATE INDEX idx_user_accounts_active ON app.user_accounts USING btree (is_active)"
+          },
+          {
+            "name": "user_accounts_email_key",
+            "definition": "CREATE UNIQUE INDEX user_accounts_email_key ON app.user_accounts USING btree (email)"
+          },
+          {
+            "name": "user_accounts_pkey",
+            "definition": "CREATE UNIQUE INDEX user_accounts_pkey ON app.user_accounts USING btree (id)"
+          },
+          {
+            "name": "user_accounts_username_key",
+            "definition": "CREATE UNIQUE INDEX user_accounts_username_key ON app.user_accounts USING btree (username)"
+          }
+        ],
+        "user_roles": [
+          {
+            "name": "idx_user_roles_active",
+            "definition": "CREATE INDEX idx_user_roles_active ON app.user_roles USING btree (user_id, is_active) WHERE (is_active = true)"
+          },
+          {
+            "name": "idx_user_roles_role_id",
+            "definition": "CREATE INDEX idx_user_roles_role_id ON app.user_roles USING btree (role_id)"
+          },
+          {
+            "name": "idx_user_roles_user_id",
+            "definition": "CREATE INDEX idx_user_roles_user_id ON app.user_roles USING btree (user_id)"
+          },
+          {
+            "name": "ix_app_user_roles_id",
+            "definition": "CREATE INDEX ix_app_user_roles_id ON app.user_roles USING btree (id)"
+          },
+          {
+            "name": "ix_app_user_roles_role_id",
+            "definition": "CREATE INDEX ix_app_user_roles_role_id ON app.user_roles USING btree (role_id)"
+          },
+          {
+            "name": "ix_app_user_roles_user_id",
+            "definition": "CREATE INDEX ix_app_user_roles_user_id ON app.user_roles USING btree (user_id)"
+          },
+          {
+            "name": "user_roles_pkey",
+            "definition": "CREATE UNIQUE INDEX user_roles_pkey ON app.user_roles USING btree (id)"
+          }
+        ],
+        "user_sessions": [
+          {
+            "name": "idx_user_sessions_is_active",
+            "definition": "CREATE INDEX idx_user_sessions_is_active ON app.user_sessions USING btree (is_active)"
+          },
+          {
+            "name": "idx_user_sessions_token_hash",
+            "definition": "CREATE INDEX idx_user_sessions_token_hash ON app.user_sessions USING btree (token_hash)"
+          },
+          {
+            "name": "idx_user_sessions_user_account_id",
+            "definition": "CREATE INDEX idx_user_sessions_user_account_id ON app.user_sessions USING btree (user_account_id)"
+          },
+          {
+            "name": "ix_app_user_sessions_id",
+            "definition": "CREATE INDEX ix_app_user_sessions_id ON app.user_sessions USING btree (id)"
+          },
+          {
+            "name": "ix_app_user_sessions_is_active",
+            "definition": "CREATE INDEX ix_app_user_sessions_is_active ON app.user_sessions USING btree (is_active)"
+          },
+          {
+            "name": "ix_app_user_sessions_token_hash",
+            "definition": "CREATE INDEX ix_app_user_sessions_token_hash ON app.user_sessions USING btree (token_hash)"
+          },
+          {
+            "name": "ix_app_user_sessions_user_account_id",
+            "definition": "CREATE INDEX ix_app_user_sessions_user_account_id ON app.user_sessions USING btree (user_account_id)"
+          },
+          {
+            "name": "user_sessions_pkey",
+            "definition": "CREATE UNIQUE INDEX user_sessions_pkey ON app.user_sessions USING btree (id)"
+          }
+        ],
+        "user_two_factor": [
+          {
+            "name": "idx_user_two_factor_user_account_id",
+            "definition": "CREATE INDEX idx_user_two_factor_user_account_id ON app.user_two_factor USING btree (user_account_id)"
+          },
+          {
+            "name": "ix_app_user_two_factor_id",
+            "definition": "CREATE INDEX ix_app_user_two_factor_id ON app.user_two_factor USING btree (id)"
+          },
+          {
+            "name": "ix_app_user_two_factor_user_account_id",
+            "definition": "CREATE UNIQUE INDEX ix_app_user_two_factor_user_account_id ON app.user_two_factor USING btree (user_account_id)"
+          },
+          {
+            "name": "user_two_factor_pkey",
+            "definition": "CREATE UNIQUE INDEX user_two_factor_pkey ON app.user_two_factor USING btree (id)"
+          }
+        ],
+        "users": [
+          {
+            "name": "ix_app_users_email",
+            "definition": "CREATE UNIQUE INDEX ix_app_users_email ON app.users USING btree (email)"
+          },
+          {
+            "name": "ix_app_users_id",
+            "definition": "CREATE INDEX ix_app_users_id ON app.users USING btree (id)"
+          },
+          {
+            "name": "ix_app_users_username",
+            "definition": "CREATE UNIQUE INDEX ix_app_users_username ON app.users USING btree (username)"
+          },
+          {
+            "name": "users_pkey",
+            "definition": "CREATE UNIQUE INDEX users_pkey ON app.users USING btree (id)"
+          }
+        ]
+      },
+      "views": [
+        "users_unified"
+      ],
+      "functions": [],
+      "constraints": {
+        "clients": [
+          {
+            "type": "CHECK",
+            "name": "clients_credits_check",
+            "definition": "(credits >= (0)::numeric)"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_156075_1_not_null",
+            "definition": "id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_156075_2_not_null",
+            "definition": "user_account_id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_156075_3_not_null",
+            "definition": "role_id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_156075_4_not_null",
+            "definition": "credits IS NOT NULL"
+          },
+          {
+            "type": "UNIQUE",
+            "name": "clients_user_account_id_key",
+            "columns": "user_account_id"
+          }
+        ],
+        "idempotency_keys": [
+          {
+            "type": "CHECK",
+            "name": "24759_32908_1_not_null",
+            "definition": "id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_32908_2_not_null",
+            "definition": "request_key IS NOT NULL"
+          }
+        ],
+        "outbox": [
+          {
+            "type": "CHECK",
+            "name": "24759_32944_1_not_null",
+            "definition": "id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_32944_2_not_null",
+            "definition": "topic IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_32944_3_not_null",
+            "definition": "payload IS NOT NULL"
+          }
+        ],
+        "users": [
+          {
+            "type": "CHECK",
+            "name": "24759_32852_1_not_null",
+            "definition": "id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_32852_2_not_null",
+            "definition": "username IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_32852_3_not_null",
+            "definition": "email IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_32852_4_not_null",
+            "definition": "hashed_password IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_32852_5_not_null",
+            "definition": "rol IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_32852_6_not_null",
+            "definition": "credits IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_32852_7_not_null",
+            "definition": "is_active IS NOT NULL"
+          }
+        ],
+        "bets": [
+          {
+            "type": "CHECK",
+            "name": "24759_32958_1_not_null",
+            "definition": "id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_32958_2_not_null",
+            "definition": "user_id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_32958_3_not_null",
+            "definition": "game_id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_32958_4_not_null",
+            "definition": "bet_type IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_32958_5_not_null",
+            "definition": "bet_amount IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_32958_6_not_null",
+            "definition": "odds IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_32958_7_not_null",
+            "definition": "potential_payout IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_32958_12_not_null",
+            "definition": "status IS NOT NULL"
+          }
+        ],
+        "roles": [
+          {
+            "type": "CHECK",
+            "name": "24759_32876_1_not_null",
+            "definition": "id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_32876_2_not_null",
+            "definition": "code IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_32876_3_not_null",
+            "definition": "name IS NOT NULL"
+          }
+        ],
+        "role_permissions": [
+          {
+            "type": "CHECK",
+            "name": "24759_32972_1_not_null",
+            "definition": "role_id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_32972_2_not_null",
+            "definition": "permission_id IS NOT NULL"
+          }
+        ],
+        "permissions": [
+          {
+            "type": "CHECK",
+            "name": "24759_32896_1_not_null",
+            "definition": "id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_32896_2_not_null",
+            "definition": "code IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_32896_3_not_null",
+            "definition": "name IS NOT NULL"
+          }
+        ],
+        "user_roles": [
+          {
+            "type": "CHECK",
+            "name": "24759_32989_1_not_null",
+            "definition": "id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_32989_2_not_null",
+            "definition": "user_id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_32989_3_not_null",
+            "definition": "role_id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_32989_4_not_null",
+            "definition": "is_active IS NOT NULL"
+          }
+        ],
+        "requests": [
+          {
+            "type": "CHECK",
+            "name": "24759_33010_1_not_null",
+            "definition": "id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_33010_6_not_null",
+            "definition": "request_key IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_33010_7_not_null",
+            "definition": "status IS NOT NULL"
+          }
+        ],
+        "providers": [
+          {
+            "type": "CHECK",
+            "name": "24759_32932_1_not_null",
+            "definition": "id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_32932_2_not_null",
+            "definition": "code IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_32932_3_not_null",
+            "definition": "name IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_32932_4_not_null",
+            "definition": "is_active IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_32932_5_not_null",
+            "definition": "timeout_seconds IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_32932_6_not_null",
+            "definition": "max_retries IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_32932_7_not_null",
+            "definition": "circuit_breaker_threshold IS NOT NULL"
+          }
+        ],
+        "provider_endpoints": [
+          {
+            "type": "CHECK",
+            "name": "24759_33030_1_not_null",
+            "definition": "id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_33030_2_not_null",
+            "definition": "provider_id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_33030_3_not_null",
+            "definition": "purpose IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_33030_4_not_null",
+            "definition": "url IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_33030_5_not_null",
+            "definition": "method IS NOT NULL"
+          }
+        ],
+        "audit_log": [
+          {
+            "type": "CHECK",
+            "name": "24759_33047_1_not_null",
+            "definition": "id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_33047_4_not_null",
+            "definition": "action IS NOT NULL"
+          }
+        ],
+        "user_accounts": [
+          {
+            "type": "CHECK",
+            "name": "24759_156060_1_not_null",
+            "definition": "id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_156060_2_not_null",
+            "definition": "username IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_156060_3_not_null",
+            "definition": "email IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_156060_4_not_null",
+            "definition": "hashed_password IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_156060_5_not_null",
+            "definition": "is_active IS NOT NULL"
+          },
+          {
+            "type": "UNIQUE",
+            "name": "user_accounts_email_key",
+            "columns": "email"
+          },
+          {
+            "type": "UNIQUE",
+            "name": "user_accounts_username_key",
+            "columns": "username"
+          }
+        ],
+        "transactions": [
+          {
+            "type": "CHECK",
+            "name": "24759_33066_1_not_null",
+            "definition": "id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_33066_2_not_null",
+            "definition": "user_id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_33066_4_not_null",
+            "definition": "transaction_type IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_33066_5_not_null",
+            "definition": "amount IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_33066_6_not_null",
+            "definition": "balance_before IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_33066_7_not_null",
+            "definition": "balance_after IS NOT NULL"
+          }
+        ],
+        "predictions": [
+          {
+            "type": "CHECK",
+            "name": "24759_33085_1_not_null",
+            "definition": "id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_33085_2_not_null",
+            "definition": "request_id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_33085_3_not_null",
+            "definition": "model_version_id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_33085_4_not_null",
+            "definition": "score IS NOT NULL"
+          }
+        ],
+        "model_versions": [
+          {
+            "type": "CHECK",
+            "name": "24759_32920_1_not_null",
+            "definition": "id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_32920_2_not_null",
+            "definition": "version IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_32920_3_not_null",
+            "definition": "is_active IS NOT NULL"
+          }
+        ],
+        "odds_snapshots": [
+          {
+            "type": "CHECK",
+            "name": "24759_33108_1_not_null",
+            "definition": "id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_33108_2_not_null",
+            "definition": "request_id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_33108_3_not_null",
+            "definition": "taken_at IS NOT NULL"
+          }
+        ],
+        "odds_lines": [
+          {
+            "type": "CHECK",
+            "name": "24759_33123_1_not_null",
+            "definition": "id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_33123_2_not_null",
+            "definition": "snapshot_id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_33123_3_not_null",
+            "definition": "provider_id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_33123_4_not_null",
+            "definition": "line_code IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_33123_5_not_null",
+            "definition": "price IS NOT NULL"
+          }
+        ],
+        "administrators": [
+          {
+            "type": "CHECK",
+            "name": "24759_156100_1_not_null",
+            "definition": "id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_156100_2_not_null",
+            "definition": "user_account_id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_156100_3_not_null",
+            "definition": "role_id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_156100_4_not_null",
+            "definition": "first_name IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_156100_5_not_null",
+            "definition": "last_name IS NOT NULL"
+          },
+          {
+            "type": "UNIQUE",
+            "name": "administrators_employee_id_key",
+            "columns": "employee_id"
+          },
+          {
+            "type": "UNIQUE",
+            "name": "administrators_user_account_id_key",
+            "columns": "user_account_id"
+          }
+        ],
+        "operators": [
+          {
+            "type": "CHECK",
+            "name": "24759_156126_1_not_null",
+            "definition": "id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_156126_2_not_null",
+            "definition": "user_account_id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_156126_3_not_null",
+            "definition": "role_id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_156126_4_not_null",
+            "definition": "first_name IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_156126_5_not_null",
+            "definition": "last_name IS NOT NULL"
+          },
+          {
+            "type": "UNIQUE",
+            "name": "operators_employee_id_key",
+            "columns": "employee_id"
+          },
+          {
+            "type": "UNIQUE",
+            "name": "operators_user_account_id_key",
+            "columns": "user_account_id"
+          }
+        ],
+        "email_verification_codes": [
+          {
+            "type": "CHECK",
+            "name": "24759_180225_1_not_null",
+            "definition": "id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_180225_2_not_null",
+            "definition": "email IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_180225_3_not_null",
+            "definition": "code IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_180225_4_not_null",
+            "definition": "purpose IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_180225_5_not_null",
+            "definition": "is_verified IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_180225_7_not_null",
+            "definition": "expires_at IS NOT NULL"
+          }
+        ],
+        "user_two_factor": [
+          {
+            "type": "CHECK",
+            "name": "24759_196609_1_not_null",
+            "definition": "id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_196609_2_not_null",
+            "definition": "user_account_id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_196609_3_not_null",
+            "definition": "secret IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_196609_4_not_null",
+            "definition": "is_enabled IS NOT NULL"
+          }
+        ],
+        "user_sessions": [
+          {
+            "type": "CHECK",
+            "name": "24759_196626_1_not_null",
+            "definition": "id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_196626_2_not_null",
+            "definition": "user_account_id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_196626_3_not_null",
+            "definition": "token_hash IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_196626_8_not_null",
+            "definition": "is_active IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_196626_9_not_null",
+            "definition": "last_activity IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_196626_10_not_null",
+            "definition": "created_at IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24759_196626_11_not_null",
+            "definition": "expires_at IS NOT NULL"
+          }
+        ]
+      }
+    },
+    "espn": {
+      "schema_name": "espn",
+      "tables": {
+        "bet_results": {
+          "columns": {
+            "id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": "nextval('bet_results_id_seq'::regclass)",
+              "position": 1
+            },
+            "bet_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 2
+            },
+            "actual_payout": {
+              "type": "numeric",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 3
+            },
+            "result_notes": {
+              "type": "text",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 4
+            },
+            "settled_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "CURRENT_TIMESTAMP",
+              "position": 5
+            },
+            "created_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "CURRENT_TIMESTAMP",
+              "position": 6
+            }
+          },
+          "primary_key": "id",
+          "row_count": 0
+        },
+        "bet_selections": {
+          "columns": {
+            "id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": "nextval('bet_selections_id_seq'::regclass)",
+              "position": 1
+            },
+            "bet_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 2
+            },
+            "selected_team_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 3
+            },
+            "spread_value": {
+              "type": "numeric",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 4
+            },
+            "over_under_value": {
+              "type": "numeric",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 5
+            },
+            "is_over": {
+              "type": "boolean",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 6
+            },
+            "created_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "CURRENT_TIMESTAMP",
+              "position": 7
+            }
+          },
+          "primary_key": "id",
+          "row_count": 30
+        },
+        "bet_statuses": {
+          "columns": {
+            "code": {
+              "type": "character varying",
+              "max_length": 20,
+              "nullable": false,
+              "default": null,
+              "position": 1
+            },
+            "name": {
+              "type": "character varying",
+              "max_length": 100,
+              "nullable": false,
+              "default": null,
+              "position": 2
+            },
+            "description": {
+              "type": "text",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 3
+            }
+          },
+          "primary_key": "code",
+          "row_count": 4
+        },
+        "bet_types": {
+          "columns": {
+            "code": {
+              "type": "character varying",
+              "max_length": 20,
+              "nullable": false,
+              "default": null,
+              "position": 1
+            },
+            "name": {
+              "type": "character varying",
+              "max_length": 100,
+              "nullable": false,
+              "default": null,
+              "position": 2
+            },
+            "description": {
+              "type": "text",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 3
+            }
+          },
+          "primary_key": "code",
+          "row_count": 3
+        },
+        "bets": {
+          "columns": {
+            "id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": "nextval('bets_id_seq'::regclass)",
+              "position": 1
+            },
+            "user_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 2
+            },
+            "game_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 3
+            },
+            "bet_type_code": {
+              "type": "character varying",
+              "max_length": 20,
+              "nullable": false,
+              "default": null,
+              "position": 4
+            },
+            "bet_status_code": {
+              "type": "character varying",
+              "max_length": 20,
+              "nullable": false,
+              "default": "'pending'::character varying",
+              "position": 5
+            },
+            "bet_amount": {
+              "type": "numeric",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 6
+            },
+            "odds_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 7
+            },
+            "odds_value": {
+              "type": "numeric",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 8
+            },
+            "potential_payout": {
+              "type": "numeric",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 9
+            },
+            "placed_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "CURRENT_TIMESTAMP",
+              "position": 10
+            },
+            "settled_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 11
+            },
+            "created_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "CURRENT_TIMESTAMP",
+              "position": 12
+            },
+            "updated_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "CURRENT_TIMESTAMP",
+              "position": 13
+            }
+          },
+          "primary_key": [
+            "id",
+            "id"
+          ],
+          "row_count": 41
+        },
+        "game_odds": {
+          "columns": {
+            "id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": "nextval('game_odds_id_seq'::regclass)",
+              "position": 1
+            },
+            "game_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 2
+            },
+            "odds_type": {
+              "type": "character varying",
+              "max_length": 20,
+              "nullable": false,
+              "default": null,
+              "position": 3
+            },
+            "odds_value": {
+              "type": "numeric",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 4
+            },
+            "line_value": {
+              "type": "numeric",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 5
+            },
+            "provider": {
+              "type": "character varying",
+              "max_length": 50,
+              "nullable": true,
+              "default": null,
+              "position": 6
+            },
+            "snapshot_time": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "CURRENT_TIMESTAMP",
+              "position": 7
+            },
+            "created_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "CURRENT_TIMESTAMP",
+              "position": 8
+            },
+            "updated_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "CURRENT_TIMESTAMP",
+              "position": 9
+            }
+          },
+          "primary_key": "id",
+          "row_count": 0
+        },
+        "games": {
+          "columns": {
+            "game_id": {
+              "type": "bigint",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 1
+            },
+            "fecha": {
+              "type": "date",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 2
+            },
+            "home_team": {
+              "type": "character varying",
+              "max_length": 255,
+              "nullable": true,
+              "default": null,
+              "position": 3
+            },
+            "away_team": {
+              "type": "character varying",
+              "max_length": 255,
+              "nullable": true,
+              "default": null,
+              "position": 4
+            },
+            "home_score": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 5
+            },
+            "away_score": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 6
+            },
+            "home_fg_pct": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 7
+            },
+            "home_3p_pct": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 8
+            },
+            "home_ft_pct": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 9
+            },
+            "home_reb": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 10
+            },
+            "home_ast": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 11
+            },
+            "home_stl": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 12
+            },
+            "home_blk": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 13
+            },
+            "home_to": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 14
+            },
+            "home_pf": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 15
+            },
+            "home_pts": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 16
+            },
+            "away_fg_pct": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 17
+            },
+            "away_3p_pct": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 18
+            },
+            "away_ft_pct": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 19
+            },
+            "away_reb": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 20
+            },
+            "away_ast": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 21
+            },
+            "away_stl": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 22
+            },
+            "away_blk": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 23
+            },
+            "away_to": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 24
+            },
+            "away_pf": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 25
+            },
+            "away_pts": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 26
+            },
+            "home_team_normalized": {
+              "type": "character varying",
+              "max_length": 255,
+              "nullable": true,
+              "default": null,
+              "position": 27
+            },
+            "away_team_normalized": {
+              "type": "character varying",
+              "max_length": 255,
+              "nullable": true,
+              "default": null,
+              "position": 28
+            },
+            "home_win": {
+              "type": "bigint",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 29
+            },
+            "point_diff": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 30
+            },
+            "net_rating_diff": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 31
+            },
+            "reb_diff": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 32
+            },
+            "ast_diff": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 33
+            },
+            "tov_diff": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 34
+            }
+          },
+          "primary_key": "game_id",
+          "row_count": 1237
+        },
+        "injuries": {
+          "columns": {
+            "team": {
+              "type": "character varying",
+              "max_length": 255,
+              "nullable": true,
+              "default": null,
+              "position": 1
+            },
+            "player": {
+              "type": "character varying",
+              "max_length": 255,
+              "nullable": true,
+              "default": null,
+              "position": 2
+            },
+            "position": {
+              "type": "character varying",
+              "max_length": 255,
+              "nullable": true,
+              "default": null,
+              "position": 3
+            },
+            "status": {
+              "type": "character varying",
+              "max_length": 255,
+              "nullable": true,
+              "default": null,
+              "position": 4
+            },
+            "description": {
+              "type": "character varying",
+              "max_length": 255,
+              "nullable": true,
+              "default": null,
+              "position": 5
+            }
+          },
+          "primary_key": null,
+          "row_count": 92
+        },
+        "odds": {
+          "columns": {
+            "game_id": {
+              "type": "character varying",
+              "max_length": 255,
+              "nullable": false,
+              "default": null,
+              "position": 1
+            },
+            "sport_key": {
+              "type": "character varying",
+              "max_length": 255,
+              "nullable": true,
+              "default": null,
+              "position": 2
+            },
+            "sport_title": {
+              "type": "character varying",
+              "max_length": 255,
+              "nullable": true,
+              "default": null,
+              "position": 3
+            },
+            "commence_time": {
+              "type": "character varying",
+              "max_length": 255,
+              "nullable": true,
+              "default": null,
+              "position": 4
+            },
+            "home_team": {
+              "type": "character varying",
+              "max_length": 255,
+              "nullable": true,
+              "default": null,
+              "position": 5
+            },
+            "away_team": {
+              "type": "character varying",
+              "max_length": 255,
+              "nullable": true,
+              "default": null,
+              "position": 6
+            },
+            "bookmakers": {
+              "type": "jsonb",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 7
+            }
+          },
+          "primary_key": "game_id",
+          "row_count": 15
+        },
+        "player_stats": {
+          "columns": {
+            "rank": {
+              "type": "bigint",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 1
+            },
+            "player_id": {
+              "type": "bigint",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 2
+            },
+            "player_name": {
+              "type": "character varying",
+              "max_length": 255,
+              "nullable": true,
+              "default": null,
+              "position": 3
+            },
+            "season": {
+              "type": "character varying",
+              "max_length": 10,
+              "nullable": true,
+              "default": null,
+              "position": 4
+            },
+            "season_type": {
+              "type": "character varying",
+              "max_length": 20,
+              "nullable": true,
+              "default": null,
+              "position": 5
+            },
+            "scraped_at": {
+              "type": "character varying",
+              "max_length": 255,
+              "nullable": true,
+              "default": null,
+              "position": 6
+            },
+            "rk": {
+              "type": "character varying",
+              "max_length": 255,
+              "nullable": true,
+              "default": null,
+              "position": 7
+            },
+            "name": {
+              "type": "character varying",
+              "max_length": 255,
+              "nullable": true,
+              "default": null,
+              "position": 8
+            },
+            "pos": {
+              "type": "character varying",
+              "max_length": 255,
+              "nullable": true,
+              "default": null,
+              "position": 9
+            },
+            "gp": {
+              "type": "bigint",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 10
+            },
+            "min": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 11
+            },
+            "pts": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 12
+            },
+            "fgm": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 13
+            },
+            "fga": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 14
+            },
+            "fg_percent": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 15
+            },
+            "stat_3pm": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 16
+            },
+            "stat_3pa": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 17
+            },
+            "stat_3p_percent": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 18
+            },
+            "ftm": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 19
+            },
+            "fta": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 20
+            },
+            "ft_percent": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 21
+            },
+            "reb": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 22
+            },
+            "ast": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 23
+            },
+            "stl": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 24
+            },
+            "blk": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 25
+            },
+            "to_stat": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 26
+            },
+            "dd2": {
+              "type": "bigint",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 27
+            },
+            "td3": {
+              "type": "bigint",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 28
+            }
+          },
+          "primary_key": null,
+          "row_count": 1533
+        },
+        "team_stats_game": {
+          "columns": {
+            "id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": "nextval('team_stats_game_id_seq'::regclass)",
+              "position": 1
+            },
+            "game_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 2
+            },
+            "team_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 3
+            },
+            "is_home": {
+              "type": "boolean",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 4
+            },
+            "points": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 5
+            },
+            "field_goal_percentage": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 8
+            },
+            "three_point_percentage": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 11
+            },
+            "free_throw_percentage": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 14
+            },
+            "rebounds": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 15
+            },
+            "assists": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 16
+            },
+            "steals": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 17
+            },
+            "blocks": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 18
+            },
+            "turnovers": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 19
+            },
+            "personal_fouls": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 20
+            },
+            "created_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "now()",
+              "position": 24
+            },
+            "updated_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 25
+            }
+          },
+          "primary_key": "id",
+          "row_count": 2474
+        },
+        "teams": {
+          "columns": {
+            "team_id": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": false,
+              "default": "nextval('teams_team_id_seq'::regclass)",
+              "position": 1
+            },
+            "name": {
+              "type": "character varying",
+              "max_length": 100,
+              "nullable": false,
+              "default": null,
+              "position": 2
+            },
+            "abbreviation": {
+              "type": "character varying",
+              "max_length": 10,
+              "nullable": false,
+              "default": null,
+              "position": 3
+            },
+            "city": {
+              "type": "character varying",
+              "max_length": 50,
+              "nullable": false,
+              "default": null,
+              "position": 4
+            },
+            "conference": {
+              "type": "character varying",
+              "max_length": 20,
+              "nullable": false,
+              "default": null,
+              "position": 5
+            },
+            "division": {
+              "type": "character varying",
+              "max_length": 20,
+              "nullable": false,
+              "default": null,
+              "position": 6
+            },
+            "logo_url": {
+              "type": "character varying",
+              "max_length": 255,
+              "nullable": true,
+              "default": null,
+              "position": 7
+            },
+            "created_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "now()",
+              "position": 8
+            },
+            "updated_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 9
+            }
+          },
+          "primary_key": "team_id",
+          "row_count": 30
+        }
+      },
+      "foreign_keys": [
+        {
+          "table": "bet_results",
+          "column": "bet_id",
+          "foreign_schema": "espn",
+          "foreign_table": "bets",
+          "foreign_column": "id",
+          "constraint_name": "fk_bet_results_bet"
+        },
+        {
+          "table": "bet_selections",
+          "column": "selected_team_id",
+          "foreign_schema": "espn",
+          "foreign_table": "teams",
+          "foreign_column": "team_id",
+          "constraint_name": "fk_bet_selections_team"
+        },
+        {
+          "table": "bet_selections",
+          "column": "bet_id",
+          "foreign_schema": "espn",
+          "foreign_table": "bets",
+          "foreign_column": "id",
+          "constraint_name": "fk_bet_selections_bet"
+        },
+        {
+          "table": "bets",
+          "column": "odds_id",
+          "foreign_schema": "espn",
+          "foreign_table": "game_odds",
+          "foreign_column": "id",
+          "constraint_name": "fk_bets_odds"
+        },
+        {
+          "table": "bets",
+          "column": "game_id",
+          "foreign_schema": "espn",
+          "foreign_table": "games",
+          "foreign_column": "game_id",
+          "constraint_name": "fk_bets_game"
+        },
+        {
+          "table": "bets",
+          "column": "bet_type_code",
+          "foreign_schema": "espn",
+          "foreign_table": "bet_types",
+          "foreign_column": "code",
+          "constraint_name": "fk_bets_bet_type"
+        },
+        {
+          "table": "bets",
+          "column": "bet_status_code",
+          "foreign_schema": "espn",
+          "foreign_table": "bet_statuses",
+          "foreign_column": "code",
+          "constraint_name": "fk_bets_bet_status"
+        },
+        {
+          "table": "team_stats_game",
+          "column": "team_id",
+          "foreign_schema": "espn",
+          "foreign_table": "teams",
+          "foreign_column": "team_id",
+          "constraint_name": "team_stats_game_team_id_fkey"
+        },
+        {
+          "table": "team_stats_game",
+          "column": "game_id",
+          "foreign_schema": "espn",
+          "foreign_table": "games",
+          "foreign_column": "game_id",
+          "constraint_name": "team_stats_game_game_id_fkey"
+        }
+      ],
+      "indexes": {
+        "bet_results": [
+          {
+            "name": "bet_results_bet_id_key",
+            "definition": "CREATE UNIQUE INDEX bet_results_bet_id_key ON espn.bet_results USING btree (bet_id)"
+          },
+          {
+            "name": "bet_results_pkey",
+            "definition": "CREATE UNIQUE INDEX bet_results_pkey ON espn.bet_results USING btree (id)"
+          },
+          {
+            "name": "idx_bet_results_bet_id",
+            "definition": "CREATE INDEX idx_bet_results_bet_id ON espn.bet_results USING btree (bet_id)"
+          },
+          {
+            "name": "idx_bet_results_settled_at",
+            "definition": "CREATE INDEX idx_bet_results_settled_at ON espn.bet_results USING btree (settled_at)"
+          }
+        ],
+        "bet_selections": [
+          {
+            "name": "bet_selections_pkey",
+            "definition": "CREATE UNIQUE INDEX bet_selections_pkey ON espn.bet_selections USING btree (id)"
+          },
+          {
+            "name": "idx_bet_selections_bet_id",
+            "definition": "CREATE INDEX idx_bet_selections_bet_id ON espn.bet_selections USING btree (bet_id)"
+          },
+          {
+            "name": "idx_bet_selections_team_id",
+            "definition": "CREATE INDEX idx_bet_selections_team_id ON espn.bet_selections USING btree (selected_team_id)"
+          }
+        ],
+        "bet_statuses": [
+          {
+            "name": "bet_statuses_pkey",
+            "definition": "CREATE UNIQUE INDEX bet_statuses_pkey ON espn.bet_statuses USING btree (code)"
+          }
+        ],
+        "bet_types": [
+          {
+            "name": "bet_types_pkey",
+            "definition": "CREATE UNIQUE INDEX bet_types_pkey ON espn.bet_types USING btree (code)"
+          }
+        ],
+        "bets": [
+          {
+            "name": "bets_pkey",
+            "definition": "CREATE UNIQUE INDEX bets_pkey ON espn.bets USING btree (id)"
+          },
+          {
+            "name": "idx_bets_game_id",
+            "definition": "CREATE INDEX idx_bets_game_id ON espn.bets USING btree (game_id)"
+          },
+          {
+            "name": "idx_bets_placed_at",
+            "definition": "CREATE INDEX idx_bets_placed_at ON espn.bets USING btree (placed_at)"
+          },
+          {
+            "name": "idx_bets_status",
+            "definition": "CREATE INDEX idx_bets_status ON espn.bets USING btree (bet_status_code)"
+          },
+          {
+            "name": "idx_bets_user_id",
+            "definition": "CREATE INDEX idx_bets_user_id ON espn.bets USING btree (user_id)"
+          },
+          {
+            "name": "idx_bets_user_status",
+            "definition": "CREATE INDEX idx_bets_user_status ON espn.bets USING btree (user_id, bet_status_code)"
+          }
+        ],
+        "game_odds": [
+          {
+            "name": "game_odds_pkey",
+            "definition": "CREATE UNIQUE INDEX game_odds_pkey ON espn.game_odds USING btree (id)"
+          },
+          {
+            "name": "idx_game_odds_game_id",
+            "definition": "CREATE INDEX idx_game_odds_game_id ON espn.game_odds USING btree (game_id)"
+          },
+          {
+            "name": "idx_game_odds_snapshot_time",
+            "definition": "CREATE INDEX idx_game_odds_snapshot_time ON espn.game_odds USING btree (snapshot_time)"
+          },
+          {
+            "name": "idx_game_odds_type",
+            "definition": "CREATE INDEX idx_game_odds_type ON espn.game_odds USING btree (odds_type)"
+          }
+        ],
+        "games": [
+          {
+            "name": "games_pkey",
+            "definition": "CREATE UNIQUE INDEX games_pkey ON espn.games USING btree (game_id)"
+          },
+          {
+            "name": "idx_games_away_team",
+            "definition": "CREATE INDEX idx_games_away_team ON espn.games USING btree (away_team)"
+          },
+          {
+            "name": "idx_games_fecha",
+            "definition": "CREATE INDEX idx_games_fecha ON espn.games USING btree (fecha)"
+          },
+          {
+            "name": "idx_games_home_team",
+            "definition": "CREATE INDEX idx_games_home_team ON espn.games USING btree (home_team)"
+          }
+        ],
+        "odds": [
+          {
+            "name": "idx_odds_away_team",
+            "definition": "CREATE INDEX idx_odds_away_team ON espn.odds USING btree (away_team)"
+          },
+          {
+            "name": "idx_odds_commence_time",
+            "definition": "CREATE INDEX idx_odds_commence_time ON espn.odds USING btree (commence_time)"
+          },
+          {
+            "name": "idx_odds_home_team",
+            "definition": "CREATE INDEX idx_odds_home_team ON espn.odds USING btree (home_team)"
+          },
+          {
+            "name": "odds_pkey",
+            "definition": "CREATE UNIQUE INDEX odds_pkey ON espn.odds USING btree (game_id)"
+          }
+        ],
+        "player_stats": [
+          {
+            "name": "idx_player_stats_player_id",
+            "definition": "CREATE INDEX idx_player_stats_player_id ON espn.player_stats USING btree (player_id)"
+          },
+          {
+            "name": "idx_player_stats_player_name",
+            "definition": "CREATE INDEX idx_player_stats_player_name ON espn.player_stats USING btree (player_name)"
+          },
+          {
+            "name": "idx_player_stats_season",
+            "definition": "CREATE INDEX idx_player_stats_season ON espn.player_stats USING btree (season)"
+          },
+          {
+            "name": "idx_player_stats_season_type",
+            "definition": "CREATE INDEX idx_player_stats_season_type ON espn.player_stats USING btree (season_type)"
+          }
+        ],
+        "team_stats_game": [
+          {
+            "name": "ix_espn_team_stats_game_id",
+            "definition": "CREATE INDEX ix_espn_team_stats_game_id ON espn.team_stats_game USING btree (id)"
+          },
+          {
+            "name": "team_stats_game_pkey",
+            "definition": "CREATE UNIQUE INDEX team_stats_game_pkey ON espn.team_stats_game USING btree (id)"
+          }
+        ],
+        "teams": [
+          {
+            "name": "ix_espn_teams_team_id",
+            "definition": "CREATE INDEX ix_espn_teams_team_id ON espn.teams USING btree (team_id)"
+          },
+          {
+            "name": "teams_abbreviation_key",
+            "definition": "CREATE UNIQUE INDEX teams_abbreviation_key ON espn.teams USING btree (abbreviation)"
+          },
+          {
+            "name": "teams_name_key",
+            "definition": "CREATE UNIQUE INDEX teams_name_key ON espn.teams USING btree (name)"
+          },
+          {
+            "name": "teams_pkey",
+            "definition": "CREATE UNIQUE INDEX teams_pkey ON espn.teams USING btree (team_id)"
+          }
+        ]
+      },
+      "views": [],
+      "functions": [],
+      "constraints": {
+        "game_odds": [
+          {
+            "type": "CHECK",
+            "name": "game_odds_odds_type_check",
+            "definition": "((odds_type)::text = ANY ((ARRAY['moneyline_home'::character varying, 'moneyline_away'::character varying, 'spread_home'::character varying, 'spread_away'::character varying, 'over_under'::character varying])::text[]))"
+          },
+          {
+            "type": "CHECK",
+            "name": "24576_155757_1_not_null",
+            "definition": "id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24576_155757_2_not_null",
+            "definition": "game_id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24576_155757_3_not_null",
+            "definition": "odds_type IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24576_155757_4_not_null",
+            "definition": "odds_value IS NOT NULL"
+          }
+        ],
+        "bets": [
+          {
+            "type": "CHECK",
+            "name": "bets_bet_amount_check",
+            "definition": "(bet_amount > (0)::numeric)"
+          },
+          {
+            "type": "CHECK",
+            "name": "chk_bets_payout",
+            "definition": "(potential_payout >= bet_amount)"
+          },
+          {
+            "type": "CHECK",
+            "name": "24576_155785_1_not_null",
+            "definition": "id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24576_155785_2_not_null",
+            "definition": "user_id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24576_155785_3_not_null",
+            "definition": "game_id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24576_155785_4_not_null",
+            "definition": "bet_type_code IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24576_155785_5_not_null",
+            "definition": "bet_status_code IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24576_155785_6_not_null",
+            "definition": "bet_amount IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24576_155785_8_not_null",
+            "definition": "odds_value IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24576_155785_9_not_null",
+            "definition": "potential_payout IS NOT NULL"
+          }
+        ],
+        "bet_selections": [
+          {
+            "type": "CHECK",
+            "name": "chk_bet_selections_moneyline",
+            "definition": "(((spread_value IS NULL) AND (over_under_value IS NULL) AND (is_over IS NULL)) OR ((over_under_value IS NULL) AND (is_over IS NULL)) OR ((selected_team_id IS NULL) AND (spread_value IS NULL)))"
+          },
+          {
+            "type": "CHECK",
+            "name": "24576_155817_1_not_null",
+            "definition": "id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24576_155817_2_not_null",
+            "definition": "bet_id IS NOT NULL"
+          }
+        ],
+        "bet_results": [
+          {
+            "type": "CHECK",
+            "name": "chk_bet_results_payout",
+            "definition": "(actual_payout >= (0)::numeric)"
+          },
+          {
+            "type": "CHECK",
+            "name": "24576_155833_1_not_null",
+            "definition": "id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24576_155833_2_not_null",
+            "definition": "bet_id IS NOT NULL"
+          },
+          {
+            "type": "UNIQUE",
+            "name": "bet_results_bet_id_key",
+            "columns": "bet_id"
+          }
+        ],
+        "games": [
+          {
+            "type": "CHECK",
+            "name": "24576_24587_1_not_null",
+            "definition": "game_id IS NOT NULL"
+          }
+        ],
+        "odds": [
+          {
+            "type": "CHECK",
+            "name": "24576_24604_1_not_null",
+            "definition": "game_id IS NOT NULL"
+          }
+        ],
+        "team_stats_game": [
+          {
+            "type": "CHECK",
+            "name": "24576_164127_1_not_null",
+            "definition": "id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24576_164127_2_not_null",
+            "definition": "game_id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24576_164127_3_not_null",
+            "definition": "team_id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24576_164127_4_not_null",
+            "definition": "is_home IS NOT NULL"
+          }
+        ],
+        "teams": [
+          {
+            "type": "CHECK",
+            "name": "24576_164114_1_not_null",
+            "definition": "team_id IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24576_164114_2_not_null",
+            "definition": "name IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24576_164114_3_not_null",
+            "definition": "abbreviation IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24576_164114_4_not_null",
+            "definition": "city IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24576_164114_5_not_null",
+            "definition": "conference IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24576_164114_6_not_null",
+            "definition": "division IS NOT NULL"
+          },
+          {
+            "type": "UNIQUE",
+            "name": "teams_abbreviation_key",
+            "columns": "abbreviation"
+          },
+          {
+            "type": "UNIQUE",
+            "name": "teams_name_key",
+            "columns": "name"
+          }
+        ],
+        "bet_types": [
+          {
+            "type": "CHECK",
+            "name": "24576_155770_1_not_null",
+            "definition": "code IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24576_155770_2_not_null",
+            "definition": "name IS NOT NULL"
+          }
+        ],
+        "bet_statuses": [
+          {
+            "type": "CHECK",
+            "name": "24576_155777_1_not_null",
+            "definition": "code IS NOT NULL"
+          },
+          {
+            "type": "CHECK",
+            "name": "24576_155777_2_not_null",
+            "definition": "name IS NOT NULL"
+          }
+        ]
+      }
+    },
+    "ml": {
+      "schema_name": "ml",
+      "tables": {
+        "ml_ready_games": {
+          "columns": {
+            "game_id": {
+              "type": "bigint",
+              "max_length": null,
+              "nullable": false,
+              "default": null,
+              "position": 1
+            },
+            "fecha": {
+              "type": "date",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 2
+            },
+            "home_team": {
+              "type": "character varying",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 3
+            },
+            "away_team": {
+              "type": "character varying",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 4
+            },
+            "home_score": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 5
+            },
+            "away_score": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 6
+            },
+            "home_win": {
+              "type": "boolean",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 7
+            },
+            "point_diff": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 8
+            },
+            "home_fg_pct": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 9
+            },
+            "home_3p_pct": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 10
+            },
+            "home_ft_pct": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 11
+            },
+            "home_reb": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 12
+            },
+            "home_ast": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 13
+            },
+            "home_stl": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 14
+            },
+            "home_blk": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 15
+            },
+            "home_to": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 16
+            },
+            "home_pts": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 17
+            },
+            "away_fg_pct": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 18
+            },
+            "away_3p_pct": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 19
+            },
+            "away_ft_pct": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 20
+            },
+            "away_reb": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 21
+            },
+            "away_ast": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 22
+            },
+            "away_stl": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 23
+            },
+            "away_blk": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 24
+            },
+            "away_to": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 25
+            },
+            "away_pts": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 26
+            },
+            "net_rating_diff": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 27
+            },
+            "reb_diff": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 28
+            },
+            "ast_diff": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 29
+            },
+            "tov_diff": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 30
+            },
+            "home_ppg_last5": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 31
+            },
+            "away_ppg_last5": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 32
+            },
+            "home_net_rating_last10": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 33
+            },
+            "away_net_rating_last10": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 34
+            },
+            "home_rest_days": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 35
+            },
+            "away_rest_days": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 36
+            },
+            "home_injuries_count": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 37
+            },
+            "away_injuries_count": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 38
+            },
+            "implied_prob_home": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 39
+            },
+            "implied_prob_away": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 40
+            },
+            "created_at": {
+              "type": "timestamp with time zone",
+              "max_length": null,
+              "nullable": true,
+              "default": "now()",
+              "position": 41
+            }
+          },
+          "primary_key": "game_id",
+          "row_count": 1237
+        }
+      },
+      "foreign_keys": [],
+      "indexes": {
+        "ml_ready_games": [
+          {
+            "name": "idx_ml_ready_games_away_team",
+            "definition": "CREATE INDEX idx_ml_ready_games_away_team ON ml.ml_ready_games USING btree (away_team)"
+          },
+          {
+            "name": "idx_ml_ready_games_fecha",
+            "definition": "CREATE INDEX idx_ml_ready_games_fecha ON ml.ml_ready_games USING btree (fecha)"
+          },
+          {
+            "name": "idx_ml_ready_games_home_team",
+            "definition": "CREATE INDEX idx_ml_ready_games_home_team ON ml.ml_ready_games USING btree (home_team)"
+          },
+          {
+            "name": "ml_ready_games_pkey",
+            "definition": "CREATE UNIQUE INDEX ml_ready_games_pkey ON ml.ml_ready_games USING btree (game_id)"
+          }
+        ]
+      },
+      "views": [],
+      "functions": [],
+      "constraints": {
+        "ml_ready_games": [
+          {
+            "type": "CHECK",
+            "name": "172032_172115_1_not_null",
+            "definition": "game_id IS NOT NULL"
+          }
+        ]
+      }
+    },
+    "premier_league": {
+      "schema_name": "premier_league",
+      "tables": {
+        "matches": {
+          "columns": {
+            "match_id": {
+              "type": "character varying",
+              "max_length": 255,
+              "nullable": false,
+              "default": null,
+              "position": 1
+            },
+            "season": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 2
+            },
+            "date": {
+              "type": "date",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 3
+            },
+            "home_team": {
+              "type": "character varying",
+              "max_length": 255,
+              "nullable": true,
+              "default": null,
+              "position": 4
+            },
+            "away_team": {
+              "type": "character varying",
+              "max_length": 255,
+              "nullable": true,
+              "default": null,
+              "position": 5
+            },
+            "home_score": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 6
+            },
+            "away_score": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 7
+            },
+            "status": {
+              "type": "character varying",
+              "max_length": 255,
+              "nullable": true,
+              "default": null,
+              "position": 8
+            },
+            "competition": {
+              "type": "character varying",
+              "max_length": 255,
+              "nullable": true,
+              "default": null,
+              "position": 9
+            },
+            "home_win": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 10
+            },
+            "goal_diff": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 11
+            },
+            "total_goals": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 12
+            }
+          },
+          "primary_key": "match_id",
+          "row_count": 374
+        },
+        "standings": {
+          "columns": {
+            "season": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 1
+            },
+            "date": {
+              "type": "date",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 2
+            },
+            "position": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 3
+            },
+            "team_name": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 4
+            },
+            "games_played": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 5
+            },
+            "wins": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 6
+            },
+            "draws": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 7
+            },
+            "losses": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 8
+            },
+            "goals_for": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 9
+            },
+            "goals_against": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 10
+            },
+            "goal_diff": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 11
+            },
+            "points": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 12
+            }
+          },
+          "primary_key": null,
+          "row_count": 20
+        },
+        "team_stats": {
+          "columns": {
+            "season": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 1
+            },
+            "team_name": {
+              "type": "character varying",
+              "max_length": 255,
+              "nullable": true,
+              "default": null,
+              "position": 2
+            },
+            "date": {
+              "type": "date",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 3
+            },
+            "goals_per_game": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 4
+            },
+            "goals_against_per_game": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 5
+            },
+            "possession_pct": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 6
+            },
+            "shots_per_game": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 7
+            },
+            "shots_on_target_per_game": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 8
+            },
+            "passes_completed": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 9
+            },
+            "pass_accuracy_pct": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 10
+            },
+            "clean_sheets": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 11
+            },
+            "yellow_cards": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 12
+            },
+            "red_cards": {
+              "type": "integer",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 13
+            },
+            "fouls_per_game": {
+              "type": "double precision",
+              "max_length": null,
+              "nullable": true,
+              "default": null,
+              "position": 14
+            }
+          },
+          "primary_key": null,
+          "row_count": 20
+        }
+      },
+      "foreign_keys": [],
+      "indexes": {
+        "matches": [
+          {
+            "name": "idx_matches_away_team",
+            "definition": "CREATE INDEX idx_matches_away_team ON premier_league.matches USING btree (away_team)"
+          },
+          {
+            "name": "idx_matches_date",
+            "definition": "CREATE INDEX idx_matches_date ON premier_league.matches USING btree (date)"
+          },
+          {
+            "name": "idx_matches_home_team",
+            "definition": "CREATE INDEX idx_matches_home_team ON premier_league.matches USING btree (home_team)"
+          },
+          {
+            "name": "idx_matches_season",
+            "definition": "CREATE INDEX idx_matches_season ON premier_league.matches USING btree (season)"
+          },
+          {
+            "name": "matches_pkey",
+            "definition": "CREATE UNIQUE INDEX matches_pkey ON premier_league.matches USING btree (match_id)"
+          }
+        ],
+        "standings": [
+          {
+            "name": "idx_standings_date",
+            "definition": "CREATE INDEX idx_standings_date ON premier_league.standings USING btree (date)"
+          },
+          {
+            "name": "idx_standings_position",
+            "definition": "CREATE INDEX idx_standings_position ON premier_league.standings USING btree (\"position\")"
+          },
+          {
+            "name": "idx_standings_season",
+            "definition": "CREATE INDEX idx_standings_season ON premier_league.standings USING btree (season)"
+          },
+          {
+            "name": "idx_standings_team_name",
+            "definition": "CREATE INDEX idx_standings_team_name ON premier_league.standings USING btree (team_name)"
+          }
+        ],
+        "team_stats": [
+          {
+            "name": "idx_team_stats_date",
+            "definition": "CREATE INDEX idx_team_stats_date ON premier_league.team_stats USING btree (date)"
+          },
+          {
+            "name": "idx_team_stats_season",
+            "definition": "CREATE INDEX idx_team_stats_season ON premier_league.team_stats USING btree (season)"
+          },
+          {
+            "name": "idx_team_stats_team_name",
+            "definition": "CREATE INDEX idx_team_stats_team_name ON premier_league.team_stats USING btree (team_name)"
+          }
+        ]
+      },
+      "views": [],
+      "functions": [],
+      "constraints": {
+        "matches": [
+          {
+            "type": "CHECK",
+            "name": "24721_24722_1_not_null",
+            "definition": "match_id IS NOT NULL"
+          }
+        ]
+      }
+    }
+  },
+  "alerts": {
+    "high": [
+      {
+        "type": "FK_CROSS_SCHEMA_NO_CONSTRAINT",
+        "schema": "espn",
+        "table": "bets",
+        "column": "user_id",
+        "message": "espn.bets.user_id probablemente referencia app.user_accounts.id sin FK constraint",
+        "impact": "Riesgo de integridad referencial, datos hu\u00e9rfanos posibles"
+      },
+      {
+        "type": "TYPE_MISMATCH",
+        "column": "game_id",
+        "details": [
+          "app.bets.game_id: integer",
+          "espn.bets.game_id: integer",
+          "espn.game_odds.game_id: integer",
+          "espn.games.game_id: bigint",
+          "espn.odds.game_id: character varying",
+          "espn.team_stats_game.game_id: integer",
+          "ml.ml_ready_games.game_id: bigint"
+        ],
+        "message": "game_id tiene tipos diferentes en diferentes tablas",
+        "impact": "Errores en joins, posible p\u00e9rdida de datos si hay overflow"
+      },
+      {
+        "type": "DEPRECATED_DEPENDENCY",
+        "schema": "app",
+        "table": "audit_log",
+        "depends_on": "app.users",
+        "message": "app.audit_log tiene FK a tabla DEPRECATED app.users",
+        "impact": "Requiere migraci\u00f3n antes de eliminar tabla deprecated"
+      },
+      {
+        "type": "DEPRECATED_DEPENDENCY",
+        "schema": "app",
+        "table": "bets",
+        "depends_on": "app.users",
+        "message": "app.bets tiene FK a tabla DEPRECATED app.users",
+        "impact": "Requiere migraci\u00f3n antes de eliminar tabla deprecated"
+      },
+      {
+        "type": "DEPRECATED_DEPENDENCY",
+        "schema": "app",
+        "table": "requests",
+        "depends_on": "app.users",
+        "message": "app.requests tiene FK a tabla DEPRECATED app.users",
+        "impact": "Requiere migraci\u00f3n antes de eliminar tabla deprecated"
+      },
+      {
+        "type": "DEPRECATED_DEPENDENCY",
+        "schema": "app",
+        "table": "transactions",
+        "depends_on": "app.users",
+        "message": "app.transactions tiene FK a tabla DEPRECATED app.users",
+        "impact": "Requiere migraci\u00f3n antes de eliminar tabla deprecated"
+      },
+      {
+        "type": "DEPRECATED_DEPENDENCY",
+        "schema": "app",
+        "table": "user_roles",
+        "depends_on": "app.users",
+        "message": "app.user_roles tiene FK a tabla DEPRECATED app.users",
+        "impact": "Requiere migraci\u00f3n antes de eliminar tabla deprecated"
+      }
+    ],
+    "medium": [
+      {
+        "type": "ORPHANED_TABLE",
+        "schema": "app",
+        "table": "email_verification_codes",
+        "message": "app.email_verification_codes no tiene referencias entrantes ni salientes",
+        "impact": "Posible tabla no utilizada o falta de relaciones"
+      },
+      {
+        "type": "ORPHANED_TABLE",
+        "schema": "app",
+        "table": "idempotency_keys",
+        "message": "app.idempotency_keys no tiene referencias entrantes ni salientes",
+        "impact": "Posible tabla no utilizada o falta de relaciones"
+      },
+      {
+        "type": "ORPHANED_TABLE",
+        "schema": "app",
+        "table": "outbox",
+        "message": "app.outbox no tiene referencias entrantes ni salientes",
+        "impact": "Posible tabla no utilizada o falta de relaciones"
+      },
+      {
+        "type": "ORPHANED_TABLE",
+        "schema": "espn",
+        "table": "injuries",
+        "message": "espn.injuries no tiene referencias entrantes ni salientes",
+        "impact": "Posible tabla no utilizada o falta de relaciones"
+      },
+      {
+        "type": "ORPHANED_TABLE",
+        "schema": "espn",
+        "table": "odds",
+        "message": "espn.odds no tiene referencias entrantes ni salientes",
+        "impact": "Posible tabla no utilizada o falta de relaciones"
+      },
+      {
+        "type": "ORPHANED_TABLE",
+        "schema": "espn",
+        "table": "player_stats",
+        "message": "espn.player_stats no tiene referencias entrantes ni salientes",
+        "impact": "Posible tabla no utilizada o falta de relaciones"
+      },
+      {
+        "type": "ORPHANED_TABLE",
+        "schema": "ml",
+        "table": "ml_ready_games",
+        "message": "ml.ml_ready_games no tiene referencias entrantes ni salientes",
+        "impact": "Posible tabla no utilizada o falta de relaciones"
+      },
+      {
+        "type": "ORPHANED_TABLE",
+        "schema": "premier_league",
+        "table": "matches",
+        "message": "premier_league.matches no tiene referencias entrantes ni salientes",
+        "impact": "Posible tabla no utilizada o falta de relaciones"
+      },
+      {
+        "type": "ORPHANED_TABLE",
+        "schema": "premier_league",
+        "table": "standings",
+        "message": "premier_league.standings no tiene referencias entrantes ni salientes",
+        "impact": "Posible tabla no utilizada o falta de relaciones"
+      },
+      {
+        "type": "ORPHANED_TABLE",
+        "schema": "premier_league",
+        "table": "team_stats",
+        "message": "premier_league.team_stats no tiene referencias entrantes ni salientes",
+        "impact": "Posible tabla no utilizada o falta de relaciones"
+      }
+    ],
+    "low": []
+  }
+}

@@ -1,0 +1,111 @@
+{
+  "version": "v1.6.0",
+  "model_type": "Ensemble (RF+XGB+Poisson)",
+  "feature_columns": [
+    "ppg_diff",
+    "net_rating_diff_rolling",
+    "rest_days_diff",
+    "injuries_diff",
+    "pace_diff",
+    "off_rating_diff",
+    "def_rating_diff",
+    "reb_rolling_diff",
+    "ast_rolling_diff",
+    "tov_rolling_diff",
+    "win_rate_diff",
+    "efg_pct_diff",
+    "tov_rate_diff",
+    "oreb_pct_diff",
+    "dreb_pct_diff",
+    "elo_diff",
+    "streak_diff",
+    "home_away_split_diff",
+    "home_ppg_last5",
+    "away_ppg_last5",
+    "home_rest_days",
+    "away_rest_days",
+    "home_b2b",
+    "away_b2b",
+    "home_injuries_count",
+    "away_injuries_count",
+    "home_win_rate_last10",
+    "away_win_rate_last10",
+    "home_elo",
+    "away_elo",
+    "home_streak",
+    "away_streak",
+    "h2h_home_advantage"
+  ],
+  "trained_at": "2026-05-31T20:10:10.805244+00:00",
+  "metrics": {
+    "split": "test",
+    "n_samples": 753,
+    "log_loss": 0.7241,
+    "brier_score": 0.2409,
+    "roc_auc": 0.651,
+    "accuracy": 0.6189,
+    "ece": 0.0792,
+    "passes_log_loss": false,
+    "passes_brier": true,
+    "passes_auc": true,
+    "passes_ece": "False",
+    "passes_all": false,
+    "margin": {
+      "split": "margin",
+      "n_samples": 753,
+      "mae": 12.21,
+      "rmse": 15.55,
+      "bias": 0.75,
+      "correlation": 0.3412,
+      "passes_mae_margin": false,
+      "passes_mae_total": true
+    },
+    "total": {
+      "split": "total",
+      "n_samples": 753,
+      "mae": 16.45,
+      "rmse": 21.97,
+      "bias": -0.47,
+      "correlation": 0.2793,
+      "passes_mae_margin": false,
+      "passes_mae_total": false
+    },
+    "team_props": {
+      "reb": {
+        "label": "Rebotes totales",
+        "home_mae": 45.566,
+        "home_rmse": 50.457,
+        "away_mae": 44.885,
+        "away_rmse": 50.039
+      },
+      "ast": {
+        "label": "Asistencias",
+        "home_mae": 27.854,
+        "home_rmse": 32.171,
+        "away_mae": 26.615,
+        "away_rmse": 30.649
+      },
+      "stl": {
+        "label": "Robos",
+        "home_mae": 9.239,
+        "home_rmse": 11.025,
+        "away_mae": 9.388,
+        "away_rmse": 10.945
+      },
+      "blk": {
+        "label": "Bloqueos",
+        "home_mae": 7.355,
+        "home_rmse": 8.567,
+        "away_mae": 7.009,
+        "away_rmse": 8.185
+      },
+      "to": {
+        "label": "Turnovers (p\u00e9rdidas)",
+        "home_mae": 14.035,
+        "home_rmse": 16.479,
+        "away_mae": 14.019,
+        "away_rmse": 16.997
+      }
+    }
+  }
+}

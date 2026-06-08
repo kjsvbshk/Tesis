@@ -53,16 +53,24 @@ export function MatchList() {
       ])
       setTodayMatches(today)
       setUpcomingMatches(upcoming)
+      // Mostrar partidos de inmediato sin esperar predicciones
+      setLoading(false)
 
+      // Cargar predicciones en segundo plano con timeout por request
       const allMatches = [...today, ...upcoming]
       const predMap = new Map<number, PredictionResponse>()
       await Promise.allSettled(
         allMatches.map(async (m) => {
           try {
-            const pred = await predictionsService.getGamePrediction(m.id as number)
+            const pred = await Promise.race([
+              predictionsService.getGamePrediction(m.id as number),
+              new Promise<never>((_, reject) =>
+                setTimeout(() => reject(new Error('timeout')), 15000)
+              ),
+            ])
             predMap.set(m.id as number, pred)
           } catch {
-            // partido sin prediccion disponible
+            // partido sin prediccion o timeout
           }
         })
       )
@@ -74,7 +82,6 @@ export function MatchList() {
         description: 'Failed to retrieve match data.',
         variant: 'destructive',
       })
-    } finally {
       setLoading(false)
     }
   }
@@ -155,42 +162,4 @@ export function MatchList() {
         {todayMatchesConverted.length === 0 ? (
           <EmptyState message="NO MATCHES SCHEDULED FOR TODAY" />
         ) : (
-          todayMatchesConverted.map((m, index) => (
-            <MatchCard key={m.id} match={m} delay={index * 0.05} />
-          ))
-        )}
-      </TabsContent>
-
-      <TabsContent value="upcoming" className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
-        {upcomingMatchesConverted.length === 0 ? (
-          <EmptyState message="NO UPCOMING MATCHES FOUND" />
-        ) : (
-          upcomingMatchesConverted.map((m, index) => (
-            <MatchCard key={m.id} match={m} delay={index * 0.05} />
-          ))
-        )}
-      </TabsContent>
-    </Tabs>
-  )
-}
-
-function TabTrigger({ value, icon, label }: { value: string; icon: React.ReactNode; label: string }) {
-  return (
-    <TabsTrigger
-      value={value}
-      className="data-[state=active]:bg-transparent data-[state=active]:text-acid-500 data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-acid-500 rounded-none border-b-2 border-transparent px-0 py-2 gap-2 font-mono font-bold text-muted-foreground hover:text-white transition-colors uppercase tracking-wide"
-    >
-      {icon}
-      {label}
-    </TabsTrigger>
-  )
-}
-
-function EmptyState({ message }: { message: string }) {
-  return (
-    <div className="flex flex-col items-center justify-center py-16 border border-dashed border-white/10 rounded-lg bg-white/5">
-      <Activity size={32} className="text-muted-foreground mb-4 opacity-50" />
-      <p className="font-mono text-sm text-muted-foreground uppercase tracking-widest">{message}</p>
-    </div>
-  )
-}
+          tod

@@ -127,7 +127,7 @@ function RequestSearchTab() {
             <Label className="text-[#B0B3C5]">Request ID</Label>
             <Input
               value={filters.request_id}
-              onChange={(e) => setFilters(prev => ({ ...prev, request_id: e.target.value })}
+              onChange={(e) => setFilters(prev => ({ ...prev, request_id: e.target.value }))}
               className="bg-[#0B132B] border-[#1C2541] text-white"
             />
           </div>
@@ -135,7 +135,7 @@ function RequestSearchTab() {
             <Label className="text-[#B0B3C5]">Request Key</Label>
             <Input
               value={filters.request_key}
-              onChange={(e) => setFilters(prev => ({ ...prev, request_key: e.target.value })}
+              onChange={(e) => setFilters(prev => ({ ...prev, request_key: e.target.value }))}
               className="bg-[#0B132B] border-[#1C2541] text-white"
             />
           </div>
@@ -143,7 +143,7 @@ function RequestSearchTab() {
             <Label className="text-[#B0B3C5]">Event ID</Label>
             <Input
               value={filters.event_id}
-              onChange={(e) => setFilters(prev => ({ ...prev, event_id: e.target.value })}
+              onChange={(e) => setFilters(prev => ({ ...prev, event_id: e.target.value }))}
               className="bg-[#0B132B] border-[#1C2541] text-white"
             />
           </div>
@@ -151,7 +151,7 @@ function RequestSearchTab() {
             <Label className="text-[#B0B3C5]">Status</Label>
             <Input
               value={filters.status}
-              onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value })}
+              onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
               className="bg-[#0B132B] border-[#1C2541] text-white"
             />
           </div>
@@ -160,7 +160,7 @@ function RequestSearchTab() {
             <Input
               type="date"
               value={filters.date_from}
-              onChange={(e) => setFilters(prev => ({ ...prev, date_from: e.target.value })}
+              onChange={(e) => setFilters(prev => ({ ...prev, date_from: e.target.value }))}
               className="bg-[#0B132B] border-[#1C2541] text-white"
             />
           </div>
@@ -169,7 +169,7 @@ function RequestSearchTab() {
             <Input
               type="date"
               value={filters.date_to}
-              onChange={(e) => setFilters(prev => ({ ...prev, date_to: e.target.value })}
+              onChange={(e) => setFilters(prev => ({ ...prev, date_to: e.target.value }))}
               className="bg-[#0B132B] border-[#1C2541] text-white"
             />
           </div>
@@ -262,7 +262,7 @@ function KeySearchTab() {
             <Label className="text-[#B0B3C5]">Request Key</Label>
             <Input
               value={filters.request_key}
-              onChange={(e) => setFilters(prev => ({ ...prev, request_key: e.target.value })}
+              onChange={(e) => setFilters(prev => ({ ...prev, request_key: e.target.value }))}
               className="bg-[#0B132B] border-[#1C2541] text-white"
             />
           </div>
@@ -271,7 +271,7 @@ function KeySearchTab() {
             <Input
               type="date"
               value={filters.date_from}
-              onChange={(e) => setFilters(prev => ({ ...prev, date_from: e.target.value })}
+              onChange={(e) => setFilters(prev => ({ ...prev, date_from: e.target.value }))}
               className="bg-[#0B132B] border-[#1C2541] text-white"
             />
           </div>
@@ -280,7 +280,7 @@ function KeySearchTab() {
             <Input
               type="date"
               value={filters.date_to}
-              onChange={(e) => setFilters(prev => ({ ...prev, date_to: e.target.value })}
+              onChange={(e) => setFilters(prev => ({ ...prev, date_to: e.target.value }))}
               className="bg-[#0B132B] border-[#1C2541] text-white"
             />
           </div>
@@ -385,7 +385,7 @@ function EventSearchTab() {
             <Label className="text-[#B0B3C5]">Event ID</Label>
             <Input
               value={filters.event_id}
-              onChange={(e) => setFilters(prev => ({ ...prev, event_id: e.target.value })}
+              onChange={(e) => setFilters(prev => ({ ...prev, event_id: e.target.value }))}
               className="bg-[#0B132B] border-[#1C2541] text-white"
             />
           </div>
@@ -394,7 +394,7 @@ function EventSearchTab() {
             <Input
               type="date"
               value={filters.date_from}
-              onChange={(e) => setFilters(prev => ({ ...prev, date_from: e.target.value })}
+              onChange={(e) => setFilters(prev => ({ ...prev, date_from: e.target.value }))}
               className="bg-[#0B132B] border-[#1C2541] text-white"
             />
           </div>
@@ -403,7 +403,7 @@ function EventSearchTab() {
             <Input
               type="date"
               value={filters.date_to}
-              onChange={(e) => setFilters(prev => ({ ...prev, date_to: e.target.value })}
+              onChange={(e) => setFilters(prev => ({ ...prev, date_to: e.target.value }))}
               className="bg-[#0B132B] border-[#1C2541] text-white"
             />
           </div>

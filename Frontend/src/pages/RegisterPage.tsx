@@ -35,8 +35,8 @@ export function RegisterPage() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value })
-    if (errors[name]) setErrors(prev => ({ ...prev, [name]: undefined })
+    setFormData(prev => ({ ...prev, [name]: value }))
+    if (errors[name]) setErrors(prev => ({ ...prev, [name]: undefined }))
   }
 
   const validateForm = () => {
@@ -78,8 +78,7 @@ export function RegisterPage() {
     }
 
     if (!formData.verificationCode || formData.verificationCode.length !== 6) {
-      setErrors(prev => ({ ...prev, verificationCode: 'Invalid Length' })
-      return
+      setErrors(prev => ({ ...prev, verificationCode: 'Invalid Length' }))
     }
 
     setIsLoading(true)

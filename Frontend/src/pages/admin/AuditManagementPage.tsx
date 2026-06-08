@@ -121,7 +121,7 @@ export function AuditManagementPage() {
                 id="actor_user_id"
                 type="number"
                 value={filters.actor_user_id}
-                onChange={(e) => setFilters(prev => ({ ...prev, actor_user_id: e.target.value })}
+                onChange={(e) => setFilters(prev => ({ ...prev, actor_user_id: e.target.value }))}
                 className="bg-[#0B132B] border-[#1C2541] text-white"
                 placeholder="Filtrar por usuario"
               />
@@ -133,7 +133,7 @@ export function AuditManagementPage() {
               <Input
                 id="action"
                 value={filters.action}
-                onChange={(e) => setFilters(prev => ({ ...prev, action: e.target.value })}
+                onChange={(e) => setFilters(prev => ({ ...prev, action: e.target.value }))}
                 className="bg-[#0B132B] border-[#1C2541] text-white"
                 placeholder="Ej: create, update, delete"
               />
@@ -145,7 +145,7 @@ export function AuditManagementPage() {
               <Input
                 id="resource_type"
                 value={filters.resource_type}
-                onChange={(e) => setFilters(prev => ({ ...prev, resource_type: e.target.value })}
+                onChange={(e) => setFilters(prev => ({ ...prev, resource_type: e.target.value }))}
                 className="bg-[#0B132B] border-[#1C2541] text-white"
                 placeholder="Ej: user, role, bet"
               />
@@ -158,7 +158,7 @@ export function AuditManagementPage() {
                 id="resource_id"
                 type="number"
                 value={filters.resource_id}
-                onChange={(e) => setFilters(prev => ({ ...prev, resource_id: e.target.value })}
+                onChange={(e) => setFilters(prev => ({ ...prev, resource_id: e.target.value }))}
                 className="bg-[#0B132B] border-[#1C2541] text-white"
                 placeholder="ID del recurso"
               />
@@ -171,7 +171,7 @@ export function AuditManagementPage() {
                 id="date_from"
                 type="date"
                 value={filters.date_from}
-                onChange={(e) => setFilters(prev => ({ ...prev, date_from: e.target.value })}
+                onChange={(e) => setFilters(prev => ({ ...prev, date_from: e.target.value }))}
                 className="bg-[#0B132B] border-[#1C2541] text-white"
               />
             </div>
@@ -183,7 +183,7 @@ export function AuditManagementPage() {
                 id="date_to"
                 type="date"
                 value={filters.date_to}
-                onChange={(e) => setFilters(prev => ({ ...prev, date_to: e.target.value })}
+                onChange={(e) => setFilters(prev => ({ ...prev, date_to: e.target.value }))}
                 className="bg-[#0B132B] border-[#1C2541] text-white"
               />
             </div>

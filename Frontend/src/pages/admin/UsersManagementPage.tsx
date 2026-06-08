@@ -370,7 +370,7 @@ export function UsersManagementPage() {
               <Input
                 id="create-username"
                 value={createForm.username}
-                onChange={(e) => setCreateForm(prev => ({ ...prev, username: e.target.value })}
+                onChange={(e) => setCreateForm(prev => ({ ...prev, username: e.target.value }))}
                 className="bg-[#0B132B] border-[#1C2541] text-white"
                 placeholder="usuario123"
               />
@@ -381,7 +381,7 @@ export function UsersManagementPage() {
                 id="create-email"
                 type="email"
                 value={createForm.email}
-                onChange={(e) => setCreateForm(prev => ({ ...prev, email: e.target.value })}
+                onChange={(e) => setCreateForm(prev => ({ ...prev, email: e.target.value }))}
                 className="bg-[#0B132B] border-[#1C2541] text-white"
                 placeholder="usuario@ejemplo.com"
               />
@@ -392,7 +392,7 @@ export function UsersManagementPage() {
                 id="create-password"
                 type="password"
                 value={createForm.password}
-                onChange={(e) => setCreateForm(prev => ({ ...prev, password: e.target.value })}
+                onChange={(e) => setCreateForm(prev => ({ ...prev, password: e.target.value }))}
                 className="bg-[#0B132B] border-[#1C2541] text-white"
                 placeholder="••••••••"
               />
@@ -431,7 +431,7 @@ export function UsersManagementPage() {
               <Input
                 id="edit-username"
                 value={editForm.username}
-                onChange={(e) => setEditForm(prev => ({ ...prev, username: e.target.value })}
+                onChange={(e) => setEditForm(prev => ({ ...prev, username: e.target.value }))}
                 className="bg-[#0B132B] border-[#1C2541] text-white"
               />
             </div>
@@ -441,7 +441,7 @@ export function UsersManagementPage() {
                 id="edit-email"
                 type="email"
                 value={editForm.email}
-                onChange={(e) => setEditForm(prev => ({ ...prev, email: e.target.value })}
+                onChange={(e) => setEditForm(prev => ({ ...prev, email: e.target.value }))}
                 className="bg-[#0B132B] border-[#1C2541] text-white"
               />
             </div>
@@ -452,7 +452,7 @@ export function UsersManagementPage() {
                 type="number"
                 step="0.01"
                 value={editForm.credits}
-                onChange={(e) => setEditForm(prev => ({ ...prev, credits: parseFloat(e.target.value) || 0 })}
+                onChange={(e) => setEditForm(prev => ({ ...prev, credits: parseFloat(e.target.value) || 0 }))}
                 className="bg-[#0B132B] border-[#1C2541] text-white"
               />
             </div>
@@ -461,7 +461,7 @@ export function UsersManagementPage() {
                 type="checkbox"
                 id="edit-active"
                 checked={editForm.is_active}
-                onChange={(e) => setEditForm(prev => ({ ...prev, is_active: e.target.checked })}
+                onChange={(e) => setEditForm(prev => ({ ...prev, is_active: e.target.checked }))}
                 className="rounded border-[#1C2541] bg-[#0B132B] text-[#00FF73]"
               />
               <Label htmlFor="edit-active" className="cursor-pointer">

@@ -12,7 +12,7 @@ export function ResetPasswordPage() {
   const navigate = useNavigate()
   const location = useLocation()
   const { username, code } = location.state || {}
-  
+
   const [formData, setFormData] = useState({
     newPassword: '',
     confirmPassword: '',
@@ -42,32 +42,32 @@ export function ResetPasswordPage() {
     })
     // Clear error when user starts typing
     if (errors[name as keyof typeof errors]) {
-      setErrors(prev => ({ ...prev, [name]: undefined })
+      setErrors(prev => ({ ...prev, [name]: undefined }))
     }
   }
 
   const validateForm = () => {
     const newErrors: typeof errors = {}
-    
+
     if (!formData.newPassword) {
       newErrors.newPassword = 'La nueva contraseña es requerida'
     } else if (formData.newPassword.length < 6) {
       newErrors.newPassword = 'La contraseña debe tener al menos 6 caracteres'
     }
-    
+
     if (!formData.confirmPassword) {
       newErrors.confirmPassword = 'Por favor confirma tu nueva contraseña'
     } else if (formData.newPassword !== formData.confirmPassword) {
       newErrors.confirmPassword = 'Las contraseñas no coinciden'
     }
-    
+
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!validateForm()) {
       return
     }
@@ -75,12 +75,12 @@ export function ResetPasswordPage() {
     setIsLoading(true)
     try {
       await authService.resetPassword(username, code, formData.newPassword)
-      
+
       toast({
         title: 'Contraseña restablecida',
         description: 'Tu contraseña ha sido cambiada exitosamente',
       })
-      
+
       // Redirect to login after a short delay
       setTimeout(() => {
         navigate('/login')
@@ -138,9 +138,8 @@ export function ResetPasswordPage() {
                 required
                 value={formData.newPassword}
                 onChange={handleChange}
-                className={`block w-full rounded-lg bg-white/5 px-3 py-2.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-[#B0B3C5] focus:outline-2 focus:-outline-offset-2 focus:outline-[#00FF73] sm:text-sm/6 ${
-                  errors.newPassword ? 'border-[#FF4C4C]' : ''
-                }`}
+                className={`block w-full rounded-lg bg-white/5 px-3 py-2.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-[#B0B3C5] focus:outline-2 focus:-outline-offset-2 focus:outline-[#00FF73] sm:text-sm/6 ${errors.newPassword ? 'border-[#FF4C4C]' : ''
+                  }`}
                 placeholder="••••••••"
               />
               {errors.newPassword && (
@@ -162,9 +161,8 @@ export function ResetPasswordPage() {
                 required
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className={`block w-full rounded-lg bg-white/5 px-3 py-2.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-[#B0B3C5] focus:outline-2 focus:-outline-offset-2 focus:outline-[#00FF73] sm:text-sm/6 ${
-                  errors.confirmPassword ? 'border-[#FF4C4C]' : ''
-                }`}
+                className={`block w-full rounded-lg bg-white/5 px-3 py-2.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-[#B0B3C5] focus:outline-2 focus:-outline-offset-2 focus:outline-[#00FF73] sm:text-sm/6 ${errors.confirmPassword ? 'border-[#FF4C4C]' : ''
+                  }`}
                 placeholder="••••••••"
               />
               {errors.confirmPassword && (

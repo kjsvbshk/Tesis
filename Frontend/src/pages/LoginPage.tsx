@@ -29,7 +29,7 @@ export function LoginPage() {
     e.preventDefault()
     if (!validateForm()) return
     if (requires2FA && (!twoFactorCode || twoFactorCode.length !== 6)) {
-      setErrors(prev => ({ ...prev, twoFactorCode: 'Invalid Protocol' })
+      setErrors(prev => ({ ...prev, twoFactorCode: 'Invalid Protocol' }))
       return
     }
 

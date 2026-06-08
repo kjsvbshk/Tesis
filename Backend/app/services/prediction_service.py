@@ -133,6 +133,19 @@ class PredictionService:
                 sys.path.insert(0, backend_root)
                 print(f"[load_model] sys.path += {backend_root} (para resolver `src.*` del pickle)")
 
+            # Fix Python 3.11: las clases Cython de sklearn._loss._loss tienen
+            # __module__ = '_loss'. En Python 3.10 el C-ext se auto-registra
+            # como sys.modules['_loss']; en Python 3.11 NO — hay que hacerlo
+            # explícitamente antes de joblib.load() o pickle lanza
+            # ModuleNotFoundError: No module named '_loss'.
+            try:
+                import sklearn._loss._loss as _sklearn_loss_ext
+                if '_loss' not in sys.modules:
+                    sys.modules['_loss'] = _sklearn_loss_ext
+                    print("[load_model] sys.modules['_loss'] registrado manualmente (fix Python 3.11)")
+            except ImportError:
+                pass
+
             # Cargar el joblib — distinguir tipos de error para diagnóstico
             try:
                 self.model = joblib.load(chosen_path)

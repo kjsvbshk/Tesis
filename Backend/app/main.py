@@ -292,6 +292,15 @@ async def debug_model():
             if backend_root_local not in sys.path:
                 sys.path.insert(0, backend_root_local)
             result["sys_path_src"] = backend_root_local
+            # Fix Python 3.11: las clases Cython de sklearn._loss._loss tienen
+            # __module__ = '_loss' pero en Python 3.11 no se auto-registran en
+            # sys.modules — registrar explícitamente antes de joblib.load().
+            try:
+                import sklearn._loss._loss as _sklearn_loss_ext
+                if '_loss' not in sys.modules:
+                    sys.modules['_loss'] = _sklearn_loss_ext
+            except ImportError:
+                pass
             model = joblib.load(path)
             result["load_success"] = True
             result["model_class"] = type(model).__name__

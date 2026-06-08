@@ -617,13 +617,11 @@ class PredictionService:
             away_name = away_team.name if away_team else game.get("away_team")
             raw_date  = game.get("game_date") or game.get("fecha") or game.get("date")
             if isinstance(raw_date, str):
-                from datetime import datetime
                 try:
                     game_date = datetime.strptime(raw_date[:10], "%Y-%m-%d").date()
                 except ValueError:
                     game_date = datetime.now().date()
             elif raw_date is None:
-                from datetime import datetime
                 game_date = datetime.now().date()
             else:
                 game_date = raw_date

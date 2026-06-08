@@ -47,14 +47,86 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+# ── Singleton global ──────────────────────────────────────────────────────────
+# El modelo ocupa ~200-300 MB en RAM una vez descomprimido. Cargarlo en cada
+# request agota los 512 MB del plan gratuito de Render con 2-3 requests
+# simultáneos. Se mantiene una única instancia compartida por todos los workers.
+_GLOBAL_MODEL = None          # objeto NBAEnsemble cargado
+_GLOBAL_MODEL_VERSION = None  # objeto ModelVersion activo
+_MODEL_LOAD_ATTEMPTED = False # evitar reintentos repetidos si falla
+
+
+def _load_global_model(db: Session):
+    """Carga el modelo en el singleton global. Llamar una vez en startup."""
+    global _GLOBAL_MODEL, _GLOBAL_MODEL_VERSION, _MODEL_LOAD_ATTEMPTED
+    _MODEL_LOAD_ATTEMPTED = True
+
+    try:
+        model_version_obj = db.query(ModelVersion).filter(
+            ModelVersion.is_active == True
+        ).first()
+    except Exception as db_e:
+        print(f"[singleton] ❌ Error consultando model_versions: {db_e}")
+        return
+
+    if not model_version_obj:
+        print("[singleton] ⚠️  No active model version in app.model_versions")
+        return
+
+    if not JOBLIB_AVAILABLE:
+        print("[singleton] ❌ joblib no disponible")
+        return
+
+    try:
+        model_dir = settings.MODEL_DIR
+        if not os.path.isabs(model_dir):
+            backend_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            model_dir = os.path.normpath(os.path.join(backend_root, model_dir))
+
+        version = model_version_obj.version
+        model_path = os.path.join(model_dir, f"nba_prediction_model_{version}.joblib")
+        fallback_path = os.path.join(model_dir, "nba_prediction_model.joblib")
+        chosen_path = model_path if os.path.exists(model_path) else (fallback_path if os.path.exists(fallback_path) else None)
+
+        if chosen_path is None:
+            print(f"[singleton] ❌ .joblib no encontrado en {model_dir}")
+            return
+
+        import sys
+        backend_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        if backend_root not in sys.path:
+            sys.path.insert(0, backend_root)
+
+        # Fix Python 3.11: sklearn._loss._loss classes have __module__ = '_loss'
+        try:
+            import sklearn._loss._loss as _sklearn_loss_ext
+            if '_loss' not in sys.modules:
+                sys.modules['_loss'] = _sklearn_loss_ext
+        except ImportError:
+            pass
+
+        _GLOBAL_MODEL = joblib.load(chosen_path)
+        _GLOBAL_MODEL_VERSION = model_version_obj
+        print(f"[singleton] ✅ Modelo cargado una vez ({type(_GLOBAL_MODEL).__name__}) version={version}")
+    except Exception as e:
+        print(f"[singleton] ❌ Error cargando modelo: {type(e).__name__}: {e}")
+        import traceback; traceback.print_exc()
+# ─────────────────────────────────────────────────────────────────────────────
+
 
 class PredictionService:
     def __init__(self, db: Session):
         self.db = db
         self.match_service = MatchService(db) if db else None
-        self.model = None
-        self.model_version_obj: Optional[ModelVersion] = None
-        self.load_model()
+        # Usar singleton global — evita recargar ~300 MB por cada request
+        self.model = _GLOBAL_MODEL
+        self.model_version_obj = _GLOBAL_MODEL_VERSION
+        # Si el singleton no está cargado aún, intentar cargarlo ahora (fallback)
+        if self.model is None and not _MODEL_LOAD_ATTEMPTED:
+            self.load_model()
+        elif self.model is None and _MODEL_LOAD_ATTEMPTED:
+            # Ya se intentó y falló; no reintentar en cada request
+            pass
     
     def load_model(self):
         """Load the trained ML model with versioning.

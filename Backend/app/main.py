@@ -192,42 +192,16 @@ async def startup_event():
         AppBase.metadata.create_all(bind=app_engine)
         print("✅ Database tables created in Neon (schema: app)")
         
-        # Validar que el modelo ML activo tiene su .joblib en disco
+        # Cargar el modelo ML en el singleton global (una sola vez, en startup)
         try:
-            import os
-            from app.core.config import settings
-            from app.models import ModelVersion
             from app.core.database import get_sys_db
+            from app.services.prediction_service import _load_global_model
 
             db = next(get_sys_db())
-            active_mv = db.query(ModelVersion).filter(ModelVersion.is_active == True).first()
+            _load_global_model(db)
             db.close()
-
-            if active_mv:
-                model_dir = settings.MODEL_DIR
-                if not os.path.isabs(model_dir):
-                    backend_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-                    model_dir = os.path.normpath(os.path.join(backend_root, model_dir))
-
-                joblib_path = os.path.join(model_dir, f"nba_prediction_model_{active_mv.version}.joblib")
-                fallback_path = os.path.join(model_dir, "nba_prediction_model.joblib")
-
-                if os.path.exists(joblib_path):
-                    print(f"✅ Modelo ML v{active_mv.version} encontrado en disco: {joblib_path}")
-                elif os.path.exists(fallback_path):
-                    print(f"✅ Modelo ML encontrado (fallback genérico): {fallback_path}")
-                else:
-                    available = os.listdir(model_dir) if os.path.isdir(model_dir) else []
-                    print(f"⚠️  ADVERTENCIA: modelo activo '{active_mv.version}' no tiene .joblib en {model_dir}")
-                    print(f"⚠️  Archivos .joblib disponibles: {[f for f in available if f.endswith('.joblib')]}")
-                    print(f"⚠️  Las predicciones retornarán 503 hasta que se suba el archivo.")
-                    print(f"⚠️  Para generar el modelo, ejecutar localmente:")
-                    print(f"⚠️    cd ML && python -m src.training.train --version {active_mv.version} --model ensemble --use-v3")
-                    print(f"⚠️    git add -f ML/models/nba_prediction_model_{active_mv.version}.joblib && git push")
-            else:
-                print("⚠️  No hay versión de modelo activa en app.model_versions.")
         except Exception as mv_e:
-            print(f"⚠️  No se pudo validar el modelo ML en startup: {mv_e}")
+            print(f"⚠️  No se pudo cargar el modelo ML en startup: {mv_e}")
 
         # Iniciar worker del outbox (RF-08)
         try:

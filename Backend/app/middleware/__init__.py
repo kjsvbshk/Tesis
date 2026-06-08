@@ -1,3 +1,0 @@
-"""
-Security middleware modules
-"""

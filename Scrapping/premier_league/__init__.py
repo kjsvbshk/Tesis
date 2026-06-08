@@ -1,2 +1,0 @@
-# Premier League Scraper Package
-

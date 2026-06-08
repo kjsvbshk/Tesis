@@ -1,6 +1,6 @@
 import { MatchCard, type Match } from '@/components/MatchCard'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { matchesService, type MatchResponse } from '@/services/matches.service'
 import { predictionsService, type PredictionResponse } from '@/services/predictions.service'
 import { useToast } from '@/hooks/use-toast'
@@ -15,11 +15,29 @@ function roundHalf(n: number): number {
   return Math.round(n * 2) / 2
 }
 
+/** Calcula odds de over/under basado en el total predicho vs la línea.
+ *  Si predicted_total está por encima de la línea, el over tiene odds más bajos.
+ *  Si está por debajo, el under tiene odds más bajos. */
+function ouOdds(predictedTotal: number, line: number): { over: number; under: number } {
+  const diff = predictedTotal - line
+  const abs = Math.abs(diff)
+  // Ajuste máximo de 0.30 (para diferencias >= 10 puntos)
+  const adjustment = Math.min(abs * 0.03, 0.30)
+  if (diff > 1.5) {
+    // predicted > line → over más probable
+    return { over: parseFloat((1.90 - adjustment).toFixed(2)), under: parseFloat((1.90 + adjustment).toFixed(2)) }
+  } else if (diff < -1.5) {
+    // predicted < line → under más probable
+    return { over: parseFloat((1.90 + adjustment).toFixed(2)), under: parseFloat((1.90 - adjustment).toFixed(2)) }
+  }
+  return { over: 1.90, under: 1.90 }
+}
+
 export function MatchList() {
   const [todayMatches, setTodayMatches] = useState<MatchResponse[]>([])
   const [upcomingMatches, setUpcomingMatches] = useState<MatchResponse[]>([])
   const [predictions, setPredictions] = useState<Map<number, PredictionResponse>>(new Map())
-  const loading = useRef(true)
+  const [loading, setLoading] = useState(true)
   const { toast } = useToast()
 
   useEffect(() => {
@@ -28,7 +46,7 @@ export function MatchList() {
 
   const loadMatches = async () => {
     try {
-      loading.current = true
+      setLoading(true)
       const [today, upcoming] = await Promise.all([
         matchesService.getTodayMatches(),
         matchesService.getUpcomingMatches(7)
@@ -57,7 +75,7 @@ export function MatchList() {
         variant: 'destructive',
       })
     } finally {
-      loading.current = false
+      setLoading(false)
     }
   }
 
@@ -65,12 +83,15 @@ export function MatchList() {
     const homeOdds = pred ? probToOdds(pred.home_win_probability) : (matchResponse.home_odds || 0)
     const awayOdds = pred ? probToOdds(pred.away_win_probability) : (matchResponse.away_odds || 0)
     const ouLine = pred ? roundHalf(pred.predicted_total) : (matchResponse.over_under || 220.5)
+    const { over: overOdd, under: underOdd } = pred
+      ? ouOdds(pred.predicted_total, ouLine)
+      : { over: 1.90, under: 1.90 }
 
     return {
       id: matchResponse.id,
       home: matchResponse.home_team?.name || 'Home Team',
       away: matchResponse.away_team?.name || 'Away Team',
-      odds: { home: homeOdds, away: awayOdds, over: 1.90, under: 1.90 },
+      odds: { home: homeOdds, away: awayOdds, over: overOdd, under: underOdd },
       overUnderLine: ouLine,
       aiHomeWinProb: pred?.home_win_probability,
       gameId: matchResponse.id,
@@ -80,12 +101,15 @@ export function MatchList() {
     }
   }
 
-  const todayMatchesConverted = todayMatches.reduce<Match[]>((acc, m) => {
-    if (m.home_team?.name !== 'TBD' && m.away_team?.name !== 'TBD') {
-      acc.push(convertToMatch(m, predictions.get(m.id as number)))
-    }
-    return acc
-  }, [])
+  // Dedup por game ID para evitar que el mismo partido aparezca múltiples veces
+  const todayMatchesConverted = Array.from(
+    todayMatches.reduce<Map<number, Match>>((acc, m) => {
+      if (m.home_team?.name !== 'TBD' && m.away_team?.name !== 'TBD' && !acc.has(m.id as number)) {
+        acc.set(m.id as number, convertToMatch(m, predictions.get(m.id as number)))
+      }
+      return acc
+    }, new Map()).values()
+  )
 
   const upcomingMatchesConverted = Array.from(
     upcomingMatches.reduce<Map<number, Match>>((acc, m) => {
@@ -96,7 +120,7 @@ export function MatchList() {
     }, new Map()).values()
   )
 
-  if (loading.current) {
+  if (loading) {
     return (
       <div className="flex h-64 items-center justify-center">
         <div className="flex flex-col items-center gap-4">

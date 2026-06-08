@@ -164,7 +164,7 @@ class Settings(BaseSettings):
     SMTP_USE_TLS: bool = True
     
     # ML Model Configuration
-    MODEL_DIR: str = "../ML/models"  # Ruta al directorio de modelos (relativa a Backend/ o absoluta)
+    MODEL_DIR: str = "ml/models"  # Ruta relativa a Backend/ (dentro del container Docker es /app/ml/models)
     ML_SCHEMA: str = "ml"            # Schema de ml_ready_games en Neon
 
     # Redis Configuration

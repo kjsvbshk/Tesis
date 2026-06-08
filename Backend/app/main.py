@@ -287,10 +287,11 @@ async def debug_model():
         import joblib
         path = result.get("joblib_expected")
         if path and os.path.exists(path):
-            ml_root = os.path.normpath(os.path.join(model_dir, ".."))
-            if ml_root not in sys.path:
-                sys.path.insert(0, ml_root)
-            result["sys_path_ml"] = ml_root
+            # backend_root contiene src/ → agrega al sys.path para pickle
+            backend_root_local = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            if backend_root_local not in sys.path:
+                sys.path.insert(0, backend_root_local)
+            result["sys_path_src"] = backend_root_local
             model = joblib.load(path)
             result["load_success"] = True
             result["model_class"] = type(model).__name__

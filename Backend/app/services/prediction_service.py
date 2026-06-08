@@ -125,14 +125,13 @@ class PredictionService:
                 return
 
             # Los .joblib se serializaron con clases registradas como
-            # `src.models.ensemble.NBAEnsemble` (porque train.py corría desde
-            # ML/ con `src` como package). Al deserializar desde Backend hay
-            # que registrar ML/ en sys.path para que pickle encuentre `src.*`.
+            # `src.models.ensemble.NBAEnsemble`. El paquete `src/` está en
+            # backend_root (Backend/ → /app/ en Docker). Se agrega backend_root
+            # al sys.path para que pickle encuentre `src.*`.
             import sys
-            ml_root = os.path.normpath(os.path.join(model_dir, ".."))  # ML/
-            if ml_root not in sys.path:
-                sys.path.insert(0, ml_root)
-                print(f"[load_model] sys.path += {ml_root} (para resolver `src.*` del pickle)")
+            if backend_root not in sys.path:
+                sys.path.insert(0, backend_root)
+                print(f"[load_model] sys.path += {backend_root} (para resolver `src.*` del pickle)")
 
             # Cargar el joblib — distinguir tipos de error para diagnóstico
             try:

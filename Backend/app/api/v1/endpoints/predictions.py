@@ -287,16 +287,22 @@ async def get_game_prediction(
 async def get_upcoming_predictions(
     days: int = Query(7, description="Number of days ahead to predict"),
     current_user: UserAccount = Depends(get_current_user),
-    db: Session = Depends(get_espn_db)
+    db: Session = Depends(get_espn_db),
+    sys_db: Session = Depends(get_sys_db),
 ):
     """Get predictions for upcoming games"""
     try:
-        prediction_service = PredictionService(db)
+        # sys_db se usa para cargar el modelo (app.model_versions)
+        # db (espn_db) se usa para consultar espn.games en get_upcoming_predictions
+        prediction_service = PredictionService(sys_db)
+        prediction_service.db = db  # override para que get_upcoming_predictions use espn_db
         predictions = await prediction_service.get_upcoming_predictions(
             days=days,
             user_id=current_user.id
         )
         return predictions
+    except ModelNotLoadedError as e:
+        raise HTTPException(status_code=503, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating predictions: {str(e)}")
 
@@ -339,10 +345,12 @@ async def predict_matchup(
 
 
 @router.get("/model/status")
-async def get_model_status():
+async def get_model_status(
+    sys_db: Session = Depends(get_sys_db),
+):
     """Get ML model status and information"""
     try:
-        prediction_service = PredictionService(None)  # No DB needed for model status
+        prediction_service = PredictionService(sys_db)
         status = await prediction_service.get_model_status()
         return status
     except Exception as e:
@@ -351,12 +359,11 @@ async def get_model_status():
 @router.post("/retrain")
 async def retrain_model(
     current_user: UserAccount = Depends(get_current_user),
-    db: Session = Depends(get_espn_db)
+    sys_db: Session = Depends(get_sys_db),
 ):
     """Retrain the ML model (admin only)"""
     try:
-        # For now, allow any user to retrain (in production, add admin check)
-        prediction_service = PredictionService(db)
+        prediction_service = PredictionService(sys_db)
         result = await prediction_service.retrain_model()
         return {
             "message": "Model retraining initiated",

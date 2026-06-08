@@ -116,9 +116,25 @@ async def get_upcoming_matches(
         
         # Función para obtener partidos de la base de datos
         async def fetch_upcoming_matches():
+            from datetime import date, timedelta
             match_service = MatchService(db)
-            # No filtrar por fecha - obtener todos los partidos disponibles
-            matches = await match_service.get_matches(limit=50)
+            today = date.today()
+            # Intentar partidos próximos (hoy + days)
+            matches = await match_service.get_matches(
+                date_from=today,
+                date_to=today + timedelta(days=days),
+                limit=50
+            )
+            # Off-season fallback: si no hay futuros, mostrar los últimos 30 días
+            if not matches:
+                matches = await match_service.get_matches(
+                    date_from=today - timedelta(days=30),
+                    date_to=today,
+                    limit=30
+                )
+            # Último recurso: los 20 más recientes sin filtro de fecha
+            if not matches:
+                matches = await match_service.get_matches(limit=20)
             return [MatchResponse(**match) for match in matches]
         
         # Obtener del caché o de la base de datos

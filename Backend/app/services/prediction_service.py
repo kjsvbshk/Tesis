@@ -66,9 +66,14 @@ class PredictionService:
         típico cuando el .joblib se serializó con clases que ya no existen).
         """
         # Obtener versión activa del modelo desde BD
-        self.model_version_obj = self.db.query(ModelVersion).filter(
-            ModelVersion.is_active == True
-        ).first()
+        try:
+            self.model_version_obj = self.db.query(ModelVersion).filter(
+                ModelVersion.is_active == True
+            ).first()
+        except Exception as db_e:
+            print(f"[load_model] ❌ Error consultando app.model_versions: {type(db_e).__name__}: {db_e}")
+            self.model = None
+            return
 
         if not self.model_version_obj:
             print("[load_model] ⚠️  No active model version found in app.model_versions")
@@ -359,23 +364,37 @@ class PredictionService:
 
         today = datetime.now().date()
         future_date = today + timedelta(days=days)
+        # Fallback start: si no hay partidos futuros (off-season), mostrar
+        # los últimos 30 días para que la página no quede vacía.
+        past_fallback = today - timedelta(days=30)
 
-        # Obtener partidos futuros desde espn.games
+        # espn.games NO tiene columna 'status' — columnas reales:
+        # game_id, fecha, home_team, away_team, home_score, away_score, ...
+        # Primero intentamos partidos futuros; si no hay, partidos recientes.
         query = sql_text("""
-            SELECT game_id, fecha, home_team, away_team, home_score, away_score, status
+            SELECT game_id, fecha, home_team, away_team,
+                   home_score, away_score
             FROM espn.games
-            WHERE fecha >= :today
+            WHERE fecha >= :start
               AND fecha <= :future
-              AND (home_score = 0 OR home_score IS NULL)
-              AND (away_score = 0 OR away_score IS NULL)
               AND home_team != 'TBD' AND away_team != 'TBD'
               AND home_team IS NOT NULL AND away_team IS NOT NULL
             ORDER BY fecha ASC
+            LIMIT 30
         """)
+
+        # Intentar primero con partidos futuros / de hoy
         rows = self.db.execute(query, {
-            "today": str(today),
+            "start": str(today),
             "future": str(future_date),
         }).mappings().fetchall()
+
+        # Off-season fallback: no hay partidos próximos, usar recientes
+        if not rows:
+            rows = self.db.execute(query, {
+                "start": str(past_fallback),
+                "future": str(today),
+            }).mappings().fetchall()
 
         if not rows:
             return []

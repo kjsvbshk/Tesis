@@ -16,7 +16,13 @@
       "Bash(python -c \":*)",
       "Bash(find C:/Users/Kjsvb/OneDrive/Documentos/Tesis/Tesis -type f \\\\\\(-name *v2* -o -name *_new* -o -name *_report* -o -name *_analysis* \\\\\\))",
       "Bash(grep -E \"\\\\.\\(py|sql\\)$\")",
-      "Bash(set PYTHONUTF8=1)"
+      "Bash(set PYTHONUTF8=1)",
+      "Bash(sed 's/.*\\\\.//')",
+      "Bash(awk -F/ '{print $1}')",
+      "PowerShell(head *)"
     ]
+  },
+  "enabledPlugins": {
+    "ponytail@ponytail": true
   }
 }

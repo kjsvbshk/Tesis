@@ -188,10 +188,11 @@ async def place_bet(
         
         # Registrar en auditoría (RF-09)
         audit_service = AuditService(db)
-        await audit_service.log_bet_action(
+        await audit_service.log_action(
             action="bet.placed",
             actor_user_id=current_user.id,
-            bet_id=new_bet.id,
+            resource_type="bet",
+            resource_id=new_bet.id,
             after={
                 "bet_id": new_bet.id,
                 "bet_type": new_bet.bet_type_code,

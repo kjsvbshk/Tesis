@@ -115,10 +115,11 @@ async def get_prediction(
         
         # Registrar en auditoría (RF-09)
         audit_service = AuditService(sys_db)
-        await audit_service.log_prediction_action(
+        await audit_service.log_action(
             action="prediction.completed",
             actor_user_id=current_user.id,
-            prediction_id=request_id,  # Usar request_id como prediction_id temporalmente
+            resource_type="prediction",
+            resource_id=request_id,
             metadata={
                 "game_id": prediction_request.game_id,
                 "request_key": idempotency_data.get("x_idempotency_key"),
@@ -237,10 +238,11 @@ async def get_game_prediction(
         
         # Registrar en auditoría (RF-09)
         audit_service = AuditService(sys_db)
-        await audit_service.log_request_action(
+        await audit_service.log_action(
             action="prediction.requested",
             actor_user_id=current_user.id,
-            request_id=request_id,
+            resource_type="request",
+            resource_id=request_id,
             metadata={
                 "game_id": game_id,
                 "request_key": request_key,
@@ -249,13 +251,11 @@ async def get_game_prediction(
             },
             commit=True
         )
-        
-        # También registrar como acción de predicción si hay un prediction_id
-        # (usamos request_id como referencia temporal)
-        await audit_service.log_prediction_action(
+        await audit_service.log_action(
             action="prediction.completed",
             actor_user_id=current_user.id,
-            prediction_id=request_id,  # Usar request_id como prediction_id temporalmente
+            resource_type="prediction",
+            resource_id=request_id,
             metadata={
                 "game_id": game_id,
                 "request_key": request_key,

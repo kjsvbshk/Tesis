@@ -122,15 +122,7 @@ class IdempotencyService:
         # Serializar respuesta a JSON
         import json
         try:
-            # Función helper para serializar datetime a ISO format
-            from datetime import datetime
-            def json_serializer(obj):
-                """JSON serializer para objetos datetime"""
-                if isinstance(obj, datetime):
-                    return obj.isoformat()
-                raise TypeError(f"Type {type(obj)} not serializable")
-            
-            idempotency_key.response_data = json.dumps(response_data, default=json_serializer)
+            idempotency_key.response_data = json.dumps(response_data, default=str)
         except:
             idempotency_key.response_data = str(response_data)
         

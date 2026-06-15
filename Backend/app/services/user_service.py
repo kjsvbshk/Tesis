@@ -14,43 +14,43 @@ from app.services.auth_service import get_password_hash
 class UserService:
     def __init__(self, db: Session):
         self.db = db
-    
+
     async def get_user_by_id(self, user_id: int) -> Optional[UserAccount]:
         """Get user account by ID"""
         return self.db.query(UserAccount).filter(UserAccount.id == user_id).first()
-    
+
     async def get_user_by_username(self, username: str) -> Optional[UserAccount]:
         """Get user account by username"""
         return self.db.query(UserAccount).filter(UserAccount.username == username).first()
-    
+
     async def get_user_by_email(self, email: str) -> Optional[UserAccount]:
         """Get user account by email"""
         return self.db.query(UserAccount).filter(UserAccount.email == email).first()
-    
+
     async def get_all_users(self, limit: int = 50, offset: int = 0, exclude_user_id: Optional[int] = None) -> List[UserAccount]:
         """Get all user accounts with pagination"""
         query = self.db.query(UserAccount)
-        
+
         if exclude_user_id is not None:
             query = query.filter(UserAccount.id != exclude_user_id)
-            
+
         return query.offset(offset).limit(limit).all()
-    
+
     async def get_client_by_user_id(self, user_id: int) -> Optional[Client]:
         """Get client record for a user account"""
         return self.db.query(Client).filter(Client.user_account_id == user_id).first()
-    
+
     async def create_user(self, user: UserCreate) -> UserAccount:
         """Create a new user - siempre como cliente por defecto"""
         # Verificar si ya existe
         existing = await self.get_user_by_username(user.username)
         if existing:
             raise ValueError("Username already exists")
-        
+
         existing_email = await self.get_user_by_email(user.email)
         if existing_email:
             raise ValueError("Email already exists")
-        
+
         # Obtener rol de cliente
         client_role = self.db.query(Role).filter(Role.code == 'client').first()
         if not client_role:
@@ -59,7 +59,7 @@ class UserService:
             self.db.add(client_role)
             self.db.commit()
             self.db.refresh(client_role)
-        
+
         # Crear cuenta de usuario
         hashed_password = get_password_hash(user.password)
         user_account = UserAccount(
@@ -70,7 +70,7 @@ class UserService:
         )
         self.db.add(user_account)
         self.db.flush()  # Para obtener el ID
-        
+
         # Crear registro de cliente
         client = Client(
             user_account_id=user_account.id,
@@ -81,19 +81,19 @@ class UserService:
         self.db.commit()
         self.db.refresh(user_account)
         return user_account
-    
+
     async def update_user(self, user_id: int, user_update: UserUpdate) -> Optional[UserAccount]:
         """Update user account information"""
         user_account = await self.get_user_by_id(user_id)
         if not user_account:
             return None
-        
+
         # Separate UserAccount fields from Client fields
         user_account_fields = {'username', 'email', 'is_active'}  # is_active can be updated by admin
         client_fields = {'first_name', 'last_name', 'phone', 'date_of_birth'}
-        
+
         update_data = user_update.dict(exclude_unset=True, exclude={'password', 'birth_date', 'rol', 'credits'})
-        
+
         # Handle birth_date mapping (frontend sends birth_date, backend uses date_of_birth)
         if user_update.birth_date:
             from datetime import datetime
@@ -103,33 +103,33 @@ class UserService:
                 update_data['date_of_birth'] = date_obj
             except (ValueError, TypeError):
                 pass  # Invalid date format, skip
-        
+
         # Update UserAccount fields
         for field, value in update_data.items():
             if field in user_account_fields and hasattr(user_account, field):
                 setattr(user_account, field, value)
-        
+
         # Handle credits update (for clients)
         if user_update.credits is not None:
             client = await self.get_client_by_user_id(user_id)
             if client:
                 from decimal import Decimal
                 client.credits = Decimal(str(user_update.credits))
-        
+
         # Update Client fields if user is a client
         client = await self.get_client_by_user_id(user_id)
         if client:
             for field, value in update_data.items():
                 if field in client_fields and hasattr(client, field):
                     setattr(client, field, value)
-        
+
         # Note: Password changes are handled in a separate endpoint (/users/me/password)
         # Do not update password here
-        
+
         self.db.commit()
         self.db.refresh(user_account)
         return user_account
-    
+
     async def adjust_credits(self, user_id: int, amount: float) -> bool:
         """
         Adjust client credits by a signed amount.
@@ -153,14 +153,14 @@ class UserService:
     async def deduct_credits(self, user_id: int, amount: float) -> bool:
         """Deduct credits from client account"""
         return await self.adjust_credits(user_id, -amount)
-    
+
     async def get_user_credits(self, user_id: int) -> Optional[float]:
         """Get credits for a user (if they are a client)"""
         client = await self.get_client_by_user_id(user_id)
         if not client:
             return None
         return float(client.credits)
-    
+
     async def get_user_role_code(self, user_id: int) -> Optional[str]:
         """Get user role code via single JOIN with COALESCE across client/admin/operator tables"""
         from sqlalchemy.orm import aliased
@@ -180,17 +180,17 @@ class UserService:
             .filter(UserAccount.id == user_id)
             .scalar()
         )
-    
+
     async def delete_user(self, user_id: int) -> bool:
         """Deactivate a user account (soft delete - logical deletion)"""
         user_account = await self.get_user_by_id(user_id)
         if not user_account:
             return False
-        
+
         # Soft delete: set is_active to False instead of deleting the record
         # This preserves data integrity and allows for potential reactivation
         user_account.is_active = False
         self.db.commit()
         self.db.refresh(user_account)
-        
+
         return True

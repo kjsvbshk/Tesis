@@ -60,9 +60,9 @@ class CacheService:
                 )
             self._redis_client.ping()
             self._connected = True
-            print("✅ Redis cache connected successfully")
+            print("Redis cache connected successfully")
         except Exception as e:
-            print(f"⚠️  Redis not available: {e}, falling back to in-memory cache")
+            print(f"Redis not available: {e}, falling back to in-memory cache")
             self._connected = False
             self._redis_client = None
 
@@ -88,7 +88,7 @@ class CacheService:
         return json.loads(data.decode('utf-8'))
 
     # ------------------------------------------------------------------ #
-    # Public API — all methods route to Redis or memory automatically     #
+    # Public API                                                           #
     # ------------------------------------------------------------------ #
 
     def get(self, key: str, allow_stale: bool = True) -> Optional[Dict[str, Any]]:
@@ -238,7 +238,7 @@ class CacheService:
                     return {"data": entry["data"], "fresh": False, "stale": True, "cached_at": entry["cached_at"]}
             return None
         except Exception as e:
-            print(f"⚠️  Redis get error: {e}")
+            print(f"Redis get error: {e}")
             return None
 
     def _redis_set(self, key: str, data: Any, ttl_seconds=None, stale_ttl_seconds=None) -> None:
@@ -254,13 +254,13 @@ class CacheService:
             }
             self._redis_client.setex(f"cache:{key}", stale, self._serialize(entry))
         except Exception as e:
-            print(f"⚠️  Redis set error: {e}")
+            print(f"Redis set error: {e}")
 
     def _redis_delete(self, key: str) -> bool:
         try:
             return self._redis_client.delete(f"cache:{key}") > 0
         except Exception as e:
-            print(f"⚠️  Redis delete error: {e}")
+            print(f"Redis delete error: {e}")
             return False
 
     def _redis_clear(self) -> int:
@@ -268,7 +268,7 @@ class CacheService:
             keys = self._redis_client.keys("cache:*")
             return self._redis_client.delete(*keys) if keys else 0
         except Exception as e:
-            print(f"⚠️  Redis clear error: {e}")
+            print(f"Redis clear error: {e}")
             return 0
 
     def _redis_invalidate(self, pattern: str) -> int:
@@ -276,7 +276,7 @@ class CacheService:
             keys = self._redis_client.keys(f"cache:*{pattern}*")
             return self._redis_client.delete(*keys) if keys else 0
         except Exception as e:
-            print(f"⚠️  Redis invalidate error: {e}")
+            print(f"Redis invalidate error: {e}")
             return 0
 
     def _redis_cleanup(self) -> int:
@@ -296,7 +296,7 @@ class CacheService:
                     continue
             return count
         except Exception as e:
-            print(f"⚠️  Redis cleanup error: {e}")
+            print(f"Redis cleanup error: {e}")
             return 0
 
     async def _redis_status(self) -> Dict[str, Any]:
@@ -328,7 +328,7 @@ class CacheService:
                 "redis_connected": True,
             }
         except Exception as e:
-            print(f"⚠️  Redis status error: {e}")
+            print(f"Redis status error: {e}")
             return {
                 "total_entries": 0,
                 "active_entries": 0,

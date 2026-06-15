@@ -19,21 +19,30 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000
 
 export const apiConfig = {
   baseURL: API_BASE_URL,
-  timeout: 10000,
+  timeout: 30000, // default 30s; callers can override via options.timeout
+}
+
+// Extend RequestInit to allow a per-call timeout (ms)
+export interface ApiRequestOptions extends Omit<RequestInit, 'signal'> {
+  timeout?: number
 }
 
 // Helper function to make API requests
 export async function apiRequest<T>(
   endpoint: string,
-  options: RequestInit = {}
+  options: ApiRequestOptions = {}
 ): Promise<T> {
   const token = localStorage.getItem('token')
-  
+
+  // Extract timeout before spreading into fetch options
+  const { timeout: customTimeout, ...fetchOptions } = options
+  const timeoutMs = customTimeout ?? apiConfig.timeout
+
   // Check if body is FormData - don't set Content-Type for FormData
-  const isFormData = options.body instanceof FormData
-  
+  const isFormData = fetchOptions.body instanceof FormData
+
   const headers: any = {
-    ...(options.headers || {}),
+    ...(fetchOptions.headers || {}),
   }
 
   // Only set Content-Type for non-FormData requests
@@ -46,15 +55,21 @@ export async function apiRequest<T>(
   }
 
   // Support for idempotency key header
-  if (options.headers && 'X-Idempotency-Key' in options.headers) {
-    headers['X-Idempotency-Key'] = (options.headers as any)['X-Idempotency-Key']
+  if (fetchOptions.headers && 'X-Idempotency-Key' in fetchOptions.headers) {
+    headers['X-Idempotency-Key'] = (fetchOptions.headers as any)['X-Idempotency-Key']
   }
+
+  // Enforce timeout via AbortController
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs)
 
   try {
     const response = await fetch(`${apiConfig.baseURL}${endpoint}`, {
-      ...options,
+      ...fetchOptions,
       headers,
+      signal: controller.signal,
     })
+    clearTimeout(timeoutId)
 
     // Handle empty response (network error, CORS, etc.)
     if (!response || response.status === 0) {
@@ -119,13 +134,20 @@ export async function apiRequest<T>(
       return text as unknown as T
     }
   } catch (error: any) {
+    clearTimeout(timeoutId)
+
+    // Handle timeout (AbortError from our controller)
+    if (error.name === 'AbortError') {
+      throw new Error('La solicitud tardó demasiado. Por favor, intenta nuevamente.')
+    }
+
     // Handle network errors
     if (error.name === 'TypeError' && error.message.includes('fetch')) {
       throw new Error('Error de conexión: No se pudo conectar con el servidor. Verifica la configuración de la API y que el backend esté disponible.')
     }
-    
-    // Handle timeout errors
-    if (error.name === 'AbortError' || error.message.includes('timeout')) {
+
+    // Handle other timeout-like errors
+    if (error.message?.includes('timeout')) {
       throw new Error('La solicitud tardó demasiado. Por favor, intenta nuevamente.')
     }
     

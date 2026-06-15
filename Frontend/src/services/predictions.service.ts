@@ -83,14 +83,15 @@ class PredictionsService {
    * Get prediction for a specific game by ID
    */
   async getGamePrediction(gameId: number): Promise<PredictionResponse> {
-    return apiRequest<PredictionResponse>(`/predict/game/${gameId}`)
+    // 60s timeout: Render free tier needs up to 60s to wake + load the ML model
+    return apiRequest<PredictionResponse>(`/predict/game/${gameId}`, { timeout: 60000 })
   }
 
   /**
    * Get predictions for upcoming games
    */
   async getUpcomingPredictions(days: number = 7): Promise<PredictionResponse[]> {
-    return apiRequest<PredictionResponse[]>(`/predict/upcoming?days=${days}`)
+    return apiRequest<PredictionResponse[]>(`/predict/upcoming?days=${days}`, { timeout: 60000 })
   }
 
   /**

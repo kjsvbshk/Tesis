@@ -117,6 +117,7 @@ export default function MatchupPage() {
       const data = await apiRequest<MatchupResponse>('/predict/matchup', {
         method: 'POST',
         body: JSON.stringify({ home_team: homeTeam, away_team: awayTeam }),
+        timeout: 60000, // ML cold start en Render free tier puede tomar ~60s
       })
       setResult(data)
     } catch (e: any) {

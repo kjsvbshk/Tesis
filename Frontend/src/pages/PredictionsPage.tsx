@@ -3,7 +3,7 @@
  * User page to request and view predictions
  */
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { LazyMotion, domAnimation, m, AnimatePresence } from 'framer-motion'
 import { Target, Users, Zap, Cpu, Search, AlertTriangle } from 'lucide-react'
@@ -67,18 +67,27 @@ export function PredictionsPage() {
     }
   }, [gameId, toast])
 
+  // Stable ref so the URL-trigger effect never re-fires due to handleGetPrediction identity changes
+  const handleGetPredictionRef = useRef(handleGetPrediction)
+  useEffect(() => {
+    handleGetPredictionRef.current = handleGetPrediction
+  })
+
+  // Fetch model status once on mount
   useEffect(() => {
     predictionsService.getModelStatus()
       .then(setModelStatus)
       .catch(() => setModelStatus(null))
+  }, [])
 
-    // Check for game_id in URL
+  // Auto-trigger from URL ?game_id param — only re-runs when searchParams actually changes
+  useEffect(() => {
     const idFromUrl = searchParams.get('game_id')
     if (idFromUrl) {
       setGameId(idFromUrl)
-      handleGetPrediction(idFromUrl)
+      handleGetPredictionRef.current(idFromUrl)
     }
-  }, [searchParams, handleGetPrediction])
+  }, [searchParams])
 
   return (
     <LazyMotion features={domAnimation}>

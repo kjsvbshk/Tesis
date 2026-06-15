@@ -495,9 +495,16 @@ class PredictionService:
         except Exception:
             feature_set = "v2"
 
-        live_extractor = LiveFeatureExtractor(self.db)
-        predictions = []
+        import time
+        import numpy as np
 
+        live_extractor = LiveFeatureExtractor(self.db)
+
+        # ── Fase 1: extraer features de todos los partidos (1 sola pasada) ──
+        # extract() calcula vector + summary con las mismas consultas, y la
+        # memoización del extractor reutiliza datos de equipos repetidos
+        # en el lote (un equipo puede jugar varios partidos en la semana).
+        prepared = []  # (game_id, home_name, away_name, game_date, X_row, summary)
         for row in rows:
             game_id   = int(row["game_id"])
             home_name = row["home_team"]
@@ -507,26 +514,35 @@ class PredictionService:
                 game_date = datetime.strptime(game_date[:10], "%Y-%m-%d").date()
 
             try:
-                import time
-                t0 = time.time()
-                X = live_extractor.build_feature_vector(
+                X, features_summary = live_extractor.extract(
                     home_team=home_name,
                     away_team=away_name,
                     game_date=game_date,
                     feature_set=feature_set,
                     game_id=game_id,
                 )
-                features_summary = live_extractor.get_features_summary(
-                    home_team=home_name,
-                    away_team=away_name,
-                    game_date=game_date,
-                    feature_set=feature_set,
-                    game_id=game_id,
-                )
-                full_output = predict_full_robust(self.model, X)
-                inference_ms = int((time.time() - t0) * 1000)
+                prepared.append((game_id, home_name, away_name, game_date, X[0], features_summary))
+            except (LiveFeaturesError, Exception) as e:
+                logger.warning(f"Upcoming features fallaron para game {game_id} "
+                               f"({away_name} @ {home_name}): {e}")
+                continue
 
-                scalar = extract_single_sample(full_output, idx=0)
+        if not prepared:
+            return []
+
+        # ── Fase 2: UNA sola inferencia para todo el lote ──
+        # El ensemble vectoriza internamente: predecir 30 partidos en una
+        # llamada cuesta casi lo mismo que predecir 1.
+        X_all = np.vstack([p[4] for p in prepared])
+        t0 = time.time()
+        full_output = predict_full_robust(self.model, X_all)
+        batch_inference_ms = int((time.time() - t0) * 1000)
+
+        # ── Fase 3: construir respuestas por partido ──
+        predictions = []
+        for idx, (game_id, home_name, away_name, game_date, _, features_summary) in enumerate(prepared):
+            try:
+                scalar = extract_single_sample(full_output, idx=idx)
                 validate_prediction(scalar)
 
                 home_proba = scalar["home_win_probability"]
@@ -558,15 +574,19 @@ class PredictionService:
                     prediction_timestamp=datetime.utcnow(),
                     game_date=game_date,
                     features_used=features_summary,
-                    inference_latency_ms=inference_ms,
+                    inference_latency_ms=batch_inference_ms,
                 )
                 predictions.append(pred)
 
-            except (LiveFeaturesError, Exception) as e:
+            except Exception as e:
                 logger.warning(f"Upcoming prediction falló para game {game_id} "
                                f"({away_name} @ {home_name}): {e}")
                 continue
 
+        logger.info(
+            f"get_upcoming_predictions: {len(predictions)}/{len(rows)} partidos "
+            f"en batch (inference={batch_inference_ms}ms)"
+        )
         return predictions
     
     async def _predict_with_model(self, game: Dict[str, Any], home_team: Team, away_team: Team) -> Dict[str, Any]:

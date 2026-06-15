@@ -55,10 +55,89 @@ class LiveFeatureExtractor:
 
     def __init__(self, db: Session):
         self.db = db
+        # Memoización por instancia: una misma instancia procesando un lote
+        # de partidos repite equipos y pares, y antes ejecutaba cada consulta
+        # dos veces (build_feature_vector + get_features_summary). Estos
+        # caches eliminan todos los round-trips duplicados a la DB.
+        self._team_latest_cache: Dict[tuple, Optional[Dict]] = {}
+        self._injuries_cache: Dict[str, int] = {}
+        self._h2h_cache: Dict[tuple, float] = {}
+        self._implied_cache: Dict[tuple, tuple] = {}
 
     # ------------------------------------------------------------------
     # API pública
     # ------------------------------------------------------------------
+
+    def extract(
+        self,
+        home_team: str,
+        away_team: str,
+        game_date: date,
+        feature_set: str = "v2",
+        game_id: Optional[int] = None,
+    ) -> tuple:
+        """
+        Calcula el vector X y el summary en UNA sola pasada.
+
+        Equivale a build_feature_vector() + get_features_summary() pero sin
+        duplicar consultas a la DB. Preferir este método cuando se necesitan
+        ambos resultados (p. ej. /predictions/upcoming).
+
+        Returns:
+            (X: ndarray shape (1, N), summary: dict)
+        """
+        features, home, away = self._compute_features(
+            home_team, away_team, game_date, game_id
+        )
+
+        cols = FEATURE_SETS.get(feature_set)
+        if cols is None:
+            raise LiveFeaturesError(f"feature_set desconocido: {feature_set}")
+
+        row = [float(features.get(col, np.nan)) for col in cols]
+        X = np.array([row], dtype=float)
+
+        used = {col: features.get(col) for col in cols}
+        summary = {
+            "feature_set": feature_set,
+            "n_features": len(cols),
+            "values": used,
+            "missing_count": sum(1 for v in used.values() if v is None),
+            "source": "live",
+            "home_last_game": str(home.get("last_game_date")) if home else None,
+            "away_last_game": str(away.get("last_game_date")) if away else None,
+        }
+        return X, summary
+
+    def _compute_features(
+        self,
+        home_team: str,
+        away_team: str,
+        game_date: date,
+        game_id: Optional[int],
+    ) -> tuple:
+        """Pipeline compartido: últimos datos por equipo + injuries + h2h + odds."""
+        home = self._get_team_latest(home_team, game_date)
+        away = self._get_team_latest(away_team, game_date)
+
+        if home is None:
+            raise LiveFeaturesError(
+                f"No hay datos históricos en ml_ready_games para '{home_team}'. "
+                "El equipo no ha jugado partidos previos en la DB."
+            )
+        if away is None:
+            raise LiveFeaturesError(
+                f"No hay datos históricos en ml_ready_games para '{away_team}'. "
+                "El equipo no ha jugado partidos previos en la DB."
+            )
+
+        home_inj = self._count_injuries(home_team)
+        away_inj = self._count_injuries(away_team)
+        h2h = self._get_h2h(home_team, away_team)
+        imp_home, imp_away = self._get_implied_probs(game_id, home_team, away_team)
+
+        features = self._build_dict(home, away, home_inj, away_inj, h2h, imp_home, imp_away)
+        return features, home, away
 
     def build_feature_vector(
         self,
@@ -82,38 +161,8 @@ class LiveFeatureExtractor:
         Returns:
             ndarray shape (1, N)
         """
-        home = self._get_team_latest(home_team, game_date)
-        away = self._get_team_latest(away_team, game_date)
-
-        if home is None:
-            raise LiveFeaturesError(
-                f"No hay datos históricos en ml_ready_games para '{home_team}'. "
-                "El equipo no ha jugado partidos previos en la DB."
-            )
-        if away is None:
-            raise LiveFeaturesError(
-                f"No hay datos históricos en ml_ready_games para '{away_team}'. "
-                "El equipo no ha jugado partidos previos en la DB."
-            )
-
-        # Injuries
-        home_inj = self._count_injuries(home_team)
-        away_inj = self._count_injuries(away_team)
-
-        # H2H
-        h2h = self._get_h2h(home_team, away_team)
-
-        # Odds implícitas
-        imp_home, imp_away = self._get_implied_probs(game_id, home_team, away_team)
-
-        features = self._build_dict(home, away, home_inj, away_inj, h2h, imp_home, imp_away)
-
-        cols = FEATURE_SETS.get(feature_set)
-        if cols is None:
-            raise LiveFeaturesError(f"feature_set desconocido: {feature_set}")
-
-        row = [float(features.get(col, np.nan)) for col in cols]
-        return np.array([row], dtype=float)
+        X, _ = self.extract(home_team, away_team, game_date, feature_set, game_id)
+        return X
 
     def get_features_summary(
         self,
@@ -123,26 +172,13 @@ class LiveFeatureExtractor:
         feature_set: str = "v2",
         game_id: Optional[int] = None,
     ) -> Dict[str, Any]:
-        """Devuelve el dict de features para auditoría (mismo formato que FeatureExtractor)."""
-        home = self._get_team_latest(home_team, game_date)
-        away = self._get_team_latest(away_team, game_date)
-        home_inj = self._count_injuries(home_team)
-        away_inj = self._count_injuries(away_team)
-        h2h = self._get_h2h(home_team, away_team)
-        imp_home, imp_away = self._get_implied_probs(game_id, home_team, away_team)
+        """Devuelve el dict de features para auditoría (mismo formato que FeatureExtractor).
 
-        features = self._build_dict(home, away, home_inj, away_inj, h2h, imp_home, imp_away)
-        cols = FEATURE_SETS.get(feature_set, [])
-        used = {col: features.get(col) for col in cols}
-        return {
-            "feature_set": feature_set,
-            "n_features": len(cols),
-            "values": used,
-            "missing_count": sum(1 for v in used.values() if v is None),
-            "source": "live",
-            "home_last_game": str(home.get("last_game_date")) if home else None,
-            "away_last_game": str(away.get("last_game_date")) if away else None,
-        }
+        Gracias a la memoización por instancia, llamar a este método después
+        de build_feature_vector() NO repite consultas a la DB.
+        """
+        _, summary = self.extract(home_team, away_team, game_date, feature_set, game_id)
+        return summary
 
     # ------------------------------------------------------------------
     # Últimos datos por equipo
@@ -151,8 +187,12 @@ class LiveFeatureExtractor:
     def _get_team_latest(self, team: str, game_date: date) -> Optional[Dict]:
         """
         Busca el último partido jugado por el equipo y extrae sus rolling
-        features ajustando home/away.
+        features ajustando home/away. Memoizado por (team, fecha).
         """
+        cache_key = (team, str(game_date))
+        if cache_key in self._team_latest_cache:
+            return self._team_latest_cache[cache_key]
+
         query = text(f"""
             SELECT
                 fecha,
@@ -188,6 +228,7 @@ class LiveFeatureExtractor:
         """)
         row = self.db.execute(query, {"team": team, "game_date": str(game_date)}).mappings().first()
         if row is None:
+            self._team_latest_cache[cache_key] = None
             return None
 
         result = dict(row)
@@ -202,6 +243,7 @@ class LiveFeatureExtractor:
         result["rest_days"] = (game_date - last_date).days
         result["b2b"] = result["rest_days"] == 1
 
+        self._team_latest_cache[cache_key] = result
         return result
 
     # ------------------------------------------------------------------
@@ -229,15 +271,20 @@ class LiveFeatureExtractor:
             "Toronto Raptors": "Raptors", "Utah Jazz": "Jazz",
             "Washington Wizards": "Wizards",
         }
+        if team in self._injuries_cache:
+            return self._injuries_cache[team]
+
         nickname = NICKNAME_MAP.get(team, team)
         try:
             result = self.db.execute(
                 text(f"SELECT COUNT(*) FROM {self.ESPN_SCHEMA}.injuries WHERE team = :t"),
                 {"t": nickname}
             ).scalar()
-            return int(result or 0)
+            count = int(result or 0)
         except Exception:
-            return 0
+            count = 0
+        self._injuries_cache[team] = count
+        return count
 
     # ------------------------------------------------------------------
     # H2H
@@ -245,6 +292,10 @@ class LiveFeatureExtractor:
 
     def _get_h2h(self, home_team: str, away_team: str, n: int = 5) -> float:
         """Fracción de victorias del home_team en los últimos n enfrentamientos."""
+        cache_key = (home_team, away_team, n)
+        if cache_key in self._h2h_cache:
+            return self._h2h_cache[cache_key]
+
         query = text(f"""
             SELECT home_win
             FROM {self.ML_SCHEMA}.ml_ready_games
@@ -256,12 +307,15 @@ class LiveFeatureExtractor:
         """)
         rows = self.db.execute(query, {"ht": home_team, "at": away_team, "n": n}).fetchall()
         if not rows:
-            return 0.5
-        wins = sum(
-            1 for r in rows
-            if (r[0] is True or r[0] == 1)
-        )
-        return round(wins / len(rows), 4)
+            result = 0.5
+        else:
+            wins = sum(
+                1 for r in rows
+                if (r[0] is True or r[0] == 1)
+            )
+            result = round(wins / len(rows), 4)
+        self._h2h_cache[cache_key] = result
+        return result
 
     # ------------------------------------------------------------------
     # Odds implícitas
@@ -270,7 +324,18 @@ class LiveFeatureExtractor:
     def _get_implied_probs(
         self, game_id: Optional[int], home_team: str, away_team: str
     ):
-        """Busca implied_prob en ml_ready_games o en espn.game_odds."""
+        """Busca implied_prob en ml_ready_games o en espn.game_odds. Memoizado."""
+        cache_key = (game_id, home_team, away_team)
+        if cache_key in self._implied_cache:
+            return self._implied_cache[cache_key]
+
+        result = self._fetch_implied_probs(game_id, home_team, away_team)
+        self._implied_cache[cache_key] = result
+        return result
+
+    def _fetch_implied_probs(
+        self, game_id: Optional[int], home_team: str, away_team: str
+    ):
         # 1. Si el game_id ya existe en ml_ready_games con odds
         if game_id:
             try:

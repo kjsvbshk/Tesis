@@ -1,0 +1,36 @@
+name: Sync NBA games
+
+on:
+  schedule:
+    # Cada 6 horas (UTC). Cubre actualizaciones de calendario y scores del día.
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      days_back:
+        description: "Días hacia atrás"
+        default: "1"
+      days_forward:
+        description: "Días hacia adelante"
+        default: "7"
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: pip install requests psycopg2-binary python-dotenv
+
+      - name: Run sync
+        working-directory: Scrapping/nba
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          SYNC_DAYS_BACK: ${{ github.event.inputs.days_back || '1' }}
+          SYNC_DAYS_FORWARD: ${{ github.event.inputs.days_forward || '7' }}
+        run: python sync_espn_games.py

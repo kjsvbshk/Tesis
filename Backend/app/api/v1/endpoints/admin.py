@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
 
-from app.core.database import get_sys_db
+from app.core.database import get_sys_db, get_espn_db
 from app.models import UserAccount, Provider, ProviderEndpoint, ModelVersion
 from app.services.auth_service import get_current_user
 from app.services.role_service import RoleService
@@ -1125,3 +1125,36 @@ async def activate_model_version(
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Error activating model: {str(e)}")
+
+# ========== Game Sync ==========
+
+@router.post("/sync-games")
+async def sync_games(
+    days_back: int = 1,
+    days_forward: int = 7,
+    staff_user: UserAccount = Depends(require_staff_permission),
+    espn_db: Session = Depends(get_espn_db),
+):
+    """
+    Sincroniza espn.games con la API scoreboard de ESPN (admin/operator).
+
+    Trae los partidos del rango [-days_back, +days_forward], hace upsert
+    e invalida los cachés de matches y predicciones próximas.
+    Equivale a ejecutar Scrapping/nba/sync_espn_games.py.
+    """
+    from app.services.game_sync_service import GameSyncService
+
+    if days_back < 0 or days_forward < 0 or (days_back + days_forward) > 30:
+        raise HTTPException(
+            status_code=400,
+            detail="Rango inválido: days_back/days_forward >= 0 y máximo 30 días en total"
+        )
+
+    try:
+        result = GameSyncService(espn_db).sync(
+            days_back=days_back, days_forward=days_forward
+        )
+        return {"message": "Game sync completed", **result}
+    except Exception as e:
+        espn_db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error syncing games: {str(e)}")

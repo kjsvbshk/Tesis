@@ -126,7 +126,9 @@ def sync_to_db(games):
 
 def main():
     print("Starting Real-Time Game Sync...")
-    dates = get_dates_to_sync()
+    days_back = int(os.getenv("SYNC_DAYS_BACK", "1"))
+    days_forward = int(os.getenv("SYNC_DAYS_FORWARD", "7"))
+    dates = get_dates_to_sync(days_back=days_back, days_forward=days_forward)
     print(f"Syncing dates from {dates[0]} to {dates[-1]}...")
     
     all_synced_games = []

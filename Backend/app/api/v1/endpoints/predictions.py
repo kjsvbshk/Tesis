@@ -292,13 +292,26 @@ async def get_upcoming_predictions(
 ):
     """Get predictions for upcoming games"""
     try:
-        # sys_db se usa para cargar el modelo (app.model_versions)
-        # db (espn_db) se usa para consultar espn.games en get_upcoming_predictions
-        prediction_service = PredictionService(sys_db)
-        prediction_service.db = db  # override para que get_upcoming_predictions use espn_db
-        predictions = await prediction_service.get_upcoming_predictions(
-            days=days,
-            user_id=current_user.id
+        # Las predicciones de partidos próximos son iguales para todos los
+        # usuarios → caché compartido (no incluye user_id en la clave).
+        cache_key = cache_service._generate_key("predictions_upcoming", days=days)
+
+        async def fetch_upcoming():
+            # sys_db se usa para cargar el modelo (app.model_versions)
+            # db (espn_db) se usa para consultar espn.games en get_upcoming_predictions
+            prediction_service = PredictionService(sys_db)
+            prediction_service.db = db  # override para que get_upcoming_predictions use espn_db
+            return await prediction_service.get_upcoming_predictions(
+                days=days,
+                user_id=current_user.id
+            )
+
+        predictions = await cache_service.get_or_set(
+            key=cache_key,
+            fetch_func=fetch_upcoming,
+            ttl_seconds=300,   # 5 minutos fresco
+            stale_ttl_seconds=900,  # hasta 15 min stale mientras revalida
+            allow_stale=True
         )
         return predictions
     except ModelNotLoadedError as e:

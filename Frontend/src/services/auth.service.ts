@@ -26,6 +26,12 @@ export interface UserResponse {
   is_active: boolean
   created_at: string
   updated_at?: string
+  // Extended profile fields returned by /users/me
+  first_name?: string | null
+  last_name?: string | null
+  phone?: string | null
+  date_of_birth?: string | null
+  avatar_url?: string | null
 }
 
 export const authService = {

@@ -3,7 +3,7 @@
  * Handles request-related API calls (RF-03)
  */
 
-import { apiRequest } from '@/lib/api'
+import { apiRequest, buildQueryString } from '@/lib/api'
 
 export interface Request {
   id: number
@@ -35,12 +35,7 @@ class RequestsService {
     offset: number = 0,
     status?: string
   ): Promise<RequestsResponse> {
-    const params = new URLSearchParams()
-    params.append('limit', limit.toString())
-    params.append('offset', offset.toString())
-    if (status) params.append('status', status)
-
-    const results = await apiRequest<Request[]>(`/requests/me?${params.toString()}`)
+    const results = await apiRequest<Request[]>(`/requests/me${buildQueryString({ limit, offset, status })}`)
     // El backend devuelve un array, pero necesitamos un objeto RequestsResponse
     const page = Math.floor(offset / limit) + 1
     const pages = Math.ceil(results.length / limit)

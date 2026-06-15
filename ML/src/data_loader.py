@@ -3,11 +3,10 @@ Data loader for ML training
 Carga datos desde PostgreSQL (Neon) para entrenar modelos
 """
 
+import os
 import pandas as pd
 from sqlalchemy import create_engine, text
 from typing import Optional, Dict, Any
-from datetime import datetime, date
-import os
 
 from src.config import db_config
 
@@ -22,10 +21,18 @@ class DataLoader:
             self.database_url,
             pool_pre_ping=True,
             pool_recycle=300,
-            echo=False
+            echo=False,
         )
 
-    def _load(self, table: str, where: str = "", params: dict = None, order_by: str = "", limit: int = None) -> pd.DataFrame:
+    def load_table(
+        self,
+        table: str,
+        where: str = "",
+        params: Optional[Dict[str, Any]] = None,
+        order_by: str = "",
+        limit: Optional[int] = None,
+    ) -> pd.DataFrame:
+        """Generic table loader. Accepts raw WHERE fragment and bind params."""
         query = f"SELECT * FROM {self.schema}.{table} WHERE 1=1{where}"
         if order_by:
             query += f" ORDER BY {order_by}"
@@ -37,11 +44,15 @@ class DataLoader:
                 conn.commit()
             return pd.read_sql(text(query), conn, params=params or {})
 
+    # ------------------------------------------------------------------ #
+    # Convenience wrappers (kept for backward-compat; delegate to load_table)
+    # ------------------------------------------------------------------ #
+
     def load_games(
         self,
         season_start: Optional[str] = None,
         season_end: Optional[str] = None,
-        limit: Optional[int] = None
+        limit: Optional[int] = None,
     ) -> pd.DataFrame:
         where, params = "", {}
         if season_start:
@@ -50,12 +61,12 @@ class DataLoader:
         if season_end:
             where += " AND (game_date <= :season_end OR date <= :season_end)"
             params["season_end"] = season_end
-        return self._load("games", where, params, "COALESCE(game_date, date, match_date) DESC", limit)
+        return self.load_table("games", where, params, "COALESCE(game_date, date, match_date) DESC", limit)
 
     def load_team_stats(
         self,
         season: Optional[str] = None,
-        game_date: Optional[str] = None
+        game_date: Optional[str] = None,
     ) -> pd.DataFrame:
         where, params = "", {}
         if season:
@@ -64,19 +75,19 @@ class DataLoader:
         if game_date:
             where += " AND (game_date = :game_date OR date = :game_date)"
             params["game_date"] = game_date
-        return self._load("team_stats", where, params, "COALESCE(game_date, date) DESC")
+        return self.load_table("team_stats", where, params, "COALESCE(game_date, date) DESC")
 
     def load_standings(self, season: Optional[str] = None) -> pd.DataFrame:
         where, params = "", {}
         if season:
             where += " AND season = :season"
             params["season"] = season
-        return self._load("standings", where, params, "season DESC, wins DESC")
+        return self.load_table("standings", where, params, "season DESC, wins DESC")
 
     def load_injuries(
         self,
         date_from: Optional[str] = None,
-        date_to: Optional[str] = None
+        date_to: Optional[str] = None,
     ) -> pd.DataFrame:
         where, params = "", {}
         if date_from:
@@ -85,30 +96,36 @@ class DataLoader:
         if date_to:
             where += " AND (injury_date <= :date_to OR date <= :date_to)"
             params["date_to"] = date_to
-        return self._load("injuries", where, params, "COALESCE(injury_date, date) DESC")
+        return self.load_table("injuries", where, params, "COALESCE(injury_date, date) DESC")
 
     def load_odds(self, game_date: Optional[str] = None) -> pd.DataFrame:
         where, params = "", {}
         if game_date:
             where += " AND (game_date = :game_date OR date = :game_date)"
             params["game_date"] = game_date
-        return self._load("odds", where, params, "COALESCE(game_date, date) DESC")
+        return self.load_table("odds", where, params, "COALESCE(game_date, date) DESC")
+
+    # ------------------------------------------------------------------ #
+    # Consolidated dataset                                                 #
+    # ------------------------------------------------------------------ #
 
     def load_consolidated_dataset(
         self,
         season_start: Optional[str] = None,
-        season_end: Optional[str] = None
+        season_end: Optional[str] = None,
     ) -> pd.DataFrame:
         csv_path = os.path.join(
             os.path.dirname(os.path.dirname(__file__)),
-            "..", "Scrapping", "nba", "data", "processed", "nba_full_dataset.csv"
+            "..", "Scrapping", "nba", "data", "processed", "nba_full_dataset.csv",
         )
 
         if os.path.exists(csv_path):
             print(f"Cargando dataset consolidado desde: {csv_path}")
             df = pd.read_csv(csv_path)
             if season_start or season_end:
-                date_col = "date" if "date" in df.columns else "game_date" if "game_date" in df.columns else None
+                date_col = next(
+                    (c for c in ("date", "game_date") if c in df.columns), None
+                )
                 if date_col:
                     df[date_col] = pd.to_datetime(df[date_col])
                     if season_start:
@@ -139,7 +156,7 @@ class DataLoader:
 def load_nba_data(
     season_start: Optional[str] = None,
     season_end: Optional[str] = None,
-    from_csv: bool = True
+    from_csv: bool = True,
 ) -> pd.DataFrame:
     loader = DataLoader(schema="espn")
     if not loader.test_connection():

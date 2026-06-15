@@ -3,7 +3,7 @@
  * Handles bet-related API calls
  */
 
-import { apiRequest } from '@/lib/api'
+import { apiRequest, buildQueryString } from '@/lib/api'
 
 export type BetTypeBackend = 'moneyline' | 'spread' | 'over_under'
 export type BetStatus = 'pending' | 'won' | 'lost' | 'cancelled'
@@ -61,12 +61,7 @@ class BetsService {
     limit: number = 50,
     offset: number = 0
   ): Promise<BetResponse[]> {
-    const params = new URLSearchParams()
-    if (status) params.append('status', status)
-    params.append('limit', limit.toString())
-    params.append('offset', offset.toString())
-
-    return apiRequest<BetResponse[]>(`/bets/?${params.toString()}`)
+    return apiRequest<BetResponse[]>(`/bets/${buildQueryString({ status, limit, offset })}`)
   }
 
   /**

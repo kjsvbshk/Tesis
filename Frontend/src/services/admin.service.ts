@@ -197,7 +197,6 @@ class AdminService {
       return false
     }
   }
-}
 
   /**
    * Sincroniza partidos NBA desde la ESPN Scoreboard API.

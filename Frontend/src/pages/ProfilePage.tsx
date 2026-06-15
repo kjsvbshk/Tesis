@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useToast } from '@/hooks/use-toast'
 import { useAuth } from '@/contexts/AuthContext'
 import { userService } from '@/services/user.service'
+import { authService } from '@/services/auth.service'
 import { User, CreditCard, Bell, Shield, ChevronRight } from 'lucide-react'
 
 // ── Issue I: useReducer ──────────────────────────────────────────────────────
@@ -135,7 +136,7 @@ export function ProfilePage() {
       try {
         // Issue T: 3 independent sequential awaits → Promise.all
         const [profileData, twoFAStatus] = await Promise.all([
-          userService.getCurrentUser(),
+          authService.getCurrentUser(),
           userService.get2FAStatus().catch(() => null),
         ])
 
@@ -198,7 +199,7 @@ export function ProfilePage() {
         // Issue T: parallel fetch after update
         const [, profileData] = await Promise.all([
           userService.updateProfile(updateData),
-          userService.updateProfile(updateData).then(() => userService.getCurrentUser()),
+          userService.updateProfile(updateData).then(() => authService.getCurrentUser()),
         ])
         await refreshUser()
         const birthDate = profileData.date_of_birth

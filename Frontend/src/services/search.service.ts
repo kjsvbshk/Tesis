@@ -3,7 +3,7 @@
  * Handles advanced search API calls (RF-12)
  */
 
-import { apiRequest } from '@/lib/api'
+import { apiRequest, buildQueryString } from '@/lib/api'
 
 export interface SearchFilters {
   request_id?: number
@@ -71,19 +71,12 @@ class SearchService {
   async searchRequests(
     filters: SearchFilters
   ): Promise<SearchResponse<RequestSearchResult>> {
-    const params = new URLSearchParams()
-    if (filters.request_id) params.append('request_id', filters.request_id.toString())
-    if (filters.request_key) params.append('request_key', filters.request_key)
-    if (filters.event_id) params.append('event_id', filters.event_id.toString())
-    if (filters.date_from) params.append('date_from', filters.date_from)
-    if (filters.date_to) params.append('date_to', filters.date_to)
-    if (filters.status) params.append('status', filters.status)
-    if (filters.user_id) params.append('user_id', filters.user_id.toString())
-    params.append('limit', (filters.limit || 50).toString())
-    params.append('offset', (filters.offset || 0).toString())
-
     return apiRequest<SearchResponse<RequestSearchResult>>(
-      `/search/requests?${params.toString()}`
+      `/search/requests${buildQueryString({
+        ...filters,
+        limit: filters.limit ?? 50,
+        offset: filters.offset ?? 0,
+      })}`
     )
   }
 
@@ -93,15 +86,12 @@ class SearchService {
   async searchIdempotencyKeys(
     filters: Omit<SearchFilters, 'status' | 'user_id' | 'event_id'>
   ): Promise<SearchResponse<IdempotencyKeySearchResult>> {
-    const params = new URLSearchParams()
-    if (filters.request_key) params.append('request_key', filters.request_key)
-    if (filters.date_from) params.append('date_from', filters.date_from)
-    if (filters.date_to) params.append('date_to', filters.date_to)
-    params.append('limit', (filters.limit || 50).toString())
-    params.append('offset', (filters.offset || 0).toString())
-
     return apiRequest<SearchResponse<IdempotencyKeySearchResult>>(
-      `/search/idempotency-keys?${params.toString()}`
+      `/search/idempotency-keys${buildQueryString({
+        ...filters,
+        limit: filters.limit ?? 50,
+        offset: filters.offset ?? 0,
+      })}`
     )
   }
 
@@ -120,18 +110,12 @@ class SearchService {
       offset?: number
     }
   ): Promise<SearchResponse<AuditLogSearchResult>> {
-    const params = new URLSearchParams()
-    if (filters.actor_user_id) params.append('actor_user_id', filters.actor_user_id.toString())
-    if (filters.action) params.append('action', filters.action)
-    if (filters.resource_type) params.append('resource_type', filters.resource_type)
-    if (filters.resource_id) params.append('resource_id', filters.resource_id.toString())
-    if (filters.date_from) params.append('date_from', filters.date_from)
-    if (filters.date_to) params.append('date_to', filters.date_to)
-    params.append('limit', (filters.limit || 50).toString())
-    params.append('offset', (filters.offset || 0).toString())
-
     return apiRequest<SearchResponse<AuditLogSearchResult>>(
-      `/search/audit-logs?${params.toString()}`
+      `/search/audit-logs${buildQueryString({
+        ...filters,
+        limit: filters.limit ?? 50,
+        offset: filters.offset ?? 0,
+      })}`
     )
   }
 
@@ -147,15 +131,12 @@ class SearchService {
       offset?: number
     }
   ): Promise<SearchResponse<EventSearchResult>> {
-    const params = new URLSearchParams()
-    if (filters.event_id) params.append('event_id', filters.event_id.toString())
-    if (filters.date_from) params.append('date_from', filters.date_from)
-    if (filters.date_to) params.append('date_to', filters.date_to)
-    params.append('limit', (filters.limit || 50).toString())
-    params.append('offset', (filters.offset || 0).toString())
-
     return apiRequest<SearchResponse<EventSearchResult>>(
-      `/search/events?${params.toString()}`
+      `/search/events${buildQueryString({
+        ...filters,
+        limit: filters.limit ?? 50,
+        offset: filters.offset ?? 0,
+      })}`
     )
   }
 }

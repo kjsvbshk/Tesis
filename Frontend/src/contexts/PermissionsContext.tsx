@@ -3,7 +3,7 @@
  * Manages user permissions and role-based access control
  */
 
-import { createContext, use, useReducer, useEffect, type ReactNode } from 'react'
+import { createContext, use, useReducer, useEffect, useCallback, type ReactNode } from 'react'
 import { useAuth } from './AuthContext'
 import { adminService, type Role, type Permission, type UserRole } from '@/services/admin.service'
 import { apiRequest } from '@/lib/api'
@@ -21,6 +21,10 @@ interface PermissionsContextType {
 }
 
 const PermissionsContext = createContext<PermissionsContextType | undefined>(undefined)
+
+// Module-level: persists across renders — avoids cache rebuild on every render
+const _permCache = new Map<string, { hasPermission: boolean; timestamp: number }>()
+const _CACHE_TTL = 5 * 60 * 1000
 
 interface PermissionsState {
   roles: Role[]
@@ -62,9 +66,6 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
   const { user, isAuthenticated } = useAuth()
   const [state, dispatch] = useReducer(permissionsReducer, permissionsInitialState)
   const { roles, permissions, userRoles, userPermissions, isLoading } = state
-  // Cache for permission checks to reduce API calls
-  const permissionCache = new Map<string, { hasPermission: boolean; timestamp: number }>()
-  const CACHE_TTL = 5 * 60 * 1000 // 5 minutes
 
   useEffect(() => {
     if (isAuthenticated && user) {
@@ -109,12 +110,9 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
         // Store permissions for fast local checking
         dispatch({ type: 'SET_USER_PERMISSIONS', payload: permissionsData.permissions })
         
-        // Pre-populate cache with known permissions
+        // Pre-populate module-level cache with known permissions
         permissionsData.permissions.forEach(perm => {
-          permissionCache.set(perm, {
-            hasPermission: true,
-            timestamp: Date.now(),
-          })
+          _permCache.set(perm, { hasPermission: true, timestamp: Date.now() })
         })
 
         // Get all roles and permissions (for admin view) - only if user is admin
@@ -147,70 +145,35 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  /**
-   * Check if user has a specific permission
-   * Uses backend API with caching to reduce calls
-   */
-  const hasPermission = async (permissionCode: string): Promise<boolean> => {
+  /** Fast local check — returns true/false if known, null if needs async lookup */
+  const _localCheck = useCallback((permissionCode: string): boolean | null => {
     if (!user || !userRoles.length) return false
+    if (userRoles.some(ur => ur.role?.code === 'admin')) return true
+    if (userPermissions.includes(permissionCode)) return true
+    const cached = _permCache.get(permissionCode)
+    if (cached && Date.now() - cached.timestamp < _CACHE_TTL) return cached.hasPermission
+    return null
+  }, [user, userRoles, userPermissions])
 
-    // Check if user has admin role (has all permissions) - fast path
-    const hasAdminRole = userRoles.some(ur => ur.role?.code === 'admin')
-    if (hasAdminRole) return true
-
-    // Check local permissions list first (from /users/me/permissions)
-    if (userPermissions.includes(permissionCode)) {
-      return true
-    }
-
-    // Check cache
-    const cached = permissionCache.get(permissionCode)
-    if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
-      return cached.hasPermission
-    }
-
-    // Call backend to check permission (for permissions not in local list)
+  const hasPermission = useCallback(async (permissionCode: string): Promise<boolean> => {
+    const local = _localCheck(permissionCode)
+    if (local !== null) return local
     try {
       const hasPerm = await adminService.checkPermission(permissionCode)
-      // Update cache
-      permissionCache.set(permissionCode, {
-        hasPermission: hasPerm,
-        timestamp: Date.now(),
-      })
+      _permCache.set(permissionCode, { hasPermission: hasPerm, timestamp: Date.now() })
       return hasPerm
     } catch (error) {
       console.error('Error checking permission:', error)
       return false
     }
-  }
+  }, [_localCheck])
 
-  /**
-   * Synchronous version of hasPermission for use in components
-   * Returns cached value or checks local permissions list
-   */
-  const hasPermissionSync = (permissionCode: string): boolean => {
-    if (!user || !userRoles.length) return false
-
-    // Check if user has admin role (has all permissions) - fast path
-    const hasAdminRole = userRoles.some(ur => ur.role?.code === 'admin')
-    if (hasAdminRole) return true
-
-    // Check local permissions list (from /users/me/permissions)
-    if (userPermissions.includes(permissionCode)) {
-      return true
-    }
-
-    // Check cache
-    const cached = permissionCache.get(permissionCode)
-    if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
-      return cached.hasPermission
-    }
-
-    // If not cached, trigger async check and return false for now
-    // Component should use useEffect to handle async permission checks
+  const hasPermissionSync = useCallback((permissionCode: string): boolean => {
+    const local = _localCheck(permissionCode)
+    if (local !== null) return local
     hasPermission(permissionCode).catch(console.error)
     return false
-  }
+  }, [_localCheck, hasPermission])
 
   /**
    * Check if user has access to a specific scope

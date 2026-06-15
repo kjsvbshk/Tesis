@@ -3,7 +3,7 @@
  * Handles metrics and health check API calls (RF-14)
  */
 
-import { apiRequest } from '@/lib/api'
+import { apiRequest, buildQueryString } from '@/lib/api'
 
 export interface HealthStatus {
   status: string
@@ -106,13 +106,8 @@ class MetricsService {
     dateFrom?: string,
     dateTo?: string
   ): Promise<RequestMetrics> {
-    const params = new URLSearchParams()
-    if (dateFrom) params.append('date_from', dateFrom)
-    if (dateTo) params.append('date_to', dateTo)
-
-    const query = params.toString()
     return apiRequest<RequestMetrics>(
-      `/health/metrics/requests${query ? `?${query}` : ''}`
+      `/health/metrics/requests${buildQueryString({ date_from: dateFrom, date_to: dateTo })}`
     )
   }
 }

@@ -1,4 +1,20 @@
 // API Configuration
+/**
+ * Builds a query string from a filters object, omitting null/undefined/empty values.
+ * @example buildQueryString({ limit: 50, status: 'active', q: '' }) → '?limit=50&status=active'
+ */
+export function buildQueryString(filters: Record<string, any>): string {
+  const params = new URLSearchParams()
+  for (const [key, val] of Object.entries(filters)) {
+    if (val !== null && val !== undefined && val !== '') {
+      params.append(key, String(val))
+    }
+  }
+  const qs = params.toString()
+  return qs ? `?${qs}` : ''
+}
+
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1'
 
 export const apiConfig = {

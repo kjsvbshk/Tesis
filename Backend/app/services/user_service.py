@@ -5,6 +5,7 @@ User service for business logic
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from decimal import Decimal
+from sqlalchemy import func
 from app.models.user_accounts import UserAccount, Client, Administrator, Operator
 from app.models.role import Role
 from app.schemas.user import UserCreate, UserUpdate
@@ -129,32 +130,29 @@ class UserService:
         self.db.refresh(user_account)
         return user_account
     
-    async def add_credits(self, user_id: int, amount: float) -> bool:
-        """Add credits to client account"""
+    async def adjust_credits(self, user_id: int, amount: float) -> bool:
+        """
+        Adjust client credits by a signed amount.
+        Positive amount adds credits; negative amount deducts.
+        Returns False if user not found or insufficient credits for a deduction.
+        """
         client = await self.get_client_by_user_id(user_id)
         if not client:
             return False
-        
-        # Convertir amount a Decimal para operar con client.credits (que es Numeric/Decimal)
         amount_decimal = Decimal(str(amount))
+        if amount_decimal < 0 and client.credits < -amount_decimal:
+            return False
         client.credits += amount_decimal
         self.db.commit()
         return True
-    
+
+    async def add_credits(self, user_id: int, amount: float) -> bool:
+        """Add credits to client account"""
+        return await self.adjust_credits(user_id, amount)
+
     async def deduct_credits(self, user_id: int, amount: float) -> bool:
         """Deduct credits from client account"""
-        client = await self.get_client_by_user_id(user_id)
-        if not client:
-            return False
-        
-        # Convertir amount a Decimal para operar con client.credits (que es Numeric/Decimal)
-        amount_decimal = Decimal(str(amount))
-        if client.credits < amount_decimal:
-            return False
-        
-        client.credits -= amount_decimal
-        self.db.commit()
-        return True
+        return await self.adjust_credits(user_id, -amount)
     
     async def get_user_credits(self, user_id: int) -> Optional[float]:
         """Get credits for a user (if they are a client)"""
@@ -164,23 +162,24 @@ class UserService:
         return float(client.credits)
     
     async def get_user_role_code(self, user_id: int) -> Optional[str]:
-        """Get user role code (client, administrator, operator)"""
-        # Check if user is a client
-        client = await self.get_client_by_user_id(user_id)
-        if client and client.role:
-            return client.role.code
-        
-        # Check if user is an administrator
-        administrator = self.db.query(Administrator).filter(Administrator.user_account_id == user_id).first()
-        if administrator and administrator.role:
-            return administrator.role.code
-        
-        # Check if user is an operator
-        operator = self.db.query(Operator).filter(Operator.user_account_id == user_id).first()
-        if operator and operator.role:
-            return operator.role.code
-        
-        return None
+        """Get user role code via single JOIN with COALESCE across client/admin/operator tables"""
+        from sqlalchemy.orm import aliased
+        from sqlalchemy import coalesce as sa_coalesce
+        ClientRole = aliased(Role, name="client_role")
+        AdminRole = aliased(Role, name="admin_role")
+        OperatorRole = aliased(Role, name="operator_role")
+        return (
+            self.db.query(sa_coalesce(ClientRole.code, AdminRole.code, OperatorRole.code))
+            .select_from(UserAccount)
+            .outerjoin(Client, Client.user_account_id == UserAccount.id)
+            .outerjoin(ClientRole, ClientRole.id == Client.role_id)
+            .outerjoin(Administrator, Administrator.user_account_id == UserAccount.id)
+            .outerjoin(AdminRole, AdminRole.id == Administrator.role_id)
+            .outerjoin(Operator, Operator.user_account_id == UserAccount.id)
+            .outerjoin(OperatorRole, OperatorRole.id == Operator.role_id)
+            .filter(UserAccount.id == user_id)
+            .scalar()
+        )
     
     async def delete_user(self, user_id: int) -> bool:
         """Deactivate a user account (soft delete - logical deletion)"""

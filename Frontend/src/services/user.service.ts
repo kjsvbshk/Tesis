@@ -46,13 +46,6 @@ class UserService {
   }
 
   /**
-   * Get current user info
-   */
-  async getCurrentUser(): Promise<any> {
-    return apiRequest('/users/me')
-  }
-
-  /**
    * 2FA Methods
    */
   async setup2FA(): Promise<any> {

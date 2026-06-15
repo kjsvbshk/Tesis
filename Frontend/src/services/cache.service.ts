@@ -16,22 +16,8 @@ class CacheService {
   /**
    * Generate a cache key from parameters
    */
-  private generateKey(prefix: string, ...args: any[]): string {
-    const keyData = JSON.stringify({ prefix, args })
-    return `${prefix}:${this.hashCode(keyData)}`
-  }
-
-  /**
-   * Simple hash function for strings
-   */
-  private hashCode(str: string): string {
-    let hash = 0
-    for (let i = 0; i < str.length; i++) {
-      const char = str.charCodeAt(i)
-      hash = (hash << 5) - hash + char
-      hash = hash & hash // Convert to 32-bit integer
-    }
-    return Math.abs(hash).toString(36)
+  generateKey(prefix: string, ...args: any[]): string {
+    return JSON.stringify({ prefix, args })
   }
 
   /**
@@ -120,22 +106,7 @@ class CacheService {
     return cleaned
   }
 
-  /**
-   * Generate cache key for matches endpoints
-   */
-  matchesKey(type: 'today' | 'upcoming' | 'list' | 'by_id', params?: any): string {
-    if (type === 'today') {
-      return this.generateKey('matches', 'today')
-    }
-    if (type === 'upcoming') {
-      return this.generateKey('matches', 'upcoming', params?.days || 7)
-    }
-    if (type === 'by_id') {
-      return this.generateKey('matches', 'by_id', params?.matchId)
-    }
-    // list
-    return this.generateKey('matches', 'list', params)
-  }
+
 }
 
 export const cacheService = new CacheService()

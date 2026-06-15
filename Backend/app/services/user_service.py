@@ -164,12 +164,12 @@ class UserService:
     async def get_user_role_code(self, user_id: int) -> Optional[str]:
         """Get user role code via single JOIN with COALESCE across client/admin/operator tables"""
         from sqlalchemy.orm import aliased
-        from sqlalchemy import coalesce as sa_coalesce
+        from sqlalchemy import func
         ClientRole = aliased(Role, name="client_role")
         AdminRole = aliased(Role, name="admin_role")
         OperatorRole = aliased(Role, name="operator_role")
         return (
-            self.db.query(sa_coalesce(ClientRole.code, AdminRole.code, OperatorRole.code))
+            self.db.query(func.coalesce(ClientRole.code, AdminRole.code, OperatorRole.code))
             .select_from(UserAccount)
             .outerjoin(Client, Client.user_account_id == UserAccount.id)
             .outerjoin(ClientRole, ClientRole.id == Client.role_id)

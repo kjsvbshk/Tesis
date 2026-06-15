@@ -200,4 +200,23 @@ class AdminService {
 }
 
   /**
-   * Sincroniza partidos NBA desde la ESPN
+   * Sincroniza partidos NBA desde la ESPN Scoreboard API.
+   * days_back: días hacia atrás (para actualizar scores). days_forward: días futuros.
+   */
+  async syncGames(daysBack = 3, daysForward = 14): Promise<{
+    message: string
+    dates_queried: [string, string]
+    games_fetched: number
+    games_synced: number
+    fetch_errors: string[]
+    synced_at: string
+  }> {
+    return apiRequest(
+      `/admin/sync-games?days_back=${daysBack}&days_forward=${daysForward}`,
+      { method: 'POST' }
+    )
+  }
+}
+
+export const adminService = new AdminService()
+

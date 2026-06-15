@@ -192,4 +192,12 @@ function QuickActionCard({
     <Link to={link}>
       <Card className="bg-[#1C2541]/50 border-[#1C2541] hover:border-[#00FF73]/30 hover:bg-[#1C2541]/70 transition-all cursor-pointer">
         <CardHeader>
-          <div className="text-[#00FF73] m
+          <div className="text-[#00FF73] mb-2">{icon}</div>
+          <CardTitle className="text-white">{title}</CardTitle>
+          <CardDescription className="text-[#B0B3C5]">{description}</CardDescription>
+        </CardHeader>
+      </Card>
+    </Link>
+  )
+}
+

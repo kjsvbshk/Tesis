@@ -170,4 +170,8 @@ const routerWithAuth = createBrowserRouter([
   },
 ])
 
-createRoot(document.g
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <RouterProvider router={routerWithAuth} />
+  </StrictMode>,
+)

@@ -161,4 +161,12 @@ function MobileNav() {
         </nav>
 
         <div className="p-4 border-t border-white/5 fixed bottom-0 w-full bg-metal-900">
-          <Button onClick={
+          <Button onClick={() => logout()} variant="outline" className="w-full font-mono text-xs border-alert-red text-alert-red hover:bg-alert-red/10">
+            SECURE EXIT
+          </Button>
+        </div>
+      </SheetContent>
+    </Sheet>
+  )
+}
+

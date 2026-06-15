@@ -1,6 +1,6 @@
 import { Outlet, NavLink } from 'react-router-dom'
 import { Toaster } from '@/components/ui/toaster'
-import { Users, Shield, BarChart3, FileText, Settings, Activity, Key, Home, LogOut, ChevronLeft, Menu } from 'lucide-react'
+import { Users, Shield, BarChart3, FileText, Settings, Activity, Key, Home, LogOut, ChevronLeft, Menu, RefreshCw } from 'lucide-react'
 import { LazyMotion, domAnimation, m, AnimatePresence } from 'framer-motion'
 import { useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
@@ -52,6 +52,9 @@ export function AdminLayout() {
               <SideLink to="/admin/metricas" icon={<BarChart3 size={18} />}>METRICS</SideLink>
               <SideLink to="/admin/monitoreo" icon={<Activity size={18} />}>MONITORING</SideLink>
               <SideLink to="/admin/auditoria" icon={<FileText size={18} />}>AUDIT_LOGS</SideLink>
+
+              <div className="my-2 px-3 text-[10px] text-muted-foreground font-mono uppercase tracking-widest">Data</div>
+              <SideLink to="/admin/sync" icon={<RefreshCw size={18} />}>DATA SYNC</SideLink>
 
               <div className="my-2 px-3 text-[10px] text-muted-foreground font-mono uppercase tracking-widest">Config</div>
               <SideLink to="/admin/proveedores" icon={<Key size={18} />}>PROVIDERS</SideLink>
@@ -158,12 +161,4 @@ function MobileNav() {
         </nav>
 
         <div className="p-4 border-t border-white/5 fixed bottom-0 w-full bg-metal-900">
-          <Button onClick={() => logout()} variant="outline" className="w-full font-mono text-xs border-alert-red text-alert-red hover:bg-alert-red/10">
-            SECURE EXIT
-          </Button>
-        </div>
-      </SheetContent>
-    </Sheet>
-  )
-}
-
+          <Button onClick={

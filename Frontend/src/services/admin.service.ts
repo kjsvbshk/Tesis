@@ -199,5 +199,5 @@ class AdminService {
   }
 }
 
-export const adminService = new AdminService()
-
+  /**
+   * Sincroniza partidos NBA desde la ESPN

@@ -34,6 +34,7 @@ import { AuditManagementPage } from '@/pages/admin/AuditManagementPage'
 import { AdvancedSearchPage } from '@/pages/admin/AdvancedSearchPage'
 import { MonitoringPage } from '@/pages/admin/MonitoringPage'
 import SettingsPage from '@/pages/admin/SettingsPage'
+import { DataSyncPage } from '@/pages/admin/DataSyncPage'
 import { OperatorHomePage } from '@/pages/operator/OperatorHomePage'
 import { ProvidersManagementPage } from '@/pages/operator/ProvidersManagementPage'
 import { IntegrationMonitoringPage } from '@/pages/operator/IntegrationMonitoringPage'
@@ -113,6 +114,7 @@ const routerWithAuth = createBrowserRouter([
           { path: 'proveedores', element: <ProvidersManagementPage /> },
           { path: 'monitoreo', element: <MonitoringPage /> },
           { path: 'configuracion', element: <SettingsPage /> },
+          { path: 'sync', element: <DataSyncPage /> },
         ],
       },
       // Operator routes
@@ -168,8 +170,4 @@ const routerWithAuth = createBrowserRouter([
   },
 ])
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <RouterProvider router={routerWithAuth} />
-  </StrictMode>,
-)
+createRoot(document.g

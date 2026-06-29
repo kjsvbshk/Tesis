@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { APP_VERSION } from '@/lib/version'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -88,7 +89,7 @@ export function LoginPage() {
 
         {/* Bottom version tag */}
         <div className="z-10 mt-auto font-mono text-muted-foreground/40 text-xs">
-          v2.0.4
+          v{APP_VERSION}
         </div>
       </div>
 

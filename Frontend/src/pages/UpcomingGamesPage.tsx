@@ -140,6 +140,9 @@ export default function UpcomingGamesPage() {
   const [days, setDays]               = useState(7)
   const [lastRefresh, setLastRefresh] = useState<Date | null>(null)
 
+  // Versión real del modelo, tomada del primer resultado cuando esté disponible
+  const modelVersion = predictions[0]?.model_version ?? null
+
   const load = useCallback(async () => {
     setLoading(true)
     setError(null)
@@ -166,8 +169,8 @@ export default function UpcomingGamesPage() {
               Próximos Partidos NBA
             </h1>
             <p className="text-sm text-gray-500 mt-1">
-              Predicciones calculadas en tiempo real con el modelo v2.2.0
-              (35 features · ELO + rolling stats + odds)
+              Predicciones calculadas en tiempo real
+              {modelVersion ? ` con el modelo ${modelVersion}` : ''}
             </p>
           </div>
 

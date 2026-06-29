@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { LazyMotion, domAnimation, m, AnimatePresence } from 'framer-motion'
 import { useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
+import { APP_VERSION } from '@/lib/version'
 
 export function SidebarLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
@@ -40,7 +41,7 @@ export function SidebarLayout() {
               <div className="size-8 bg-acid-500 rounded-none cut-corners flex items-center justify-center text-black font-bold font-display text-lg">H</div>
               <div>
                 <h1 className="font-display font-semibold text-xl tracking-tighter text-white">HAW<span className="text-acid-500">.OS</span></h1>
-                <p className="text-[10px] font-mono text-muted-foreground tracking-widest uppercase">v2.4.0-STABLE</p>
+                <p className="text-[10px] font-mono text-muted-foreground tracking-widest uppercase">v{APP_VERSION}</p>
               </div>
             </div>
 

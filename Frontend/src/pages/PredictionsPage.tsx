@@ -41,7 +41,7 @@ export function PredictionsPage() {
       setPrediction(result)
       toast({
         title: 'ANALYSIS COMPLETE',
-        description: 'Predicción generada por el modelo ML v2.2.0.',
+        description: `Predicción generada por el modelo ML ${result.model_version}.`,
       })
     } catch (error: any) {
       // Mensajes de error específicos por código HTTP
@@ -100,7 +100,9 @@ export function PredictionsPage() {
       >
         <div className="flex items-center gap-2 text-acid-500 mb-2">
           <Cpu size={16} className="animate-pulse" />
-          <span className="text-xs font-mono uppercase tracking-widest">AI Predictive Core v2.4</span>
+          <span className="text-xs font-mono uppercase tracking-widest">
+            AI Predictive Core{modelStatus?.model_version ? ` ${modelStatus.model_version}` : ''}
+          </span>
         </div>
         <h1 className="text-4xl md:text-5xl font-display font-semibold text-white tracking-tight">
           PREDICTIVE <span className="text-acid-500">ANALYSIS</span>

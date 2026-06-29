@@ -20,7 +20,10 @@
       "Bash(sed 's/.*\\\\.//')",
       "Bash(awk -F/ '{print $1}')",
       "PowerShell(head *)",
-      "Bash(xargs -I {} sh -c 'echo \"=== {} ===\" && head -15 \"{}\"')"
+      "Bash(xargs -I {} sh -c 'echo \"=== {} ===\" && head -15 \"{}\"')",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)"
     ]
   },
   "enabledPlugins": {

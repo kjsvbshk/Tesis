@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { useBetStore, type BetType } from '@/store/bets'
 import { Crosshair } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
+import type { MatchSentiment } from '@/services/matches.service'
 
 export interface Match {
   id: string | number
@@ -23,7 +24,11 @@ export interface Match {
   overUnderValue?: number
 }
 
-export function MatchCard({ match, delay = 0 }: { match: Match; delay?: number }) {
+export function MatchCard({ match, delay = 0, sentiment = null }: {
+  match: Match
+  delay?: number
+  sentiment?: MatchSentiment | null
+}) {
   const addBet = useBetStore((s) => s.addBet)
   const { toast } = useToast()
 
@@ -89,18 +94,56 @@ export function MatchCard({ match, delay = 0 }: { match: Match; delay?: number }
                 </div>
               </div>
             </div>
-            <div className="p-4 bg-black/20 flex-shrink-0">
+            <div className="p-4 bg-black/20 flex-shrink-0 flex flex-col gap-3">
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
                 <OddButton label="1" odd={match.odds.home} onClick={() => add('home')} highlight="acid" />
                 <OddButton label="2" odd={match.odds.away} onClick={() => add('away')} />
-                <OddButton label={`O ${match.overUnderLine ?? 220.5}`} odd={match.odds.over} onClick={() => add('over')} />
-                <OddButton label={`U ${match.overUnderLine ?? 220.5}`} odd={match.odds.under} onClick={() => add('under')} />
+                <OddButton label={match.overUnderLine ? `O ${match.overUnderLine}` : 'O/U'} odd={match.odds.over} onClick={() => add('over')} />
+                <OddButton label={match.overUnderLine ? `U ${match.overUnderLine}` : 'O/U'} odd={match.odds.under} onClick={() => add('under')} />
               </div>
+              {sentiment && sentiment.total_bets > 0 && (
+                <SentimentBar
+                  homePct={sentiment.home_pct ?? 0}
+                  awayPct={sentiment.away_pct ?? 0}
+                  totalBets={sentiment.total_bets}
+                />
+              )}
             </div>
           </div>
         </CardContent>
       </Card>
     </motion.div>
+  )
+}
+
+function SentimentBar({ homePct, awayPct, totalBets }: {
+  homePct: number
+  awayPct: number
+  totalBets: number
+}) {
+  return (
+    <div className="w-full">
+      <div className="flex justify-between items-center mb-1">
+        <span className="text-[9px] font-mono text-muted-foreground uppercase tracking-wider">
+          HAW SENTIMENT · {totalBets} bet{totalBets !== 1 ? 's' : ''}
+        </span>
+        <span className="text-[9px] font-mono text-muted-foreground">{homePct}% / {awayPct}%</span>
+      </div>
+      <div className="h-1 w-full rounded-full bg-white/10 overflow-hidden flex">
+        <div
+          className="h-full bg-acid-500 transition-all duration-500"
+          style={{ width: `${homePct}%` }}
+        />
+        <div
+          className="h-full bg-electric-violet transition-all duration-500"
+          style={{ width: `${awayPct}%` }}
+        />
+      </div>
+      <div className="flex justify-between mt-0.5">
+        <span className="text-[9px] font-mono text-acid-500">HOME</span>
+        <span className="text-[9px] font-mono text-electric-violet">AWAY</span>
+      </div>
+    </div>
   )
 }
 

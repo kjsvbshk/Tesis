@@ -37,6 +37,15 @@ export interface MatchResponse {
   winner?: Team | null
 }
 
+export interface MatchSentiment {
+  game_id: number
+  total_bets: number
+  home_pct: number | null
+  away_pct: number | null
+  over_pct: number | null
+  under_pct: number | null
+}
+
 class MatchesService {
   /**
    * Get matches with optional filters
@@ -93,6 +102,23 @@ class MatchesService {
       () => apiRequest<MatchResponse>(`/matches/${matchId}`),
       5 * 60 * 1000 // 5 minutes TTL
     )
+  }
+
+  /**
+   * Get betting sentiment for a match (% of user bets per side).
+   * Returns null when there are no bets yet.
+   * Short TTL — sentiment changes as users place bets.
+   */
+  async getMatchSentiment(matchId: number): Promise<MatchSentiment | null> {
+    try {
+      return await cacheService.getOrSet(
+        cacheService.generateKey('matches', 'sentiment', matchId),
+        () => apiRequest<MatchSentiment>(`/matches/${matchId}/sentiment`),
+        60 * 1000 // 1 minute TTL
+      )
+    } catch {
+      return null
+    }
   }
 }
 

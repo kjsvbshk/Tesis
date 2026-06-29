@@ -4,6 +4,7 @@ Matches API endpoints
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 from typing import List, Optional
 from datetime import date
 
@@ -152,6 +153,55 @@ async def get_upcoming_matches(
         import traceback
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Error fetching matches: {str(e)}")
+
+@router.get("/{match_id}/sentiment")
+async def get_match_sentiment(match_id: int, db: Session = Depends(get_espn_db)):
+    """
+    Betting sentiment for a match — percentage of user bets on each side.
+    Returns home_pct, away_pct, over_pct, under_pct and total bet count.
+    Only reflects bets placed in HAW (virtual credits), not real-money lines.
+    """
+    try:
+        row = db.execute(
+            text("""
+                SELECT
+                    COUNT(*) FILTER (WHERE b.bet_type_code = 'home')   AS home_count,
+                    COUNT(*) FILTER (WHERE b.bet_type_code = 'away')   AS away_count,
+                    COUNT(*) FILTER (WHERE b.bet_type_code = 'over')   AS over_count,
+                    COUNT(*) FILTER (WHERE b.bet_type_code = 'under')  AS under_count,
+                    COUNT(*)                                             AS total
+                FROM espn.bets b
+                WHERE b.game_id = :game_id
+                  AND b.bet_status_code != 'cancelled'
+            """),
+            {"game_id": match_id},
+        ).fetchone()
+
+        total = int(row.total) if row and row.total else 0
+        if total == 0:
+            return {
+                "game_id": match_id,
+                "total_bets": 0,
+                "home_pct": None,
+                "away_pct": None,
+                "over_pct": None,
+                "under_pct": None,
+            }
+
+        def pct(n):
+            return round((int(n or 0) / total) * 100, 1)
+
+        return {
+            "game_id": match_id,
+            "total_bets": total,
+            "home_pct": pct(row.home_count),
+            "away_pct": pct(row.away_count),
+            "over_pct": pct(row.over_count),
+            "under_pct": pct(row.under_count),
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching sentiment: {str(e)}")
+
 
 @router.get("/{match_id}", response_model=MatchResponse)
 async def get_match(match_id: int, db: Session = Depends(get_espn_db)):

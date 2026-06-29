@@ -1158,3 +1158,51 @@ async def sync_games(
     except Exception as e:
         espn_db.rollback()
         raise HTTPException(status_code=500, detail=f"Error syncing games: {str(e)}")
+
+
+# ========== Odds Sync ==========
+
+@router.post("/sync-odds/{espn_game_id}")
+async def sync_odds_for_game(
+    espn_game_id: int,
+    staff_user: UserAccount = Depends(require_staff_permission),
+    espn_db: Session = Depends(get_espn_db),
+):
+    """
+    Sincroniza odds de un partido específico desde ESPN (admin/operator).
+    Usa el ESPN game_id (el mismo que está en espn.games.game_id).
+    """
+    from app.services.espn_sync_service import sync_game_odds
+    try:
+        result = await sync_game_odds(espn_db, espn_game_id)
+        return result
+    except Exception as e:
+        espn_db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error syncing odds: {str(e)}")
+
+
+@router.post("/sync-odds")
+async def sync_odds_bulk(
+    days_back: int = 3,
+    days_forward: int = 7,
+    staff_user: UserAccount = Depends(require_staff_permission),
+    espn_db: Session = Depends(get_espn_db),
+):
+    """
+    Sincroniza odds de todos los partidos en el rango de fechas desde ESPN (admin/operator).
+    Rango máximo: 14 días total.
+    """
+    from app.services.espn_sync_service import sync_recent_games_odds
+
+    if days_back < 0 or days_forward < 0 or (days_back + days_forward) > 14:
+        raise HTTPException(
+            status_code=400,
+            detail="Rango inválido: days_back/days_forward >= 0 y máximo 14 días en total"
+        )
+    try:
+        result = await sync_recent_games_odds(espn_db, days_back=days_back, days_forward=days_forward)
+        return result
+    except Exception as e:
+        espn_db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error syncing odds bulk: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error syncing games: {str(e)}")

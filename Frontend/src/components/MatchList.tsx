@@ -1,42 +1,17 @@
 import { MatchCard, type Match } from '@/components/MatchCard'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useEffect, useState } from 'react'
-import { matchesService, type MatchResponse } from '@/services/matches.service'
-import { predictionsService, type PredictionResponse } from '@/services/predictions.service'
+import { matchesService, type MatchResponse, type MatchSentiment } from '@/services/matches.service'
 import { useToast } from '@/hooks/use-toast'
 import { Activity, CalendarDays, Zap } from 'lucide-react'
 
-function probToOdds(prob: number): number {
-  if (!prob || prob <= 0 || prob >= 1) return 1.90
-  return Math.max(1.01, parseFloat((1 / prob).toFixed(2)))
-}
-
-function roundHalf(n: number): number {
-  return Math.round(n * 2) / 2
-}
-
-/** Calcula odds de over/under basado en el total predicho vs la línea.
- *  Si predicted_total está por encima de la línea, el over tiene odds más bajos.
- *  Si está por debajo, el under tiene odds más bajos. */
-function ouOdds(predictedTotal: number, line: number): { over: number; under: number } {
-  const diff = predictedTotal - line
-  const abs = Math.abs(diff)
-  // Ajuste máximo de 0.30 (para diferencias >= 10 puntos)
-  const adjustment = Math.min(abs * 0.03, 0.30)
-  if (diff > 1.5) {
-    // predicted > line → over más probable
-    return { over: parseFloat((1.90 - adjustment).toFixed(2)), under: parseFloat((1.90 + adjustment).toFixed(2)) }
-  } else if (diff < -1.5) {
-    // predicted < line → under más probable
-    return { over: parseFloat((1.90 + adjustment).toFixed(2)), under: parseFloat((1.90 - adjustment).toFixed(2)) }
-  }
-  return { over: 1.90, under: 1.90 }
-}
+// Standard juice for O/U when no specific odds are stored
+const DEFAULT_OU_ODDS = 1.90
 
 export function MatchList() {
   const [todayMatches, setTodayMatches] = useState<MatchResponse[]>([])
   const [upcomingMatches, setUpcomingMatches] = useState<MatchResponse[]>([])
-  const [predictions, setPredictions] = useState<Map<number, PredictionResponse>>(new Map())
+  const [sentiment, setSentiment] = useState<Map<number, MatchSentiment>>(new Map())
   const [loading, setLoading] = useState(true)
   const { toast } = useToast()
 
@@ -53,28 +28,18 @@ export function MatchList() {
       ])
       setTodayMatches(today)
       setUpcomingMatches(upcoming)
-      // Mostrar partidos de inmediato sin esperar predicciones
       setLoading(false)
 
-      // Cargar predicciones en segundo plano con timeout por request
+      // Cargar sentimiento en background (no bloquea el render)
       const allMatches = [...today, ...upcoming]
-      const predMap = new Map<number, PredictionResponse>()
+      const sentMap = new Map<number, MatchSentiment>()
       await Promise.allSettled(
         allMatches.map(async (m) => {
-          try {
-            const pred = await Promise.race([
-              predictionsService.getGamePrediction(m.id as number),
-              new Promise<never>((_, reject) =>
-                setTimeout(() => reject(new Error('timeout')), 15000)
-              ),
-            ])
-            predMap.set(m.id as number, pred)
-          } catch {
-            // partido sin prediccion o timeout
-          }
+          const s = await matchesService.getMatchSentiment(m.id as number)
+          if (s && s.total_bets > 0) sentMap.set(m.id as number, s)
         })
       )
-      setPredictions(predMap)
+      setSentiment(sentMap)
     } catch (error: unknown) {
       console.error('Error loading matches:', error)
       toast({
@@ -86,25 +51,28 @@ export function MatchList() {
     }
   }
 
-  const convertToMatch = (matchResponse: MatchResponse, pred?: PredictionResponse): Match => {
-    const homeOdds = pred ? probToOdds(pred.home_win_probability) : (matchResponse.home_odds || 0)
-    const awayOdds = pred ? probToOdds(pred.away_win_probability) : (matchResponse.away_odds || 0)
-    const ouLine = pred ? roundHalf(pred.predicted_total) : (matchResponse.over_under || 220.5)
-    const { over: overOdd, under: underOdd } = pred
-      ? ouOdds(pred.predicted_total, ouLine)
-      : { over: 1.90, under: 1.90 }
+  /**
+   * Converts a MatchResponse to the Match shape used by MatchCard.
+   * Odds come from the DB (game_odds table, synced from ESPN/provider).
+   * ML predictions are NOT used here — they live in PredictionsPage only.
+   */
+  const convertToMatch = (matchResponse: MatchResponse): Match => {
+    const homeOdds = matchResponse.home_odds ?? 0
+    const awayOdds = matchResponse.away_odds ?? 0
+    const ouLine = matchResponse.over_under ?? 0
+    // Over/under payout odds: use standard 1.90 if the line exists, 0 (disabled) if no line
+    const ouOdds = ouLine > 0 ? DEFAULT_OU_ODDS : 0
 
     return {
       id: matchResponse.id,
       home: matchResponse.home_team?.name || 'Home Team',
       away: matchResponse.away_team?.name || 'Away Team',
-      odds: { home: homeOdds, away: awayOdds, over: overOdd, under: underOdd },
-      overUnderLine: ouLine,
-      aiHomeWinProb: pred?.home_win_probability,
+      odds: { home: homeOdds, away: awayOdds, over: ouOdds, under: ouOdds },
+      overUnderLine: ouLine > 0 ? ouLine : undefined,
       gameId: matchResponse.id,
       homeTeamId: matchResponse.home_team_id,
       awayTeamId: matchResponse.away_team_id,
-      overUnderValue: ouLine,
+      overUnderValue: ouLine > 0 ? ouLine : undefined,
     }
   }
 
@@ -112,7 +80,7 @@ export function MatchList() {
   const todayMatchesConverted = Array.from(
     todayMatches.reduce<Map<number, Match>>((acc, m) => {
       if (m.home_team?.name !== 'TBD' && m.away_team?.name !== 'TBD' && !acc.has(m.id as number)) {
-        acc.set(m.id as number, convertToMatch(m, predictions.get(m.id as number)))
+        acc.set(m.id as number, convertToMatch(m))
       }
       return acc
     }, new Map()).values()
@@ -121,11 +89,13 @@ export function MatchList() {
   const upcomingMatchesConverted = Array.from(
     upcomingMatches.reduce<Map<number, Match>>((acc, m) => {
       if (m.home_team?.name !== 'TBD' && m.away_team?.name !== 'TBD' && !acc.has(m.id)) {
-        acc.set(m.id, convertToMatch(m, predictions.get(m.id as number)))
+        acc.set(m.id, convertToMatch(m))
       }
       return acc
     }, new Map()).values()
   )
+
+  const getSentiment = (id: number) => sentiment.get(id) ?? null
 
   if (loading) {
     return (
@@ -163,7 +133,7 @@ export function MatchList() {
           <EmptyState message="NO MATCHES SCHEDULED FOR TODAY" />
         ) : (
           todayMatchesConverted.map((m, index) => (
-            <MatchCard key={m.id} match={m} delay={index * 0.05} />
+            <MatchCard key={m.id} match={m} delay={index * 0.05} sentiment={getSentiment(m.id as number)} />
           ))
         )}
       </TabsContent>
@@ -173,7 +143,7 @@ export function MatchList() {
           <EmptyState message="NO UPCOMING MATCHES FOUND" />
         ) : (
           upcomingMatchesConverted.map((m, index) => (
-            <MatchCard key={m.id} match={m} delay={index * 0.05} />
+            <MatchCard key={m.id} match={m} delay={index * 0.05} sentiment={getSentiment(m.id as number)} />
           ))
         )}
       </TabsContent>

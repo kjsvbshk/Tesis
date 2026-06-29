@@ -235,15 +235,30 @@ class MatchService:
                 away_odds_val = None
                 if game_id_val:
                     try:
+                        # Prioridad de providers para odds de referencia
+                        PROVIDER_PRIORITY = ('draftkings', 'fanduel', 'betmgm', 'betrivers', 'mybookieag')
                         odds_row = self.db.execute(text("""
                             SELECT
-                                AVG(CASE WHEN odds_type='moneyline_home' THEN odds_value END) AS home_odds,
-                                AVG(CASE WHEN odds_type='moneyline_away' THEN odds_value END) AS away_odds
+                                MAX(CASE WHEN odds_type='moneyline_home' THEN odds_value END)
+                                    FILTER (WHERE provider = (
+                                        SELECT provider FROM espn.game_odds
+                                        WHERE game_id = :gid AND odds_type = 'moneyline_home'
+                                          AND provider = ANY(:priority)
+                                        ORDER BY array_position(:priority, provider)
+                                        LIMIT 1
+                                    )) AS home_odds,
+                                MAX(CASE WHEN odds_type='moneyline_away' THEN odds_value END)
+                                    FILTER (WHERE provider = (
+                                        SELECT provider FROM espn.game_odds
+                                        WHERE game_id = :gid AND odds_type = 'moneyline_away'
+                                          AND provider = ANY(:priority)
+                                        ORDER BY array_position(:priority, provider)
+                                        LIMIT 1
+                                    )) AS away_odds
                             FROM espn.game_odds
                             WHERE game_id = :gid
-                              AND odds_type IN ('moneyline_home','moneyline_away')
-                            GROUP BY game_id
-                        """), {"gid": int(game_id_val)}).fetchone()
+                              AND odds_type IN ('moneyline_home', 'moneyline_away')
+                        """), {"gid": int(game_id_val), "priority": list(PROVIDER_PRIORITY)}).fetchone()
                         if odds_row:
                             home_odds_val = float(odds_row[0]) if odds_row[0] else None
                             away_odds_val = float(odds_row[1]) if odds_row[1] else None

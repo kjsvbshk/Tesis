@@ -1,7 +1,8 @@
 # NOTICE — Avisos de Atribución y Terceros
 
 Este archivo forma parte del Trabajo de Grado titulado
-**"Sistema de Predicciones y Apuestas Virtuales NBA basado en Machine Learning"**
+**"Desarrollo de un prototipo funcional de una aplicación Web para la Predicción de Apuestas
+Deportivas Usando Análisis de Datos y técnicas de machine learning"**
 
 **Autores**: Irving Rios Ramirez, Jhon Edison Montaño Parra
 **Institución**: Universidad Manuela Beltrán (UMB), Bogotá, Colombia

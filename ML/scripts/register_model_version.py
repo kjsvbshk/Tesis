@@ -67,16 +67,17 @@ def register_model_version(
 
         if existing:
             # Actualizar registro existente
+            # Nota: app.model_versions no tiene columna updated_at
+            # (columnas reales: id, version, is_active, model_metadata,
+            #  description, created_at — ver Backend/app/models/model_version.py)
             conn.execute(text(f"""
                 UPDATE {app_schema}.model_versions
                 SET description = :description,
-                    model_metadata = :metadata,
-                    updated_at = :updated_at
+                    model_metadata = :metadata
                 WHERE version = :version
             """), {
                 "description": description,
                 "metadata": json.dumps(metadata_json),
-                "updated_at": datetime.now(timezone.utc),
                 "version": version,
             })
             print(f"Versión actualizada: {version}")

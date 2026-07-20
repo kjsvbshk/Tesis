@@ -1,5 +1,6 @@
 # QA Auditoría — Sistema HAW (House Always Wins)
-**Fecha:** 2026-06-04 | **Versión:** v2.2.0 | **Auditor:** QA Engineer (automatizado)
+**Fecha:** 2026-07-20 | **Versión auditada:** v3.1.0 (modelo activo, 52 features) | **Auditor:** QA Engineer (automatizado)
+**Auditoría previa:** 2026-06-04 (v2.2.0) — los IDs de hallazgos se conservan para trazabilidad.
 
 ---
 
@@ -8,271 +9,206 @@
 | Área | Estado | Críticos | Medios | Bajos |
 |------|--------|----------|--------|-------|
 | Autenticación y seguridad | ✅ PASA | 0 | 1 | 2 |
-| Predicciones ML | ⚠️ OBSERVACIONES | 0 | 3 | 1 |
-| Apuestas y créditos | ⚠️ OBSERVACIONES | 0 | 2 | 2 |
-| Partidos y odds | ❌ FALLA | 1 | 2 | 1 |
+| Predicciones ML | ✅ PASA | 0 | 0 | 2 |
+| Apuestas y créditos | ⚠️ OBSERVACIONES | 0 | 1 | 3 |
+| Partidos y odds | ⚠️ OBSERVACIONES | 0 | 2 | 1 |
 | Infraestructura / patrones | ✅ PASA | 0 | 1 | 2 |
 
-**Total:** 1 crítico · 9 medios · 8 bajos
+**Total: 0 críticos · 5 medios · 10 bajos** (junio: 1 crítico · 9 medios · 8 bajos)
+
+### Evolución desde la auditoría de junio (v2.2.0)
+
+| Hallazgo junio | Estado hoy |
+|----------------|-----------|
+| 🔴 PT-C01 `home_team_id: int` NOT NULL rompía `/predict/upcoming` | ✅ RESUELTO — `Optional[int] = None` (`schemas/prediction.py:31-32`) |
+| 🟡 AU-B02 Rate limiting no activo | ✅ RESUELTO — `check_rate_limit`/`track_failed_login` activos en login y cambio de contraseña |
+| 🟡 PR-M03 `inference_latency_ms` no visualizada | ✅ RESUELTO — `PredictionsPage.tsx:293-296` la muestra |
+| 🟡 PR-M02 Solo input manual de game_id | ⬇️ BAJO — auto-trigger vía URL `?game_id` desde UpcomingGames implementado; input manual sigue siendo el flujo directo |
+| 🟡 BT-M02 Tablas paralelas `espn.bets` / `app.bets` | ⬇️ BAJO — el modelo SQLAlchemy unificó a `espn.bets`; la tabla `app.bets` persiste vacía en la BD (dropear o documentar) |
+| 🟡 IF-M01 Outbox worker no corría | 🔄 MEJORADO — `start_outbox_worker()` se lanza en el startup (`main.py:208-209`); verificar filas `published_at IS NULL` en Neon |
+| 🟡 BT-M01 Sin liquidación de apuestas | 🔄 PARCIAL — `BetService.settle_bet(bet_id, won)` implementado con abono y reversa; **sin invocadores** (ni worker ni endpoint) |
+| 🟡 AU-M01 `datetime.utcnow()` deprecado | ❌ VIGENTE y creció: 49 ocurrencias en 18 archivos (junio: 33/12) |
+| 🟡 PT-M01 Prints DEBUG en match_service | ❌ VIGENTE — 26 `print(` en `match_service.py` |
+| 🟢 PT-B01 N+1 queries de odds | ❌ VIGENTE |
+| 🟢 IF-B02 Circuit breaker solo en providers | ❌ VIGENTE — único uso: `provider_orchestrator.py` |
+
+### Correcciones de seguridad aplicadas 2026-07 (nuevos casos PASS)
+
+Detalle completo en `Backend/README_SECURITY.md`:
+- OTP eliminado de las respuestas HTTP de `/forgot-password` y `/send-verification-code` (era account-takeover).
+- `echo=False` fijo en SQLAlchemy (antes volcaba SQL con parámetros con `DEBUG=True`).
+- 500 genéricos + tracebacks saneados con `scrub_sensitive_text()` en los 10 handlers de flujos con credenciales.
+- OTP nunca en logs salvo `EMAIL_PROVIDER=console` explícito.
+- Referencias al schema inexistente `sys` corregidas a `app` en scripts ML, configs y mensajes.
 
 ---
 
 ## 1. Autenticación y Gestión de Usuarios
 
-### Casos de prueba ejecutados
-
 | ID | Caso | Resultado | Notas |
 |----|------|-----------|-------|
-| AU-01 | Registro con email válido + verificación OTP | ✅ IMPLEMENTADO | `EmailService` + `email_verification_codes` |
-| AU-02 | Login con JWT Bearer Token | ✅ IMPLEMENTADO | `create_access_token`, argon2 hash |
-| AU-03 | Token expirado devuelve 401 | ✅ IMPLEMENTADO | `verify_token` usa `JWTError` |
-| AU-04 | Usuario inactivo bloqueado | ✅ IMPLEMENTADO | `is_active` check en `get_current_user` |
-| AU-05 | 2FA TOTP con QR code | ✅ IMPLEMENTADO | `pyotp`, backup codes con SHA-256 |
-| AU-06 | RBAC — roles admin/operator/client | ✅ IMPLEMENTADO | `require_permission`, `UserRole` tabla |
-| AU-07 | Sesiones concurrentes y revocación | ✅ IMPLEMENTADO | `user_sessions` con token_hash |
-| AU-08 | Recuperación de contraseña por email | ✅ IMPLEMENTADO | `ForgotPasswordRequest` + OTP |
-| AU-09 | Headers de seguridad HTTP | ✅ IMPLEMENTADO | HSTS, X-Frame-Options, CSP |
-| AU-10 | Sanitización de datos sensibles en logs | ✅ IMPLEMENTADO | `sanitize_for_logging` |
+| AU-01 | Registro con email válido + verificación OTP | ✅ PASA | `EmailService` + `email_verification_codes`; código solo por email |
+| AU-02 | Login con JWT Bearer (HS256) | ✅ PASA | `create_access_token`, hash **Argon2** |
+| AU-03 | Token expirado devuelve 401 | ✅ PASA | `verify_token` usa `JWTError` |
+| AU-04 | Usuario inactivo bloqueado | ✅ PASA | `is_active` en `get_current_user` |
+| AU-05 | 2FA TOTP con QR + backup codes | ✅ PASA | `pyotp`, backup codes SHA-256, header `X-Requires-2FA` |
+| AU-06 | RBAC admin/operator/user | ✅ PASA | `require_permission`, permisos granulares scope:acción |
+| AU-07 | Sesiones y revocación | ✅ PASA | `user_sessions` con token_hash |
+| AU-08 | Recuperación de contraseña | ✅ PASA | OTP 6 dígitos / 15 min, sin eco en respuesta |
+| AU-09 | Headers de seguridad HTTP | ✅ PASA | HSTS, X-Frame-Options, CSP; HTTPS redirect; TrustedHost |
+| AU-10 | Sin credenciales en logs/respuestas | ✅ PASA | `scrub_sensitive_text` + 500 genéricos + echo SQL off |
+| AU-11 | Rate limiting por IP en login | ✅ PASA | `check_rate_limit` → 429 con minutos restantes |
 
 ### Hallazgos
 
-**[MEDIO] AU-M01 — `datetime.utcnow()` deprecated en Python 3.12+**
-- **Archivo:** `auth_service.py`, `bet_service.py`, `prediction_service.py` (33 ocurrencias en 12 archivos)
-- **Descripción:** `datetime.utcnow()` fue deprecado en Python 3.12. El proyecto usa Python 3.13. Funciona actualmente pero generará `DeprecationWarning` y eventualmente fallará.
-- **Fix:** Reemplazar por `datetime.now(timezone.utc)` en todos los servicios.
-- **Severidad:** Media (funcional pero técnicamente incorrecto).
+**[MEDIO] AU-M01 — `datetime.utcnow()` deprecado (49 ocurrencias / 18 archivos)**
+Python 3.13 en uso; reemplazar por `datetime.now(timezone.utc)`. Creció desde junio (33/12) — incluir en definition of done de nuevos PRs.
 
-**[BAJO] AU-B01 — Token de acceso sin refresh token**
-- **Descripción:** El sistema solo emite `access_token`. No existe `refresh_token`. El usuario debe re-autenticarse cuando el token expira.
-- **Impacto:** UX degradada (sesión corta), no es un riesgo de seguridad.
+**[BAJO] AU-B01 — Sin refresh token** (sin cambios; UX de sesión corta, no es riesgo).
 
-**[BAJO] AU-B02 — `security_monitoring` importado pero no conectado a rate limiting**
-- **Archivo:** `users.py` importa `security_monitoring` pero no hay lógica de rate limiting activa por IP/usuario.
+**[BAJO] AU-B03 — 28 handlers restantes devuelven `str(e)` al cliente** *(nuevo)*
+Los 10 flujos con credenciales ya están saneados; quedan endpoints sin datos sensibles en payload (créditos, listados, permisos, deactivate) que aún exponen detalle interno en el 500. Aplicar el mismo patrón (`logger.error` + scrub + detail genérico).
 
 ---
 
 ## 2. Predicciones ML
 
-### Casos de prueba ejecutados
-
 | ID | Caso | Resultado | Notas |
 |----|------|-----------|-------|
-| PR-01 | Predicción de partido histórico (en ml_ready_games) | ✅ IMPLEMENTADO | `FeatureExtractor` + `predict_full_robust` |
-| PR-02 | Predicción de partido futuro (LiveFeatureExtractor) | ✅ IMPLEMENTADO | Nuevo en esta sesión |
-| PR-03 | 422 cuando party no existe en DB | ✅ IMPLEMENTADO | `FeaturesNotAvailableError` → HTTP 422 |
-| PR-04 | 503 cuando modelo no está cargado | ✅ IMPLEMENTADO | `ModelNotLoadedError` → HTTP 503 |
-| PR-05 | Detección automática de feature_set (21/33/35) | ✅ IMPLEMENTADO | `detect_feature_set` |
-| PR-06 | Idempotencia con X-Idempotency-Key | ✅ IMPLEMENTADO | `check_idempotency_and_register` |
-| PR-07 | Team-props en respuesta (rebotes, ast, etc.) | ✅ IMPLEMENTADO | `NBAStatRegressor` × 10 |
-| PR-08 | Upcoming games con predicciones en vivo | ✅ IMPLEMENTADO | `get_upcoming_predictions` |
-| PR-09 | Caché de predicciones (TTL 5 min) | ✅ IMPLEMENTADO | `cache_service.get_or_set` |
-| PR-10 | Telemetría de latencia (`inference_latency_ms`) | ✅ IMPLEMENTADO | Timing aislado del modelo |
+| PR-01 | Predicción de partido histórico | ✅ PASA | `FeatureExtractor` + `predict_full_robust` |
+| PR-02 | Predicción de partido futuro | ✅ PASA | `LiveFeatureExtractor` con fallback si faltan columnas V3.1 |
+| PR-03 | 422 cuando el partido no tiene features | ✅ PASA | `FeaturesNotAvailableError` → HTTP 422 |
+| PR-04 | 503 cuando el modelo no está cargado | ✅ PASA | `ModelNotLoadedError` → HTTP 503 |
+| PR-05 | Detección de feature_set 21/33/35/47/49/50/52 | ✅ PASA | `detect_feature_set` — v3.1.0 → `v3_1_odds` (52) |
+| PR-06 | Idempotencia con X-Idempotency-Key | ✅ PASA | `check_idempotency_and_register` |
+| PR-07 | Team-props (reb/ast/stl/blk/to) | ✅ PASA | `NBAStatRegressor` × 10 |
+| PR-08 | Upcoming games con predicciones | ✅ PASA | PT-C01 resuelto; auto-trigger `?game_id` |
+| PR-09 | Caché TTL 5 min + stale | ✅ PASA | `cache_service.get_or_set` |
+| PR-10 | Telemetría de latencia visualizada | ✅ PASA | `inference_latency_ms` en dashboard |
+| PR-11 | FG%/3P%/FT% rolling como inputs (§2.3.1) | ✅ PASA | `fg_pct_rolling_diff` + 2 en ETL→train→inferencia |
+| PR-12 | `implied_prob_*` activas en producción (§2.3.4) | ✅ PASA | default `--use-odds`; pre-imputación por mediana |
 
 ### Hallazgos
 
-**[MEDIO] PR-M01 — Schema `PredictionResponse.home_team_id` es `int` (NOT NULL) pero `get_upcoming_predictions` pasa `None`**
-- **Archivo:** `prediction_service.py` línea 433-434: `home_team_id=None, away_team_id=None`
-- **Descripción:** El schema Pydantic declara `home_team_id: int` (no Optional), pero el nuevo endpoint de upcoming games pasa `None`. Esto causará `ValidationError` de Pydantic en runtime cuando se llame `/predict/upcoming`.
-- **Fix:** Cambiar en `prediction.py`:
-  ```python
-  home_team_id: Optional[int] = None
-  away_team_id: Optional[int] = None
-  ```
-- **Severidad:** Media — bloquea funcionalidad de upcoming games.
+**[BAJO] PR-B01 — `prediction_id` = `request_id` en audit log** (sin cambios; semántico).
 
-**[MEDIO] PR-M02 — `PredictionsPage.tsx` solo acepta input manual de game_id**
-- **Descripción:** El usuario debe conocer el `game_id` numérico de ESPN para obtener una predicción. No hay selector de partidos ni dropdown. La integración con `UpcomingGamesPage` mediante botón "ANALYZE" pasa el game_id por URL, lo cual funciona, pero la UX del flujo principal es deficiente.
-- **Impacto:** Barrera alta para usuarios finales en demo/defensa.
-
-**[MEDIO] PR-M03 — `latency_ms` (total HTTP) vs `inference_latency_ms` (modelo aislado) — frontend solo muestra uno**
-- **Descripción:** El schema backend expone ambos. El frontend (`predictions.service.ts`) tiene ambos campos pero `PredictionsPage.tsx` no muestra `inference_latency_ms` de forma diferenciada visualmente.
-- **Impacto:** Bajo para funcionalidad, pero la telemetría que el modelo produce no se visualiza correctamente.
-
-**[BAJO] PR-B01 — `audit_log` para predicciones usa `request_id` como `prediction_id`**
-- **Archivo:** `predictions.py` líneas 121, 256: `prediction_id=request_id`
-- **Descripción:** El audit log registra `prediction_id` con el valor de `request_id` por falta de una referencia directa al `Prediction` recién creado. Funcionalmente correcto pero semánticamente impreciso.
+**[BAJO] PR-B02 — Cobertura de cuotas ~1.3 %** *(reclasificado)*
+`implied_prob_*` operan pero con señal débil: 53/3975 partidos con cuotas reales. Ampliar histórico de odds para que la feature aporte.
 
 ---
 
 ## 3. Apuestas y Créditos
 
-### Casos de prueba ejecutados
-
 | ID | Caso | Resultado | Notas |
 |----|------|-----------|-------|
-| BT-01 | Colocar apuesta moneyline | ✅ IMPLEMENTADO | `BetService.place_bet` |
-| BT-02 | Validar créditos suficientes antes de apostar | ✅ IMPLEMENTADO | `deduct_credits` + rollback |
-| BT-03 | Refund automático si falla la apuesta post-débito | ✅ IMPLEMENTADO | `add_credits` en except |
-| BT-04 | Cancelar apuesta pendiente (refund) | ✅ IMPLEMENTADO | `cancel_bet` |
-| BT-05 | Historial de apuestas por usuario | ✅ IMPLEMENTADO | `get_user_bets` con filtros |
-| BT-06 | Transacción registrada en `app.transactions` | ✅ IMPLEMENTADO | `Transaction` con before/after |
-| BT-07 | Validar que equipo pertenece al partido | ✅ IMPLEMENTADO | Cross-check `espn.teams` + `espn.games` |
-| BT-08 | Estadísticas de apuestas del usuario | ✅ IMPLEMENTADO | `/bets/stats/summary` |
-| BT-09 | Liquidación automática de apuestas | ❌ NO IMPLEMENTADO | Sin worker de liquidación |
-| BT-10 | Apuesta sobre total (over/under) | ✅ IMPLEMENTADO | `BetType.over_under` |
+| BT-01 | Colocar apuesta moneyline | ✅ PASA | `BetService.place_bet` |
+| BT-02 | Validar créditos suficientes | ✅ PASA | `deduct_credits` + `CheckConstraint credits >= 0` |
+| BT-03 | Refund si falla post-débito | ✅ PASA | `add_credits` en except |
+| BT-04 | Cancelar apuesta pendiente | ✅ PASA | `cancel_bet` |
+| BT-05 | Historial con filtros | ✅ PASA | `get_user_bets` |
+| BT-06 | Ledger en `app.transactions` | ✅ PASA | `balance_before/after` |
+| BT-07 | Equipo pertenece al partido | ✅ PASA | Cross-check espn.teams/games |
+| BT-08 | Estadísticas del usuario | ✅ PASA | `/bets/stats/summary` |
+| BT-09 | Liquidación de apuestas | ⚠️ PARCIAL | `settle_bet()` implementado, sin invocadores |
+| BT-10 | Over/under | ✅ PASA | `BetType.over_under` |
 
 ### Hallazgos
 
-**[MEDIO] BT-M01 — Sin worker de liquidación de apuestas (BT-09)**
-- **Descripción:** Las apuestas se crean con `status='pending'` pero nunca se liquidan automáticamente. No existe un proceso que compare el resultado del partido con la apuesta y cambie el estado a `won`/`lost` ni acredite ganancias.
-- **Impacto:** El flujo de apuestas está incompleto. Los usuarios nunca ven apuestas ganadas ni reciben créditos por victorias. En producción esto sería crítico; para el prototipo de tesis es una limitación documentable.
-- **Workaround:** Liquidación manual vía SQL. Documentar como trabajo futuro.
+**[MEDIO] BT-M01 — Liquidación implementada pero no conectada**
+`BetService.settle_bet(bet_id, won)` liquida con abono de ganancias y reversa ante fallo, pero ningún worker ni endpoint lo invoca. Fix mínimo: endpoint admin `POST /bets/{id}/settle` o job que cruce `espn.bets.status='pending'` contra resultados de `espn.games`.
 
-**[MEDIO] BT-M02 — `espn.bets` y `app.bets` son tablas paralelas con misma funcionalidad**
-- **Descripción:** Existen dos modelos de apuestas: `espn.bets` (con `EspnBet`, `BetSelection`, `BetResult`) y `app.bets` (con `Bet` en app schema). `BetService` usa `espn.bets`. `app.bets` tiene 0 filas y no se usa. Hay riesgo de confusión en mantenimiento.
-- **Fix:** Eliminar `app.bets` o documentar claramente cuál es la tabla maestra.
-
-**[BAJO] BT-B01 — `BetSlip.tsx` y `BetsPage.tsx` existen pero no se confirma integración end-to-end**
-- **Descripción:** Ambos componentes frontend existen y llaman a `betsService`. Sin datos en `espn.bets`, la funcionalidad no puede validarse visualmente.
-
-**[BAJO] BT-B02 — `bet_service.py` importa `get_espn_db` pero no lo usa directamente**
-- **Descripción:** Importación no utilizada (`from app.core.database import get_espn_db`). Señal de deuda técnica menor.
+**[BAJO] BT-B01 — Validación end-to-end del BetSlip pendiente de datos** (sin cambios).
+**[BAJO] BT-B02 — Import `get_espn_db` sin uso en `bet_service.py`** (sin cambios).
+**[BAJO] BT-B03 — Tabla `app.bets` vacía persiste en la BD** *(reclasificado desde BT-M02)* — el código ya usa solo `espn.bets`; dropear `app.bets` o documentarla como legacy.
 
 ---
 
 ## 4. Partidos y Odds
 
-### Casos de prueba ejecutados
-
 | ID | Caso | Resultado | Notas |
 |----|------|-----------|-------|
-| PT-01 | Listado de partidos (`/matches/`) | ✅ IMPLEMENTADO | Query dinámica sobre `espn.games` |
-| PT-02 | Partidos de hoy (`/matches/today`) | ✅ IMPLEMENTADO | Filtro por `fecha >= today` |
-| PT-03 | Partido específico por ID (`/matches/{id}`) | ✅ IMPLEMENTADO | `get_match_by_id` |
-| PT-04 | Partidos próximos con predicciones (`/proximos`) | ✅ IMPLEMENTADO | `UpcomingGamesPage` |
-| PT-05 | Odds en respuesta de partidos | ⚠️ PARCIAL | Solo 53 partidos tienen odds (~1.4%) |
-| PT-06 | `game_date` en respuesta de partidos | ⚠️ PARCIAL | Fix aplicado, pendiente verificar |
-| PT-07 | Pipeline de odds completo (API → DB → implied_prob) | ✅ IMPLEMENTADO | `refresh_odds_pipeline.py` |
-| PT-08 | Filtro partidos futuros (score=0, teams != TBD) | ✅ IMPLEMENTADO | `get_upcoming_predictions` |
+| PT-01..04 | Listados, hoy, por ID, próximos | ✅ PASA | Sin cambios |
+| PT-05 | Odds en respuesta | ⚠️ PARCIAL | 53 partidos con odds (~1.3 %) |
+| PT-06 | `game_date` en respuesta | ✅ PASA | Verificado |
+| PT-07 | Pipeline odds → implied_prob | ✅ PASA | Autodetección de formato + sin vig |
+| PT-08 | Filtro partidos futuros | ✅ PASA | PT-C01 resuelto |
 
 ### Hallazgos
 
-**[CRÍTICO] PT-C01 — `home_team_id` y `away_team_id` son `int` NOT NULL en `PredictionResponse` pero `get_upcoming_predictions` pasa `None`**
-- **Descripción:** *(mismo que PR-M01 — duplicado en este contexto porque bloquea el endpoint `/predict/upcoming` que es el núcleo de la página de próximos partidos)*
-- **Fix inmediato requerido** — sin este fix, la página `UpcomingGamesPage` siempre falla.
-
-**[MEDIO] PT-M01 — `match_service.get_matches()` imprime 5+ líneas de DEBUG en cada request**
-- **Archivo:** `match_service.py` líneas 124-145
-- **Descripción:** `print(f"🔍 Columnas encontradas...")`, `print(f"✅ ID column: ...")`, etc. se ejecutan en cada llamada al endpoint. En producción esto llena los logs y degrada el rendimiento.
-- **Fix:** Cambiar a `logger.debug(...)` o eliminar.
-
-**[MEDIO] PT-M02 — Caché de `/matches/today` TTL fijo de 5 min no invalida cuando se insertan nuevos partidos**
-- **Descripción:** Si se ejecuta el scraper y se insertan nuevos partidos, el dashboard seguirá mostrando datos obsoletos hasta que expire el caché. No hay invalidación activa.
-- **Fix:** Añadir invalidación de caché al final del pipeline ETL, o reducir TTL.
-
-**[BAJO] PT-B01 — `home_odds` query en `match_service` por cada partido en el listado (N+1 queries)**
-- **Archivo:** `match_service.py` — el fix de odds añade una query SQL extra por cada partido en el listado
-- **Descripción:** Para 50 partidos → 50 queries adicionales a `espn.game_odds`. Lento pero funcional para el prototipo.
-- **Fix futuro:** JOIN en la query principal.
+**[MEDIO] PT-M01 — 26 `print(` de debug en `match_service.py`** — vigente; migrar a `logger.debug`.
+**[MEDIO] PT-M02 — Caché sin invalidación post-scraping** — vigente; invalidar al final del ETL o exponer endpoint admin de flush.
+**[BAJO] PT-B01 — N+1 queries de odds en listados** — vigente; JOIN en la query principal.
 
 ---
 
-## 5. Infraestructura y Patrones de Calidad
-
-### Casos de prueba ejecutados
+## 5. Infraestructura y Patrones
 
 | ID | Caso | Resultado | Notas |
 |----|------|-----------|-------|
-| IF-01 | Patrón Outbox (RF-08) | ✅ IMPLEMENTADO | `OutboxService`, `app.outbox` (91 filas) |
-| IF-02 | Audit Log (RF-09) | ✅ IMPLEMENTADO | `AuditService`, `app.audit_log` (123 filas) |
-| IF-03 | Idempotencia (RF-06) | ✅ IMPLEMENTADO | `X-Idempotency-Key` header |
-| IF-04 | Circuit Breaker (RF-05) | ✅ IMPLEMENTADO | `CircuitBreaker` clase en `circuit_breaker.py` |
-| IF-05 | HTTPS y security headers | ✅ IMPLEMENTADO | `SecurityHeadersMiddleware` |
-| IF-06 | Caché in-memory con TTL | ✅ IMPLEMENTADO | `cache_service`, stale-while-revalidate |
-| IF-07 | Worker outbox publica eventos | ⚠️ PARCIAL | `outbox_worker.py` existe, no verificado en prod |
-| IF-08 | Health check endpoint | ✅ IMPLEMENTADO | `/health` |
-| IF-09 | Separación de schemas (espn/ml/app/sys) | ✅ IMPLEMENTADO | 4 schemas en Neon, roles separados |
-| IF-10 | UNIQUE constraints en tablas críticas | ✅ IMPLEMENTADO | `uq_player_boxscore` aplicado en esta sesión |
+| IF-01 | Patrón Outbox | ✅ PASA | Worker arranca en startup (`main.py:208`) |
+| IF-02 | Audit Log | ✅ PASA | `app.audit_log` |
+| IF-03 | Idempotencia | ✅ PASA | Header `X-Idempotency-Key` |
+| IF-04 | Circuit Breaker | ✅ PASA | Solo providers (ver IF-B02) |
+| IF-05 | HTTPS + security headers | ✅ PASA | |
+| IF-06 | Caché TTL + stale-while-revalidate | ✅ PASA | Redis con fallback a memoria |
+| IF-07 | Worker outbox publica | ⚠️ VERIFICAR | Revisar `published_at IS NULL` en Neon tras el arranque |
+| IF-08 | Health check | ✅ PASA | `/health` |
+| IF-09 | Separación de schemas | ✅ PASA | Schemas reales: `app`, `espn`, `ml`, `premier_league` (el schema `sys` no existe; referencias corregidas 2026-07) |
+| IF-10 | UNIQUE constraints críticos | ✅ PASA | `uq_player_boxscore` |
 
 ### Hallazgos
 
-**[MEDIO] IF-M01 — `app.outbox` tiene 91 filas con `published_at = NULL` — eventos no procesados**
-- **Descripción:** El `outbox_worker` escribe en `app.outbox` pero en el entorno local no está corriendo como proceso continuo. Los 91 eventos en la tabla están sin publicar. En producción (Render) tampoco hay evidencia de que el worker esté activo.
-- **Impacto:** Los eventos de predicciones completadas nunca se "publican" a consumidores externos. No afecta funcionalidad core del prototipo.
+**[MEDIO] IF-M01 — Publicación del outbox sin verificación en producción**
+El worker ya arranca en startup; falta evidencia de procesamiento en Render. Verificar: `SELECT COUNT(*) FROM app.outbox WHERE published_at IS NULL;`
 
-**[BAJO] IF-B01 — `datetime.utcnow()` en 33 lugares (ver AU-M01)**
-
-**[BAJO] IF-B02 — `CircuitBreaker` implementado pero solo referenciado en `provider_orchestrator.py`; no protege endpoints de predicción**
-- **Descripción:** El circuit breaker funciona para proveedores externos pero no está aplicado a la carga del modelo ML ni al acceso a Neon. Un fallo de Neon no activa el circuit breaker.
+**[BAJO] IF-B01 — Ver AU-M01 (utcnow).**
+**[BAJO] IF-B02 — Circuit breaker no cubre Neon ni carga del modelo** — vigente.
 
 ---
 
-## 6. Resumen de Defectos por Severidad
+## 6. Cobertura de Requisitos Funcionales
 
-### 🔴 Críticos (1) — Bloquean funcionalidad
+| RF | Descripción | Junio | Hoy |
+|----|-------------|-------|-----|
+| RF-01..04 | JWT+Argon2, registro, RBAC, 2FA TOTP | ✅ | ✅ |
+| RF-05 | Circuit Breaker | ✅ parcial | ✅ parcial |
+| RF-06..07 | Idempotencia, snapshot de odds | ✅ | ✅ |
+| RF-08 | Outbox | ✅ worker pendiente | ✅ worker en startup |
+| RF-09..12 | Audit, predicción real, live, team-props | ✅ | ✅ |
+| RF-13 | Implied probability de mercado | ✅ (no en modelo activo) | ✅ **activa en v3.1.0** |
+| RF-14 | Liquidación automática | ❌ | ⚠️ lógica lista, sin invocador |
+| RF-15 | Dashboard con datos reales | ⚠️ | ⚠️ (bets aún sin volumen) |
 
-| ID | Descripción | Archivo | Fix |
-|----|-------------|---------|-----|
-| PT-C01 | `home_team_id: int` NOT NULL en schema pero upcoming predictions pasa `None` → `ValidationError` | `app/schemas/prediction.py` línea 31-32 | Cambiar a `Optional[int] = None` |
-
-### 🟡 Medios (9) — Degradan funcionalidad o calidad
-
-| ID | Descripción |
-|----|-------------|
-| AU-M01 | `datetime.utcnow()` deprecated en Python 3.13 (33 usos) |
-| PR-M02 | `PredictionsPage` requiere game_id manual — UX pobre para demo |
-| PR-M03 | `inference_latency_ms` no visualizada en dashboard |
-| BT-M01 | Sin worker de liquidación de apuestas |
-| BT-M02 | Dos tablas de apuestas paralelas (`espn.bets` vs `app.bets`) |
-| PT-M01 | 5+ prints de DEBUG en cada request de matches |
-| PT-M02 | Caché sin invalidación activa post-scraping |
-| IF-M01 | 91 eventos outbox sin procesar |
-| PR-M01 | *(igual que PT-C01)* |
-
-### 🟢 Bajos (8) — No bloquean, deuda técnica
-
-| ID | Descripción |
-|----|-------------|
-| AU-B01 | Sin refresh token |
-| AU-B02 | Rate limiting no activo |
-| PR-B01 | `prediction_id` = `request_id` en audit log |
-| BT-B01 | BetSlip sin datos para validar end-to-end |
-| BT-B02 | Importación no usada en `bet_service.py` |
-| PT-B01 | N+1 queries para odds en listado de partidos |
-| IF-B01 | Ver AU-M01 |
-| IF-B02 | Circuit breaker no protege acceso a Neon |
+**Cobertura: 13/15 completos + 2 parciales — apto para defensa de tesis.**
 
 ---
 
-## 7. Fix Inmediato Requerido (PT-C01)
+## 7. Cómo regenerar esta auditoría
 
-Aplicar antes de arrancar el backend para que `/predict/upcoming` funcione:
+Esta auditoría es estática (revisión de código + verificaciones puntuales). Para regenerarla tras cambios:
 
-```python
-# Backend/app/schemas/prediction.py — líneas 31-32
-class PredictionResponse(BaseModel):
-    game_id: int
-    home_team_id: Optional[int] = None   # cambiar de int a Optional[int]
-    away_team_id: Optional[int] = None   # cambiar de int a Optional[int]
-    home_team_name: str
-    away_team_name: str
-    ...
-```
+1. **Actualizar encabezado**: fecha, versión del modelo activo (`SELECT version FROM app.model_versions WHERE is_active;` o el log de startup del backend).
+2. **Re-verificar hallazgos vigentes** (comandos desde la raíz del repo, PowerShell usa `findstr` o instalar ripgrep):
+   ```bash
+   # AU-M01 — utcnow deprecado (objetivo: 0)
+   grep -rn "datetime.utcnow()" Backend/app --include="*.py" | wc -l
+   # AU-B03 — str(e) expuesto al cliente (objetivo: 0)
+   grep -c "str(e)" Backend/app/api/v1/endpoints/users.py
+   # PT-M01 — prints de debug (objetivo: 0)
+   grep -c "print(" Backend/app/services/match_service.py
+   # BT-M01 — invocadores de settle_bet (objetivo: >=1)
+   grep -rn "settle_bet" Backend/app --include="*.py" | grep -v "def settle_bet"
+   # Fugas de credenciales (objetivo: vacío)
+   grep -rn '"code": code\|echo=settings.DEBUG' Backend/app --include="*.py"
+   # Schema sys fantasma (objetivo: vacío)
+   grep -rn "sys\.model_versions\|get_schema(\"sys\")" Backend ML --include="*.py"
+   ```
+3. **Pruebas manuales de humo**: registro→OTP por email→login→2FA; predicción de partido histórico y futuro; apuesta con créditos; revisar consola del backend durante un login fallido (sin contraseñas, sin SQL).
+4. **Métricas del modelo**: copiar de `ML/models/metadata/v{X}_metadata.json` (campo `metrics`).
+5. **Actualizar** las tablas de evolución (sección Resumen) marcando RESUELTO/VIGENTE con evidencia archivo:línea, y recalcular el conteo por severidad.
 
----
-
-## 8. Cobertura de Requisitos Funcionales
-
-| RF | Descripción | Estado |
-|----|-------------|--------|
-| RF-01 | Autenticación JWT + argon2 | ✅ |
-| RF-02 | Registro con verificación email | ✅ |
-| RF-03 | RBAC (admin/operator/client) | ✅ |
-| RF-04 | 2FA TOTP | ✅ |
-| RF-05 | Circuit Breaker | ✅ (parcial) |
-| RF-06 | Idempotencia | ✅ |
-| RF-07 | Snapshot de odds por request | ✅ |
-| RF-08 | Patrón Outbox | ✅ (worker pendiente) |
-| RF-09 | Audit Log | ✅ |
-| RF-10 | Predicción ML con modelo real | ✅ |
-| RF-11 | Predicción partidos futuros (LiveFeatureExtractor) | ✅ |
-| RF-12 | Team-props en predicción | ✅ |
-| RF-13 | Implied probability de odds de mercado | ✅ (1.4% cobertura) |
-| RF-14 | Liquidación automática de apuestas | ❌ |
-| RF-15 | Dashboard con datos reales | ⚠️ (parcial — créditos y matches OK, bets vacío) |
-
-**Cobertura: 13/15 RFs implementados (87%)** — apto para defensa de tesis.
+> Sugerencia: pedir la regeneración a un agente con acceso al repo usando este documento como plantilla — los IDs estables (AU-*, PR-*, BT-*, PT-*, IF-*) permiten comparar auditorías entre versiones.
 
 ---
 
-*Reporte generado automáticamente — HAW QA Suite v1.0*
+*Reporte regenerado 2026-07-20 — HAW QA Suite v1.1 (base: auditoría 2026-06-04 sobre v2.2.0)*

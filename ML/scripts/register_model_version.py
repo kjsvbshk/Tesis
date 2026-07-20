@@ -1,5 +1,5 @@
 """
-Registra un modelo entrenado en la tabla sys.model_versions del Backend.
+Registra un modelo entrenado en la tabla app.model_versions del Backend.
 
 Permite al Backend saber qué modelo cargar mediante la columna is_active.
 Solo puede haber una versión activa al mismo tiempo.
@@ -28,7 +28,7 @@ def register_model_version(
     description: str = None,
 ):
     """
-    Inserta o actualiza un registro en sys.model_versions.
+    Inserta o actualiza un registro en app.model_versions.
 
     Si activate=True, desactiva todas las versiones anteriores y activa la nueva.
 
@@ -56,19 +56,19 @@ def register_model_version(
 
     # Conectar a Neon
     database_url = db_config.get_database_url()
-    sys_schema = db_config.get_schema("sys")
+    app_schema = db_config.get_schema("app")  # model_versions vive en el schema "app" (no existe "sys")
     engine = create_engine(database_url, pool_pre_ping=True, echo=False)
 
     with engine.begin() as conn:
         # Verificar si ya existe
         existing = conn.execute(text(
-            f"SELECT id FROM {sys_schema}.model_versions WHERE version = :version"
+            f"SELECT id FROM {app_schema}.model_versions WHERE version = :version"
         ), {"version": version}).fetchone()
 
         if existing:
             # Actualizar registro existente
             conn.execute(text(f"""
-                UPDATE {sys_schema}.model_versions
+                UPDATE {app_schema}.model_versions
                 SET description = :description,
                     model_metadata = :metadata,
                     updated_at = :updated_at
@@ -83,7 +83,7 @@ def register_model_version(
         else:
             # Insertar nueva versión
             conn.execute(text(f"""
-                INSERT INTO {sys_schema}.model_versions
+                INSERT INTO {app_schema}.model_versions
                     (version, description, model_metadata, is_active, created_at)
                 VALUES
                     (:version, :description, :metadata, :is_active, :created_at)
@@ -100,11 +100,11 @@ def register_model_version(
         if activate:
             # Desactivar todas las versiones actuales
             conn.execute(text(
-                f"UPDATE {sys_schema}.model_versions SET is_active = FALSE"
+                f"UPDATE {app_schema}.model_versions SET is_active = FALSE"
             ))
             # Activar la nueva
             conn.execute(text(
-                f"UPDATE {sys_schema}.model_versions SET is_active = TRUE WHERE version = :version"
+                f"UPDATE {app_schema}.model_versions SET is_active = TRUE WHERE version = :version"
             ), {"version": version})
             print(f"Versión activada: {version}")
             print("Todas las demás versiones han sido desactivadas.")
@@ -117,13 +117,13 @@ def register_model_version(
 def activate_version(version: str):
     """Activa una versión ya registrada."""
     database_url = db_config.get_database_url()
-    sys_schema = db_config.get_schema("sys")
+    app_schema = db_config.get_schema("app")  # model_versions vive en el schema "app" (no existe "sys")
     engine = create_engine(database_url, pool_pre_ping=True, echo=False)
 
     with engine.begin() as conn:
         # Verificar que existe
         existing = conn.execute(text(
-            f"SELECT id FROM {sys_schema}.model_versions WHERE version = :version"
+            f"SELECT id FROM {app_schema}.model_versions WHERE version = :version"
         ), {"version": version}).fetchone()
 
         if not existing:
@@ -132,10 +132,10 @@ def activate_version(version: str):
             sys.exit(1)
 
         conn.execute(text(
-            f"UPDATE {sys_schema}.model_versions SET is_active = FALSE"
+            f"UPDATE {app_schema}.model_versions SET is_active = FALSE"
         ))
         conn.execute(text(
-            f"UPDATE {sys_schema}.model_versions SET is_active = TRUE WHERE version = :version"
+            f"UPDATE {app_schema}.model_versions SET is_active = TRUE WHERE version = :version"
         ), {"version": version})
 
     print(f"Versión {version} activada exitosamente.")
@@ -144,12 +144,12 @@ def activate_version(version: str):
 def list_versions():
     """Lista todas las versiones registradas."""
     database_url = db_config.get_database_url()
-    sys_schema = db_config.get_schema("sys")
+    app_schema = db_config.get_schema("app")  # model_versions vive en el schema "app" (no existe "sys")
     engine = create_engine(database_url, pool_pre_ping=True, echo=False)
 
     with engine.connect() as conn:
         rows = conn.execute(text(
-            f"SELECT version, is_active, description, created_at FROM {sys_schema}.model_versions ORDER BY created_at DESC"
+            f"SELECT version, is_active, description, created_at FROM {app_schema}.model_versions ORDER BY created_at DESC"
         )).fetchall()
 
     if not rows:

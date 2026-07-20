@@ -30,7 +30,7 @@ ML/
 │   │   ├── build_features.py        # FASE 2: Feature engineering completo
 │   │   └── validate_data_quality.py # FASE 3: Validación de calidad del dataset
 │   ├── models/
-│   │   ├── ensemble.py              # NBAEnsemble v2.1.0 (RF + XGBoost + Poisson → meta-modelo)
+│   │   ├── ensemble.py              # NBAEnsemble v3.1.0 (RF + XGB + Poisson → meta-modelo 4D + props)
 │   │   ├── random_forest.py         # NBARandomForest (clasificación calibrada)
 │   │   ├── xgboost_model.py         # NBAXGBoost (regresión dual de scores)
 │   │   ├── poisson_model.py         # NBABivariatePoisson (Karlis & Ntzoufras 2003)  ← v2.1.0
@@ -46,7 +46,7 @@ ML/
 │   ├── init_ml_schema.py            # Crear schema ml en Neon
 │   ├── create_ml_ready_games.py     # FASE 1: Crear y poblar ml_ready_games
 │   ├── export_model.py              # Exportar modelo a Backend/ml/models/
-│   ├── register_model_version.py    # Registrar versión en sys.model_versions
+│   ├── register_model_version.py    # Registrar versión en app.model_versions
 │   ├── deploy_model.py              # Deploy automatizado (export + register + activate)
 │   ├── compare_models.py            # Comparar métricas entre versiones
 │   ├── backtesting.py               # Simulación de apuestas históricas
@@ -55,18 +55,19 @@ ML/
 │   └── plot_backtesting.py          # Generar gráficas de backtesting
 │
 ├── docs/
-│   ├── features.md                  # Descripción detallada de las 33 features (v2.0.0)
+│   ├── features.md                  # Descripción detallada de las features (52 en v3.1.0)
 │   ├── evaluation.md                # Métricas, criterios de aceptación, resultados
 │   ├── limitations.md               # Limitaciones conocidas del modelo
 │   ├── pipeline.md                  # Descripción del pipeline completo
 │   ├── poisson_model.md             # Modelo Bivariate Poisson (v2.1.0)
-│   └── roadmap.md                   # Hoja de ruta: Niveles 1-4 de predicción
+│   ├── model_specification.md       # Especificación formal del modelo
+│   └── v2_1_0_release_notes.md      # Notas históricas de calibración v2.1.x
 │
 ├── models/
 │   ├── nba_prediction_model_v*.joblib   # Modelos entrenados
 │   └── metadata/                        # Métricas y metadatos por versión (JSON)
-│       ├── v1.0.0_metadata.json ... v1.6.0_metadata.json
-│       └── v2.0.0_metadata.json
+│       ├── v1.0.0_metadata.json ... v3.1.0_metadata.json
+│       └── (una por versión entrenada)
 │
 └── reports/
     ├── backtesting_results*.json        # Resultados de backtesting por versión
@@ -148,32 +149,34 @@ python src/etl/validate_data_quality.py
 
 ### Fase 4 — Entrenamiento de Modelos ✅ COMPLETADA
 
-#### Arquitectura del Ensamble (v2.1.0)
+#### Arquitectura del Ensamble (v2.1.2+, vigente en v3.1.0)
 
 | Componente | Clase | Tipo | Output |
 |-----------|-------|------|--------|
 | `NBARandomForest` | `src/models/random_forest.py` | Clasificación calibrada | P(home_win) |
 | `NBAXGBoost` | `src/models/xgboost_model.py` | Regresión dual | (home_score, away_score) |
-| `NBABivariatePoisson` | `src/models/poisson_model.py` | Modelo de conteo bivariante | P(home_win), λ₁, λ₂, λ₃ |
-| `NBAEnsemble` | `src/models/ensemble.py` | Stacking 3 base-learners → LogReg + Isotonic | P(home_win) calibrado |
+| `NBABivariatePoisson` | `src/models/poisson_model.py` | Modelo de conteo bivariante | μ_diff, σ_diff, λ₁, λ₂, λ₃ |
+| `NBAEnsemble` | `src/models/ensemble.py` | Stacking OOF temporal → StandardScaler+LogReg + Isotonic | P(home_win) calibrado |
 | `NBAMarginModel` | `src/models/margin_model.py` | Regresión | Margen esperado (pts) |
 | `NBATotalModel` | `src/models/total_model.py` | Regresión | Total puntos esperados |
+| `NBAStatRegressor` ×10 | `src/models/stat_regressor.py` | Regresión (team-props v2.2.0+) | reb/ast/stl/blk/to por equipo |
 
-El meta-vector del ensemble en v2.1.0 es 3-dimensional: `[rf_proba, score_diff, poisson_proba]`.
+El meta-vector del ensemble desde v2.1.2 es 4-dimensional: `[rf_proba, score_diff, poisson_mu_diff, poisson_sigma_diff]`. El Poisson NO aporta probabilidad al meta-learner (corrección del overconfidence ECE=0.084 de v2.1.0).
 
 #### Versiones de Modelos
 
 | Versión | Features | Base learners | Estado | Log Loss | Brier | ROC-AUC | ECE | Aprobado |
 |---------|----------|---------------|--------|----------|-------|---------|-----|---------|
-| v1.6.0 | 21 | RF + XGBoost | Producción anterior | 0.6553 | 0.2312 | 0.6542 | 0.0363 | ✅ Todos |
-| v2.0.0 | 33 | RF + XGBoost | No integrado | 0.6855 | 0.2430 | 0.6462 | 0.0925 | ❌ Parcial |
-| **v2.1.0** | **33** | **RF + XGBoost + Bivariate Poisson** | **Pendiente entrenamiento contra Neon** | — | — | — | — | — |
+| v1.6.0 | 21 | RF + XGBoost | Histórica | 0.6553 | 0.2312 | 0.6542 | 0.0363 | ✅ Todos |
+| v2.2.0 | 35 | RF + XGB + Poisson (+props) | Histórica | 0.6145 | 0.2130 | 0.7124 | 0.0106 | ✅ Todos |
+| v3.0.0 | 47 | RF + XGB + Poisson (+props) | Histórica | 0.6127 | 0.2123 | 0.7188 | 0.0353 | ✅ Todos |
+| **v3.1.0** | **52** | **RF + XGB + Poisson (+props)** | **ACTIVA en producción** | **0.6174** | **0.2146** | **0.7096** | **0.0245** | ✅ Todos |
 
-**v1.6.0** sigue siendo el modelo activo hasta que v2.1.0 sea entrenado en producción y supere los criterios de aceptación.
+**v3.1.0** añade sobre v3.0.0: porcentajes de tiro rolling last-5 (`fg_pct_rolling_diff`, `fg3_pct_rolling_diff`, `ft_pct_rolling_diff`, doc §2.3.1) y probabilidades implícitas del mercado (`implied_prob_home/away`, doc §2.3.4, activadas por defecto; cobertura actual ~1.3%, pre-imputadas con mediana).
 
-**v2.1.0** introduce el modelo Bivariate Poisson (Karlis & Ntzoufras, 2003) como tercer base-learner. Detalles en `docs/poisson_model.md`.
+Detalles del Poisson (Karlis & Ntzoufras, 2003) en `docs/poisson_model.md`.
 
-#### Tests automatizados (v2.1.0)
+#### Tests automatizados
 
 ```bash
 cd ML
@@ -243,29 +246,40 @@ python src/etl/validate_data_quality.py
 ### Entrenar modelo
 
 ```bash
-# Ensemble v2.1.0 (default — RF + XGBoost + Bivariate Poisson)
-python -m src.training.train --version v2.1.0 --model ensemble
+# Ensemble v3.1.0 (default — 52 features: V3 + shooting rolling + implied_prob)
+python -m src.training.train
+
+# Equivalente explícito
+python -m src.training.train --version v3.1.0 --model ensemble
+
+# Desactivar bloques de features (flags booleanos, activados por defecto)
+python -m src.training.train --no-use-odds   # sin implied_prob_* (50 features)
+python -m src.training.train --no-use-v3     # sin V3/V3.1 (35 features)
 
 # Modelos aislados (para benchmarking)
-python -m src.training.train --version v2.1.0-rf      --model rf
-python -m src.training.train --version v2.1.0-xgb     --model xgb
-python -m src.training.train --version v2.1.0-poisson --model poisson
+python -m src.training.train --version v3.1.0-rf      --model rf
+python -m src.training.train --version v3.1.0-xgb     --model xgb
+python -m src.training.train --version v3.1.0-poisson --model poisson
 ```
 
 ```python
 from src.training.train import train_model
-model, metrics, path = train_model(version="v2.1.0", model_type="ensemble")
+model, metrics, path = train_model(version="v3.1.0", model_type="ensemble")
 ```
 
 ### Exportar y registrar versión
 
 ```bash
-# Export + registro + activación en un paso
-python scripts/deploy_model.py --version v1.6.0 --activate
+# Deploy completo: copia + registro en app.model_versions + activación
+python -m scripts.deploy_model --version v3.1.0 --activate
 
 # O paso a paso:
-python scripts/export_model.py --version v1.6.0
-python scripts/register_model_version.py --version v1.6.0 --activate
+python scripts/export_model.py --version v3.1.0
+python scripts/register_model_version.py --version v3.1.0 --activate
+
+# Nota: si Backend/.env define MODEL_DIR=../ML/models (desarrollo local),
+# el deploy omite la copia (origen == destino) y solo registra/activa.
+# Tras activar, reiniciar el Backend (el modelo se carga en startup).
 ```
 
 ### Evaluar y comparar modelos
@@ -296,7 +310,7 @@ El Backend carga el modelo desde:
 Backend/ml/models/nba_prediction_model_{version}.joblib
 ```
 
-La versión activa se determina consultando `sys.model_versions WHERE is_active = TRUE`.
+La versión activa se determina consultando `app.model_versions WHERE is_active = TRUE`.
 
 Para desplegar una nueva versión:
 1. Entrenar modelo → `ML/models/nba_prediction_model_vX.X.X.joblib`
@@ -309,11 +323,13 @@ Para desplegar una nueva versión:
 
 | Documento | Contenido |
 |-----------|-----------|
-| `docs/features.md` | Descripción detallada de las 33 features de v2.0.0 |
+| `docs/features.md` | Descripción detallada de las features (52 en v3.1.0) |
 | `docs/evaluation.md` | Métricas, criterios de aceptación, resultados por versión |
 | `docs/limitations.md` | Limitaciones conocidas y advertencias |
 | `docs/pipeline.md` | Pipeline completo de datos y entrenamiento |
-| `docs/roadmap.md` | Hoja de ruta: Niveles 1-4 (moneyline → props de jugador) |
+| `docs/model_specification.md` | Especificación formal del modelo y umbrales |
+| `docs/poisson_model.md` | Modelo Bivariate Poisson (Karlis & Ntzoufras) |
+| `docs/v2_1_0_release_notes.md` | Notas históricas: corrección de calibración v2.1.x |
 
 ---
 

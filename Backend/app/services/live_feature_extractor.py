@@ -63,6 +63,10 @@ class LiveFeatureExtractor:
         self._injuries_cache: Dict[str, int] = {}
         self._h2h_cache: Dict[tuple, float] = {}
         self._implied_cache: Dict[tuple, tuple] = {}
+        # Columnas V3.1 (shooting rolling): pueden no existir si el ETL
+        # build_features.py aún no se ha ejecutado tras la actualización.
+        # None = desconocido; False = fallback a query legacy (sin V3.1).
+        self._v31_cols_available: Optional[bool] = None
 
     # ------------------------------------------------------------------
     # API pública
@@ -193,6 +197,12 @@ class LiveFeatureExtractor:
         if cache_key in self._team_latest_cache:
             return self._team_latest_cache[cache_key]
 
+        # Columnas V3.1 (solo si existen en la DB; ver fallback más abajo)
+        v31_select = """,
+                CASE WHEN home_team = :team THEN home_fg_pct_rolling  ELSE away_fg_pct_rolling  END AS fg_pct_rolling,
+                CASE WHEN home_team = :team THEN home_3p_pct_rolling  ELSE away_3p_pct_rolling  END AS fg3_pct_rolling,
+                CASE WHEN home_team = :team THEN home_ft_pct_rolling  ELSE away_ft_pct_rolling  END AS ft_pct_rolling"""
+
         query = text(f"""
             SELECT
                 fecha,
@@ -217,7 +227,7 @@ class LiveFeatureExtractor:
                 CASE WHEN home_team = :team THEN home_rest_days      ELSE away_rest_days      END AS last_rest_days,
                 CASE WHEN home_team = :team THEN home_avg_margin_rolling ELSE away_avg_margin_rolling END AS avg_margin_rolling,
                 CASE WHEN home_team = :team THEN home_player_top3_pts ELSE away_player_top3_pts END AS player_top3_pts,
-                CASE WHEN home_team = :team THEN home_player_top3_eff ELSE away_player_top3_eff END AS player_top3_eff
+                CASE WHEN home_team = :team THEN home_player_top3_eff ELSE away_player_top3_eff END AS player_top3_eff{v31_select if self._v31_cols_available is not False else ''}
             FROM {self.ML_SCHEMA}.ml_ready_games
             WHERE (home_team = :team OR away_team = :team)
               AND home_win IS NOT NULL
@@ -226,7 +236,19 @@ class LiveFeatureExtractor:
             ORDER BY fecha DESC
             LIMIT 1
         """)
-        row = self.db.execute(query, {"team": team, "game_date": str(game_date)}).mappings().first()
+        params = {"team": team, "game_date": str(game_date)}
+        try:
+            row = self.db.execute(query, params).mappings().first()
+            if self._v31_cols_available is None:
+                self._v31_cols_available = True
+        except Exception:
+            # Columnas V3.1 inexistentes (ETL no ejecutado aún): rollback y
+            # reintentar con la query legacy. Las features V3.1 quedarán NaN
+            # y el SimpleImputer del modelo las imputará.
+            self.db.rollback()
+            self._v31_cols_available = False
+            legacy_query = text(str(query.text).replace(v31_select, ""))
+            row = self.db.execute(legacy_query, params).mappings().first()
         if row is None:
             self._team_latest_cache[cache_key] = None
             return None
@@ -434,6 +456,11 @@ class LiveFeatureExtractor:
         f["elo_diff"]              = g(home, "elo")    - g(away, "elo")
         f["streak_diff"]           = g(home, "streak") - g(away, "streak")
         f["home_away_split_diff"]  = g(home, "split_win_rate") - g(away, "split_win_rate")
+
+        # ── V3.1: shooting % rolling (doc §2.3.1) ─────────────────────
+        f["fg_pct_rolling_diff"]   = g(home, "fg_pct_rolling")  - g(away, "fg_pct_rolling")
+        f["fg3_pct_rolling_diff"]  = g(home, "fg3_pct_rolling") - g(away, "fg3_pct_rolling")
+        f["ft_pct_rolling_diff"]   = g(home, "ft_pct_rolling")  - g(away, "ft_pct_rolling")
 
         # ── Odds ──────────────────────────────────────────────────────
         f["implied_prob_home"] = float(imp_home) if imp_home is not None else np.nan

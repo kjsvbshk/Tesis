@@ -4,7 +4,7 @@ Deploy un modelo entrenado al Backend.
 Pasos:
   1. Verifica que el .joblib existe en ML/models/
   2. Copia el .joblib al directorio de modelos del Backend (MODEL_DIR en .env)
-  3. Registra la versión en sys.model_versions
+  3. Registra la versión en app.model_versions
   4. La activa opcionalmente (--activate)
 
 Uso:
@@ -69,12 +69,17 @@ def deploy_model(version: str, activate: bool, backend_dir: Path) -> None:
     backend_dir.mkdir(parents=True, exist_ok=True)
     dst = backend_dir / src.name
 
-    if dst.exists():
-        print(f"⚠️  ADVERTENCIA: {dst} ya existe — será sobreescrito.")
-
-    # 4. Copiar
-    shutil.copy2(src, dst)
-    print(f"✅ Copiado: {src} → {dst}")
+    # 4. Copiar (omitir si origen y destino son el mismo archivo — ocurre
+    # cuando Backend/.env define MODEL_DIR=../ML/models en desarrollo local:
+    # el backend lee los joblib directamente desde ML/models y no hay nada
+    # que copiar; en Windows copiar un archivo sobre sí mismo lanza WinError 32)
+    if dst.exists() and src.resolve() == dst.resolve():
+        print(f"ℹ️  Origen y destino son el mismo archivo ({src}); se omite la copia.")
+    else:
+        if dst.exists():
+            print(f"⚠️  ADVERTENCIA: {dst} ya existe — será sobreescrito.")
+        shutil.copy2(src, dst)
+        print(f"✅ Copiado: {src} → {dst}")
 
     # 5. Registrar en DB
     register_model_version(version=version, activate=activate)

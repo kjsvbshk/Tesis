@@ -587,7 +587,7 @@ class PredictionService:
         if self.model is None:
             raise ModelNotLoadedError(
                 "El servicio recibió una solicitud de predicción pero no hay "
-                "modelo cargado. Verificar sys.model_versions y MODEL_DIR."
+                "modelo cargado. Verificar app.model_versions y MODEL_DIR."
             )
 
         game_id = game.get("id") or game.get("game_id")

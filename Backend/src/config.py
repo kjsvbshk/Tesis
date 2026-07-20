@@ -57,7 +57,10 @@ class DatabaseConfig:
     
     # Esquemas en Neon
     ESPN_SCHEMA: str = os.getenv("NBA_DB_SCHEMA", "espn")  # Datos de NBA
-    APP_SCHEMA: str = os.getenv("DB_SCHEMA", "sys")  # Datos del sistema
+    # NOTA: el schema "sys" NO existe en la BD. Las tablas del sistema
+    # (model_versions, predictions, etc.) viven en "app" — igual que los
+    # modelos SQLAlchemy del Backend (__table_args__ schema='app').
+    APP_SCHEMA: str = os.getenv("DB_SCHEMA", "app")  # Datos del sistema
     ML_SCHEMA: str = os.getenv("ML_DB_SCHEMA", "ml")  # Esquema ML
     
     @classmethod

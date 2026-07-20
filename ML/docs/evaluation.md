@@ -1,5 +1,7 @@
 # Evaluación del Modelo — v1.6.0
 
+> **Nota (2026-07-20):** documento histórico de v1.6.0. Los resultados vigentes del modelo activo **v3.1.0** (LogLoss 0.6174, Brier 0.2146, AUC 0.7096, ECE 0.0245 — pasa todos los criterios) están en la tabla de versiones de `ML/README.md` y en `ML/models/metadata/v3.1.0_metadata.json`.
+
 ## Métricas primarias
 
 | Métrica | Valor | Umbral | Pasa | Qué mide |

@@ -69,9 +69,9 @@ El sistema usa **Neon PostgreSQL** (cloud) con tres schemas separados:
    Features: rolling stats, rest days, injury counts, implied probabilities
 
 3. ENTRENAMIENTO (por temporada)
-   ml.ml_ready_games → Ensemble (RF + XGBoost → Isotonic) + MarginModel + TotalModel
-   → nba_prediction_model_vX.X.X.joblib → Backend/ml/models/ + registro en sys.model_versions
-   Versión activa: v1.6.0 (pasa todos los criterios). v2.0.0 entrenada, pendiente integración.
+   ml.ml_ready_games → Ensemble (RF + XGB + Poisson → LogReg + Isotonic) + MarginModel + TotalModel + TeamProps
+   → nba_prediction_model_vX.X.X.joblib → Backend/ml/models/ + registro en app.model_versions
+   Versión activa: v3.1.0 — 52 features (incluye FG%/3P%/FT% rolling e implied_prob). Pasa todos los criterios.
 
 4. PREDICCIÓN EN TIEMPO REAL
    Usuario → Frontend → Backend → carga modelo .joblib → predict() → PredictionResponse
@@ -146,7 +146,8 @@ python src/etl/build_features.py
 python src/etl/validate_data_quality.py
 
 # Entrenar modelo y exportar a Backend/ml/models/
-# python scripts/deploy_model.py --version v1.6.0 --activate
+python -m src.training.train                                # entrena v3.1.0 (default)
+python -m scripts.deploy_model --version v3.1.0 --activate  # registra y activa
 ```
 
 ### 4. Backend — iniciar API

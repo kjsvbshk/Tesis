@@ -316,13 +316,15 @@ async def global_exception_handler(request, exc):
     logger = logging.getLogger("nba_bets_api")
     logger.setLevel(logging.ERROR)
     
-    # Log error with context
+    # Log error with context (saneado: los ValidationError de Pydantic
+    # incluyen input_value con datos sensibles del payload, ej. contraseñas)
+    from app.core.security import scrub_sensitive_text
     error_context = {
         "path": str(request.url.path),
         "method": request.method,
         "error_type": type(exc).__name__,
-        "error_message": str(exc),
-        "traceback": traceback.format_exc()
+        "error_message": scrub_sensitive_text(str(exc)),
+        "traceback": scrub_sensitive_text(traceback.format_exc())
     }
     
     # Log to console (in production, this would go to a log aggregation service)

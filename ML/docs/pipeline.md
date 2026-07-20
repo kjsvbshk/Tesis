@@ -48,9 +48,13 @@ El pipeline está diseñado para **prevenir data leakage** en cada etapa: las fe
 
 **Script**: `ML/src/etl/build_features.py`
 
-**21 features** organizadas en:
-- **11 diferenciales**: `home_value - away_value` (ppg, ratings, rest days, injuries, pace, reb, ast, tov, win rate)
-- **10 individuales**: valores absolutos (ppg, rest days, b2b, injuries, win rate) por equipo
+**52 features** (v3.1.0) organizadas en:
+- **21 diferenciales**: `home_value - away_value` (ppg, ratings, rest days, injuries, pace, reb, ast, tov, win rate, eFG%, TOV rate, OReb%, DReb%, Elo, streak, H/A split, FG%/3P%/FT% rolling)
+- **15 individuales**: valores absolutos (ppg, rest days, b2b, injuries, win rate, Elo, streak, H2H) por equipo
+- **14 V3**: rest flags, player top-3 (pts/eff), margen rolling, strength_composite
+- **2 de mercado**: `implied_prob_home/away` (sin vig, pre-imputadas por baja cobertura)
+
+Detalle completo en `docs/features.md`.
 
 **Prevención de data leakage**:
 ```python
@@ -139,8 +143,8 @@ La calibración es crucial para apuestas: las probabilidades predichas deben ref
 
 **Rutas**:
 ```
-ML/models/nba_prediction_model_v1.6.0.joblib  → modelo
-ML/models/metadata/v1.6.0_metadata.json        → métricas + features
+ML/models/nba_prediction_model_v3.1.0.joblib  → modelo
+ML/models/metadata/v3.1.0_metadata.json        → métricas + features
 ```
 
 **Metadata incluye**: versión, tipo de modelo, lista de features, timestamp, todas las métricas de evaluación.
@@ -159,8 +163,8 @@ ML/models/metadata/v1.6.0_metadata.json        → métricas + features
 
 ## 9. Monitoreo y versionado
 
-- **11 versiones** entrenadas (v1.0.0 → v1.6.0) con mejoras incrementales
-- Registro en `sys.model_versions` (solo una versión activa a la vez)
+- **15+ versiones** entrenadas (v1.0.0 → v3.1.0) con mejoras incrementales
+- Registro en `app.model_versions` (solo una versión activa a la vez)
 - `ML/scripts/compare_models.py`: compara métricas entre versiones
 - `ML/scripts/register_model_version.py`: activa/desactiva versiones en producción
-- **Versión oficial**: v1.6.0 (congelada como baseline de tesis)
+- **Versión activa**: v3.1.0 (52 features; v1.6.0 se conserva como baseline histórico)

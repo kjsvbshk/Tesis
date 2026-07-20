@@ -43,7 +43,7 @@ comunidades.
 | redis | — | MIT | Redis Labs |
 | rq | — | BSD-2-Clause | Selwin Ong |
 | sendgrid | — | MIT | Twilio / SendGrid |
-| bcrypt | — | Apache-2.0 | OpenBSD Contributors |
+| argon2-cffi | — | MIT | Hynek Schlawack & Contributors |
 | APScheduler | — | MIT | Alex Grönholm |
 
 ### ML (Python)

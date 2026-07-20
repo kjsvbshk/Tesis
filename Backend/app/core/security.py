@@ -4,6 +4,7 @@ Security utilities for sanitizing sensitive data in logs
 
 from typing import Dict, List, Any, Optional
 import copy
+import re
 
 
 # Default list of sensitive fields that should never be logged
@@ -25,6 +26,38 @@ SENSITIVE_FIELDS = [
     'authorization',
     'auth_token',
 ]
+
+
+# Patrones para enmascarar secretos dentro de TEXTO libre (tracebacks,
+# mensajes de excepción). Cubre:
+#   - Pydantic v2 ValidationError: "... input_value='micontraseña' ..."
+#   - Representaciones dict/JSON: "'password': 'micontraseña'" / "password=abc"
+_SENSITIVE_TEXT_PATTERNS = [
+    re.compile(r"(input_value=)'[^']*'"),
+    re.compile(r'(input_value=)"[^"]*"'),
+    re.compile(
+        r"(['\"]?(?:password|current_password|new_password|confirm_password|"
+        r"hashed_password|two_factor_code|access_token|refresh_token|token|"
+        r"secret|api_key|secret_key)['\"]?\s*[:=]\s*)['\"][^'\"]*['\"]",
+        re.IGNORECASE,
+    ),
+]
+
+
+def scrub_sensitive_text(text: str) -> str:
+    """Enmascara valores sensibles dentro de texto libre (tracebacks,
+    mensajes de excepción) antes de escribirlos en logs.
+
+    Complementa a sanitize_for_logging (que opera sobre dicts): las
+    excepciones de validación de Pydantic v2 incluyen el valor de entrada
+    (input_value='...'), por lo que un traceback de un endpoint de
+    autenticación puede contener la contraseña en texto plano.
+    """
+    if not isinstance(text, str):
+        return text
+    for pattern in _SENSITIVE_TEXT_PATTERNS:
+        text = pattern.sub(r"\1'***REDACTED***'", text)
+    return text
 
 
 def sanitize_for_logging(data: Dict[str, Any], exclude: Optional[List[str]] = None) -> Dict[str, Any]:

@@ -116,6 +116,15 @@ V3_EXTRA_FEATURES: List[str] = (
     V3_REST_FLAGS + V3_PLAYER_INDIVIDUAL + V3_DIFF_FEATURES
 )  # 14 nuevas features
 
+# ── V3.1 extra features ───────────────────────────────────────────────────────
+# Porcentajes de tiro rolling last-5 (doc §2.3.1: FG%, 3P%, FT%).
+# Calculados en build_features.py con shift(1) — sin leakage.
+V3_1_SHOOTING_DIFFS: List[str] = [
+    "fg_pct_rolling_diff",
+    "fg3_pct_rolling_diff",
+    "ft_pct_rolling_diff",
+]
+
 # Orden exacto que produce train.py: DIFF_FEATURES + INDIVIDUAL_FEATURES [+ extras]
 V1_FEATURES: List[str] = V1_DIFF_FEATURES + V1_INDIVIDUAL_FEATURES                    # 21
 
@@ -132,18 +141,28 @@ V3_FEATURES: List[str] = V2_FEATURES + V3_EXTRA_FEATURES   # 33 + 14 = 47
 
 V3_ODDS_FEATURES: List[str] = V3_FEATURES + ODDS_FEATURES  # 47 + 2 = 49
 
-assert len(V1_FEATURES)      == 21, f"V1 debe tener 21 features, tiene {len(V1_FEATURES)}"
-assert len(V2_FEATURES)      == 33, f"V2 debe tener 33 features, tiene {len(V2_FEATURES)}"
-assert len(V2_ODDS_FEATURES) == 35, f"V2+odds debe tener 35 features, tiene {len(V2_ODDS_FEATURES)}"
-assert len(V3_FEATURES)      == 47, f"V3 debe tener 47 features, tiene {len(V3_FEATURES)}"
-assert len(V3_ODDS_FEATURES) == 49, f"V3+odds debe tener 49 features, tiene {len(V3_ODDS_FEATURES)}"
+# v3.1: train.py construye DIFF + INDIVIDUAL + (V3 + V3.1 shooting) + ODDS.
+# Orden idéntico al de build_feature_matrix con use_v3=True, use_odds=True.
+V3_1_FEATURES: List[str] = V3_FEATURES + V3_1_SHOOTING_DIFFS       # 47 + 3 = 50
+
+V3_1_ODDS_FEATURES: List[str] = V3_1_FEATURES + ODDS_FEATURES      # 50 + 2 = 52
+
+assert len(V1_FEATURES)       == 21, f"V1 debe tener 21 features, tiene {len(V1_FEATURES)}"
+assert len(V2_FEATURES)       == 33, f"V2 debe tener 33 features, tiene {len(V2_FEATURES)}"
+assert len(V2_ODDS_FEATURES)  == 35, f"V2+odds debe tener 35 features, tiene {len(V2_ODDS_FEATURES)}"
+assert len(V3_FEATURES)       == 47, f"V3 debe tener 47 features, tiene {len(V3_FEATURES)}"
+assert len(V3_ODDS_FEATURES)  == 49, f"V3+odds debe tener 49 features, tiene {len(V3_ODDS_FEATURES)}"
+assert len(V3_1_FEATURES)     == 50, f"V3.1 debe tener 50 features, tiene {len(V3_1_FEATURES)}"
+assert len(V3_1_ODDS_FEATURES) == 52, f"V3.1+odds debe tener 52 features, tiene {len(V3_1_ODDS_FEATURES)}"
 
 FEATURE_SETS: Dict[str, List[str]] = {
-    "v1":      V1_FEATURES,
-    "v2":      V2_FEATURES,
-    "v2_odds": V2_ODDS_FEATURES,   # modelo entrenado con --use-odds
-    "v3":      V3_FEATURES,        # + rest flags + player star
-    "v3_odds": V3_ODDS_FEATURES,   # v3 + implied probs
+    "v1":        V1_FEATURES,
+    "v2":        V2_FEATURES,
+    "v2_odds":   V2_ODDS_FEATURES,    # modelo entrenado con --use-odds
+    "v3":        V3_FEATURES,         # + rest flags + player star
+    "v3_odds":   V3_ODDS_FEATURES,    # v3 + implied probs
+    "v3_1":      V3_1_FEATURES,       # v3 + shooting rolling (FG%/3P%/FT%)
+    "v3_1_odds": V3_1_ODDS_FEATURES,  # v3.1 + implied probs (default v3.1.0)
 }
 
 
@@ -266,7 +285,7 @@ class FeatureExtractor:
 
     def get_features_summary(self, game_id: int, feature_set: str = "v2") -> Dict[str, Any]:
         """Devuelve el dict completo de features que se pasaron al modelo,
-        listo para persistir en sys.predictions.features (auditoría)."""
+        listo para persistir en app.predictions.features (auditoría)."""
         features = self.get_features_for_game(game_id)
         columns = FEATURE_SETS[feature_set]
         used = {

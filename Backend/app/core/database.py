@@ -13,7 +13,10 @@ app_engine = create_engine(
     settings.DATABASE_URL,
     pool_pre_ping=True,
     pool_recycle=300,
-    echo=settings.DEBUG,
+    # SEGURIDAD: echo=True volcaba TODO el SQL con parámetros (usernames,
+    # hashes de contraseña, códigos 2FA) a la consola cuando DEBUG=True.
+    # El echo de SQLAlchemy nunca debe activarse vía DEBUG general.
+    echo=False,
     # No usar search_path en connect_args para Neon pooled connections
 )
 
@@ -22,7 +25,10 @@ espn_engine = create_engine(
     settings.NBA_DATABASE_URL,
     pool_pre_ping=True,
     pool_recycle=300,
-    echo=settings.DEBUG,
+    # SEGURIDAD: echo=True volcaba TODO el SQL con parámetros (usernames,
+    # hashes de contraseña, códigos 2FA) a la consola cuando DEBUG=True.
+    # El echo de SQLAlchemy nunca debe activarse vía DEBUG general.
+    echo=False,
     # No usar search_path en connect_args para Neon pooled connections
 )
 

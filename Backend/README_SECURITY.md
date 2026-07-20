@@ -243,8 +243,31 @@ RSA no resuelve el problema porque:
 2. Verifica que estás pasando el `request` object a los endpoints
 3. Revisa los logs para ver si hay errores en el tracking
 
+## 🛡️ Endurecimiento de logs y respuestas (2026-07)
+
+Correcciones aplicadas tras auditoría de fuga de credenciales en consola/logs:
+
+### 1. Códigos OTP fuera de las respuestas HTTP
+- `/users/forgot-password` y `/users/send-verification-code` **ya no devuelven** el código OTP ni el email en el body. Antes, cualquiera podía tomar una cuenta ajena leyendo el payload en la consola del navegador. El código viaja únicamente por email.
+
+### 2. Sin eco de SQL con parámetros
+- `app/core/database.py`: `echo=False` fijo (antes `echo=settings.DEBUG`). Con `DEBUG=True` se volcaba todo el SQL con parámetros (usernames, hashes, códigos 2FA) a la consola.
+
+### 3. Errores 500 genéricos + tracebacks saneados
+- Los handlers de login, registro, verificación, cambio/reset de contraseña y gestión de usuarios ya no devuelven `str(e)` al cliente. Los errores de validación de Pydantic v2 incluyen `input_value='<contraseña>'` en texto plano.
+- Nuevo `scrub_sensitive_text()` en `app/core/security.py`: enmascara `input_value=...`, `password`, `token`, `secret`, etc. en tracebacks antes de escribirlos en logs. Aplicado también al handler global de excepciones de `main.py`.
+
+### 4. OTP nunca en logs con provider mal configurado
+- `email_service.py`: el código solo se imprime en consola con `EMAIL_PROVIDER=console` explícito (desarrollo). Con provider mal configurado se registra el aviso SIN el código.
+
+### 5. Hashing de contraseñas: Argon2
+- Las contraseñas se almacenan con **Argon2** (`passlib[argon2]` + `argon2-cffi`), KDF recomendada por NIST SP 800-63B, con salt automático. (Nota: documentación previa mencionaba bcrypt por error.)
+
+**Cómo verificar:** hacer login con credenciales inválidas o payload malformado y revisar (a) la respuesta HTTP: mensaje genérico sin datos internos; (b) la consola del backend: sin contraseñas, sin SQL con parámetros, tracebacks con `'***REDACTED***'`.
+
 ## 📚 Referencias
 
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
 - [Mozilla Security Guidelines](https://infosec.mozilla.org/guidelines/web_security)
 - [FastAPI Security Best Practices](https://fastapi.tiangolo.com/tutorial/security/)
+- [NIST SP 800-63B — Digital Identity Guidelines](https://pages.nist.gov/800-63-3/sp800-63b.html)

@@ -107,7 +107,18 @@ V3_EXTRA_FEATURES = [
     "strength_composite",
 ]
 
-# Features de odds (baja cobertura ~1%, se excluyen por defecto)
+# Features V3.1: porcentajes de tiro rolling (doc §2.3.1 — FG%, 3P%, FT%)
+# Versiones rolling last-5 con shift(1) calculadas en build_features.py (sin leakage).
+V3_1_SHOOTING_FEATURES = [
+    "fg_pct_rolling_diff",
+    "fg3_pct_rolling_diff",
+    "ft_pct_rolling_diff",
+]
+
+# Features de odds (doc §2.3.4 — probabilidades implícitas del mercado).
+# Baja cobertura (~1.4%): las filas sin cuotas se pre-imputan con la mediana
+# del training set (ver pre-imputación en main()). Incluidas por defecto
+# desde v3.1.0 para que el modelo activo opere con señal de mercado.
 ODDS_FEATURES = [
     "implied_prob_home",
     "implied_prob_away",
@@ -137,21 +148,24 @@ def load_ml_ready_games() -> pd.DataFrame:
     return df
 
 
-def build_feature_matrix(df: pd.DataFrame, use_odds: bool = False, use_v3: bool = False) -> tuple:
+def build_feature_matrix(df: pd.DataFrame, use_odds: bool = True, use_v3: bool = True) -> tuple:
     """
     Construye X (features) e y (target) desde el DataFrame.
 
     Args:
         df:       DataFrame con ml_ready_games
-        use_odds: incluir features de odds (baja cobertura)
+        use_odds: incluir features de odds (implied_prob_*, doc §2.3.4).
+                  Activado por defecto desde v3.1.0.
         use_v3:   incluir features V3 (rest flags + player star + strength_composite)
+                  y V3.1 (FG%/3P%/FT% rolling, doc §2.3.1).
+                  Activado por defecto desde v3.1.0.
 
     Returns:
         (X, y, feature_cols, df_clean)
     """
     feature_cols = DIFF_FEATURES + INDIVIDUAL_FEATURES
     if use_v3:
-        feature_cols += V3_EXTRA_FEATURES
+        feature_cols += V3_EXTRA_FEATURES + V3_1_SHOOTING_FEATURES
     if use_odds:
         feature_cols += ODDS_FEATURES
 
@@ -433,16 +447,17 @@ def save_model(model, version: str, metrics: dict, model_name: str, feature_cols
 # Función principal
 # ---------------------------------------------------------------------------
 
-def train_model(version: str = "v1.0.0", model_type: str = "ensemble",
-                use_odds: bool = False, use_v3: bool = False):
+def train_model(version: str = "v3.1.0", model_type: str = "ensemble",
+                use_odds: bool = True, use_v3: bool = True):
     """
     Ejecuta el pipeline completo de entrenamiento.
 
     Args:
-        version:    versión del modelo (ej: "v1.0.0")
+        version:    versión del modelo (ej: "v3.1.0")
         model_type: "rf" | "xgb" | "ensemble"
-        use_odds:   incluir features de odds (baja cobertura)
-        use_v3:     incluir features V3 (rest flags + player star + strength_composite)
+        use_odds:   incluir features de odds (implied_prob_*, default True desde v3.1.0)
+        use_v3:     incluir features V3 + V3.1 (rest flags + player star +
+                    strength_composite + FG%/3P%/FT% rolling, default True desde v3.1.0)
 
     Returns:
         (model, metrics, model_path)
@@ -529,12 +544,17 @@ def train_model(version: str = "v1.0.0", model_type: str = "ensemble",
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Entrenamiento del modelo NBA")
-    parser.add_argument("--version",    default="v2.2.0",
-                        help="Versión del modelo (ej: v2.2.0). Default v2.2.0 incluye Bivariate Poisson + team-props.")
+    parser.add_argument("--version",    default="v3.1.0",
+                        help="Versión del modelo (ej: v3.1.0). Default v3.1.0 incluye "
+                             "V3 + shooting rolling (FG%%/3P%%/FT%%) + implied_prob.")
     parser.add_argument("--model",      default="ensemble",
                         help="Tipo: rf | xgb | poisson | ensemble")
-    parser.add_argument("--use-odds",   action="store_true", help="Incluir features de odds")
-    parser.add_argument("--use-v3",    action="store_true", help="Incluir features V3 (rest flags + player star)")
+    parser.add_argument("--use-odds",   action=argparse.BooleanOptionalAction, default=True,
+                        help="Incluir features de odds (implied_prob_*). Default: activado. "
+                             "Usar --no-use-odds para desactivar.")
+    parser.add_argument("--use-v3",     action=argparse.BooleanOptionalAction, default=True,
+                        help="Incluir features V3 + V3.1 (rest flags + player star + shooting rolling). "
+                             "Default: activado. Usar --no-use-v3 para desactivar.")
     args = parser.parse_args()
 
     train_model(

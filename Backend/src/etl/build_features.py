@@ -510,6 +510,20 @@ def build_features():
                 lambda x: x.shift(1).rolling(window=5, min_periods=1).mean()
             )
 
+            # === FEATURES V3.1 (doc §2.3.1): FG% / 3P% / FT% rolling ===
+            # shift(1) garantiza que solo se usan partidos ANTERIORES (sin leakage).
+            # Las versiones sin rolling (fg_pct, fg3_pct, ft_pct) son del partido
+            # actual y NO deben usarse como inputs del modelo.
+            tt['fg_pct_last5'] = tt.groupby('team')['fg_pct'].transform(
+                lambda x: x.shift(1).rolling(window=5, min_periods=1).mean()
+            )
+            tt['fg3_pct_last5'] = tt.groupby('team')['fg3_pct'].transform(
+                lambda x: x.shift(1).rolling(window=5, min_periods=1).mean()
+            )
+            tt['ft_pct_last5'] = tt.groupby('team')['ft_pct'].transform(
+                lambda x: x.shift(1).rolling(window=5, min_periods=1).mean()
+            )
+
             # Streak: rachas consecutivas de victorias (+) o derrotas (-)
             def compute_streak(wins):
                 streak = []
@@ -603,6 +617,10 @@ def build_features():
             'tov_rate_last5': 'home_tov_rate_rolling',
             'oreb_pct_last5': 'home_oreb_pct_rolling',
             'dreb_pct_last5': 'home_dreb_pct_rolling',
+            # Features V3.1 (shooting % rolling, sin leakage)
+            'fg_pct_last5': 'home_fg_pct_rolling',
+            'fg3_pct_last5': 'home_3p_pct_rolling',
+            'ft_pct_last5': 'home_ft_pct_rolling',
             'elo': 'home_elo',
             'streak': 'home_streak',
             'home_win_rate_split': 'home_home_win_rate',
@@ -631,6 +649,10 @@ def build_features():
             'tov_rate_last5': 'away_tov_rate_rolling',
             'oreb_pct_last5': 'away_oreb_pct_rolling',
             'dreb_pct_last5': 'away_dreb_pct_rolling',
+            # Features V3.1 (shooting % rolling, sin leakage)
+            'fg_pct_last5': 'away_fg_pct_rolling',
+            'fg3_pct_last5': 'away_3p_pct_rolling',
+            'ft_pct_last5': 'away_ft_pct_rolling',
             'elo': 'away_elo',
             'streak': 'away_streak',
             'away_win_rate_split': 'away_away_win_rate',
@@ -774,6 +796,10 @@ def build_features():
         # Nuevos diferenciales v2
         ml['efg_pct_diff'] = ml['home_efg_pct_rolling'] - ml['away_efg_pct_rolling']
         ml['tov_rate_diff'] = ml['home_tov_rate_rolling'] - ml['away_tov_rate_rolling']
+        # Diferenciales V3.1 (shooting % rolling, doc §2.3.1)
+        ml['fg_pct_rolling_diff'] = ml['home_fg_pct_rolling'] - ml['away_fg_pct_rolling']
+        ml['fg3_pct_rolling_diff'] = ml['home_3p_pct_rolling'] - ml['away_3p_pct_rolling']
+        ml['ft_pct_rolling_diff'] = ml['home_ft_pct_rolling'] - ml['away_ft_pct_rolling']
         ml['oreb_pct_diff'] = ml['home_oreb_pct_rolling'] - ml['away_oreb_pct_rolling']
         ml['dreb_pct_diff'] = ml['home_dreb_pct_rolling'] - ml['away_dreb_pct_rolling']
         ml['elo_diff'] = ml['home_elo'] - ml['away_elo']
@@ -1039,6 +1065,11 @@ def build_features():
             'player_top3_pts_advantage',
             'player_top3_eff_advantage',
             'strength_composite',
+            # ── V3.1 features (shooting % rolling, doc §2.3.1) ───────────────
+            'home_fg_pct_rolling', 'away_fg_pct_rolling',
+            'home_3p_pct_rolling', 'away_3p_pct_rolling',
+            'home_ft_pct_rolling', 'away_ft_pct_rolling',
+            'fg_pct_rolling_diff', 'fg3_pct_rolling_diff', 'ft_pct_rolling_diff',
         ]
         
         # Ensure target columns are populated from the dataframe
@@ -1131,6 +1162,16 @@ def build_features():
             ("player_top3_pts_advantage",  "FLOAT"),
             ("player_top3_eff_advantage",  "FLOAT"),
             ("strength_composite",         "FLOAT"),
+            # V3.1 columns (shooting % rolling)
+            ("home_fg_pct_rolling",        "FLOAT"),
+            ("away_fg_pct_rolling",        "FLOAT"),
+            ("home_3p_pct_rolling",        "FLOAT"),
+            ("away_3p_pct_rolling",        "FLOAT"),
+            ("home_ft_pct_rolling",        "FLOAT"),
+            ("away_ft_pct_rolling",        "FLOAT"),
+            ("fg_pct_rolling_diff",        "FLOAT"),
+            ("fg3_pct_rolling_diff",       "FLOAT"),
+            ("ft_pct_rolling_diff",        "FLOAT"),
         ]
         with engine.begin() as conn:
             for col_name, col_type in new_columns_ddl:
@@ -1251,7 +1292,17 @@ def build_features():
                     avg_margin_diff            = t.avg_margin_diff,
                     player_top3_pts_advantage  = t.player_top3_pts_advantage,
                     player_top3_eff_advantage  = t.player_top3_eff_advantage,
-                    strength_composite         = t.strength_composite
+                    strength_composite         = t.strength_composite,
+
+                    home_fg_pct_rolling        = t.home_fg_pct_rolling,
+                    away_fg_pct_rolling        = t.away_fg_pct_rolling,
+                    home_3p_pct_rolling        = t.home_3p_pct_rolling,
+                    away_3p_pct_rolling        = t.away_3p_pct_rolling,
+                    home_ft_pct_rolling        = t.home_ft_pct_rolling,
+                    away_ft_pct_rolling        = t.away_ft_pct_rolling,
+                    fg_pct_rolling_diff        = t.fg_pct_rolling_diff,
+                    fg3_pct_rolling_diff       = t.fg3_pct_rolling_diff,
+                    ft_pct_rolling_diff        = t.ft_pct_rolling_diff
                 FROM {ml_schema}.ml_ready_games_temp t
                 WHERE m.game_id = t.game_id
             """)

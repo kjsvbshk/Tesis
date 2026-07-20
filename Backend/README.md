@@ -119,7 +119,7 @@ POST /api/v1/users/verify-email
   → Asignar créditos iniciales (transacción en app.transactions)
 
 POST /api/v1/users/login
-  → Verificar password (bcrypt)
+  → Verificar password (Argon2 vía passlib)
   → Verificar cuenta activa
   → Generar JWT (HS256, TTL configurable)
   → Retornar access_token
@@ -130,18 +130,18 @@ POST /api/v1/users/login
 ```
 GET /api/v1/predictions/game/{game_id}
   → Autenticar usuario (JWT)
-  → Crear Request en sys.requests (tracking)
+  → Crear Request en app.requests (tracking)
   → Consultar caché (TTL 5 min, stale 10 min)
   │
   ├─ [HIT] Retornar resultado cacheado
   │
   └─ [MISS] PredictionService.get_game_prediction()
        → Cargar datos del partido desde espn.games
-       → Cargar modelo .joblib activo desde sys.model_versions
+       → Cargar modelo .joblib activo desde app.model_versions
        → Construir vector de features
        → model.predict_proba() → probabilidades
-       → Crear snapshot de odds (sys.odds_snapshots)
-       → Publicar evento en outbox (sys.outbox)
+       → Crear snapshot de odds (app.odds_snapshots)
+       → Publicar evento en outbox (app.outbox)
        → Registrar en audit_log
        → Retornar PredictionResponse
 ```
@@ -350,13 +350,13 @@ El servicio `prediction_service.py` carga el modelo activo desde:
 Backend/ml/models/nba_prediction_model_{version}.joblib
 ```
 
-La versión activa se determina consultando la tabla `sys.model_versions` donde `is_active = True`. El flujo de actualización de un modelo es:
+La versión activa se determina consultando la tabla `app.model_versions` donde `is_active = True`. El flujo de actualización de un modelo es:
 
 1. Entrenar modelo en `ML/`
 2. Ejecutar `ML/scripts/deploy_model.py --version vX.X.X --activate` (copia + registra + activa)
 3. Reiniciar el Backend para que cargue el nuevo modelo
 
-**Versión activa en producción**: v1.6.0 (Ensemble RF+XGBoost, 21 features, pasa todos los criterios de aceptación).
+**Versión activa en producción**: v3.1.0 (Ensemble RF+XGB+Poisson, 52 features — incluye FG%/3P%/FT% rolling e implied_prob de mercado; pasa todos los criterios de aceptación).
 
 ### `PredictionResponse` — campos retornados
 

@@ -79,12 +79,19 @@ class EmailService:
             await EmailService._send_via_sendgrid(email, code, purpose, expires_at)
         elif settings.EMAIL_PROVIDER == "smtp":
             await EmailService._send_via_smtp(email, code, purpose, expires_at)
-        else:
-            # Console mode (development)
+        elif settings.EMAIL_PROVIDER == "console":
+            # Console mode (SOLO desarrollo, opt-in explícito con EMAIL_PROVIDER=console)
             print(f"📧 Verification code for {email} ({purpose}): {code}")
             print(f"   Expires at: {expires_at}")
-            if settings.EMAIL_PROVIDER != "console":
-                print(f"   ⚠️  Email provider '{settings.EMAIL_PROVIDER}' not configured, using console mode")
+        else:
+            # SEGURIDAD: provider mal configurado — NO imprimir el código OTP
+            # en logs (permite tomar cuentas vía password_reset a quien lea
+            # la consola). Solo avisar de la mala configuración.
+            print(
+                f"⚠️  Email provider '{settings.EMAIL_PROVIDER}' not configured. "
+                f"Verification code for {email} ({purpose}) was NOT delivered "
+                f"(code hidden from logs; set EMAIL_PROVIDER=console to print in dev)."
+            )
         
         return code
     

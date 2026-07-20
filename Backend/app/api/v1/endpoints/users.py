@@ -31,7 +31,7 @@ from app.services.email_service import EmailService
 from app.services.two_factor_service import TwoFactorService
 from app.services.session_service import SessionService
 from app.services.user_type_service import UserTypeService
-from app.core.security import sanitize_for_logging, safe_log_request
+from app.core.security import sanitize_for_logging, safe_log_request, scrub_sensitive_text
 from app.middleware.security_monitoring import security_monitoring
 import logging
 
@@ -222,15 +222,18 @@ async def login(
         }
     except HTTPException:
         raise
-    except Exception as e:
+    except Exception:
+        # SEGURIDAD: nunca devolver str(e) al cliente ni imprimir el traceback
+        # sin sanear — los errores de validación Pydantic incluyen input_value
+        # con la contraseña en texto plano.
         import traceback
-        error_detail = str(e)
-        traceback_str = traceback.format_exc()
-        print(f"Error in login endpoint: {error_detail}")
-        print(f"Traceback: {traceback_str}")
+        logger.error(
+            "Error in login endpoint:\n%s",
+            scrub_sensitive_text(traceback.format_exc())
+        )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Internal server error during login: {error_detail}"
+            detail="Internal server error during login"
         )
 
 @router.post("/send-verification-code")
@@ -257,16 +260,13 @@ async def send_verification_code(
         # If RQ is not available, use direct async method (avoid sync fallback issues)
         if not queue_service.is_available():
             # Use async method directly (no RQ, no sync fallback)
-            code = await email_service.send_verification_code(
+            await email_service.send_verification_code(
                 email=request.email,
                 purpose=request.purpose,
                 expires_minutes=15
             )
         else:
-            # Generate code first to return it (for development)
-            code = email_service.generate_verification_code()
-            
-            # Queue the email sending task
+            # Queue the email sending task (el task genera y cachea su propio código)
             job = queue_service.enqueue(
                 send_verification_email_task,
                 request.email,
@@ -274,13 +274,18 @@ async def send_verification_code(
                 15,  # expires_minutes
                 queue_name='high'  # High priority for verification emails
             )
-        
-        return {
-            "message": "Verification code sent to email",
-            "code": code  # Only in development - remove in production
-        }
+
+        # SEGURIDAD: el código OTP NUNCA debe viajar en la respuesta HTTP.
+        # Devolverlo permitía tomar cualquier cuenta vía password_reset leyendo
+        # el payload en la consola del navegador. El código llega solo por email.
+        return {"message": "Verification code sent to email"}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error sending verification code: {str(e)}")
+        import traceback
+        logger.error(
+            "Error sending verification code:\n%s",
+            scrub_sensitive_text(traceback.format_exc())
+        )
+        raise HTTPException(status_code=500, detail="Error sending verification code")
 
 @router.post("/verify-code")
 async def verify_code(
@@ -332,7 +337,12 @@ async def verify_code(
     except HTTPException:
         raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error verifying code: {str(e)}")
+        import traceback
+        logger.error(
+            "Error verifying code:\n%s",
+            scrub_sensitive_text(traceback.format_exc())
+        )
+        raise HTTPException(status_code=500, detail="Error verifying code")
 
 @router.post("/register", response_model=UserResponse)
 async def register_user(
@@ -416,13 +426,16 @@ async def register_user(
         return user_dict
     except HTTPException:
         raise
-    except Exception as e:
+    except Exception:
+        # SEGURIDAD: no exponer str(e) al cliente ni loguear el traceback sin
+        # sanear — los errores de validación Pydantic incluyen input_value con
+        # la contraseña en texto plano.
         import traceback
-        error_detail = str(e)
-        traceback_str = traceback.format_exc()
-        print(f"Error creating user: {error_detail}")
-        print(f"Traceback: {traceback_str}")
-        raise HTTPException(status_code=500, detail=f"Error creating user: {error_detail}")
+        logger.error(
+            "Error creating user (register):\n%s",
+            scrub_sensitive_text(traceback.format_exc())
+        )
+        raise HTTPException(status_code=500, detail="Error creating user")
 
 @router.post("/logout")
 async def logout(current_user: UserAccount = Depends(get_current_user)):
@@ -510,8 +523,15 @@ async def update_current_user(
             "date_of_birth": client.date_of_birth if client else None,
         }
         return user_dict
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error updating user: {str(e)}")
+    except Exception:
+        # SEGURIDAD: no exponer str(e) al cliente (puede contener datos del
+        # payload vía errores de validación).
+        import traceback
+        logger.error(
+            "Error updating profile (/me):\n%s",
+            scrub_sensitive_text(traceback.format_exc())
+        )
+        raise HTTPException(status_code=500, detail="Error updating user")
 
 @router.put("/me/password")
 async def change_password(
@@ -667,7 +687,12 @@ async def change_password(
     except HTTPException:
         raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error changing password: {str(e)}")
+        import traceback
+        logger.error(
+            "Error changing password:\n%s",
+            scrub_sensitive_text(traceback.format_exc())
+        )
+        raise HTTPException(status_code=500, detail="Error changing password")
 
 @router.post("/forgot-password")
 async def forgot_password(
@@ -700,7 +725,7 @@ async def forgot_password(
         
         # Always use async method directly to ensure email is sent
         # RQ can be unreliable in some environments, so we'll use direct async method
-        code = await email_service.send_verification_code(
+        await email_service.send_verification_code(
             email=email,
             purpose='password_reset',
             expires_minutes=15
@@ -723,15 +748,21 @@ async def forgot_password(
                 logger = logging.getLogger(__name__)
                 logger.warning(f"Failed to queue email task, but email was sent directly: {e}")
         
+        # SEGURIDAD: nunca devolver el código OTP ni el email asociado en la
+        # respuesta — permitía tomar cualquier cuenta leyendo el payload en la
+        # consola del navegador y revelaba el correo de cualquier username.
         return {
-            "message": "If the username exists, a verification code has been sent to the associated email",
-            "code": code,  # Only in development - remove in production
-            "email": email  # Only in development - remove in production
+            "message": "If the username exists, a verification code has been sent to the associated email"
         }
     except HTTPException:
         raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error processing password reset request: {str(e)}")
+    except Exception:
+        import traceback
+        logger.error(
+            "Error processing password reset request:\n%s",
+            scrub_sensitive_text(traceback.format_exc())
+        )
+        raise HTTPException(status_code=500, detail="Error processing password reset request")
 
 @router.post("/reset-password")
 async def reset_password(
@@ -785,7 +816,12 @@ async def reset_password(
     except HTTPException:
         raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error resetting password: {str(e)}")
+        import traceback
+        logger.error(
+            "Error resetting password:\n%s",
+            scrub_sensitive_text(traceback.format_exc())
+        )
+        raise HTTPException(status_code=500, detail="Error resetting password")
 
 @router.get("/me/permissions")
 async def get_my_permissions(
@@ -1016,13 +1052,15 @@ async def create_user_admin(
         return user_dict
     except HTTPException:
         raise
-    except Exception as e:
+    except Exception:
+        # SEGURIDAD: no exponer str(e) al cliente ni loguear el traceback sin
+        # sanear (input_value de Pydantic puede incluir la contraseña).
         import traceback
-        error_detail = str(e)
-        traceback_str = traceback.format_exc()
-        print(f"Error creating user: {error_detail}")
-        print(f"Traceback: {traceback_str}")
-        raise HTTPException(status_code=500, detail=f"Error creating user: {error_detail}")
+        logger.error(
+            "Error creating user (admin):\n%s",
+            scrub_sensitive_text(traceback.format_exc())
+        )
+        raise HTTPException(status_code=500, detail="Error creating user")
 
 @router.put("/{user_id}", response_model=UserResponse)
 async def update_user_admin(
@@ -1199,14 +1237,16 @@ async def update_user_admin(
         return user_dict
     except HTTPException:
         raise
-    except Exception as e:
+    except Exception:
         db.rollback()
+        # SEGURIDAD: no exponer str(e) al cliente ni loguear el traceback sin
+        # sanear (input_value de Pydantic puede incluir la contraseña).
         import traceback
-        error_detail = str(e)
-        traceback_str = traceback.format_exc()
-        print(f"Error updating user: {error_detail}")
-        print(f"Traceback: {traceback_str}")
-        raise HTTPException(status_code=500, detail=f"Error updating user: {error_detail}")
+        logger.error(
+            "Error updating user (admin):\n%s",
+            scrub_sensitive_text(traceback.format_exc())
+        )
+        raise HTTPException(status_code=500, detail="Error updating user")
 
 @router.delete("/{user_id}")
 async def delete_user(

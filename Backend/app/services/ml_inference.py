@@ -62,8 +62,13 @@ def detect_feature_set(ensemble) -> str:
         return "v3"
     if n == 49:
         return "v3_odds"
+    if n == 50:
+        return "v3_1"
+    if n == 52:
+        return "v3_1_odds"
     raise InferenceError(
-        f"El RF interno espera {n} features, no es 21/33/35/47/49 (v1/v2/v2_odds/v3/v3_odds)"
+        f"El RF interno espera {n} features, no es 21/33/35/47/49/50/52 "
+        f"(v1/v2/v2_odds/v3/v3_odds/v3_1/v3_1_odds)"
     )
 
 

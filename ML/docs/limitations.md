@@ -8,7 +8,7 @@
 | **130 juegos con score=0** | Filtrados del entrenamiento. Incluyen juegos futuros (108), postponed (11) y datos no disponibles. | Se filtran automáticamente en `build_feature_matrix()`. No afectan el modelo. |
 | **Clippers: recuperados pero con gaps residuales** | Se recuperaron ~153 boxscores de Clippers (2023-25) que faltaban originalmente. Quedan ~5 juegos irrecuperables por errores 502. | Cobertura pasó de ~0% a ~98% para Clippers. El gap residual es despreciable. |
 | **Solo ~1% de juegos tienen odds históricas** | El backtesting económico es indicativo, no definitivo. No se puede validar rigurosamente la rentabilidad real. | Se generan odds simuladas con vigorish típico (5%) para backtesting. Los resultados se documentan claramente como simulados. |
-| **Sin datos de lesiones detallados** | Solo se cuenta el número de lesionados, no la severidad ni el jugador específico. La ausencia de LeBron James no pesa igual que la de un jugador de rotación. | Feature futura planificada para v2.0.0. Requiere mapeo de impacto por jugador (ej: VORP, Win Shares). |
+| **Sin datos de lesiones detallados** | Solo se cuenta el número de lesionados, no la severidad ni el jugador específico. La ausencia de LeBron James no pesa igual que la de un jugador de rotación. | Mitigado parcialmente en v3.0.0 con player top-3 (pts/eff). Mapeo de impacto por jugador (VORP, Win Shares) sigue pendiente. |
 
 ## Limitaciones técnicas
 
@@ -27,7 +27,7 @@
 | **Degradación en test set reciente** | Las métricas empeoran en el test set v2 (dic 2025 - mar 2026) vs el original. Log Loss pasa de 0.6553 a 0.6932, ECE de 0.0363 a 0.0834. | Drift temporal esperado. El modelo fue entrenado con datos hasta ~dic 2025 y no se re-entrenó. Confirma la necesidad de reentrenamiento periódico. |
 | **Posible drift entre temporadas** | El modelo entrenado con datos 2023-26 puede degradar en la temporada 2026-27 si cambian las dinámicas del juego (nuevas reglas, fichajes, etc.). | Reentrenamiento periódico requerido. Monitoreo de drift en producción es una mejora planificada. |
 | **Ventaja de local puede fluctuar** | El home win rate (~57%) puede no ser estable históricamente (fue diferente pre/post-COVID). Si cambia significativamente, el modelo podría estar sobre/subestimando la ventaja local. | Monitorear home win rate por temporada en futuras iteraciones. |
-| **Sin modelado de series temporales** | El modelo trata cada juego como independiente (features rolling son un proxy). No captura dependencias temporales complejas (rachas, momentum extendido). | Mejora planificada para v2.0.0 con LSTM o modelos secuenciales. |
+| **Sin modelado de series temporales** | El modelo trata cada juego como independiente (features rolling son un proxy). No captura dependencias temporales complejas (rachas, momentum extendido). | Mejora futura con LSTM o modelos secuenciales (sin versión comprometida). |
 | **Calibración isotónica puede sobreajustar** | Con datasets pequeños, la isotonic regression puede memorizar patrones del train set. | Mitigado con OOF: la calibración del ensemble se entrena sobre predicciones out-of-fold, no sobre el train set directo. |
 
 ## Transparencia sobre la evaluación

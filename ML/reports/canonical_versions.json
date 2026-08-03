@@ -1,0 +1,35 @@
+{
+  "_comment": "Fuente de verdad canonica del versionado del modelo HAW para tesis y sustentacion. v1.0.0-v2.2.0 = valores oficiales del documento (Capitulo IV, Figura 1). v3.0.0/v3.1.0 = metadatos de entrenamiento posteriores. Se usa este archivo en lugar de models/metadata/*.json porque v1.6.0 y v2.2.0 fueron sobrescritos por reentrenamientos que reutilizaron el numero de version (ver _integridad).",
+  "_integridad": {
+    "intactos_en_metadata": ["v1.0.0","v1.1.0","v1.1.1","v1.1.2","v1.2.0","v1.2.1","v1.3.0","v1.4.0","v1.4.1","v1.5.0","v2.0.0","v2.1.0","v3.0.0","v3.1.0"],
+    "sobrescritos": {
+      "v1.6.0": "metadata/joblib reentrenados el 2026-05-31 con 33 feat + Poisson; el documento describe la config original de 21 feat RF+XGB",
+      "v2.2.0": "metadata/joblib reentrenados el 2026-06-02 con 35 feat (+odds); el documento describe la config de 33 feat"
+    },
+    "modelo_activo_produccion": "v3.1.0"
+  },
+  "criterios": {
+    "log_loss":    {"op": "<", "threshold": 0.68},
+    "brier_score": {"op": "<", "threshold": 0.25},
+    "roc_auc":     {"op": ">", "threshold": 0.55},
+    "ece":         {"op": "<", "threshold": 0.05}
+  },
+  "versiones": [
+    {"version": "v1.0.0", "n_features": 18, "log_loss": 0.5436, "brier_score": 0.1588, "roc_auc": 0.8530, "ece": 0.2226, "nota": "leakage sospechado (AUC anomalo)"},
+    {"version": "v1.1.0", "n_features": 21, "log_loss": 0.8857, "brier_score": 0.2434, "roc_auc": 0.6799, "ece": 0.2651, "nota": ""},
+    {"version": "v1.1.1", "n_features": 21, "log_loss": 0.6249, "brier_score": 0.2110, "roc_auc": 0.7193, "ece": 0.2322, "nota": ""},
+    {"version": "v1.1.2", "n_features": 21, "log_loss": 0.6205, "brier_score": 0.2117, "roc_auc": 0.7193, "ece": 0.2345, "nota": ""},
+    {"version": "v1.2.0", "n_features": 21, "log_loss": 0.7611, "brier_score": 0.2612, "roc_auc": 0.6427, "ece": 0.1500, "nota": ""},
+    {"version": "v1.2.1", "n_features": 21, "log_loss": 0.7900, "brier_score": 0.2669, "roc_auc": 0.6423, "ece": 0.1677, "nota": ""},
+    {"version": "v1.3.0", "n_features": 21, "log_loss": 0.6522, "brier_score": 0.2298, "roc_auc": 0.6585, "ece": 0.0340, "nota": "inicio de la fase estable"},
+    {"version": "v1.4.0", "n_features": 21, "log_loss": 0.6584, "brier_score": 0.2317, "roc_auc": 0.6551, "ece": 0.0263, "nota": ""},
+    {"version": "v1.4.1", "n_features": 21, "log_loss": 0.6553, "brier_score": 0.2312, "roc_auc": 0.6542, "ece": 0.0363, "nota": ""},
+    {"version": "v1.5.0", "n_features": 21, "log_loss": 0.6550, "brier_score": 0.2311, "roc_auc": 0.6497, "ece": 0.0243, "nota": ""},
+    {"version": "v1.6.0", "n_features": 21, "log_loss": 0.6553, "brier_score": 0.2312, "roc_auc": 0.6542, "ece": 0.0363, "nota": "activo en el documento"},
+    {"version": "v2.0.0", "n_features": 33, "log_loss": 0.6855, "brier_score": 0.2430, "roc_auc": 0.6462, "ece": 0.0925, "nota": "feature set extendido"},
+    {"version": "v2.1.0", "n_features": 33, "log_loss": 0.6857, "brier_score": 0.2420, "roc_auc": 0.6511, "ece": 0.0839, "nota": "Bivariate Poisson (probabilidad)"},
+    {"version": "v2.2.0", "n_features": 33, "log_loss": 0.7241, "brier_score": 0.2409, "roc_auc": 0.6510, "ece": 0.0792, "nota": "Poisson estructural + team-props"},
+    {"version": "v3.0.0", "n_features": 47, "log_loss": 0.6127, "brier_score": 0.2123, "roc_auc": 0.7188, "ece": 0.0353, "nota": "features V3 (descanso, estrellas)"},
+    {"version": "v3.1.0", "n_features": 52, "log_loss": 0.6174, "brier_score": 0.2146, "roc_auc": 0.7096, "ece": 0.0245, "nota": "activo en produccion (shooting rolling + odds)"}
+  ]
+}

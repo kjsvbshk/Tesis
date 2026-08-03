@@ -365,6 +365,7 @@ def run(dry_run=False, limit=None):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Scrape boxscores para juegos sin mapping")
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--date", type=str, help="Fecha específica para procesar (YYYY-MM-DD)")
     parser.add_argument("--limit", type=int, default=None, help="Limitar a N fechas")
     args = parser.parse_args()
     run(dry_run=args.dry_run, limit=args.limit)

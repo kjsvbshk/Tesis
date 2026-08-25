@@ -202,22 +202,53 @@ class MatchService:
             result = self.db.execute(text(sql), params)
             rows = result.fetchall()
             
+            # Odds: una sola query batch para todos los partidos de esta página,
+            # en vez de una consulta correlacionada POR PARTIDO dentro del loop
+            # (era un N+1 que además fallaba en silencio con `except: pass`,
+            # dejando home_odds/away_odds en None y los botones de apuesta
+            # deshabilitados en el frontend sin ningún rastro en los logs).
+            game_ids_all = []
+            for row in rows:
+                gid = dict(row._mapping).get('id')
+                if gid is not None:
+                    game_ids_all.append(int(gid))
+
+            odds_by_game: Dict[int, Dict[str, float]] = {}
+            if game_ids_all:
+                try:
+                    PROVIDER_PRIORITY = ('draftkings', 'fanduel', 'betmgm', 'betrivers', 'mybookieag')
+                    odds_rows = self.db.execute(text("""
+                        SELECT DISTINCT ON (game_id, odds_type)
+                            game_id, odds_type, odds_value
+                        FROM espn.game_odds
+                        WHERE game_id = ANY(:game_ids)
+                          AND odds_type IN ('moneyline_home', 'moneyline_away')
+                          AND provider = ANY(:priority)
+                        ORDER BY game_id, odds_type, array_position(:priority, provider)
+                    """), {"game_ids": game_ids_all, "priority": list(PROVIDER_PRIORITY)}).fetchall()
+                    for orow in odds_rows:
+                        odds_by_game.setdefault(orow.game_id, {})[orow.odds_type] = (
+                            float(orow.odds_value) if orow.odds_value is not None else None
+                        )
+                except Exception as odds_err:
+                    print(f"⚠️  No se pudieron obtener odds en batch: {odds_err}")
+
             # Convertir resultados a dict y resolver IDs de equipos
             matches = []
             for row in rows:
                 match_dict = dict(row._mapping)
-                
+
                 # Obtener valores de home_team y away_team (son strings en la BD)
                 home_team_name = match_dict.get(home_team_col) if home_team_col else None
                 away_team_name = match_dict.get(away_team_col) if away_team_col else None
-                
+
                 # Buscar equipos en la tabla teams para obtener sus team_id reales
                 home_team_db = self._find_team_by_name(home_team_name) if home_team_name else None
                 away_team_db = self._find_team_by_name(away_team_name) if away_team_name else None
-                
+
                 home_team_id = home_team_db.team_id if home_team_db else None
                 away_team_id = away_team_db.team_id if away_team_db else None
-                
+
                 # Obtener información adicional de equipos desde la tabla teams
                 home_team_abbr = home_team_db.abbreviation if home_team_db else ''
                 home_team_city = home_team_db.city if home_team_db else ''
@@ -227,43 +258,12 @@ class MatchService:
                 away_team_city = away_team_db.city if away_team_db else ''
                 away_team_conf = away_team_db.conference if away_team_db else ''
                 away_team_div = away_team_db.division if away_team_db else ''
-                
+
                 # Construir objeto MatchResponse usando solo columnas que existen
-                # Intentar obtener odds de espn.game_odds para este partido
                 game_id_val = match_dict.get('id')
-                home_odds_val = None
-                away_odds_val = None
-                if game_id_val:
-                    try:
-                        # Prioridad de providers para odds de referencia
-                        PROVIDER_PRIORITY = ('draftkings', 'fanduel', 'betmgm', 'betrivers', 'mybookieag')
-                        odds_row = self.db.execute(text("""
-                            SELECT
-                                MAX(CASE WHEN odds_type='moneyline_home' THEN odds_value END)
-                                    FILTER (WHERE provider = (
-                                        SELECT provider FROM espn.game_odds
-                                        WHERE game_id = :gid AND odds_type = 'moneyline_home'
-                                          AND provider = ANY(:priority)
-                                        ORDER BY array_position(:priority, provider)
-                                        LIMIT 1
-                                    )) AS home_odds,
-                                MAX(CASE WHEN odds_type='moneyline_away' THEN odds_value END)
-                                    FILTER (WHERE provider = (
-                                        SELECT provider FROM espn.game_odds
-                                        WHERE game_id = :gid AND odds_type = 'moneyline_away'
-                                          AND provider = ANY(:priority)
-                                        ORDER BY array_position(:priority, provider)
-                                        LIMIT 1
-                                    )) AS away_odds
-                            FROM espn.game_odds
-                            WHERE game_id = :gid
-                              AND odds_type IN ('moneyline_home', 'moneyline_away')
-                        """), {"gid": int(game_id_val), "priority": list(PROVIDER_PRIORITY)}).fetchone()
-                        if odds_row:
-                            home_odds_val = float(odds_row[0]) if odds_row[0] else None
-                            away_odds_val = float(odds_row[1]) if odds_row[1] else None
-                    except Exception:
-                        pass
+                game_odds = odds_by_game.get(int(game_id_val), {}) if game_id_val is not None else {}
+                home_odds_val = game_odds.get('moneyline_home')
+                away_odds_val = game_odds.get('moneyline_away')
 
                 match = {
                     "id": match_dict.get('id'),

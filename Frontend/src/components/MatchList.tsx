@@ -30,15 +30,12 @@ export function MatchList() {
       setUpcomingMatches(upcoming)
       setLoading(false)
 
-      // Cargar sentimiento en background (no bloquea el render)
+      // Cargar sentimiento en background (no bloquea el render) — una sola
+      // llamada batch en vez de una por partido (evitaba agotar el pool de
+      // conexiones de la DB con listas largas de partidos).
       const allMatches = [...today, ...upcoming]
-      const sentMap = new Map<number, MatchSentiment>()
-      await Promise.allSettled(
-        allMatches.map(async (m) => {
-          const s = await matchesService.getMatchSentiment(m.id as number)
-          if (s && s.total_bets > 0) sentMap.set(m.id as number, s)
-        })
-      )
+      const ids = allMatches.map((m) => m.id as number)
+      const sentMap = await matchesService.getMatchesSentiment(ids)
       setSentiment(sentMap)
     } catch (error: unknown) {
       console.error('Error loading matches:', error)

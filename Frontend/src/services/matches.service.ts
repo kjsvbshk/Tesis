@@ -120,6 +120,29 @@ class MatchesService {
       return null
     }
   }
+
+  /**
+   * Batch version of getMatchSentiment — one request for the whole visible
+   * match list instead of one per card. Matches with zero bets are omitted
+   * by the backend, so the returned map only has entries with total_bets > 0.
+   */
+  async getMatchesSentiment(matchIds: number[]): Promise<Map<number, MatchSentiment>> {
+    const map = new Map<number, MatchSentiment>()
+    if (matchIds.length === 0) return map
+
+    const ids = Array.from(new Set(matchIds)).sort((a, b) => a - b)
+    try {
+      const results = await cacheService.getOrSet(
+        cacheService.generateKey('matches', 'sentiment_batch', ids.join(',')),
+        () => apiRequest<MatchSentiment[]>(`/matches/sentiment${buildQueryString({ ids: ids.join(',') })}`),
+        60 * 1000 // 1 minute TTL
+      )
+      for (const s of results) map.set(s.game_id, s)
+    } catch {
+      // swallow — sentiment is a non-critical enhancement, same as the single-match version
+    }
+    return map
+  }
 }
 
 export const matchesService = new MatchesService()

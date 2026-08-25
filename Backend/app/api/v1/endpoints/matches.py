@@ -203,6 +203,66 @@ async def get_match_sentiment(match_id: int, db: Session = Depends(get_espn_db))
         raise HTTPException(status_code=500, detail=f"Error fetching sentiment: {str(e)}")
 
 
+@router.get("/sentiment")
+async def get_matches_sentiment_batch(
+    ids: str = Query(..., description="Comma-separated match IDs"),
+    db: Session = Depends(get_espn_db),
+):
+    """
+    Batch betting sentiment for multiple matches — one query instead of one
+    request per match. Same shape as GET /{match_id}/sentiment, as a list.
+    Matches with zero bets are omitted (mirrors the single-match endpoint,
+    which returns null pct fields for those).
+    """
+    try:
+        id_list = sorted({int(x) for x in ids.split(",") if x.strip()})
+        if not id_list:
+            return []
+
+        cache_key = cache_service._generate_key("matches", "sentiment_batch", ids=id_list)
+
+        async def fetch_sentiment_batch():
+            rows = db.execute(
+                text("""
+                    SELECT
+                        b.game_id,
+                        COUNT(*) FILTER (WHERE b.bet_type_code = 'home')   AS home_count,
+                        COUNT(*) FILTER (WHERE b.bet_type_code = 'away')   AS away_count,
+                        COUNT(*) FILTER (WHERE b.bet_type_code = 'over')   AS over_count,
+                        COUNT(*) FILTER (WHERE b.bet_type_code = 'under')  AS under_count,
+                        COUNT(*)                                             AS total
+                    FROM espn.bets b
+                    WHERE b.game_id = ANY(:game_ids)
+                      AND b.bet_status_code != 'cancelled'
+                    GROUP BY b.game_id
+                """),
+                {"game_ids": id_list},
+            ).fetchall()
+
+            def pct(n, total):
+                return round((int(n or 0) / total) * 100, 1)
+
+            return [
+                {
+                    "game_id": r.game_id,
+                    "total_bets": int(r.total),
+                    "home_pct": pct(r.home_count, r.total),
+                    "away_pct": pct(r.away_count, r.total),
+                    "over_pct": pct(r.over_count, r.total),
+                    "under_pct": pct(r.under_count, r.total),
+                }
+                for r in rows
+            ]
+
+        return await cache_service.get_or_set(
+            key=cache_key,
+            fetch_func=fetch_sentiment_batch,
+            ttl_seconds=60,
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching sentiment batch: {str(e)}")
+
+
 @router.get("/{match_id}", response_model=MatchResponse)
 async def get_match(match_id: int, db: Session = Depends(get_espn_db)):
     """Get a specific match by ID"""

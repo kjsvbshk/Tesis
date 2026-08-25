@@ -13,6 +13,10 @@ app_engine = create_engine(
     settings.DATABASE_URL,
     pool_pre_ping=True,
     pool_recycle=300,
+    # Margen de seguridad frente al default (5+10=15), que se agotaba con
+    # ráfagas de requests concurrentes (ver batch de /matches/sentiment).
+    pool_size=10,
+    max_overflow=20,
     # SEGURIDAD: echo=True volcaba TODO el SQL con parámetros (usernames,
     # hashes de contraseña, códigos 2FA) a la consola cuando DEBUG=True.
     # El echo de SQLAlchemy nunca debe activarse vía DEBUG general.
@@ -25,6 +29,10 @@ espn_engine = create_engine(
     settings.NBA_DATABASE_URL,
     pool_pre_ping=True,
     pool_recycle=300,
+    # Margen de seguridad frente al default (5+10=15), que se agotaba con
+    # ráfagas de requests concurrentes (ver batch de /matches/sentiment).
+    pool_size=10,
+    max_overflow=20,
     # SEGURIDAD: echo=True volcaba TODO el SQL con parámetros (usernames,
     # hashes de contraseña, códigos 2FA) a la consola cuando DEBUG=True.
     # El echo de SQLAlchemy nunca debe activarse vía DEBUG general.

@@ -4,6 +4,9 @@
  */
 
 import { apiRequest, buildQueryString } from '@/lib/api'
+import { cacheService } from './cache.service'
+
+const STATS_CACHE_KEY = cacheService.generateKey('bets', 'stats')
 
 export type BetTypeBackend = 'moneyline' | 'spread' | 'over_under'
 export type BetStatus = 'pending' | 'won' | 'lost' | 'cancelled'
@@ -47,10 +50,12 @@ class BetsService {
    * Place a new bet
    */
   async placeBet(bet: BetCreate): Promise<BetResponse> {
-    return apiRequest<BetResponse>('/bets/', {
+    const result = await apiRequest<BetResponse>('/bets/', {
       method: 'POST',
       body: JSON.stringify(bet),
     })
+    cacheService.delete(STATS_CACHE_KEY) // credits/pending_bets changed
+    return result
   }
 
   /**
@@ -75,26 +80,37 @@ class BetsService {
    * Update a bet
    */
   async updateBet(betId: number, update: Partial<BetCreate>): Promise<BetResponse> {
-    return apiRequest<BetResponse>(`/bets/${betId}`, {
+    const result = await apiRequest<BetResponse>(`/bets/${betId}`, {
       method: 'PUT',
       body: JSON.stringify(update),
     })
+    cacheService.delete(STATS_CACHE_KEY)
+    return result
   }
 
   /**
    * Cancel a bet
    */
   async cancelBet(betId: number): Promise<void> {
-    return apiRequest(`/bets/${betId}`, {
+    await apiRequest(`/bets/${betId}`, {
       method: 'DELETE',
     })
+    cacheService.delete(STATS_CACHE_KEY) // credits refunded, pending_bets changed
   }
 
   /**
-   * Get betting statistics
+   * Get betting statistics.
+   * Cached client-side (short TTL) — this was hitting the backend fresh on
+   * every dashboard visit, opening 2 DB sessions (app + espn) each time for
+   * a full scan of the user's bets that rarely changes between page loads.
+   * Invalidated explicitly on placeBet/cancelBet so credits update right away.
    */
   async getBettingStats(): Promise<any> {
-    return apiRequest('/bets/stats/summary')
+    return cacheService.getOrSet(
+      STATS_CACHE_KEY,
+      () => apiRequest('/bets/stats/summary'),
+      30 * 1000 // 30s TTL
+    )
   }
 }
 

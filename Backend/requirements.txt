@@ -23,7 +23,7 @@ scipy>=1.11.0
 # ETL y scraping
 requests==2.32.4
 beautifulsoup4==4.12.2
-lxml==4.9.3
+lxml==6.1.0
 
 # Utilidades
 python-dotenv>=1.0.0

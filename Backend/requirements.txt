@@ -21,7 +21,7 @@ joblib>=1.3.2
 scipy>=1.11.0
 
 # ETL y scraping
-requests==2.32.4
+requests==2.33.0
 beautifulsoup4==4.12.2
 lxml==4.9.3
 
